@@ -14,6 +14,11 @@ class ContextCollector:
 
     IMPORTANT_FILES = [
         "README.md",
+        "constitution/constitution.md",
+        "foundation/vision.md",
+        "foundation/mission.md",
+        "foundation/values.md",
+        "foundation/manifest.md",
         "builder/main.py",
         "agents/architect.md",
         "agents/handover.md",
@@ -51,6 +56,23 @@ class ContextCollector:
             errors="replace",
         )
 
+    def _collect_sessions(self, project_root: Path) -> dict[str, str]:
+        sessions_directory = project_root / "knowledge" / "sessions"
+
+        if not sessions_directory.exists():
+            return {}
+
+        session_files = sorted(
+            sessions_directory.glob("*.md"),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+
+        return {
+            str(path.relative_to(project_root)): self._read_file(path)
+            for path in session_files
+        }
+
     def collect(self) -> dict:
         project_root = Path.cwd()
 
@@ -75,6 +97,7 @@ class ContextCollector:
             "project_root": str(project_root),
             "files": files,
             "important_files": important_files,
+            "sessions": self._collect_sessions(project_root),
             "git": {
                 "branch": self._run_command(
                     ["git", "branch", "--show-current"]
