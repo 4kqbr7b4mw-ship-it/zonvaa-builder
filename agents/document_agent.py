@@ -1,7 +1,14 @@
 from pathlib import Path
 
+from openai import OpenAI
+
+from config.settings import OPENAI_API_KEY, OPENAI_MODEL
+
 
 class DocumentAgent:
+
+    def __init__(self):
+        self.client = OpenAI(api_key=OPENAI_API_KEY)
 
     def create(self, name: str):
 
@@ -18,16 +25,28 @@ class DocumentAgent:
 
         filename = f"{folder}/{name}.md"
 
-        content = f"""# {name.title()}
+        prompt = f"""
+Erstelle ein professionelles Markdown-Dokument für ZONVAA.
 
-## Status
+Dokumenttyp: {name}
 
-Entwurf
+ZONVAA ist eine intelligente Decision Factory.
+Der Nutzer beschreibt ein Ziel.
+ZONVAA analysiert Informationen, plant Schritte, erzeugt Empfehlungen,
+Dokumente, Aufgaben, Workflows und nachvollziehbare Entscheidungen.
 
-## Beschreibung
-
-Dieses Dokument wurde automatisch vom ZONVAA Builder erstellt.
+Schreibe das Dokument auf Deutsch.
+Nutze klare Überschriften.
+Keine Platzhalter.
+Keine Meta-Kommentare.
 """
+
+        response = self.client.responses.create(
+            model=OPENAI_MODEL,
+            input=prompt,
+        )
+
+        content = response.output_text
 
         Path(filename).write_text(
             content,
