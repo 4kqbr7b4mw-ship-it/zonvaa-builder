@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from constitution.manager import ConstitutionManager
 from knowledge.manager import KnowledgeManager
@@ -8,9 +9,9 @@ class RuntimeManager:
     """Initialisiert und hält den aktuellen Builder-Zustand."""
 
     def __init__(self) -> None:
-        self.constitution: str | None = None
+        self.constitution: Optional[str] = None
         self.knowledge: dict = {}
-        self.latest_session: Path | None = None
+        self.latest_session: Optional[Path] = None
         self.latest_session_content: str = ""
 
     def boot(self) -> "RuntimeManager":
@@ -27,3 +28,16 @@ class RuntimeManager:
             )
 
         return self
+
+
+_runtime: Optional[RuntimeManager] = None
+
+
+def get_runtime() -> RuntimeManager:
+    """Liefert die einmalig initialisierte Builder-Runtime."""
+    global _runtime
+
+    if _runtime is None:
+        _runtime = RuntimeManager().boot()
+
+    return _runtime
