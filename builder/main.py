@@ -6,6 +6,7 @@ from commands.doctor import doctor
 from commands.handover import handover
 from commands.init import init
 from commands.role import create_role
+from commands.release import release
 
 app = typer.Typer(help="ZONVAA Builder CLI")
 
@@ -15,6 +16,7 @@ app.command("build")(build)
 app.command("handover")(handover)
 app.command("doctor")(doctor)
 app.command("init")(init)
+app.command("release")(release)
 
 role_app.command("create")(create_role)
 
