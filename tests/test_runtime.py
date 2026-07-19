@@ -32,3 +32,14 @@ def test_latest_session_empty(monkeypatch):
 
     assert runtime.latest_session is None
     assert runtime.latest_session_content == ""
+
+
+def test_runtime_exposes_project_state():
+    runtime = RuntimeManager().boot()
+
+    assert isinstance(runtime.project_state, dict)
+    assert "python_version" in runtime.project_state
+    assert "pytest_version" in runtime.project_state
+    assert "git_branch" in runtime.project_state
+    assert "git_commit" in runtime.project_state
+    assert "git_clean" in runtime.project_state

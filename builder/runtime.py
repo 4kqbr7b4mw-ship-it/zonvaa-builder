@@ -3,6 +3,7 @@ from typing import Optional
 
 from constitution.manager import ConstitutionManager
 from knowledge.manager import KnowledgeManager
+from builder.project_state import ProjectState
 
 
 class RuntimeManager:
@@ -13,6 +14,7 @@ class RuntimeManager:
         self.knowledge: dict = {}
         self.latest_session: Optional[Path] = None
         self.latest_session_content: str = ""
+        self.project_state: dict = {}
 
     def boot(self) -> "RuntimeManager":
         knowledge_manager = KnowledgeManager()
@@ -27,7 +29,10 @@ class RuntimeManager:
                 errors="replace",
             )
 
+        self.project_state = ProjectState().collect()
+
         return self
+
 
 
 _runtime: Optional[RuntimeManager] = None

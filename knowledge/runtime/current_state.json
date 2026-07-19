@@ -1,0 +1,7 @@
+{
+  "python_version": "3.9.6",
+  "pytest_version": "8.4.2",
+  "git_branch": "main",
+  "git_commit": "9778d15",
+  "git_clean": false
+}
