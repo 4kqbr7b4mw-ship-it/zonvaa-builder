@@ -2,6 +2,7 @@ from pathlib import Path
 import subprocess
 
 from builder.runtime import get_runtime
+from builder.project_state import ProjectState
 
 
 class ContextCollector:
@@ -103,10 +104,8 @@ class ContextCollector:
                 ),
                 "content": runtime.latest_session_content,
             },
+            "project_state": ProjectState().load(),
             "git": {
-                "branch": self._run_command(
-                    ["git", "branch", "--show-current"]
-                ),
                 "status": self._run_command(
                     [
                         "git",

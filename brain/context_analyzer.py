@@ -9,6 +9,7 @@ class ContextAnalyzer:
         project_context: dict[str, Any],
     ) -> dict[str, Any]:
         git = project_context.get("git", {})
+        project_state = project_context.get("project_state", {})
         files = project_context.get("files", [])
         sessions = project_context.get("sessions", {})
         latest_session = project_context.get(
@@ -45,8 +46,8 @@ class ContextAnalyzer:
                 "Nicht bestätigt",
             ),
             "git": {
-                "branch": git.get(
-                    "branch",
+                "branch": project_state.get(
+                    "git_branch",
                     "Nicht bestätigt",
                 ),
                 "changed_files": changed_files,
