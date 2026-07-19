@@ -15,6 +15,7 @@ class RuntimeManager:
         self.latest_session: Optional[Path] = None
         self.latest_session_content: str = ""
         self.project_state: dict = {}
+        self.verified_facts: dict = {}
 
     def boot(self) -> "RuntimeManager":
         knowledge_manager = KnowledgeManager()
@@ -30,6 +31,7 @@ class RuntimeManager:
             )
 
         self.project_state = ProjectState().collect()
+        self.verified_facts = self.project_state.get("verified_facts", {})
 
         return self
 
