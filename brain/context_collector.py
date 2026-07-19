@@ -107,7 +107,8 @@ class ContextCollector:
                 ),
                 "content": runtime.latest_session_content,
             },
-            "project_state": ProjectState().load(),
+            "verified_facts": runtime.verified_facts,
+            "project_state": runtime.project_state,
             "git": {
                 "status": self._run_command(
                     [
