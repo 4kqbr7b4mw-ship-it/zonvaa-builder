@@ -1,4 +1,5 @@
 from pathlib import Path
+from knowledge.verified_facts import VerifiedFacts
 
 
 class KnowledgeManager:
@@ -15,6 +16,7 @@ class KnowledgeManager:
             "project": sorted((self.root / "project").glob("*.md")),
             "sessions": sorted((self.root / "sessions").glob("*.md")),
             "sources": sorted((self.root / "sources").glob("*")),
+            "verified_facts": VerifiedFacts().load(),
         }
     def latest_session(self):
         sessions = sorted(
