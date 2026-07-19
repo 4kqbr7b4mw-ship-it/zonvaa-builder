@@ -1,6 +1,7 @@
 import typer
 
 from builder.runtime import RuntimeManager
+from commands.build import build
 from commands.doctor import doctor
 from commands.handover import handover
 from commands.init import init
@@ -10,6 +11,7 @@ app = typer.Typer(help="ZONVAA Builder CLI")
 
 role_app = typer.Typer(help="Rollen verwalten")
 
+app.command("build")(build)
 app.command("handover")(handover)
 app.command("doctor")(doctor)
 app.command("init")(init)
