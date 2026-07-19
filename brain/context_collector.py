@@ -1,6 +1,8 @@
 from pathlib import Path
 import subprocess
 
+from builder.runtime import get_runtime
+
 
 class ContextCollector:
     """Sammelt bestätigte Projektinformationen für Agenten."""
@@ -60,25 +62,16 @@ class ContextCollector:
             errors="replace",
         )
 
-    def _collect_sessions(self, project_root: Path) -> dict[str, str]:
-        sessions_directory = project_root / "knowledge" / "sessions"
-
-        if not sessions_directory.exists():
-            return {}
-
-        session_files = sorted(
-            sessions_directory.glob("*.md"),
-            key=lambda path: path.stat().st_mtime,
-            reverse=True,
-        )
-
-        return {
-            str(path.relative_to(project_root)): self._read_file(path)
-            for path in session_files
-        }
-
     def collect(self) -> dict:
         project_root = Path.cwd()
+        runtime = get_runtime()
+
+        sessions = {}
+
+        if runtime.latest_session is not None:
+            sessions[str(runtime.latest_session)] = (
+                runtime.latest_session_content
+            )
 
         files = sorted(
             str(path.relative_to(project_root))
@@ -101,7 +94,7 @@ class ContextCollector:
             "project_root": str(project_root),
             "files": files,
             "important_files": important_files,
-            "sessions": self._collect_sessions(project_root),
+            "sessions": sessions,
             "git": {
                 "branch": self._run_command(
                     ["git", "branch", "--show-current"]
