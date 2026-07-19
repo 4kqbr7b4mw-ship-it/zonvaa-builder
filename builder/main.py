@@ -1,6 +1,6 @@
 import typer
 
-from constitution.manager import ConstitutionManager
+from builder.runtime import RuntimeManager
 from commands.doctor import doctor
 from commands.handover import handover
 from commands.init import init
@@ -22,8 +22,7 @@ app.add_typer(role_app, name="role")
 @app.callback()
 def main() -> None:
     """Initialisiert die Builder-Runtime."""
-
-    ConstitutionManager().load()
+    RuntimeManager().boot()
 
 
 if __name__ == "__main__":

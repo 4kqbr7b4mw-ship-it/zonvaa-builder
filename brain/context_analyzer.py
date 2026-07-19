@@ -10,6 +10,7 @@ class ContextAnalyzer:
     ) -> dict[str, Any]:
         git = project_context.get("git", {})
         files = project_context.get("files", [])
+        sessions = project_context.get("sessions", {})
 
         changed_files = self._parse_git_status(
             git.get("status", "")
@@ -30,6 +31,13 @@ class ContextAnalyzer:
                 )
             )
         ]
+
+        latest_session_path = next(iter(sessions), None)
+        latest_session_content = (
+            sessions.get(latest_session_path, "")
+            if latest_session_path
+            else ""
+        )
 
         return {
             "project_root": project_context.get(
@@ -52,10 +60,16 @@ class ContextAnalyzer:
                 "important_files",
                 {},
             ),
+            "sessions": sessions,
+            "latest_session": {
+                "path": latest_session_path or "Nicht vorhanden",
+                "content": latest_session_content,
+            },
             "summary": {
                 "file_count": len(files),
                 "relevant_file_count": len(relevant_files),
                 "changed_file_count": len(changed_files),
+                "session_count": len(sessions),
                 "git_dirty": bool(changed_files),
             },
             "risks": self._detect_risks(
