@@ -95,6 +95,14 @@ class ContextCollector:
             "files": files,
             "important_files": important_files,
             "sessions": sessions,
+            "latest_session": {
+                "path": (
+                    str(runtime.latest_session)
+                    if runtime.latest_session is not None
+                    else "Nicht vorhanden"
+                ),
+                "content": runtime.latest_session_content,
+            },
             "git": {
                 "branch": self._run_command(
                     ["git", "branch", "--show-current"]
