@@ -1,6 +1,6 @@
 import typer
 
-from builder.runtime import RuntimeManager
+from builder.runtime import get_runtime
 from commands.build import build
 from commands.doctor import doctor
 from commands.handover import handover
@@ -26,7 +26,7 @@ app.add_typer(role_app, name="role")
 @app.callback()
 def main() -> None:
     """Initialisiert die Builder-Runtime."""
-    RuntimeManager().boot()
+    get_runtime()
 
 
 if __name__ == "__main__":
