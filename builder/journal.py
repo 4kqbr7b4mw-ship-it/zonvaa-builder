@@ -9,11 +9,10 @@ class RuntimeJournal:
         self.folder = Path("knowledge/protocols")
         self.folder.mkdir(parents=True, exist_ok=True)
 
-        self.file = (
-            self.folder /
-            f"{datetime.now():%Y-%m-%d_%H-%M-%S}_runtime.md"
-        )
+        self.file = self.folder / "runtime.md"
 
     def log(self, message: str) -> None:
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
         with self.file.open("a", encoding="utf-8") as f:
-            f.write(f"- {datetime.now():%H:%M:%S} {message}\n")
+            f.write(f"- {timestamp} {message}\n")
