@@ -17,3 +17,18 @@ def test_runtime_singleton():
     runtime2 = get_runtime()
 
     assert runtime1 is runtime2
+
+from knowledge.manager import KnowledgeManager
+
+
+def test_latest_session_empty(monkeypatch):
+    monkeypatch.setattr(
+        KnowledgeManager,
+        "latest_session",
+        lambda self: None,
+    )
+
+    runtime = RuntimeManager().boot()
+
+    assert runtime.latest_session is None
+    assert runtime.latest_session_content == ""
