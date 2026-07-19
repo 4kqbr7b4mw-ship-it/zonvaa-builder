@@ -16,3 +16,11 @@ class KnowledgeManager:
             "sessions": sorted((self.root / "sessions").glob("*.md")),
             "sources": sorted((self.root / "sources").glob("*")),
         }
+    def latest_session(self):
+        sessions = sorted(
+            (self.root / "sessions").glob("*.md"),
+            key=lambda p: p.stat().st_mtime,
+            reverse=True,
+        )
+
+        return sessions[0] if sessions else None
