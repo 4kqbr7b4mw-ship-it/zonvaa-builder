@@ -2,14 +2,16 @@ from typing import Any
 
 from brain.decision_engine import DecisionEngine
 from builder.planner import Planner
+from execution.engine import ExecutionEngine
 
 
 class Orchestrator:
-    """Verbindet Entscheidung und Planung zu einem kontrollierten Ablauf."""
+    """Verbindet Entscheidung, Planung und Ausführungsvorbereitung."""
 
     def __init__(self) -> None:
         self.decision_engine = DecisionEngine()
         self.planner = Planner()
+        self.execution_engine = ExecutionEngine()
 
     def run(
         self,
@@ -25,9 +27,13 @@ class Orchestrator:
             return {
                 "decision": decision,
                 "plan": [],
+                "execution": [],
             }
+
+        plan = self.planner.create_plan(goal)
 
         return {
             "decision": decision,
-            "plan": self.planner.create_plan(goal),
+            "plan": plan,
+            "execution": self.execution_engine.prepare(plan),
         }
