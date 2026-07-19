@@ -3,6 +3,8 @@ import platform
 import subprocess
 from pathlib import Path
 
+from knowledge.verified_facts import VerifiedFacts
+
 
 class ProjectState:
     """Sammelt und speichert den technischen Projektzustand."""
@@ -20,6 +22,7 @@ class ProjectState:
 
     def collect(self) -> dict:
         state = {
+            "verified_facts": VerifiedFacts().load(),
             "python_version": platform.python_version(),
             "pytest_version": self._command(
                 ["python3", "-m", "pytest", "--version"]
