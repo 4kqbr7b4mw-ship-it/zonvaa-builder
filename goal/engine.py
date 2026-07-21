@@ -1,6 +1,6 @@
 from typing import Any, Dict, Iterable, Union
 
-from goal.models import GoalContext
+from goal.models import Goal, GoalContext
 from knowledge.memory import MemoryType
 
 
@@ -9,12 +9,15 @@ class GoalEngine:
 
     def create_context(
         self,
+        goal: Goal,
         role: str,
         memory_types: Iterable[Union[MemoryType, str]],
         constitution_rules: Iterable[str],
         verified_facts: Dict[str, Any],
         project_state: Dict[str, Any],
     ) -> GoalContext:
+        if not isinstance(goal, Goal):
+            raise TypeError("Goal context requires a Goal instance")
         if not role.strip():
             raise ValueError("Goal context role must not be empty")
 
@@ -31,6 +34,7 @@ class GoalEngine:
         rules = tuple(rule for rule in constitution_rules if rule.strip())
 
         return GoalContext(
+            goal=goal,
             role=role,
             memory_types=classified_memory,
             constitution_rules=rules,

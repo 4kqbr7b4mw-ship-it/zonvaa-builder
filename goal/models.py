@@ -56,6 +56,7 @@ class Goal:
 
 @dataclass(frozen=True)
 class GoalContext:
+    goal: Goal
     role: str
     memory_types: Tuple[MemoryType, ...]
     constitution_rules: Tuple[str, ...]
