@@ -6,6 +6,11 @@ from goal.models import (
     GoalPriority,
     GoalStatus,
 )
+from goal.why_assessment import (
+    WhyAssessment,
+    WhyAssessmentReason,
+    WhyAssessmentStatus,
+)
 
 __all__ = [
     "Goal",
@@ -14,4 +19,7 @@ __all__ = [
     "GoalEngine",
     "GoalPriority",
     "GoalStatus",
+    "WhyAssessment",
+    "WhyAssessmentReason",
+    "WhyAssessmentStatus",
 ]
