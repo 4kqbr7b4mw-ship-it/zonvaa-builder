@@ -1,12 +1,16 @@
 from pathlib import Path
 import subprocess
+from typing import Optional
 
-from builder.runtime import get_runtime
+from builder.runtime import RuntimeManager, get_runtime
 from builder.project_state import ProjectState
 
 
 class ContextCollector:
     """Sammelt bestätigte Projektinformationen für Agenten."""
+
+    def __init__(self, runtime: Optional[RuntimeManager] = None) -> None:
+        self.runtime = runtime
 
     IGNORED_DIRECTORIES = {
         ".git",
@@ -68,7 +72,7 @@ class ContextCollector:
 
     def collect(self) -> dict:
         project_root = Path.cwd()
-        runtime = get_runtime()
+        runtime = self.runtime if self.runtime is not None else get_runtime()
 
         sessions = {}
 
