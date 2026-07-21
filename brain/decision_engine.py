@@ -1,4 +1,6 @@
-from typing import Any
+from typing import Any, Optional
+
+from goal.models import GoalContext
 
 
 class DecisionEngine:
@@ -8,7 +10,11 @@ class DecisionEngine:
         self,
         goal: str,
         context: dict[str, Any],
+        goal_context: Optional[GoalContext] = None,
     ) -> dict[str, Any]:
+        # Reserved for the structured hand-off defined by ADR-0010.
+        # Existing decision behavior intentionally remains unchanged.
+        _ = goal_context
         summary = context.get("summary", {})
         risks = context.get("risks", [])
 

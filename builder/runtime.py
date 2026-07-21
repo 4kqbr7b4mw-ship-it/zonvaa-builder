@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import Optional
 
 from constitution.manager import ConstitutionManager
+from goal.engine import GoalEngine
 from knowledge.manager import KnowledgeManager
 from builder.project_state import ProjectState
 
@@ -16,6 +17,7 @@ class RuntimeManager:
         self.latest_session_content: str = ""
         self.project_state: dict = {}
         self.verified_facts: dict = {}
+        self.goal_engine: Optional[GoalEngine] = None
 
     def boot(self) -> "RuntimeManager":
         knowledge_manager = KnowledgeManager()
@@ -32,6 +34,7 @@ class RuntimeManager:
 
         self.project_state = ProjectState().collect()
         self.verified_facts = self.project_state.get("verified_facts", {})
+        self.goal_engine = GoalEngine()
 
         return self
 
