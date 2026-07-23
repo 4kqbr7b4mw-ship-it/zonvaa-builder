@@ -7,6 +7,7 @@ from typer.testing import CliRunner
 
 import commands.goal as goal_command
 from brain.context_collector import ContextCollector
+from builder.journal import DecisionJournal
 from builder.main import app
 from builder.runtime import RuntimeManager
 from goal.engine import GoalEngine
@@ -72,6 +73,15 @@ def invoke_json(tmp_path, payload):
     input_file = tmp_path / "goal.json"
     input_file.write_text(json.dumps(payload), encoding="utf-8")
     return runner.invoke(app, ["goal", "run", "--input", str(input_file)])
+
+
+def invoke_recorded_json(tmp_path, payload):
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+    return runner.invoke(
+        app,
+        ["goal", "run", "--input", str(input_file), "--record"],
+    )
 
 
 def output_json(result):
@@ -323,3 +333,174 @@ def test_runtime_boot_error_is_reported_without_traceback(tmp_path, monkeypatch)
     assert result.exit_code != 0
     assert "Runtime konnte nicht gestartet werden" in result.output
     assert "Traceback" not in result.output
+
+
+def test_without_record_keeps_output_and_writes_no_file(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+
+    result = output_json(invoke_json(tmp_path, input_data()))
+
+    assert set(result) == {"decision", "plan", "execution"}
+    assert not record_folder.exists()
+
+
+def test_recorded_approved_flow_contains_complete_record(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+    evidence = ["Explicit first statement", "Explicit second statement"]
+    payload = input_data(
+        {
+            "status": "aligned",
+            "reason": "explicit_alignment_confirmed",
+            "evidence": evidence,
+        }
+    )
+
+    output = output_json(invoke_recorded_json(tmp_path, payload))
+    files = list(record_folder.glob("*.json"))
+
+    assert len(files) == 1
+    assert output["record_path"] == str(files[0])
+    record = json.loads(files[0].read_text(encoding="utf-8"))
+    assert record["record_version"] == "1.0"
+    assert record["created_at"].endswith("+00:00")
+    assert record["goal"] == payload["goal"]
+    assert record["invocation"] == {
+        "role": payload["role"],
+        "memory_types": payload["memory_types"],
+        "constitution_rules": payload["constitution_rules"],
+    }
+    assert record["identity"] == {
+        "source": "WHY.md",
+        "version": clean_cli.identity_context.version,
+    }
+    assert "content" not in record["identity"]
+    assert "# WHY" not in files[0].read_text(encoding="utf-8")
+    assert record["why_assessment"] == payload["why_assessment"]
+    assert record["decision"] == output["decision"]
+    assert record["plan"] == output["plan"]
+    assert record["execution"] == output["execution"]
+    assert record["source"]["input_file"] == str(
+        (tmp_path / "goal.json").resolve()
+    )
+
+
+@pytest.mark.parametrize(
+    "assessment, expected_status",
+    [
+        (None, "needs_review"),
+        (
+            {
+                "status": "conflicting",
+                "reason": "explicit_conflict_confirmed",
+                "evidence": [],
+            },
+            "blocked",
+        ),
+        (
+            {
+                "status": "not_evaluable",
+                "reason": "insufficient_assessment_basis",
+                "evidence": [],
+            },
+            "needs_review",
+        ),
+    ],
+)
+def test_recorded_non_approved_flows(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+    assessment,
+    expected_status,
+):
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+
+    output = output_json(
+        invoke_recorded_json(tmp_path, input_data(assessment))
+    )
+    record_file = next(record_folder.glob("*.json"))
+    record = json.loads(record_file.read_text(encoding="utf-8"))
+
+    assert output["decision"]["status"] == expected_status
+    assert record["decision"]["status"] == expected_status
+    assert record["why_assessment"] == assessment
+    assert record["plan"] == []
+    assert record["execution"] == []
+
+
+def test_two_recorded_runs_do_not_overwrite_each_other(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+
+    first = output_json(invoke_recorded_json(tmp_path, input_data()))
+    second = output_json(invoke_recorded_json(tmp_path, input_data()))
+
+    assert first["record_path"] != second["record_path"]
+    assert len(list(record_folder.glob("*.json"))) == 2
+
+
+def test_existing_journal_file_remains_unchanged(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    record_folder = tmp_path / "records"
+    record_folder.mkdir()
+    existing = record_folder / "existing.json"
+    existing.write_text('{"existing": true}\n', encoding="utf-8")
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+
+    result = invoke_recorded_json(tmp_path, input_data())
+
+    assert result.exit_code == 0
+    assert existing.read_text(encoding="utf-8") == '{"existing": true}\n'
+    assert len(list(record_folder.glob("*.json"))) == 2
+
+
+def test_record_write_error_is_reported(clean_cli, tmp_path, monkeypatch):
+    def fail_record(self, **kwargs):
+        raise PermissionError("read-only journal")
+
+    monkeypatch.setattr(DecisionJournal, "record", fail_record)
+
+    result = invoke_recorded_json(tmp_path, input_data())
+
+    assert result.exit_code != 0
+    assert "Decision Record konnte nicht gespeichert werden" in result.output
+    assert "Traceback" not in result.output
+
+
+def test_failed_goal_flow_creates_no_record(clean_cli, tmp_path, monkeypatch):
+    journal = Mock()
+    monkeypatch.setattr(
+        goal_command,
+        "DecisionJournal",
+        Mock(return_value=journal),
+    )
+    service = Mock()
+    service.run.side_effect = ValueError("invalid assessment binding")
+    monkeypatch.setattr(
+        goal_command,
+        "GoalApplicationService",
+        Mock(return_value=service),
+    )
+
+    result = invoke_recorded_json(tmp_path, input_data())
+
+    assert result.exit_code != 0
+    journal.record.assert_not_called()

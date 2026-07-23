@@ -6,6 +6,7 @@ from typing import Any, Dict, List, Optional
 import typer
 
 from builder.goal_application_service import GoalApplicationService
+from builder.journal import DecisionJournal
 from builder.runtime import get_runtime
 from goal.models import Goal
 from goal.why_assessment import (
@@ -123,6 +124,11 @@ def run_goal(
         "--input",
         help="UTF-8-JSON-Datei mit Goal und Laufkontext.",
     ),
+    record: bool = typer.Option(
+        False,
+        "--record",
+        help="Speichert einen unveränderlichen Decision Record.",
+    ),
 ) -> None:
     """Führt ein vorhandenes Goal über den Goal Application Service aus."""
     try:
@@ -158,4 +164,25 @@ def run_goal(
     except (GoalInputError, TypeError, ValueError, RuntimeError) as exc:
         raise typer.BadParameter(str(exc), param_hint="--input") from None
 
-    typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+    output = result
+    if record:
+        try:
+            record_path = DecisionJournal().record(
+                goal=goal,
+                role=role,
+                memory_types=memory_types,
+                constitution_rules=constitution_rules,
+                identity_context=runtime.identity_context,
+                why_assessment=assessment,
+                result=result,
+                input_file=input_file,
+            )
+        except OSError as exc:
+            raise typer.BadParameter(
+                "Decision Record konnte nicht gespeichert werden: {}".format(exc),
+                param_hint="--record",
+            ) from None
+        output = dict(result)
+        output["record_path"] = str(record_path)
+
+    typer.echo(json.dumps(output, ensure_ascii=False, indent=2))
