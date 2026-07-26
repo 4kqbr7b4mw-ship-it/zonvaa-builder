@@ -3,6 +3,66 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Guardian Conversation Principles
+
+### Ziel und Nicht-Ziele
+
+S-V-N-P als verbindliche Reihenfolge für Guardian-Interaktion,
+Gesprächsführung und UX in die bestehende Identity- und
+Constitution-Architektur einordnen. Keine UI, kein neuer Workflow, keine
+fachliche Life-Decisions-Änderung und keine Monetarisierungsimplementierung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `7886bbb` war erfolgreich.
+- WHY priorisiert den Menschen und Vertrauen bereits vor Wachstum.
+- Constitution regelt Kommunikation, enthält aber keine menschengeführte
+  Gesprächsreihenfolge.
+- Manifest und Values beginnen fachliche Entscheidungsarbeit mit Ziel und
+  Nutzen; sie unterscheiden den Gesprächseinstieg noch nicht ausdrücklich vom
+  internen Entscheidungszyklus.
+- Es existiert keine Guardian- oder Conversation-ADR und keine parallele
+  Interaction-Architektur.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Identity-Dokumente, ADRs und Interaktionsregeln prüfen.
+- [x] Constitution um das verbindliche Kernprinzip erweitern.
+- [x] Guardian Conversation Principles als ADR dokumentieren.
+- [x] Values konsistent abgrenzen und Verhaltensbeispiele ergänzen.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- S-V-N-P wird unterhalb des WHY und innerhalb der Constitution verankert; es
+  entsteht keine zweite Philosophie.
+- Die Reihenfolge gilt für sichtbare Interaktion und UX. Bestehende Goal-,
+  Decision- und Workflow-Architektur darf nach hinreichendem Verständnis im
+  Hintergrund vorbereitet werden.
+- Sympathie bedeutet respektvolle menschliche Anschlussfähigkeit, nicht
+  Manipulation oder erzwungene Zustimmung.
+
+### Risiken
+
+- „Hinreichendes Vertrauen“ ist kontextabhängig und darf nicht durch ein
+  mechanisches Pflichtdialog-Schema vorgetäuscht werden.
+- Fachlich notwendige Sicherheitswarnungen dürfen nicht aus Höflichkeit
+  verzögert werden.
+
+### Teststrategie
+
+- Dokumente auf Widersprüche, Rangfolge und klare Grenzen prüfen.
+- Vollständige Regression, Doctor und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+S-V-N-P ist in Constitution 1.1 verbindlich und durch ADR-0023 in die
+Identity-First-Architektur eingeordnet. Values grenzt den menschlichen
+Gesprächseinstieg vom internen Goal- und Entscheidungszyklus ab. Es wurden
+keine UI, kein Workflow, keine Preislogik und keine Life-Decisions-Fachregel
+implementiert. 325 Tests, Doctor und `git diff --check` waren erfolgreich.
+
 ## Abgeschlossener Plan: Power of Attorney Workflow Validation
 
 ### Ziel und Nicht-Ziele

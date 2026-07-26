@@ -1,0 +1,68 @@
+{
+  "changed_files": [
+    "PLANS.md",
+    "constitution/constitution.md",
+    "foundation/values.md",
+    "knowledge/adr/ADR-0023-guardian-conversation-principles.md"
+  ],
+  "checks": [
+    {
+      "command": "python3 -m pytest -q",
+      "result": "325 passed in 10.78s",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m builder.main doctor",
+      "result": "ZONVAA Builder CLI funktioniert.",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "No errors.",
+      "status": "passed"
+    }
+  ],
+  "decisions": [
+    "SVNP is an interaction and UX rule, not a marketing funnel.",
+    "Internal Goal and Decision architecture remains valid but cannot dominate conversation entry.",
+    "Immediate safety and professional boundaries are not delayed by the interaction order."
+  ],
+  "ending_commit": null,
+  "functional_changes": [
+    "Established Sympathy, Trust, Utility, Price as the mandatory visible interaction order.",
+    "Required the Guardian to follow and understand the person before exposing architecture or utility.",
+    "Placed price and payment logic after experienced or clearly recognizable utility."
+  ],
+  "git_status": [
+    "M PLANS.md",
+    "M constitution/constitution.md",
+    "M foundation/values.md",
+    "?? knowledge/adr/ADR-0023-guardian-conversation-principles.md"
+  ],
+  "intentionally_not_implemented": [
+    "No UI, workflow, dialogue state machine, pricing logic, or monetization behavior.",
+    "No changes to Life Decisions or the power-of-attorney workflow."
+  ],
+  "open_risks": [
+    "Sufficient trust is context-dependent and must not become a mechanical dialogue gate.",
+    "Future implementations must preserve immediate safety warnings and professional boundaries."
+  ],
+  "push_status": "not_pushed",
+  "recommended_next_step": "Define a small testable Guardian conversation contract before implementing any conversational runtime.",
+  "relevant_adrs": [
+    "ADR-0008",
+    "ADR-0010",
+    "ADR-0013",
+    "ADR-0018",
+    "ADR-0023"
+  ],
+  "schema_version": "1.0",
+  "starting_commit": "7886bbb260520bede93bdd87d936fc9777cc0741",
+  "task": "Establish SVNP guardian conversation principles",
+  "technical_changes": [
+    "Updated the binding Constitution to version 1.1.",
+    "Added ADR-0023 within the existing Identity-First architecture.",
+    "Aligned existing Values interaction guidance without adding runtime behavior."
+  ],
+  "timestamp": "2026-07-26T14:40:00+00:00"
+}
