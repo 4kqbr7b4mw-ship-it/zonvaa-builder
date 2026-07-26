@@ -10,6 +10,7 @@ class KnowledgeManager:
 
     REQUIRED_FOLDERS = (
         "adr",
+        "architecture_workflows",
         "handovers",
         "mdr",
         "project",
@@ -35,6 +36,9 @@ class KnowledgeManager:
             )
         return {
             "adr": sorted((self.root / "adr").glob("*.md")),
+            "architecture_workflows": sorted(
+                (self.root / "architecture_workflows").glob("*")
+            ),
             "mdr": sorted((self.root / "mdr").glob("*.md")),
             "protocols": sorted((self.root / "protocols").glob("*.md")),
             "handovers": sorted(

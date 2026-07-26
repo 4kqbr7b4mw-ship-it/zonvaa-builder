@@ -19,6 +19,21 @@ python3 -m builder.main architecture codex-prompt \
 Die Befehle rufen keine externen KI-Dienste auf und veröffentlichen keine
 Architekturentscheidung.
 
+Der persistente Standardprozess für einen oder mehrere Entwürfe ist:
+
+```text
+python3 -m builder.main architecture workflow analyze --input proposal.json
+python3 -m builder.main architecture workflow decide \
+  --workflow-id workflow-0123456789abcdef \
+  --decision decision.json
+python3 -m builder.main architecture workflow generate-codex \
+  --workflow-id workflow-0123456789abcdef
+```
+
+Die Artefakte bleiben getrennt unter `knowledge/architecture_workflows`.
+Ohne bestätigte Entscheidung für jedes Proposal wird kein Codex-Auftrag
+erzeugt. Der Workflow führt weder Codex noch Tests oder Git-Aktionen aus.
+
 ## Goal ausführen
 
 Ein vorhandenes Goal kann programmgesteuert über den Goal Application Service ausgeführt werden:

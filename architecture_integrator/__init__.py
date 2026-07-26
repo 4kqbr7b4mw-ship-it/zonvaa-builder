@@ -14,6 +14,12 @@ from architecture_integrator.models import (
     SourceStatus,
 )
 from architecture_integrator.prompt import CodexPromptBuilder
+from architecture_integrator.workflow import (
+    ArchitectureWorkflow,
+    ArchitectureWorkflowOrchestrator,
+    ArchitectureWorkflowStore,
+    WorkflowStatus,
+)
 
 __all__ = [
     "ArchitectureAnalysis",
@@ -21,6 +27,9 @@ __all__ = [
     "ArchitectureIntegrator",
     "ArchitectureLayer",
     "ArchitectureProposal",
+    "ArchitectureWorkflow",
+    "ArchitectureWorkflowOrchestrator",
+    "ArchitectureWorkflowStore",
     "ChiefArchitectDecision",
     "CodexPromptBuilder",
     "Conflict",
@@ -30,4 +39,5 @@ __all__ = [
     "Recommendation",
     "SourceRole",
     "SourceStatus",
+    "WorkflowStatus",
 ]

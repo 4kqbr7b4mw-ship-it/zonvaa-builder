@@ -96,6 +96,22 @@ def _aware(value: object, field_name: str) -> datetime:
     return value
 
 
+def _identifier(value: object, field_name: str) -> str:
+    value = _text(value, field_name)
+    if (
+        len(value) > 128
+        or not value[0].isalnum()
+        or any(
+            not (character.isalnum() or character in "._-")
+            for character in value
+        )
+    ):
+        raise ValueError(
+            "{} must be a stable file-safe identifier".format(field_name)
+        )
+    return value
+
+
 @dataclass(frozen=True)
 class ArchitectureProposal:
     proposal_id: str
@@ -110,13 +126,11 @@ class ArchitectureProposal:
     source_references: Tuple[str, ...]
 
     def __post_init__(self) -> None:
-        for name in (
-            "proposal_id",
-            "title",
-            "source",
-            "content",
-            "requested_scope",
-        ):
+        _identifier(
+            self.proposal_id,
+            "ArchitectureProposal proposal_id",
+        )
+        for name in ("title", "source", "content", "requested_scope"):
             _text(getattr(self, name), "ArchitectureProposal {}".format(name))
         if not isinstance(self.source_role, SourceRole):
             raise TypeError(
@@ -353,7 +367,12 @@ class ChiefArchitectDecision:
     decided_at: datetime
 
     def __post_init__(self) -> None:
-        for name in ("decision_id", "proposal_id", "rationale", "decided_by"):
+        for name in ("decision_id", "proposal_id"):
+            _identifier(
+                getattr(self, name),
+                "ChiefArchitectDecision {}".format(name),
+            )
+        for name in ("rationale", "decided_by"):
             _text(
                 getattr(self, name),
                 "ChiefArchitectDecision {}".format(name),
@@ -376,3 +395,17 @@ class ChiefArchitectDecision:
             for value in values:
                 _text(value, "ChiefArchitectDecision {} item".format(name))
         _aware(self.decided_at, "ChiefArchitectDecision decided_at")
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "decision_id": self.decision_id,
+            "proposal_id": self.proposal_id,
+            "decision": self.decision.value,
+            "accepted_elements": list(self.accepted_elements),
+            "modified_elements": list(self.modified_elements),
+            "rejected_elements": list(self.rejected_elements),
+            "deferred_elements": list(self.deferred_elements),
+            "rationale": self.rationale,
+            "decided_by": self.decided_by,
+            "decided_at": self.decided_at.isoformat(),
+        }

@@ -15,6 +15,30 @@ externem Architekturentwurf und Chief-Architect-Entscheidung.
 Der Integrator genehmigt keine Architektur, publiziert keine MDRs oder ADRs
 und verändert während der Analyse keine Architekturdateien.
 
+## Standard-Workflow
+
+Der Architecture Workflow Orchestrator macht die Integrator-Kette
+wiederaufnehmbar und unterstützt mehrere Proposals:
+
+```bash
+python3 -m builder.main architecture workflow analyze \
+  --input proposal-a.json \
+  --input proposal-b.json
+
+python3 -m builder.main architecture workflow decide \
+  --workflow-id workflow-0123456789abcdef \
+  --decision decision-a.json
+
+python3 -m builder.main architecture workflow generate-codex \
+  --workflow-id workflow-0123456789abcdef
+```
+
+`analyze` speichert Proposal, Analyse und Entscheidungsvorlage getrennt unter
+`knowledge/architecture_workflows/`. `decide` speichert genau eine explizite
+Chief-Architect-Entscheidung. `generate-codex` bleibt gesperrt, bis für jedes
+Proposal eine passende Entscheidung vorhanden ist. Der Workflow startet
+weder Codex noch Tests oder Commit.
+
 ## Kontextreihenfolge
 
 `C1 → MDR → C2 → Institution/Interaction → ADR → C3 → historische ADRs`

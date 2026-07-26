@@ -3,6 +3,70 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Architecture Workflow Orchestrator
+
+### Ziel und Nicht-Ziele
+
+Den Architecture Integrator als verbindlichen Standardprozess für einen oder
+mehrere Entwürfe orchestrieren: Proposal, Analyse, Entscheidungsvorlage,
+bestätigte Chief-Architect-Entscheidung und eigenständiger Codex-Auftrag
+werden getrennt und reproduzierbar persistiert. Keine automatische
+Architekturentscheidung, Repository-Integration, Produktänderung, Ausführung,
+Commit-Erzeugung oder externe KI.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `b4db8a5` war erfolgreich.
+- ADR-0028 und das Paket `architecture_integrator` definieren typisierte,
+  unveränderliche Proposals, Analysen, Entscheidungen und Prompt-Erzeugung.
+- Die bestehende CLI kann genau ein Proposal analysieren und aus einer
+  passenden bestätigten Entscheidung einen Prompt erzeugen.
+- Es gibt noch keinen mehrstufigen Workflow, keinen Multi-Proposal-Lauf und
+  keine getrennte, reproduzierbare Workflow-Ablage.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Integrator-, IO-, Prompt-, CLI-, ADR- und Testverträge vollständig prüfen.
+- [x] Unveränderlichen Workflow-Status und atomare lokale Ablage
+  implementieren.
+- [x] Multi-Proposal-Orchestrierung und Chief-Decision-Gate ergänzen.
+- [x] CLI-Unterbefehle, ADR und Dokumentation aktualisieren.
+- [x] Fokussierte und vollständige Tests, Doctor und Diff prüfen.
+- [x] Handover erzeugen und vorgegebenen Commit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- Der Workflow erweitert den vorhandenen Integrator und dupliziert weder
+  Analyse noch Prompt-Erzeugung.
+- Workflow-Artefakte liegen ausschließlich unter
+  `knowledge/architecture_workflows/<workflow_id>/` und bleiben von
+  verbindlichen MDRs und ADRs getrennt.
+- Workflow-IDs entstehen deterministisch aus den kanonischen Proposal-Inhalten;
+  Proposal-Reihenfolge wird über stabile IDs kanonisiert.
+- Der Prozess wartet über persistierten Zustand: Ohne je ein passendes
+  Chief-Decision-Objekt pro Proposal gibt es keinen Codex-Prompt.
+
+### Risiken und Teststrategie
+
+- Eine strukturvalide Entscheidung authentifiziert weiterhin nicht die reale
+  Identität des Chief Architect.
+- Workflow-Artefakte sind Nachweise und keine Architekturpublikation.
+- Tests prüfen Gesamtfluss, mehrere Proposals, fehlende Entscheidungen,
+  deterministische IDs/Artefakte, atomare Ablage und unveränderte
+  Architekturquellen.
+
+### Abweichungen und Abschlusszustand
+
+Der Workflow orchestriert beliebig viele eindeutig identifizierte Proposals
+über den bestehenden Integrator, persistiert alle Stufen getrennt und erzeugt
+erst nach je einer passenden Chief-Architect-Entscheidung einen gemeinsamen
+Codex-Auftrag. Workflow-IDs binden Proposal- und Analyseinhalt einschließlich
+Architekturquellen-Hashes; identische Läufe werden wiederaufgenommen.
+Write-once-Artefakte, kanonische Pfade und Symlink-Grenzen verhindern stille
+Überschreibung. Der Workflow startet weder Codex noch Tests, Commit oder
+externe Dienste. 450 Tests bestehen; Doctor und `git diff --check` sind
+erfolgreich.
+
 ## Abgeschlossener Plan: Architecture Integrator Agent
 
 ### Ziel und Nicht-Ziele
