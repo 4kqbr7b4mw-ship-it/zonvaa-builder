@@ -44,6 +44,7 @@ class DecisionJournal:
         why_assessment: Optional[WhyAssessment],
         result: Dict[str, Any],
         input_file: Path,
+        apply_requested: bool = False,
     ) -> Path:
         created_at = datetime.now(timezone.utc)
         record = {
@@ -78,9 +79,16 @@ class DecisionJournal:
             },
             "why_assessment": self._assessment_record(why_assessment),
             "decision": result["decision"],
-            "plan": result["plan"],
+            "plan": self._redacted_plan(result["plan"]),
             "execution": result["execution"],
         }
+        if apply_requested:
+            execution = result["execution"]
+            failed = isinstance(execution, dict) and execution.get("status") == "failed"
+            record["apply"] = {
+                "requested": True,
+                "status": "failed" if failed else "completed",
+            }
 
         self.folder.mkdir(parents=True, exist_ok=True)
         filename = self.folder / "{}_goal-decision.json".format(
@@ -92,6 +100,12 @@ class DecisionJournal:
             record_file.write("\n")
 
         return filename
+
+    def _redacted_plan(self, plan: Iterable[Dict[str, Any]]) -> list:
+        return [
+            {key: value for key, value in step.items() if key != "content"}
+            for step in plan
+        ]
 
     def _assessment_record(
         self,

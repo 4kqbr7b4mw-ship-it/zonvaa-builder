@@ -69,3 +69,27 @@ python3 -m builder.main goal run --input goal.json --record
 Die unveränderliche JSON-Datei wird unter `knowledge/protocols` abgelegt. Sie enthält Record-Version und UTC-Zeitpunkt, das vollständige Goal, die expliziten Invocation-Daten, Identity-Quelle und -Version, das optionale Assessment sowie Decision, Plan und Execution. Der vollständige WHY-Inhalt wird nicht dupliziert. Der ausgegebene JSON-Wert `record_path` nennt die gespeicherte Datei.
 
 Ohne `--record` bleibt die Ausgabe unverändert und es wird keine Journaldatei geschrieben.
+
+### Wissensdokumente sicher anwenden
+
+Ein Goal-Input kann optional `artifacts` mit vollständigen neuen Wissensdokumenten enthalten:
+
+```json
+{
+  "artifacts": [
+    {
+      "action": "document.create",
+      "path": "knowledge/project/example.md",
+      "content": "# Example\n"
+    }
+  ]
+}
+```
+
+Ohne weitere Flagge werden diese Schritte ausschließlich geplant und als `pending` ausgegeben. Erst die ausdrückliche Freigabe schreibt die Dokumente:
+
+```text
+python3 -m builder.main goal run --input proposal.json --apply
+```
+
+`--apply` akzeptiert ausschließlich neue relative Dateiziele unterhalb von `knowledge/`. Absolute Pfade, `..`-Traversal, Symlinks, `knowledge` selbst und vorhandene Dateien werden abgelehnt. Die gesamte Dokumentgruppe wird vor dem ersten Schreiben validiert und relativ zum bestätigten Git-Repository-Root ausgeführt. `git.sync` bleibt `pending`; es wird weder automatisch committed noch gepusht. `--apply` kann mit `--record` kombiniert werden; dann wird auch ein fehlgeschlagener Apply-Versuch ohne vollständige Dokumentinhalte nachvollziehbar aufgezeichnet.

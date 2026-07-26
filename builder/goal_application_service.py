@@ -4,6 +4,7 @@ from brain.context_analyzer import ContextAnalyzer
 from brain.context_collector import ContextCollector
 from builder.orchestrator import Orchestrator
 from builder.runtime import RuntimeManager
+from execution.models import DocumentArtifact
 from goal.engine import GoalEngine
 from goal.models import Goal
 from goal.why_assessment import WhyAssessment
@@ -49,6 +50,8 @@ class GoalApplicationService:
         memory_types: Iterable[Union[MemoryType, str]],
         constitution_rules: Iterable[str],
         why_assessment: Optional[WhyAssessment] = None,
+        document_artifacts: Optional[Iterable[DocumentArtifact]] = None,
+        apply: bool = False,
     ) -> dict[str, Any]:
         if not isinstance(goal, Goal):
             raise TypeError("GoalApplicationService requires a Goal instance")
@@ -64,10 +67,18 @@ class GoalApplicationService:
             project_state=self.runtime.project_state,
         )
 
-        return self.orchestrator.run(
-            goal=goal.title,
-            context=technical_context,
-            goal_context=goal_context,
-            identity_context=self.runtime.identity_context,
-            why_assessment=why_assessment,
-        )
+        orchestration = {
+            "goal": goal.title,
+            "context": technical_context,
+            "goal_context": goal_context,
+            "identity_context": self.runtime.identity_context,
+            "why_assessment": why_assessment,
+        }
+        if document_artifacts is not None or apply:
+            orchestration.update(
+                {
+                    "document_artifacts": document_artifacts,
+                    "apply": apply,
+                }
+            )
+        return self.orchestrator.run(**orchestration)

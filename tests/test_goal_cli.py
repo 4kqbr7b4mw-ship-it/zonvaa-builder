@@ -1,4 +1,5 @@
 import json
+import subprocess
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -34,6 +35,31 @@ def input_data(assessment=None):
         "constitution_rules": ["Follow the WHY"],
         "why_assessment": assessment,
     }
+
+
+def aligned_assessment():
+    return {
+        "status": "aligned",
+        "reason": "explicit_alignment_confirmed",
+        "evidence": [],
+    }
+
+
+def document_artifact(path, content="document content"):
+    return {
+        "action": "document.create",
+        "path": path,
+        "content": content,
+    }
+
+
+def init_git_repository(path):
+    subprocess.run(
+        ["git", "init", "-q", str(path)],
+        check=True,
+        capture_output=True,
+        text=True,
+    )
 
 
 def create_runtime():
@@ -504,3 +530,271 @@ def test_failed_goal_flow_creates_no_record(clean_cli, tmp_path, monkeypatch):
 
     assert result.exit_code != 0
     journal.record.assert_not_called()
+
+
+def test_artifact_goal_without_apply_only_prepares_plan(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/planned.md", "planned")
+    ]
+
+    output = output_json(invoke_json(tmp_path, payload))
+
+    assert output["decision"]["status"] == "approved"
+    assert output["plan"][0]["target"] == "knowledge/project/planned.md"
+    assert output["execution"][0]["execution_status"] == "pending"
+    assert not (tmp_path / "knowledge/project/planned.md").exists()
+
+
+def test_apply_creates_multiple_documents(clean_cli, tmp_path, monkeypatch):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/product.md", "product"),
+        document_artifact("knowledge/roadmaps/roadmap.md", "roadmap"),
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        ["goal", "run", "--input", str(input_file), "--apply"],
+    )
+    output = output_json(result)
+
+    assert (tmp_path / "knowledge/project/product.md").read_text(
+        encoding="utf-8"
+    ) == "product"
+    assert (tmp_path / "knowledge/roadmaps/roadmap.md").read_text(
+        encoding="utf-8"
+    ) == "roadmap"
+    assert [step["execution_status"] for step in output["execution"]] == [
+        "completed",
+        "completed",
+        "pending",
+    ]
+
+
+@pytest.mark.parametrize(
+    "target, expected",
+    [
+        ("/tmp/absolute.md", "Absolute"),
+        ("../traversal.md", "traversal"),
+        ("docs/outside.md", "knowledge/"),
+    ],
+)
+def test_apply_rejects_unsafe_artifact_paths(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+    target,
+    expected,
+):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [document_artifact(target)]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        ["goal", "run", "--input", str(input_file), "--apply"],
+    )
+
+    assert result.exit_code != 0
+    assert expected in result.output
+    assert "Traceback" not in result.output
+
+
+def test_apply_does_not_overwrite_existing_document(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    existing = tmp_path / "knowledge/project/existing.md"
+    existing.parent.mkdir(parents=True)
+    existing.write_text("original", encoding="utf-8")
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/existing.md", "replacement")
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        ["goal", "run", "--input", str(input_file), "--apply"],
+    )
+
+    assert result.exit_code != 0
+    assert "already exists" in result.output
+    assert existing.read_text(encoding="utf-8") == "original"
+
+
+def test_apply_invalid_group_leaves_no_partial_documents(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/valid.md", "valid"),
+        document_artifact("../invalid.md", "invalid"),
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        ["goal", "run", "--input", str(input_file), "--apply"],
+    )
+
+    assert result.exit_code != 0
+    assert not (tmp_path / "knowledge/project/valid.md").exists()
+
+
+def test_apply_and_record_store_completed_execution(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/recorded.md", "recorded")
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        [
+            "goal",
+            "run",
+            "--input",
+            str(input_file),
+            "--apply",
+            "--record",
+        ],
+    )
+    output = output_json(result)
+    record = json.loads(Path(output["record_path"]).read_text(encoding="utf-8"))
+
+    assert (tmp_path / "knowledge/project/recorded.md").exists()
+    assert output["execution"][0]["execution_status"] == "completed"
+    assert record["execution"] == output["execution"]
+    assert record["apply"] == {"requested": True, "status": "completed"}
+    assert "content" not in record["plan"][0]
+
+
+def test_failed_apply_and_record_writes_failure_record(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/valid.md", "secret content"),
+        document_artifact("../invalid.md", "must fail"),
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        [
+            "goal",
+            "run",
+            "--input",
+            str(input_file),
+            "--apply",
+            "--record",
+        ],
+    )
+
+    assert result.exit_code != 0
+    record_file = next(record_folder.glob("*.json"))
+    record = json.loads(record_file.read_text(encoding="utf-8"))
+    assert record["decision"]["status"] == "approved"
+    assert record["apply"] == {"requested": True, "status": "failed"}
+    assert record["execution"]["status"] == "failed"
+    assert record["execution"]["completed_steps"] == []
+    assert record["execution"]["rolled_back_steps"] == []
+    assert record["execution"]["remaining_resources"] == []
+    assert record["execution"]["error"]["type"] == "ValueError"
+    assert all("content" not in step for step in record["plan"])
+    assert "secret content" not in record_file.read_text(encoding="utf-8")
+    assert not (tmp_path / "knowledge/project/valid.md").exists()
+
+
+def test_life_decisions_proposal_runs_through_cli_without_apply(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    proposal_path = (
+        Path(__file__).parents[1]
+        / "knowledge/proposals/life-decisions.json"
+    )
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(
+        app,
+        ["goal", "run", "--input", str(proposal_path)],
+    )
+    output = output_json(result)
+
+    assert output["decision"]["status"] == "approved"
+    assert len(output["plan"]) == 4
+    assert all(
+        step["execution_status"] == "pending"
+        for step in output["execution"]
+    )
+    assert not (tmp_path / "knowledge/project/life-decisions.md").exists()
+
+
+def test_life_decisions_proposal_applies_in_isolated_git_repository(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    proposal_path = (
+        Path(__file__).parents[1]
+        / "knowledge/proposals/life-decisions.json"
+    )
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    result = runner.invoke(
+        app,
+        ["goal", "run", "--input", str(proposal_path), "--apply"],
+    )
+    output = output_json(result)
+
+    assert output["decision"]["status"] == "approved"
+    assert (
+        tmp_path / "knowledge/project/life-decisions.md"
+    ).is_file()
+    assert (
+        tmp_path / "knowledge/adr/ADR-0018-life-decisions.md"
+    ).is_file()
+    assert (
+        tmp_path / "knowledge/roadmaps/life-decisions-roadmap.md"
+    ).is_file()
