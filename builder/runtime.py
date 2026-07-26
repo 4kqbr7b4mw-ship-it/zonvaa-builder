@@ -4,6 +4,7 @@ from typing import Optional
 from constitution.manager import ConstitutionManager
 from goal.engine import GoalEngine
 from identity import IdentityContext, IdentityLoader
+from institution import InstitutionContext, InstitutionLoader
 from knowledge.manager import KnowledgeManager
 from builder.project_state import ProjectState
 
@@ -14,6 +15,7 @@ class RuntimeManager:
     def __init__(self) -> None:
         self.project_root = Path.cwd().resolve()
         self.identity_context: Optional[IdentityContext] = None
+        self.institution_context: Optional[InstitutionContext] = None
         self.constitution: Optional[str] = None
         self.knowledge: dict = {}
         self.latest_session: Optional[Path] = None
@@ -29,6 +31,7 @@ class RuntimeManager:
         knowledge_manager = KnowledgeManager()
 
         self.identity_context = IdentityLoader().load()
+        self.institution_context = InstitutionLoader().load()
         self.constitution = ConstitutionManager().load()
         self.knowledge = knowledge_manager.load()
         self.latest_session = knowledge_manager.latest_session()

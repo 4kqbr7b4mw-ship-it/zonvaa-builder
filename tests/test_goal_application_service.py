@@ -24,6 +24,7 @@ from goal.why_assessment import (
 )
 from identity.models import IdentityContext
 from identity.loader import IdentityLoader
+from institution.loader import InstitutionLoader
 from knowledge.memory import MemoryType
 
 
@@ -47,6 +48,7 @@ def create_runtime(git_clean=True):
         source=Path("WHY.md"),
         version="identity-version",
     )
+    runtime.institution_context = InstitutionLoader().load()
     runtime.constitution = "Full constitution text that must not be parsed."
     runtime.verified_facts = {"tests": "passing"}
     runtime.knowledge = {

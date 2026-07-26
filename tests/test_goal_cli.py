@@ -16,6 +16,7 @@ from builder.runtime import RuntimeManager
 from execution.engine import ExecutionEngine, TargetVerificationError
 from goal.engine import GoalEngine
 from identity.models import IdentityContext
+from institution.loader import InstitutionLoader
 
 
 runner = CliRunner()
@@ -72,6 +73,7 @@ def create_runtime():
         source=Path("WHY.md"),
         version="identity-version",
     )
+    runtime.institution_context = InstitutionLoader().load()
     runtime.constitution = "Full constitution"
     runtime.verified_facts = {"tests": "passing"}
     runtime.knowledge = {

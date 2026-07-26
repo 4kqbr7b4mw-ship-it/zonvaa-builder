@@ -15,6 +15,7 @@ from goal.why_assessment import (
     WhyAssessmentStatus,
 )
 from identity.models import IdentityContext
+from institution.loader import InstitutionLoader
 
 
 def create_goal(goal_id="goal-orchestration"):
@@ -52,6 +53,7 @@ def create_identity(version="identity-version"):
 def create_workflow_context():
     runtime = SimpleNamespace(
         project_root=Path.cwd(),
+        institution_context=InstitutionLoader().load(),
         constitution="# Constitution\n\nVersion: 1.0",
         knowledge={
             "adr": [],

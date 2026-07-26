@@ -6,6 +6,7 @@ from types import MappingProxyType
 from typing import Any, Callable, Dict, Mapping, Tuple
 
 from builder.runtime import RuntimeManager
+from institution import InstitutionContext
 
 
 class PreflightError(RuntimeError):
@@ -62,6 +63,7 @@ class MissionContext:
     schema_version: str
     generated_at: datetime
     project_root: str
+    institution: Mapping[str, Any]
     constitution: Mapping[str, Any]
     knowledge: Mapping[str, Any]
     verified_facts: Mapping[str, Any]
@@ -77,8 +79,8 @@ class MissionContext:
     )
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.0":
-            raise ValueError("MissionContext schema_version must be 1.0")
+        if self.schema_version != "1.1":
+            raise ValueError("MissionContext schema_version must be 1.1")
         if not isinstance(self.generated_at, datetime):
             raise TypeError("MissionContext generated_at must be a datetime")
         if (
@@ -98,6 +100,7 @@ class MissionContext:
                 "MissionContext working_rules must be a tuple of strings"
             )
         for field_name in (
+            "institution",
             "constitution",
             "knowledge",
             "verified_facts",
@@ -117,6 +120,7 @@ class MissionContext:
             "schema_version": self.schema_version,
             "generated_at": self.generated_at.isoformat(),
             "project_root": self.project_root,
+            "institution": _deep_thaw(self.institution),
             "constitution": _deep_thaw(self.constitution),
             "knowledge": _deep_thaw(self.knowledge),
             "verified_facts": _deep_thaw(self.verified_facts),
@@ -187,6 +191,9 @@ class PreflightService:
         self.clock = clock
 
     def build(self) -> MissionContext:
+        institution = getattr(self.runtime, "institution_context", None)
+        if not isinstance(institution, InstitutionContext):
+            raise PreflightError("Institution is missing or invalid")
         constitution = self.runtime.constitution
         if not isinstance(constitution, str) or not constitution.strip():
             raise PreflightError("Constitution is missing or empty")
@@ -227,9 +234,19 @@ class PreflightService:
             for key, value in self.runtime.knowledge.items()
         }
         context = MissionContext(
-            schema_version="1.0",
+            schema_version="1.1",
             generated_at=self.clock(),
             project_root=str(Path.cwd()),
+            institution={
+                "status": "loaded",
+                "path": "institution/institution.md",
+                "version": institution.version,
+                "content_hash": institution.content_hash,
+                "guarantees": [
+                    guarantee.value
+                    for guarantee in institution.guarantees
+                ],
+            },
             constitution={
                 "status": "loaded",
                 "path": "constitution/constitution.md",
@@ -299,6 +316,22 @@ class PreflightService:
             raise PreflightError("MissionContext project root changed")
         if context.constitution.get("status") != "loaded":
             raise PreflightError("MissionContext Constitution is invalid")
+        if context.institution.get("status") != "loaded":
+            raise PreflightError("MissionContext Institution is invalid")
+        institution = getattr(self.runtime, "institution_context", None)
+        if not isinstance(institution, InstitutionContext):
+            raise PreflightError("Runtime Institution changed")
+        if (
+            context.institution.get("version") != institution.version
+            or context.institution.get("content_hash")
+            != institution.content_hash
+            or tuple(context.institution.get("guarantees", ()))
+            != tuple(
+                guarantee.value
+                for guarantee in institution.guarantees
+            )
+        ):
+            raise PreflightError("MissionContext Institution changed")
         if context.knowledge.get("status") != "loaded":
             raise PreflightError("MissionContext Knowledge is invalid")
         if context.git.get("branch") != self.runtime.project_state.get(

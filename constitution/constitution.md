@@ -1,6 +1,6 @@
 # ZONVAA Constitution
 
-Version: 1.2
+Version: 1.3
 Status: verbindlich
 
 ## 1. Zweck
@@ -183,7 +183,20 @@ Neue Regeln werden nur aufgenommen, wenn:
 - die Regel eine Wiederholung dieses Fehlers verhindert,
 - die Constitution dadurch nicht unnötig aufgebläht wird.
 
-## 13. Guardian- und Gesprächsprinzip
+## 13. Institution Layer
+
+Zwischen Guardian und Runtime gilt der verbindliche, versionierte
+Institution-Vertrag unter `institution/institution.md`. Er schützt die
+langfristigen Garantien für Governance, Nutzerhoheit, Guardian Continuity,
+Transparenz, Verantwortung, Schutz, Würde und Vertrauen.
+
+> Keine Funktion darf Vertrauen verbrauchen.
+
+Operative Funktionen, Workflows und Optimierungen dürfen diese Garantien
+weder abschwächen noch umgehen. Der Institution Layer trifft selbst keine
+fachlichen Entscheidungen und ersetzt weder WHY noch Constitution.
+
+## 14. Guardian- und Gesprächsprinzip
 
 Für jede sichtbare Interaktion gilt verbindlich die Reihenfolge S-V-N-P:
 
@@ -221,7 +234,7 @@ Sicherheits-, Schutz- und Fachgrenzen bleiben davon unberührt.
 > „Der Guardian folgt zuerst dem Menschen. Erst danach folgt er der
 > Architektur.“
 
-## 14. ZONVAA-Grundprinzipien
+## 15. ZONVAA-Grundprinzipien
 
 - ZONVAA denkt in Entscheidungen.
 - Einmal erfassen. Mehrfach nutzen.

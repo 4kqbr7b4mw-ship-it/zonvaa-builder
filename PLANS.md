@@ -3,6 +3,73 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Institution Layer
+
+### Ziel und Nicht-Ziele
+
+Eine eigenständige, unveränderliche Institution-Ebene zwischen Guardian und
+Runtime etablieren. Sie enthält ausschließlich langfristige Systemgarantien
+für Governance, Nutzerhoheit, Guardian Continuity, Transparenz, Verantwortung,
+Schutz, Würde und Vertrauen. Keine Fachlogik, UI, Workflow- oder
+Monetarisierungsfunktion.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `9221193` war erfolgreich.
+- WHY, Constitution, Values und ADRs enthalten einzelne Schutz- und
+  Vertrauensregeln, aber keinen eigenständigen Garantievertrag.
+- Runtime lädt Identity, Constitution und Knowledge zentral; eine
+  Institution-Ebene fehlt.
+- Guardian ist architektonisch definiert, aber noch keine
+  Laufzeitkomponente.
+- Es existiert keine parallele Governance- oder Policy-Struktur.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Identity, Constitution, Runtime, Preflight und ADRs prüfen.
+- [x] Kanonischen Institution-Vertrag und typisiertes Modell erstellen.
+- [x] Institution Layer in Runtime und Mission Context integrieren.
+- [x] Constitution und neue Architekturentscheidung konsistent ergänzen.
+- [x] Modell-, Loader-, Runtime- und Preflight-Tests ergänzen.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [in Arbeit] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Institution ist ein eigener, versionierter Garantievertrag; Identity und
+  Constitution bleiben unverändert in ihrer jeweiligen Verantwortung.
+- Runtime bleibt Single Source of Truth und lädt genau einen unveränderlichen
+  `InstitutionContext`.
+- Mission Context muss die geladene Institution strukturell nachweisen, damit
+  kein freigegebener Workflow ohne Garantien startet.
+- Garantien definieren Grenzen, aber keine operative Entscheidung oder
+  Ausführung.
+
+### Risiken
+
+- Institution darf nicht zu einer zweiten Constitution oder Policy Engine
+  anwachsen.
+- „Vertrauen nicht verbrauchen“ benötigt konkrete Architekturtests, darf aber
+  nicht als behauptete Messgröße dargestellt werden.
+
+### Teststrategie
+
+- Exakte, stabile Garantietypen und unveränderlicher Kontext.
+- Fehlende, unvollständige oder ungültige Institution verhindert Boot.
+- Runtime lädt Identity vor Institution und Institution vor operativem
+  Kontext.
+- Preflight enthält und validiert Institution.
+- Vollständige Regression, Doctor, Python 3.9 und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+Der Institution Layer ist als kanonischer Vertrag, typisierter Kontext und
+verbindlicher Runtime-Boot-Schritt umgesetzt. Der Mission Context 1.1 weist
+Version, Hash und Garantien nach, ohne den Vertrag an operative Komponenten
+weiterzureichen. 352 Tests bestehen; Doctor und `git diff --check` sind
+erfolgreich. Eine operative Policy Engine war wegen der bewusst
+nicht-operativen Garantieebene nicht erforderlich.
+
 ## Abgeschlossener Plan: Guardian First, Workflow Second
 
 ### Ziel und Nicht-Ziele
