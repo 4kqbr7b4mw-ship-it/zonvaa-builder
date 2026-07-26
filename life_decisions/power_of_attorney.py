@@ -10,6 +10,7 @@ from knowledge.memory import MemoryType
 from life_decisions.models import (
     DecisionRecord,
     DecisionReviewStatus,
+    FactConfirmationStatus,
     LifeDecisionCase,
     LifeDecisionTopic,
     ProfessionalReviewStatus,
@@ -46,6 +47,7 @@ class ConflictStatus(str, Enum):
 class RepresentationMode(str, Enum):
     INDIVIDUAL = "individual"
     JOINT = "joint"
+    UNKNOWN = "unknown"
 
 
 class AuthorityArea(str, Enum):
@@ -107,6 +109,9 @@ class PowerOfAttorneyDocumentAssessment:
     last_reviewed_fact_id: Optional[str]
     open_question_ids: Tuple[str, ...] = ()
     uncertainty_ids: Tuple[str, ...] = ()
+    additional_document_reference_fact_ids: Tuple[
+        Tuple[str, str], ...
+    ] = ()
 
     def __post_init__(self) -> None:
         if not isinstance(self.presence, DocumentPresence):
@@ -137,8 +142,26 @@ class PowerOfAttorneyDocumentAssessment:
                 )
         _tuple_of(self.open_question_ids, str, "open_question_ids")
         _tuple_of(self.uncertainty_ids, str, "uncertainty_ids")
+        if not isinstance(
+            self.additional_document_reference_fact_ids,
+            tuple,
+        ) or not all(
+            isinstance(pair, tuple)
+            and len(pair) == 2
+            and all(isinstance(item, str) for item in pair)
+            for pair in self.additional_document_reference_fact_ids
+        ):
+            raise TypeError(
+                "additional_document_reference_fact_ids must contain "
+                "document and fact id pairs"
+            )
         _unique(self.open_question_ids, "open_question_ids")
         _unique(self.uncertainty_ids, "uncertainty_ids")
+        additional_document_ids = tuple(
+            pair[0]
+            for pair in self.additional_document_reference_fact_ids
+        )
+        _unique(additional_document_ids, "additional document ids")
         if self.presence is DocumentPresence.PRESENT:
             if self.document_reference_id is None:
                 raise ValueError(
@@ -147,6 +170,21 @@ class PowerOfAttorneyDocumentAssessment:
         elif self.document_reference_id is not None:
             raise ValueError(
                 "absent or unknown document cannot reference a document"
+            )
+        if (
+            self.presence is not DocumentPresence.PRESENT
+            and self.additional_document_reference_fact_ids
+        ):
+            raise ValueError(
+                "absent or unknown document cannot reference additional "
+                "documents"
+            )
+        if (
+            self.document_reference_id
+            in additional_document_ids
+        ):
+            raise ValueError(
+                "primary document cannot also be an additional document"
             )
         if self.presence is DocumentPresence.UNKNOWN:
             if self.presence_fact_id is not None:
@@ -193,6 +231,7 @@ class AuthorizedPersonAssessment:
     conflict_status: ConflictStatus
     conflict_fact_id: Optional[str]
     conflict_uncertainty_id: Optional[str]
+    representation_question_id: Optional[str] = None
 
     def __post_init__(self) -> None:
         _text(self.id, "AuthorizedPersonAssessment id")
@@ -203,6 +242,20 @@ class AuthorizedPersonAssessment:
             raise ValueError("order must be positive")
         if not isinstance(self.representation_mode, RepresentationMode):
             raise TypeError("representation_mode must be RepresentationMode")
+        if self.representation_question_id is not None:
+            _text(
+                self.representation_question_id,
+                "representation_question_id",
+            )
+        if self.representation_mode is RepresentationMode.UNKNOWN:
+            if self.representation_question_id is None:
+                raise ValueError(
+                    "unknown representation mode requires an open question"
+                )
+        elif self.representation_question_id is not None:
+            raise ValueError(
+                "confirmed representation mode cannot reference a question"
+            )
         if self.substitute_for_id is not None:
             _text(self.substitute_for_id, "substitute_for_id")
         if not isinstance(self.willingness, EvidenceStatus):
@@ -387,6 +440,26 @@ class PowerOfAttorneyWorkflowInput:
             and self.document.document_reference_id not in document_ids
         ):
             raise ValueError("document reference is outside the case")
+        additional_document_ids = {
+            pair[0]
+            for pair in (
+                self.document.additional_document_reference_fact_ids
+            )
+        }
+        additional_document_fact_ids = {
+            pair[1]
+            for pair in (
+                self.document.additional_document_reference_fact_ids
+            )
+        }
+        if not additional_document_ids <= document_ids:
+            raise ValueError(
+                "additional document reference is outside the case"
+            )
+        if not additional_document_fact_ids <= fact_ids:
+            raise ValueError(
+                "additional document fact is outside the case"
+            )
         for fact_id in (
             self.document.presence_fact_id,
             self.document.issued_at_fact_id,
@@ -419,6 +492,13 @@ class PowerOfAttorneyWorkflowInput:
                     raise ValueError(
                         "substitute_for_id must reference another assessment"
                     )
+            if (
+                person.representation_question_id is not None
+                and person.representation_question_id not in question_ids
+            ):
+                raise ValueError(
+                    "representation question is outside the case"
+                )
             if (
                 person.willingness_fact_id is not None
                 and person.willingness_fact_id not in fact_ids
@@ -458,6 +538,9 @@ class PowerOfAttorneyWorkflowInput:
             ):
                 raise ValueError("authority question is outside the case")
 
+        facts_by_id = {
+            item.id: item for item in self.case.verified_facts
+        }
         confirmation_pairs = dict(self.completed_review_fact_ids)
         if len(confirmation_pairs) != len(self.completed_review_fact_ids):
             raise ValueError("completed review ids must be unique")
@@ -467,6 +550,14 @@ class PowerOfAttorneyWorkflowInput:
             if fact_id not in fact_ids:
                 raise ValueError(
                     "professional review confirmation fact is outside the case"
+                )
+            if (
+                facts_by_id[fact_id].confirmation_status
+                is not FactConfirmationStatus.PROFESSIONALLY_CONFIRMED
+            ):
+                raise ValueError(
+                    "professional review completion requires a "
+                    "professionally confirmed fact"
                 )
         for review_id, review in review_by_id.items():
             has_confirmation = review_id in confirmation_pairs

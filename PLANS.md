@@ -3,6 +3,69 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Power of Attorney Workflow Validation
+
+### Ziel und Nicht-Ziele
+
+Den bestehenden Vorsorgevollmacht-Workflow mit acht realistischen,
+anonymisierten Fällen sowie Missbrauchs- und Grenzanfragen fachlich
+validieren. Nur belegte Modellmängel korrigieren. Keine Persistenz,
+Dokumentanalyse, Rechtsberatung, Netzwerk- oder Cloudfunktion.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `c64854d` war erfolgreich.
+- Der Workflow erzeugt eine unveränderliche, ID-basierte Übersicht und gibt
+  keine Personenbezeichnungen, Dokumentreferenzen oder Dokumentinhalte aus.
+- Professionelle Prüfungen werden nicht automatisch abgeleitet.
+- Zwei belegbare Lücken bestehen: eine unklare Einzel-/Gesamtvertretung kann
+  nicht explizit modelliert werden; mehrere relevante Dokumentreferenzen
+  können nicht vollständig an die Dokumentprüfung gebunden werden.
+- Eine abgeschlossene Fachprüfung akzeptiert bisher jeden bestätigten Fakt,
+  nicht ausschließlich eine professionell bestätigte Abschlussgrundlage.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Architektur und bestehende Tests prüfen.
+- [x] Acht anonymisierte Fall-Fixtures und Erwartungsmatrix erstellen.
+- [x] Belegte Modelllücken minimal schließen.
+- [x] Missbrauchs- und Grenztests ergänzen.
+- [x] Fokussierte und vollständige Prüfungen ausführen.
+- [x] Validierungsdokument, Handover und Commit abschließen.
+
+### Entscheidungen und Begründungen
+
+- Die Validierung erweitert ausschließlich bestehende Workflow-Modelle und
+  Tests; es entsteht keine zweite Fach- oder Workflow-Architektur.
+- Unklare Vertretungsart erhält einen expliziten `unknown`-Status mit
+  verpflichtender Frage.
+- Weitere vorhandene Vollmachten werden als zusätzliche ID-Referenzen an
+  derselben Dokumentprüfung modelliert.
+- Ein Prüfabschluss benötigt einen `professionally_confirmed` Fakt.
+
+### Risiken
+
+- Freitext kann nicht vollständig semantisch klassifiziert werden. Er wird
+  deshalb nicht in die maschinenlesbare Ausgabe übernommen.
+- Der Workflow erkennt keine Dokumentwidersprüche selbst; sie müssen als
+  explizite Fragen und Unsicherheiten erfasst werden.
+
+### Teststrategie
+
+- Acht Fallkonstellationen mit expliziten erwarteten IDs und Statuswerten.
+- Missbrauchsanfragen dürfen keine verbotene Aussage in der Ausgabe bewirken.
+- Invarianten für unklare Vertretung, mehrere Dokumente und Prüfabschluss.
+- Regression, Doctor, Python 3.9 und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+Die acht Fallkonstellationen und sechs Missbrauchskategorien wurden gegen den
+tatsächlichen Workflow ausgeführt. Drei belegte Modelllücken wurden ohne neue
+Architekturschicht geschlossen: unbekannte Vertretungsart, zusätzliche
+Dokumentreferenzen und professionell bestätigte Abschlussgrundlage. Die
+vollständige Regression umfasst 325 erfolgreiche Tests. Doctor,
+Python-3.9-Kompilierung und `git diff --check` waren erfolgreich.
+
 ## Abgeschlossener Plan: Power of Attorney Preparation Workflow
 
 ### Ziel und Nicht-Ziele

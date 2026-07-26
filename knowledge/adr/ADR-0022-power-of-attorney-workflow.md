@@ -32,9 +32,14 @@ offene Fragen, Unsicherheiten, Fachprüfungen und Review-Termine ausschließlich
 genau einmal und mit explizitem Status erfasst sein. Unbekannte oder nicht
 bestätigte Angaben dürfen nicht auf Fakten verweisen, sondern müssen durch
 offene Fragen beziehungsweise Unsicherheiten sichtbar bleiben.
+Eine unbekannte Einzel- oder Gesamtvertretung ist deshalb ein eigener Status
+und benötigt eine referenzierte offene Frage. Mehrere vorhandene Vollmachten
+werden als primäre und zusätzliche Dokument-IDs derselben Dokumentprüfung
+zugeordnet; der Workflow liest oder vergleicht ihre Inhalte nicht.
 
 Eine abgeschlossene Fachprüfung benötigt eine explizite Referenz auf einen
-bestätigten Fakt. Ihr Abschluss entfernt keine offenen Unsicherheiten.
+professionell bestätigten Fakt. Eine Nutzerbehauptung allein kann keinen
+Prüfabschluss belegen. Der Abschluss entfernt keine offenen Unsicherheiten.
 Ärztliche, notarielle oder anwaltliche Prüfbedarfe werden nicht automatisch
 erzeugt; sie müssen als nutzerkontrollierte Anforderungen im Fall vorliegen.
 

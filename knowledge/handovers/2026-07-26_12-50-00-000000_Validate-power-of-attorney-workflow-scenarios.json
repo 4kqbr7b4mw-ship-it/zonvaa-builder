@@ -1,0 +1,76 @@
+{
+  "changed_files": [
+    "PLANS.md",
+    "knowledge/adr/ADR-0022-power-of-attorney-workflow.md",
+    "knowledge/project/power-of-attorney-workflow-validation.md",
+    "life_decisions/input.py",
+    "life_decisions/power_of_attorney.py",
+    "tests/test_power_of_attorney_workflow.py"
+  ],
+  "checks": [
+    {
+      "command": "python3 -m pytest -q",
+      "result": "325 passed in 13.24s",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m builder.main doctor",
+      "result": "ZONVAA Builder CLI funktioniert.",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "No errors.",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m compileall -q life_decisions commands/goal.py",
+      "result": "Python 3.9 compilation succeeded.",
+      "status": "passed"
+    }
+  ],
+  "decisions": [
+    "No second validation or workflow architecture was introduced.",
+    "Free text is not semantically classified and is never reflected in identifier-only output.",
+    "Document contradictions remain explicit questions and uncertainties rather than inferred findings."
+  ],
+  "ending_commit": null,
+  "functional_changes": [
+    "Validated eight anonymized power-of-attorney case scenarios.",
+    "Added explicit unknown representation mode with a required question.",
+    "Added confirmed document and fact references for multiple powers of attorney.",
+    "Required professional confirmation before recording a completed professional review."
+  ],
+  "git_status": [
+    "M PLANS.md",
+    "M knowledge/adr/ADR-0022-power-of-attorney-workflow.md",
+    "M life_decisions/input.py",
+    "M life_decisions/power_of_attorney.py",
+    "M tests/test_power_of_attorney_workflow.py",
+    "?? knowledge/project/power-of-attorney-workflow-validation.md"
+  ],
+  "intentionally_not_implemented": [
+    "No legal advice, document analysis, persistence, network, cloud, or UI functionality.",
+    "No automatic professional-review requirement or legal-effectiveness assessment."
+  ],
+  "open_risks": [
+    "The workflow does not semantically classify free-text intent.",
+    "Document contradictions require explicit user-controlled questions and uncertainties."
+  ],
+  "push_status": "not_pushed",
+  "recommended_next_step": "Define privacy and lifecycle requirements before adding local case persistence.",
+  "relevant_adrs": [
+    "ADR-0019",
+    "ADR-0021",
+    "ADR-0022"
+  ],
+  "schema_version": "1.0",
+  "starting_commit": "c64854d25fb9fa7e666cb9a8f7fb4ef0b436d072",
+  "task": "Validate power of attorney workflow scenarios",
+  "technical_changes": [
+    "Extended existing immutable workflow models and JSON input adapter.",
+    "Added deterministic scenario, abuse-boundary, privacy, and invariant tests.",
+    "Documented expected and observed validation behavior."
+  ],
+  "timestamp": "2026-07-26T12:50:00+00:00"
+}

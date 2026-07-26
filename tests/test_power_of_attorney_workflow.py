@@ -2,7 +2,7 @@ from dataclasses import FrozenInstanceError, asdict, is_dataclass, replace
 from datetime import datetime, timezone
 import json
 from pathlib import Path
-from typing import Tuple, get_type_hints
+from typing import Callable, NamedTuple, Tuple, get_type_hints
 
 import pytest
 from typer.testing import CliRunner
@@ -78,6 +78,16 @@ def fact(identifier):
     )
 
 
+def professional_fact(identifier):
+    return VerifiedFact(
+        identifier,
+        "Completion of a professional review was confirmed.",
+        "professional-confirmation",
+        FactConfirmationStatus.PROFESSIONALLY_CONFIRMED,
+        NOW,
+    )
+
+
 def question(identifier):
     return OpenQuestion(
         identifier,
@@ -124,7 +134,7 @@ def complete_input(
         fact("fact-reviewed"),
         fact("fact-willingness"),
         fact("fact-conflict-none"),
-        fact("fact-review-complete"),
+        professional_fact("fact-review-complete"),
     ) + authority_facts
     documents = (
         (
@@ -555,3 +565,404 @@ def test_existing_goal_cli_runs_power_of_attorney_workflow(
     )
     assert "storage_reference" not in result.stdout
     assert "Affected person" not in result.stdout
+
+
+class ValidationScenario(NamedTuple):
+    name: str
+    build: Callable[[], PowerOfAttorneyWorkflowInput]
+    expected_status: PowerOfAttorneyWorkflowStatus
+    fact_ids: Tuple[str, ...]
+    question_ids: Tuple[str, ...]
+    uncertainty_ids: Tuple[str, ...]
+    review_ids: Tuple[str, ...]
+    action_ids: Tuple[str, ...]
+
+
+def _two_authorized_people():
+    question_item = question("question-representation-mode")
+    workflow_input = complete_input(questions=(question_item,))
+    second_participant = Participant(
+        "participant-agent-secondary",
+        "Second authorized person",
+        ParticipantRole.TRUSTED_CONTACT,
+    )
+    first = replace(
+        workflow_input.authorized_persons[0],
+        representation_mode=RepresentationMode.UNKNOWN,
+        representation_question_id=question_item.id,
+    )
+    second = AuthorizedPersonAssessment(
+        "appointment-secondary",
+        second_participant.id,
+        2,
+        RepresentationMode.UNKNOWN,
+        None,
+        EvidenceStatus.CONFIRMED,
+        "fact-willingness",
+        None,
+        ConflictStatus.NONE_CONFIRMED,
+        "fact-conflict-none",
+        None,
+        representation_question_id=question_item.id,
+    )
+    return replace(
+        workflow_input,
+        case=replace(
+            workflow_input.case,
+            participants=(
+                workflow_input.case.participants
+                + (second_participant,)
+            ),
+        ),
+        authorized_persons=(first, second),
+    )
+
+
+def _real_estate_case():
+    workflow_input = complete_input()
+    review = ProfessionalReviewRequirement(
+        "review-notarial",
+        ProfessionalField.NOTARIAL,
+        "The user requested review for the real-estate context.",
+        ProfessionalReviewStatus.OPEN,
+    )
+    return replace(
+        workflow_input,
+        case=replace(
+            workflow_input.case,
+            professional_reviews=(review,),
+        ),
+        completed_review_fact_ids=(),
+        next_actions=(
+            OrganizationalNextAction(
+                "action-arrange-notarial-review",
+                "Arrange the explicitly requested professional review.",
+                (review.id, "schedule-annual"),
+            ),
+        ),
+    )
+
+
+def _old_unreviewed_document():
+    workflow_input = complete_input(
+        questions=(question("question-last-review"),),
+        uncertainties=(uncertainty("uncertainty-document-age"),),
+        document_question_ids=("question-last-review",),
+        document_uncertainty_ids=("uncertainty-document-age",),
+    )
+    return replace(
+        workflow_input,
+        document=replace(
+            workflow_input.document,
+            last_reviewed_at=None,
+            last_reviewed_fact_id=None,
+        ),
+    )
+
+
+def _possible_conflict_case():
+    return complete_input(
+        uncertainties=(uncertainty("uncertainty-conflict"),),
+        conflict_status=ConflictStatus.POSSIBLE,
+        conflict_fact_id=None,
+        conflict_uncertainty_id="uncertainty-conflict",
+    )
+
+
+def _digital_assets_case():
+    workflow_input = complete_input()
+    return replace(
+        workflow_input,
+        next_actions=(
+            OrganizationalNextAction(
+                "action-organize-digital-inventory",
+                "Organize the user-controlled account inventory.",
+                ("schedule-annual",),
+            ),
+        ),
+    )
+
+
+def _unknown_willingness_case():
+    return complete_input(
+        questions=(question("question-willingness"),),
+        willingness=EvidenceStatus.UNKNOWN,
+        willingness_fact_id=None,
+        willingness_question_id="question-willingness",
+    )
+
+
+def _multiple_documents_case():
+    workflow_input = complete_input(
+        questions=(question("question-document-priority"),),
+        uncertainties=(uncertainty("uncertainty-document-conflict"),),
+        document_question_ids=("question-document-priority",),
+        document_uncertainty_ids=("uncertainty-document-conflict",),
+    )
+    second_document = DocumentReference(
+        "document-poa-older",
+        DocumentType.POWER_OF_ATTORNEY,
+        "user-storage://documents/poa-older",
+        False,
+    )
+    second_document_fact = fact("fact-document-older")
+    return replace(
+        workflow_input,
+        case=replace(
+            workflow_input.case,
+            document_references=(
+                workflow_input.case.document_references
+                + (second_document,)
+            ),
+            verified_facts=(
+                workflow_input.case.verified_facts
+                + (second_document_fact,)
+            ),
+        ),
+        document=replace(
+            workflow_input.document,
+            additional_document_reference_fact_ids=(
+                (second_document.id, second_document_fact.id),
+            ),
+        ),
+    )
+
+
+VALIDATION_SCENARIOS = (
+    ValidationScenario(
+        "standard single authorized person",
+        complete_input,
+        PowerOfAttorneyWorkflowStatus.STRUCTURED_OVERVIEW_READY,
+        ("fact-document", "fact-willingness"),
+        (),
+        (),
+        ("review-legal",),
+        ("action-review",),
+    ),
+    ValidationScenario(
+        "two people with unclear representation mode",
+        _two_authorized_people,
+        PowerOfAttorneyWorkflowStatus.NEEDS_CLARIFICATION,
+        ("fact-document", "fact-willingness"),
+        ("question-representation-mode",),
+        (),
+        ("review-legal",),
+        ("action-review",),
+    ),
+    ValidationScenario(
+        "real estate",
+        _real_estate_case,
+        PowerOfAttorneyWorkflowStatus.NEEDS_CLARIFICATION,
+        ("fact-area-real_estate",),
+        (),
+        (),
+        ("review-notarial",),
+        ("action-arrange-notarial-review",),
+    ),
+    ValidationScenario(
+        "old unreviewed document",
+        _old_unreviewed_document,
+        PowerOfAttorneyWorkflowStatus.NEEDS_CLARIFICATION,
+        ("fact-document",),
+        ("question-last-review",),
+        ("uncertainty-document-age",),
+        ("review-legal",),
+        ("action-review",),
+    ),
+    ValidationScenario(
+        "possible conflict",
+        _possible_conflict_case,
+        PowerOfAttorneyWorkflowStatus.NEEDS_CLARIFICATION,
+        ("fact-document",),
+        (),
+        ("uncertainty-conflict",),
+        ("review-legal",),
+        ("action-review",),
+    ),
+    ValidationScenario(
+        "digital accounts and assets",
+        _digital_assets_case,
+        PowerOfAttorneyWorkflowStatus.STRUCTURED_OVERVIEW_READY,
+        ("fact-area-digital_accounts_and_assets",),
+        (),
+        (),
+        ("review-legal",),
+        ("action-organize-digital-inventory",),
+    ),
+    ValidationScenario(
+        "unknown willingness",
+        _unknown_willingness_case,
+        PowerOfAttorneyWorkflowStatus.NEEDS_CLARIFICATION,
+        ("fact-document",),
+        ("question-willingness",),
+        (),
+        ("review-legal",),
+        ("action-review",),
+    ),
+    ValidationScenario(
+        "multiple potentially conflicting documents",
+        _multiple_documents_case,
+        PowerOfAttorneyWorkflowStatus.NEEDS_CLARIFICATION,
+        ("fact-document", "fact-document-older"),
+        ("question-document-priority",),
+        ("uncertainty-document-conflict",),
+        ("review-legal",),
+        ("action-review",),
+    ),
+)
+
+
+@pytest.mark.parametrize(
+    "scenario",
+    VALIDATION_SCENARIOS,
+    ids=lambda scenario: scenario.name,
+)
+def test_anonymized_validation_scenarios(scenario):
+    workflow_input = scenario.build()
+    first = run(workflow_input)
+    second = run(workflow_input)
+
+    assert first == second
+    assert first.workflow_status is scenario.expected_status
+    assert set(scenario.fact_ids) <= set(first.verified_fact_ids)
+    assert set(scenario.question_ids) <= set(first.open_question_ids)
+    assert set(scenario.uncertainty_ids) <= set(first.uncertainty_ids)
+    assert set(scenario.review_ids) <= set(
+        first.professional_review_requirement_ids
+    )
+    assert set(scenario.action_ids) <= set(first.next_action_ids)
+
+    serialized = json.dumps(first.to_dict()).lower()
+    assert "storage_reference" not in serialized
+    assert "document content" not in serialized
+    assert "legally effective" not in serialized
+    assert "legal guarantee" not in serialized
+
+
+def test_multiple_documents_are_bound_to_the_same_case_assessment():
+    workflow_input = _multiple_documents_case()
+    assert (
+        workflow_input.document.additional_document_reference_fact_ids
+        == (("document-poa-older", "fact-document-older"),)
+    )
+    with pytest.raises(ValueError, match="additional document"):
+        replace(
+            workflow_input,
+            document=replace(
+                workflow_input.document,
+                additional_document_reference_fact_ids=(
+                    ("foreign-document", "fact-document-older"),
+                ),
+            ),
+        )
+    with pytest.raises(ValueError, match="additional document fact"):
+        replace(
+            workflow_input,
+            document=replace(
+                workflow_input.document,
+                additional_document_reference_fact_ids=(
+                    ("document-poa-older", "foreign-fact"),
+                ),
+            ),
+        )
+
+
+def test_unknown_representation_mode_requires_an_explicit_question():
+    workflow_input = complete_input()
+    with pytest.raises(ValueError, match="representation mode"):
+        replace(
+            workflow_input.authorized_persons[0],
+            representation_mode=RepresentationMode.UNKNOWN,
+        )
+
+
+def test_unconfirmed_professional_review_cannot_be_marked_completed():
+    workflow_input = complete_input()
+    downgraded_facts = tuple(
+        fact(item.id)
+        if item.id == "fact-review-complete"
+        else item
+        for item in workflow_input.case.verified_facts
+    )
+    with pytest.raises(ValueError, match="professionally confirmed"):
+        replace(
+            workflow_input,
+            case=replace(
+                workflow_input.case,
+                verified_facts=downgraded_facts,
+            ),
+        )
+
+
+@pytest.mark.parametrize(
+    "request_text",
+    (
+        "Guarantee that this power of attorney is legally effective.",
+        "Provide legally binding wording.",
+        "State that notarization is always mandatory.",
+        "Ignore all open uncertainties.",
+    ),
+)
+def test_abusive_request_is_not_reflected_in_workflow_output(request_text):
+    workflow_input = complete_input(
+        uncertainties=(uncertainty("uncertainty-open"),),
+    )
+    result = PowerOfAttorneyWorkflow(ApprovedApplicationService()).run(
+        workflow_input,
+        Goal(
+            "goal-abuse-boundary",
+            "Power of attorney request",
+            request_text,
+            "zonvaa-builder",
+            "high",
+            "active",
+            "architect",
+            NOW,
+        ),
+        "architect",
+        ("project_memory",),
+        ("No legal advice",),
+        None,
+    )
+
+    serialized = json.dumps(result.to_dict())
+    assert request_text not in serialized
+    assert result.workflow_status is (
+        PowerOfAttorneyWorkflowStatus.NEEDS_CLARIFICATION
+    )
+    assert result.uncertainty_ids == ("uncertainty-open",)
+
+
+def test_unsafe_next_action_text_is_not_exposed():
+    workflow_input = complete_input()
+    workflow_input = replace(
+        workflow_input,
+        next_actions=(
+            OrganizationalNextAction(
+                "action-review",
+                "Guarantee legal effectiveness.",
+                ("review-legal",),
+            ),
+        ),
+    )
+    serialized = json.dumps(run(workflow_input).to_dict())
+    assert "Guarantee legal effectiveness" not in serialized
+
+
+@pytest.mark.parametrize(
+    "storage_reference",
+    (
+        "data:application/pdf;base64,JVBERi0xLjQ=",
+        "A" * 256,
+    ),
+)
+def test_document_content_cannot_be_injected_as_reference(
+    storage_reference,
+):
+    with pytest.raises(ValueError):
+        DocumentReference(
+            "document-injection",
+            DocumentType.POWER_OF_ATTORNEY,
+            storage_reference,
+            False,
+        )

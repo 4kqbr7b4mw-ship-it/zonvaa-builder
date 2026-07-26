@@ -265,6 +265,22 @@ def parse_power_of_attorney_input(
             document_data,
             "uncertainty_ids",
         ),
+        additional_document_reference_fact_ids=tuple(
+            (
+                _string(item, "document_reference_id"),
+                _string(item, "fact_id"),
+            )
+            for item in (
+                _mapping(entry, "additional_document_reference_fact")
+                for entry in _list(
+                    document_data.get(
+                        "additional_document_reference_fact_ids",
+                        [],
+                    ),
+                    "additional_document_reference_fact_ids",
+                )
+            )
+        ),
     )
     persons = tuple(
         AuthorizedPersonAssessment(
@@ -273,6 +289,10 @@ def parse_power_of_attorney_input(
             order=_required(item, "order"),
             representation_mode=RepresentationMode(
                 _string(item, "representation_mode")
+            ),
+            representation_question_id=_optional_string(
+                item,
+                "representation_question_id",
             ),
             substitute_for_id=_optional_string(item, "substitute_for_id"),
             willingness=EvidenceStatus(_string(item, "willingness")),
