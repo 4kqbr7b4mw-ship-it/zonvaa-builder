@@ -25,6 +25,7 @@ from goal.why_assessment import (
 from identity.models import IdentityContext
 from identity.loader import IdentityLoader
 from institution.loader import InstitutionLoader
+from interaction.loader import InteractionLoader
 from knowledge.memory import MemoryType
 
 
@@ -49,6 +50,7 @@ def create_runtime(git_clean=True):
         version="identity-version",
     )
     runtime.institution_context = InstitutionLoader().load()
+    runtime.interaction_context = InteractionLoader().load()
     runtime.constitution = "Full constitution text that must not be parsed."
     runtime.verified_facts = {"tests": "passing"}
     runtime.knowledge = {

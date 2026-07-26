@@ -5,6 +5,7 @@ from constitution.manager import ConstitutionManager
 from goal.engine import GoalEngine
 from identity import IdentityContext, IdentityLoader
 from institution import InstitutionContext, InstitutionLoader
+from interaction import InteractionContext, InteractionLoader
 from knowledge.manager import KnowledgeManager
 from builder.project_state import ProjectState
 
@@ -16,6 +17,7 @@ class RuntimeManager:
         self.project_root = Path.cwd().resolve()
         self.identity_context: Optional[IdentityContext] = None
         self.institution_context: Optional[InstitutionContext] = None
+        self.interaction_context: Optional[InteractionContext] = None
         self.constitution: Optional[str] = None
         self.knowledge: dict = {}
         self.latest_session: Optional[Path] = None
@@ -32,6 +34,7 @@ class RuntimeManager:
 
         self.identity_context = IdentityLoader().load()
         self.institution_context = InstitutionLoader().load()
+        self.interaction_context = InteractionLoader().load()
         self.constitution = ConstitutionManager().load()
         self.knowledge = knowledge_manager.load()
         self.latest_session = knowledge_manager.latest_session()

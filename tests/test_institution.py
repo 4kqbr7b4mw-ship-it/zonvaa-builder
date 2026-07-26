@@ -85,7 +85,7 @@ def test_canonical_institution_charter_loads_deterministically():
 
     assert first == second
     assert first.source == InstitutionLoader.DEFAULT_SOURCE.resolve()
-    assert first.version == "1.0"
+    assert first.version == "1.1"
     assert CORE_RULE in first.content
 
 
@@ -190,6 +190,7 @@ def test_runtime_loads_identity_then_institution_then_constitution(
     calls = []
     identity_loader = runtime_module.IdentityLoader
     institution_loader = runtime_module.InstitutionLoader
+    interaction_loader = runtime_module.InteractionLoader
     constitution_manager = runtime_module.ConstitutionManager
 
     class RecordingIdentityLoader:
@@ -201,6 +202,11 @@ def test_runtime_loads_identity_then_institution_then_constitution(
         def load(self):
             calls.append("institution")
             return institution_loader().load()
+
+    class RecordingInteractionLoader:
+        def load(self):
+            calls.append("interaction")
+            return interaction_loader().load()
 
     class RecordingConstitutionManager:
         def load(self):
@@ -219,6 +225,11 @@ def test_runtime_loads_identity_then_institution_then_constitution(
     )
     monkeypatch.setattr(
         runtime_module,
+        "InteractionLoader",
+        RecordingInteractionLoader,
+    )
+    monkeypatch.setattr(
+        runtime_module,
         "ConstitutionManager",
         RecordingConstitutionManager,
     )
@@ -230,4 +241,9 @@ def test_runtime_loads_identity_then_institution_then_constitution(
 
     RuntimeManager().boot()
 
-    assert calls[:3] == ["identity", "institution", "constitution"]
+    assert calls[:4] == [
+        "identity",
+        "institution",
+        "interaction",
+        "constitution",
+    ]

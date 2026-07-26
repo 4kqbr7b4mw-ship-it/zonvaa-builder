@@ -17,6 +17,7 @@ from goal.engine import GoalEngine
 from goal.models import Goal
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
+from interaction.loader import InteractionLoader
 from life_decisions import (
     AuthorityArea,
     AuthorityCoverageStatus,
@@ -453,6 +454,7 @@ def test_workflow_cannot_be_constructed_without_mission_context():
         version="identity-version",
     )
     runtime.institution_context = InstitutionLoader().load()
+    runtime.interaction_context = InteractionLoader().load()
     runtime.goal_engine = GoalEngine()
     with pytest.raises(PreflightError, match="MissionContext"):
         GoalApplicationService(runtime)
@@ -495,6 +497,7 @@ def test_existing_goal_cli_runs_power_of_attorney_workflow(
         version="identity-version",
     )
     runtime.institution_context = InstitutionLoader().load()
+    runtime.interaction_context = InteractionLoader().load()
     runtime.constitution = "# Constitution\n\nVersion: 1.0"
     runtime.knowledge = {
         "adr": [],

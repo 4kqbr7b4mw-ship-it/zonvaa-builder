@@ -3,6 +3,71 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Conversation & Interaction Architecture
+
+### Ziel und Nicht-Ziele
+
+Eine verbindliche, versionierte Conversation/Interaction-Ebene zwischen
+Guardian und Institution etablieren. Sie definiert Gesprächsraum,
+Institution Board, Artefakt- und Autorisierungsgrenzen sowie
+Mehrparteien-, Inaktivitäts-, Offboarding- und Systemgrenzen. Keine UI,
+Conversation Runtime, Kryptografie, externe Aktion oder fachliche
+Workflow-Änderung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `8e2aa5f` war erfolgreich.
+- Guardian Foundation und ADR-0023/0024 definieren Haltung und sichtbares
+  Gespräch, aber keinen typisierten Interaction-Vertrag.
+- Institution 1.0 definiert langfristige Garantien und Runtime weist deren
+  Integrität im Mission Context 1.1 nach.
+- Institution Board, Artefaktübergang, Autorisierungsgrenze und gemeinsame
+  Entscheidungsräume sind noch nicht als eigene Ebene gebunden.
+- Es existiert keine UI- oder Conversation-Engine-Implementierung, die
+  erweitert werden könnte.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Primärquelle, Guardian Foundation, Institution und Constitution prüfen.
+- [x] Kanonischen Interaction-Vertrag und typisiertes Modell erstellen.
+- [x] Institution-Vertrag und Schichtenfolge widerspruchsfrei aktualisieren.
+- [x] Runtime und Mission Context minimal integrieren.
+- [x] ADR, Modell-, Loader-, Runtime- und Preflight-Tests ergänzen.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Conversation/Interaction ist eine Vertrags- und Grenzebene, keine
+  ausführende Conversation Engine oder UI.
+- Das Institution Board ist die strukturierte Handlungsebene der Interaktion,
+  nicht der Institution Layer und keine zweite Guardian-Persona.
+- Artefakte vermitteln bestätigten Kontext, aber weder Vollmacht noch
+  fachliche Wirksamkeit.
+- Runtime bleibt Single Source of Truth und lädt einen unveränderlichen
+  Interaction-Kontext zusätzlich zum Institution-Kontext.
+
+### Risiken und Teststrategie
+
+- Die Begriffe Board, Safe und Graph dürfen keine nicht implementierte UI,
+  Persistenz oder Kryptografie behaupten.
+- Personen- und Mehrparteienisolation ist zunächst verbindlicher Vertrag,
+  noch keine technische Zugriffskontrolle.
+- Exakte Vertragselemente, Hash, Loader-Vollständigkeit, Boot-Reihenfolge und
+  Preflight-Integrität werden deterministisch getestet.
+- Bestehende Goal- und Life-Decisions-Workflows erhalten keine neuen
+  Kontextinhalte.
+
+### Abweichungen und Abschlusszustand
+
+Die neue Ebene ist als versionierter Interaction-Vertrag, unveränderlicher
+Kontext und verpflichtender Runtime-/Preflight-Nachweis umgesetzt. Die
+Institution wurde auf Version 1.1 und die Constitution auf Version 1.4
+fortgeschrieben; bestehende Guardian-Prinzipien und operative Workflows
+bleiben unverändert. Konkrete UI-, Kryptografie-, Autorisierungs-, Lösch- und
+Notfallmechanismen wurden bewusst nicht implementiert. 379 Tests bestehen;
+Doctor und `git diff --check` sind erfolgreich.
+
 ## Abgeschlossener Plan: Main mit Origin synchronisieren
 
 ### Ziel und Nicht-Ziele

@@ -1,19 +1,21 @@
 # ZONVAA Institution
 
-Version: 1.0
+Version: 1.1
 Status: verbindlich
 
 ## Zweck und Rang
 
 Der Institution Layer enthält ausschließlich langfristige Systemgarantien.
-Er liegt architektonisch zwischen Guardian und Runtime:
+Er liegt architektonisch zwischen Conversation/Interaction und Runtime:
 
-Guardian → Institution → Runtime
+Guardian → Conversation/Interaction → Institution → Runtime
 
 Identity und WHY geben die Richtung vor. Die Institution schützt diese
 Richtung dauerhaft gegenüber Funktionen, Workflows und operativen
 Optimierungen. Constitution und ADRs konkretisieren Arbeits- und
 Architekturregeln, dürfen die Garantien aber nicht abschwächen.
+Die Conversation/Interaction-Ebene konkretisiert Gesprächs- und
+Handlungsgrenzen, ohne selbst institutionelle Garantien zu ersetzen.
 
 ## Kernregel
 

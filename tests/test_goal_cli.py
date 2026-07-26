@@ -17,6 +17,7 @@ from execution.engine import ExecutionEngine, TargetVerificationError
 from goal.engine import GoalEngine
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
+from interaction.loader import InteractionLoader
 
 
 runner = CliRunner()
@@ -74,6 +75,7 @@ def create_runtime():
         version="identity-version",
     )
     runtime.institution_context = InstitutionLoader().load()
+    runtime.interaction_context = InteractionLoader().load()
     runtime.constitution = "Full constitution"
     runtime.verified_facts = {"tests": "passing"}
     runtime.knowledge = {

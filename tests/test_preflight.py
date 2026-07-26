@@ -11,6 +11,7 @@ from builder.main import app
 from builder.preflight import PreflightError, PreflightService
 from builder.preflight import WorkflowContext
 from institution.models import InstitutionContext, InstitutionGuarantee
+from interaction.models import InteractionContext, InteractionPrinciple
 
 
 runner = CliRunner()
@@ -31,6 +32,13 @@ def runtime_context(tmp_path):
             version="1.0",
             content_hash="a" * 64,
             guarantees=tuple(InstitutionGuarantee),
+        ),
+        interaction_context=InteractionContext(
+            content="# Interaction",
+            source=tmp_path / "interaction" / "interaction.md",
+            version="1.0",
+            content_hash="b" * 64,
+            principles=tuple(InteractionPrinciple),
         ),
         constitution="# Constitution\n\nVersion: 1.0\n",
         knowledge={
@@ -65,7 +73,7 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
 
     context = PreflightService(runtime_context(tmp_path)).build().to_dict()
 
-    assert context["schema_version"] == "1.1"
+    assert context["schema_version"] == "1.2"
     assert context["institution"] == {
         "status": "loaded",
         "path": "institution/institution.md",
@@ -73,6 +81,15 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
         "content_hash": "a" * 64,
         "guarantees": [
             guarantee.value for guarantee in InstitutionGuarantee
+        ],
+    }
+    assert context["interaction"] == {
+        "status": "loaded",
+        "path": "interaction/interaction.md",
+        "version": "1.0",
+        "content_hash": "b" * 64,
+        "principles": [
+            principle.value for principle in InteractionPrinciple
         ],
     }
     assert context["constitution"] == {
@@ -108,7 +125,7 @@ def test_workflow_context_can_only_be_derived_from_mission_context(
 
     with pytest.raises(TypeError):
         WorkflowContext(
-            schema_version="1.1",
+            schema_version="1.2",
             generated_at=mission.generated_at,
             project_root=mission.project_root,
             git_branch="feature",
@@ -163,6 +180,7 @@ def test_preflight_marks_absent_session_and_handover_as_missing(
     "attribute, value, message",
     [
         ("institution_context", None, "Institution"),
+        ("interaction_context", None, "Interaction"),
         ("constitution", "", "Constitution"),
         ("knowledge", {}, "Knowledge areas"),
         ("project_state", {}, "Project state fields"),

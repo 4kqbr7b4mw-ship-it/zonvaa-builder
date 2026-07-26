@@ -1,6 +1,6 @@
 # ZONVAA Constitution
 
-Version: 1.3
+Version: 1.4
 Status: verbindlich
 
 ## 1. Zweck
@@ -185,7 +185,8 @@ Neue Regeln werden nur aufgenommen, wenn:
 
 ## 13. Institution Layer
 
-Zwischen Guardian und Runtime gilt der verbindliche, versionierte
+Zwischen Conversation/Interaction und Runtime gilt der verbindliche,
+versionierte
 Institution-Vertrag unter `institution/institution.md`. Er schützt die
 langfristigen Garantien für Governance, Nutzerhoheit, Guardian Continuity,
 Transparenz, Verantwortung, Schutz, Würde und Vertrauen.
@@ -196,7 +197,31 @@ Operative Funktionen, Workflows und Optimierungen dürfen diese Garantien
 weder abschwächen noch umgehen. Der Institution Layer trifft selbst keine
 fachlichen Entscheidungen und ersetzt weder WHY noch Constitution.
 
-## 14. Guardian- und Gesprächsprinzip
+## 14. Conversation- und Interaction-Ebene
+
+Zwischen Guardian und Institution gilt der verbindliche, versionierte
+Interaction-Vertrag unter `interaction/interaction.md`.
+
+> Guardian → Conversation/Interaction → Institution → Runtime
+
+Die Conversation Engine bleibt der nutzergerichtete Gesprächsraum. Das
+Institution Board ist eine davon getrennte strukturierte Handlungsebene,
+nicht der Institution Layer und keine zweite Guardian-Persona. Artefakte
+vermitteln bestätigten Kontext zwischen beiden Räumen, erzeugen aber weder
+Vollmacht noch institutionelle Aktion.
+
+Jeder Übergang und jede externe oder institutionelle Aktion benötigt eine
+bewusste, nachvollziehbare Nutzerautorisierung. Persönliche Guardian-Kontexte
+bleiben isoliert; gemeinsame Entscheidungsräume enthalten ausschließlich
+ausdrücklich freigegebene Inhalte und lösen Mehrparteienkonflikte nicht
+zugunsten einer Partei auf.
+
+Nicht-Nutzung ist zulässig. Emotionales Re-Engagement und technischer oder
+emotionaler Offboarding-Lock-in sind unzulässig. Moralische
+Letztentscheidungen und nicht freigegebene Notfallhandlungen bleiben beim
+Menschen beziehungsweise geeigneten Fachstellen.
+
+## 15. Guardian- und Gesprächsprinzip
 
 Für jede sichtbare Interaktion gilt verbindlich die Reihenfolge S-V-N-P:
 
@@ -234,7 +259,7 @@ Sicherheits-, Schutz- und Fachgrenzen bleiben davon unberührt.
 > „Der Guardian folgt zuerst dem Menschen. Erst danach folgt er der
 > Architektur.“
 
-## 15. ZONVAA-Grundprinzipien
+## 16. ZONVAA-Grundprinzipien
 
 - ZONVAA denkt in Entscheidungen.
 - Einmal erfassen. Mehrfach nutzen.
