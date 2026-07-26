@@ -1,5 +1,6 @@
 import errno
 import os
+import stat as stat_module
 from dataclasses import dataclass
 from pathlib import Path, PureWindowsPath
 from typing import Any, List, Optional, Tuple
@@ -46,11 +47,15 @@ class ExecutionError(RuntimeError):
         }
 
 
+class TargetVerificationError(ValueError):
+    """A created file is no longer reachable at its approved target."""
+
+
 @dataclass(frozen=True)
 class _CreatedResource:
     parts: Tuple[str, ...]
-    device: int
-    inode: int
+    device: Optional[int] = None
+    inode: Optional[int] = None
 
 
 class ExecutionEngine:
@@ -112,6 +117,7 @@ class ExecutionEngine:
                         raise
                     with output_file:
                         output_file.write(content)
+                    self._verify_created_target(root_fd, resource)
                     completed_steps.append("/".join(parts))
                 finally:
                     os.close(parent_fd)
@@ -271,14 +277,22 @@ class ExecutionEngine:
                 )
             except FileNotFoundError:
                 os.mkdir(part, 0o755, dir_fd=current_fd)
+                resource_index = len(created)
+                created.append(_CreatedResource(traversed))
                 next_fd = os.open(
                     part,
                     os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW,
                     dir_fd=current_fd,
                 )
-                stat = os.fstat(next_fd)
-                created.append(
-                    _CreatedResource(traversed, stat.st_dev, stat.st_ino)
+                try:
+                    stat = os.fstat(next_fd)
+                except BaseException:
+                    os.close(next_fd)
+                    raise
+                created[resource_index] = _CreatedResource(
+                    traversed,
+                    stat.st_dev,
+                    stat.st_ino,
                 )
             except OSError as exc:
                 if exc.errno in (errno.ELOOP, errno.ENOTDIR):
@@ -288,6 +302,53 @@ class ExecutionEngine:
                 os.close(current_fd)
             current_fd = next_fd
         return current_fd
+
+    def _verify_created_target(
+        self,
+        root_fd: int,
+        resource: _CreatedResource,
+    ) -> None:
+        try:
+            parent_fd = self._open_existing_prefix(root_fd, resource.parts[:-1])
+        except ValueError as exc:
+            raise TargetVerificationError(
+                "Created document is no longer reachable at its approved target: "
+                "{}".format("/".join(resource.parts))
+            ) from exc
+        if parent_fd is None:
+            raise TargetVerificationError(
+                "Created document target parent no longer exists: {}".format(
+                    "/".join(resource.parts)
+                )
+            )
+        try:
+            try:
+                current = os.stat(
+                    resource.parts[-1],
+                    dir_fd=parent_fd,
+                    follow_symlinks=False,
+                )
+            except FileNotFoundError as exc:
+                raise TargetVerificationError(
+                    "Created document no longer exists at its approved target: "
+                    "{}".format("/".join(resource.parts))
+                ) from exc
+            if not stat_module.S_ISREG(current.st_mode):
+                raise TargetVerificationError(
+                    "Created document target is not a regular file: {}".format(
+                        "/".join(resource.parts)
+                    )
+                )
+            if (
+                current.st_dev != resource.device
+                or current.st_ino != resource.inode
+            ):
+                raise TargetVerificationError(
+                    "Created document identity changed at its approved target: "
+                    "{}".format("/".join(resource.parts))
+                )
+        finally:
+            os.close(parent_fd)
 
     def _rollback(
         self,
@@ -304,6 +365,10 @@ class ExecutionEngine:
         ]:
             name = "/".join(resource.parts)
             try:
+                if resource.device is None or resource.inode is None:
+                    raise OSError(
+                        "resource was created but its identity could not be captured"
+                    )
                 parent_fd = self._open_existing_prefix(root_fd, resource.parts[:-1])
                 if parent_fd is None:
                     raise OSError("parent directory is no longer available")

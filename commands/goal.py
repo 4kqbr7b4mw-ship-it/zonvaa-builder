@@ -22,6 +22,20 @@ class GoalInputError(ValueError):
     """Expected validation error in a goal run input document."""
 
 
+def _apply_status(apply: bool, result: Dict[str, Any]) -> str:
+    if not apply:
+        return "not_requested"
+    if result["decision"]["status"] != "approved":
+        return "not_executed"
+    if not any(
+        step.get("agent") == "document"
+        and step.get("execution_status") == "completed"
+        for step in result["execution"]
+    ):
+        return "not_executed"
+    return "completed"
+
+
 def _mapping(value: Any, field: str) -> Dict[str, Any]:
     if not isinstance(value, dict):
         raise GoalInputError("'{}' muss ein JSON-Objekt sein.".format(field))
@@ -210,7 +224,7 @@ def run_goal(
                     why_assessment=assessment,
                     result=exc.result,
                     input_file=input_file,
-                    apply_requested=True,
+                    apply_status="failed",
                 )
             except OSError as record_exc:
                 raise typer.BadParameter(
@@ -238,7 +252,7 @@ def run_goal(
                 why_assessment=assessment,
                 result=result,
                 input_file=input_file,
-                apply_requested=apply,
+                apply_status=_apply_status(apply, result),
             )
         except OSError as exc:
             raise typer.BadParameter(

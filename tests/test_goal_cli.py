@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 from pathlib import Path
 from unittest.mock import Mock
@@ -11,6 +12,7 @@ from brain.context_collector import ContextCollector
 from builder.journal import DecisionJournal
 from builder.main import app
 from builder.runtime import RuntimeManager
+from execution.engine import ExecutionEngine, TargetVerificationError
 from goal.engine import GoalEngine
 from identity.models import IdentityContext
 
@@ -397,7 +399,7 @@ def test_recorded_approved_flow_contains_complete_record(
     assert len(files) == 1
     assert output["record_path"] == str(files[0])
     record = json.loads(files[0].read_text(encoding="utf-8"))
-    assert record["record_version"] == "1.0"
+    assert record["record_version"] == "2.0"
     assert record["created_at"].endswith("+00:00")
     assert record["goal"] == payload["goal"]
     assert record["invocation"] == {
@@ -414,7 +416,13 @@ def test_recorded_approved_flow_contains_complete_record(
     assert record["why_assessment"] == payload["why_assessment"]
     assert record["decision"] == output["decision"]
     assert record["plan"] == output["plan"]
-    assert record["execution"] == output["execution"]
+    assert record["apply"] == {
+        "requested": False,
+        "status": "not_requested",
+    }
+    assert record["execution"]["status"] == "not_requested"
+    assert record["execution"]["steps"] == output["execution"]
+    assert record["execution"]["error"] is None
     assert record["source"]["input_file"] == str(
         (tmp_path / "goal.json").resolve()
     )
@@ -462,7 +470,12 @@ def test_recorded_non_approved_flows(
     assert record["decision"]["status"] == expected_status
     assert record["why_assessment"] == assessment
     assert record["plan"] == []
-    assert record["execution"] == []
+    assert record["apply"] == {
+        "requested": False,
+        "status": "not_requested",
+    }
+    assert record["execution"]["status"] == "not_requested"
+    assert record["execution"]["steps"] == []
 
 
 def test_two_recorded_runs_do_not_overwrite_each_other(
@@ -694,8 +707,17 @@ def test_apply_and_record_store_completed_execution(
 
     assert (tmp_path / "knowledge/project/recorded.md").exists()
     assert output["execution"][0]["execution_status"] == "completed"
-    assert record["execution"] == output["execution"]
     assert record["apply"] == {"requested": True, "status": "completed"}
+    assert record["record_version"] == "2.0"
+    assert record["execution"]["status"] == "completed"
+    assert record["execution"]["steps"] == [
+        {
+            key: value
+            for key, value in output["execution"][0].items()
+            if key != "content"
+        },
+        output["execution"][1],
+    ]
     assert "content" not in record["plan"][0]
 
 
@@ -732,15 +754,206 @@ def test_failed_apply_and_record_writes_failure_record(
     record_file = next(record_folder.glob("*.json"))
     record = json.loads(record_file.read_text(encoding="utf-8"))
     assert record["decision"]["status"] == "approved"
+    assert record["record_version"] == "2.0"
     assert record["apply"] == {"requested": True, "status": "failed"}
     assert record["execution"]["status"] == "failed"
-    assert record["execution"]["completed_steps"] == []
-    assert record["execution"]["rolled_back_steps"] == []
+    assert record["execution"]["steps"] == []
+    assert record["execution"]["rollback"]["rolled_back_steps"] == []
     assert record["execution"]["remaining_resources"] == []
     assert record["execution"]["error"]["type"] == "ValueError"
     assert all("content" not in step for step in record["plan"])
     assert "secret content" not in record_file.read_text(encoding="utf-8")
     assert not (tmp_path / "knowledge/project/valid.md").exists()
+
+
+def test_blocked_apply_record_is_not_executed(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+    payload = input_data(
+        {
+            "status": "conflicting",
+            "reason": "explicit_conflict_confirmed",
+            "evidence": [],
+        }
+    )
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/blocked.md", "blocked")
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+
+    result = runner.invoke(
+        app,
+        [
+            "goal",
+            "run",
+            "--input",
+            str(input_file),
+            "--apply",
+            "--record",
+        ],
+    )
+
+    assert result.exit_code == 0
+    record = json.loads(next(record_folder.glob("*.json")).read_text("utf-8"))
+    assert record["apply"] == {
+        "requested": True,
+        "status": "not_executed",
+    }
+    assert record["execution"]["status"] == "not_executed"
+    assert record["execution"]["steps"] == []
+
+
+def test_apply_without_artifacts_record_is_not_executed(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(
+        json.dumps(input_data(aligned_assessment())),
+        encoding="utf-8",
+    )
+
+    result = runner.invoke(
+        app,
+        [
+            "goal",
+            "run",
+            "--input",
+            str(input_file),
+            "--apply",
+            "--record",
+        ],
+    )
+
+    assert result.exit_code == 0
+    record = json.loads(next(record_folder.glob("*.json")).read_text("utf-8"))
+    assert record["apply"] == {
+        "requested": True,
+        "status": "not_executed",
+    }
+    assert record["execution"]["status"] == "not_executed"
+
+
+def test_write_started_failure_is_rolled_back_and_recorded(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/first.md", "first"),
+        document_artifact("knowledge/project/second.md", "second"),
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+    original_verify = ExecutionEngine._verify_created_target
+    calls = 0
+
+    def fail_second_verification(self, root_fd, resource):
+        nonlocal calls
+        calls += 1
+        if calls == 2:
+            raise TargetVerificationError("simulated target verification failure")
+        return original_verify(self, root_fd, resource)
+
+    monkeypatch.setattr(
+        ExecutionEngine,
+        "_verify_created_target",
+        fail_second_verification,
+    )
+
+    result = runner.invoke(
+        app,
+        [
+            "goal",
+            "run",
+            "--input",
+            str(input_file),
+            "--apply",
+            "--record",
+        ],
+    )
+
+    assert result.exit_code != 0
+    record = json.loads(next(record_folder.glob("*.json")).read_text("utf-8"))
+    assert record["record_version"] == "2.0"
+    assert record["apply"] == {"requested": True, "status": "failed"}
+    assert record["execution"]["status"] == "failed"
+    assert record["execution"]["steps"] == [
+        {
+            "target": "knowledge/project/first.md",
+            "execution_status": "completed",
+        }
+    ]
+    assert record["execution"]["rollback"]["rolled_back_steps"] == [
+        "knowledge/project/second.md",
+        "knowledge/project/first.md",
+        "knowledge/project",
+        "knowledge",
+    ]
+    assert record["execution"]["remaining_resources"] == []
+    assert record["execution"]["error"]["type"] == "TargetVerificationError"
+    assert not (tmp_path / "knowledge").exists()
+
+
+def test_rollback_failure_is_recorded_with_remaining_resources(
+    clean_cli,
+    tmp_path,
+    monkeypatch,
+):
+    init_git_repository(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    record_folder = tmp_path / "records"
+    monkeypatch.setattr(DecisionJournal, "DEFAULT_FOLDER", record_folder)
+    payload = input_data(aligned_assessment())
+    payload["artifacts"] = [
+        document_artifact("knowledge/project/first.md", "first"),
+        document_artifact("knowledge/project/invalid.md", "\ud800"),
+    ]
+    input_file = tmp_path / "goal.json"
+    input_file.write_text(json.dumps(payload), encoding="utf-8")
+    original_unlink = os.unlink
+
+    def fail_first_unlink(path, *args, **kwargs):
+        if path == "first.md":
+            raise PermissionError("simulated rollback denial")
+        return original_unlink(path, *args, **kwargs)
+
+    monkeypatch.setattr(os, "unlink", fail_first_unlink)
+
+    result = runner.invoke(
+        app,
+        [
+            "goal",
+            "run",
+            "--input",
+            str(input_file),
+            "--apply",
+            "--record",
+        ],
+    )
+
+    assert result.exit_code != 0
+    record = json.loads(next(record_folder.glob("*.json")).read_text("utf-8"))
+    assert record["apply"] == {"requested": True, "status": "failed"}
+    assert record["execution"]["status"] == "failed"
+    assert "knowledge/project/first.md" in record["execution"][
+        "remaining_resources"
+    ]
+    assert record["execution"]["rollback"]["errors"]
+    assert (tmp_path / "knowledge/project/first.md").is_file()
 
 
 def test_life_decisions_proposal_runs_through_cli_without_apply(

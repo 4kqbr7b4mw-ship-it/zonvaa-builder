@@ -264,7 +264,7 @@ def test_symlink_target_is_rejected(tmp_path):
     assert outside.read_text(encoding="utf-8") == "outside"
 
 
-def test_directory_symlink_swap_cannot_redirect_file_creation(
+def test_directory_symlink_swap_fails_target_verification(
     tmp_path,
     monkeypatch,
 ):
@@ -290,13 +290,56 @@ def test_directory_symlink_swap_cannot_redirect_file_creation(
 
     monkeypatch.setattr(os, "open", swapping_open)
 
-    ExecutionEngine().execute(
-        plan_for(artifact("knowledge/project/target.md")),
-        _test_repository_root=tmp_path,
-    )
+    with pytest.raises(ExecutionError) as captured:
+        ExecutionEngine().execute(
+            plan_for(artifact("knowledge/project/target.md")),
+            _test_repository_root=tmp_path,
+        )
 
     assert not (outside / "target.md").exists()
     assert (tmp_path / "detached-project/target.md").exists()
+    assert captured.value.error_type == "TargetVerificationError"
+    assert captured.value.completed_steps == []
+    assert captured.value.rolled_back_steps == []
+    assert captured.value.remaining_resources == [
+        "knowledge/project/target.md"
+    ]
+
+
+def test_failure_after_mkdir_reports_unidentified_created_directory(
+    tmp_path,
+    monkeypatch,
+):
+    repository(tmp_path)
+    existing = tmp_path / "existing.txt"
+    existing.write_text("existing", encoding="utf-8")
+    original_open = os.open
+
+    def fail_open_after_mkdir(path, flags, *args, **kwargs):
+        if (
+            path == "knowledge"
+            and kwargs.get("dir_fd") is not None
+            and (tmp_path / "knowledge").exists()
+        ):
+            raise OSError(24, "simulated descriptor exhaustion")
+        return original_open(path, flags, *args, **kwargs)
+
+    monkeypatch.setattr(os, "open", fail_open_after_mkdir)
+
+    with pytest.raises(ExecutionError) as captured:
+        ExecutionEngine().execute(
+            plan_for(artifact("knowledge/project/target.md")),
+            _test_repository_root=tmp_path,
+        )
+
+    error = captured.value
+    assert error.error_type == "OSError"
+    assert error.completed_steps == []
+    assert error.rolled_back_steps == []
+    assert error.remaining_resources == ["knowledge"]
+    assert "identity could not be captured" in error.rollback_errors[0]
+    assert (tmp_path / "knowledge").is_dir()
+    assert existing.read_text(encoding="utf-8") == "existing"
 
 
 def test_rollback_errors_report_remaining_resources(tmp_path, monkeypatch):

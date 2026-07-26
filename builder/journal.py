@@ -26,9 +26,15 @@ class RuntimeJournal:
 
 
 class DecisionJournal:
-    """Stores immutable, machine-readable records of completed goal flows."""
+    """Stores immutable goal decision records for success and apply failure."""
 
-    RECORD_VERSION = "1.0"
+    RECORD_VERSION = "2.0"
+    APPLY_STATUSES = {
+        "not_requested",
+        "not_executed",
+        "completed",
+        "failed",
+    }
     DEFAULT_FOLDER = Path("knowledge/protocols")
 
     def __init__(self, folder: Optional[Path] = None) -> None:
@@ -44,8 +50,10 @@ class DecisionJournal:
         why_assessment: Optional[WhyAssessment],
         result: Dict[str, Any],
         input_file: Path,
-        apply_requested: bool = False,
+        apply_status: str = "not_requested",
     ) -> Path:
+        if apply_status not in self.APPLY_STATUSES:
+            raise ValueError("Unknown apply status: {}".format(apply_status))
         created_at = datetime.now(timezone.utc)
         record = {
             "record_version": self.RECORD_VERSION,
@@ -80,15 +88,15 @@ class DecisionJournal:
             "why_assessment": self._assessment_record(why_assessment),
             "decision": result["decision"],
             "plan": self._redacted_plan(result["plan"]),
-            "execution": result["execution"],
+            "apply": {
+                "requested": apply_status != "not_requested",
+                "status": apply_status,
+            },
+            "execution": self._execution_record(
+                result["execution"],
+                apply_status,
+            ),
         }
-        if apply_requested:
-            execution = result["execution"]
-            failed = isinstance(execution, dict) and execution.get("status") == "failed"
-            record["apply"] = {
-                "requested": True,
-                "status": "failed" if failed else "completed",
-            }
 
         self.folder.mkdir(parents=True, exist_ok=True)
         filename = self.folder / "{}_goal-decision.json".format(
@@ -100,6 +108,44 @@ class DecisionJournal:
             record_file.write("\n")
 
         return filename
+
+    def _execution_record(
+        self,
+        execution: Any,
+        apply_status: str,
+    ) -> Dict[str, Any]:
+        if isinstance(execution, list):
+            return {
+                "status": apply_status,
+                "steps": self._redacted_plan(execution),
+                "error": None,
+                "rollback": {
+                    "rolled_back_steps": [],
+                    "errors": [],
+                },
+                "remaining_resources": [],
+            }
+
+        error = execution.get("error") or {}
+        return {
+            "status": apply_status,
+            "steps": [
+                {
+                    "target": target,
+                    "execution_status": "completed",
+                }
+                for target in execution.get("completed_steps", [])
+            ],
+            "error": {
+                "type": error.get("type"),
+                "message": error.get("message"),
+            },
+            "rollback": {
+                "rolled_back_steps": execution.get("rolled_back_steps", []),
+                "errors": error.get("rollback_errors", []),
+            },
+            "remaining_resources": execution.get("remaining_resources", []),
+        }
 
     def _redacted_plan(self, plan: Iterable[Dict[str, Any]]) -> list:
         return [

@@ -63,7 +63,21 @@ def test_decision_journal_writes_exclusive_versioned_json(tmp_path):
 
     record = json.loads(path.read_text(encoding="utf-8"))
     assert path.parent == tmp_path
-    assert record["record_version"] == "1.0"
+    assert record["record_version"] == "2.0"
+    assert record["apply"] == {
+        "requested": False,
+        "status": "not_requested",
+    }
+    assert record["execution"] == {
+        "status": "not_requested",
+        "steps": result["execution"],
+        "error": None,
+        "rollback": {
+            "rolled_back_steps": [],
+            "errors": [],
+        },
+        "remaining_resources": [],
+    }
     assert record["goal"]["id"] == goal.id
     assert record["identity"] == {
         "source": "WHY.md",
