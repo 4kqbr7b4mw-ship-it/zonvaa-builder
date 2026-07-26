@@ -3,7 +3,54 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Institution Layer
+## Abgeschlossener Plan: Main mit Origin synchronisieren
+
+### Ziel und Nicht-Ziele
+
+Den lokalen `main` linear mit `origin/main` synchronisieren, ohne lokale
+Guardian- oder Institution-Architekturcommits zu verlieren. Kein Push, keine
+Architekturänderung und keine funktionale Implementierung.
+
+### Geprüfter Ausgangszustand
+
+- Arbeitsbaum auf `main` war sauber.
+- Lokaler Ausgangscommit war `7890203`.
+- Gemeinsame Basis war `7886bbb`.
+- `main` war vier Commits voraus und drei Commits hinter `origin/main`.
+- `origin/main` endete nach aktuellem Fetch auf `74c2326`.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Remote aktualisieren und Divergenz vollständig prüfen.
+- [x] Backup-Branch `backup/main-pre-sync-7890203` erstellen.
+- [x] Vier lokale Commits linear auf `origin/main` rebasen.
+- [x] Patch-Äquivalenz mit `git range-diff` prüfen.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [x] Handover und sauberen Abschluss erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Rebase statt Merge, weil alle vier lokalen Commits eigenständig,
+  patch-äquivalent und konfliktfrei auf die drei Remote-Commits anwendbar
+  waren.
+- Der Backup-Branch bewahrt die ursprünglichen Commit-IDs unverändert.
+- Es war keine Konfliktlösung und keine Architekturinterpretation nötig.
+
+### Risiken und Teststrategie
+
+- Ein späterer Push muss als normaler Fast-Forward von `origin/main` erfolgen.
+- `git range-diff` bestätigt vier patch-identische lokale Commits.
+- Der Baum gegenüber dem Backup enthält zusätzlich ausschließlich neun
+  Guardian-Foundation-Dokumente aus `origin/main`.
+- 352 Tests bestehen; Doctor und `git diff --check` sind erfolgreich.
+
+### Abweichungen und Abschlusszustand
+
+Keine Konflikte oder Abweichungen. Der synchronisierte Architekturstand endet
+auf `9ec3566`, ist gegenüber `origin/main` null Commits hinter und vier Commits
+voraus. Es wurde nicht gepusht.
+
+## Abgeschlossener Plan: Institution Layer
 
 ### Ziel und Nicht-Ziele
 
@@ -32,7 +79,7 @@ Monetarisierungsfunktion.
 - [x] Constitution und neue Architekturentscheidung konsistent ergänzen.
 - [x] Modell-, Loader-, Runtime- und Preflight-Tests ergänzen.
 - [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
-- [in Arbeit] Handover und geprüften Commit erzeugen.
+- [x] Handover und geprüften Commit erzeugen.
 
 ### Entscheidungen und Begründungen
 
