@@ -6,6 +6,7 @@ from commands.doctor import doctor
 from commands.handover import handover
 from commands.goal import run_goal
 from commands.init import init
+from commands.preflight import preflight
 from commands.role import create_role
 from commands.release import release
 
@@ -18,6 +19,7 @@ app.command("build")(build)
 app.command("handover")(handover)
 app.command("doctor")(doctor)
 app.command("init")(init)
+app.command("preflight")(preflight)
 app.command("release")(release)
 
 role_app.command("create")(create_role)
@@ -30,7 +32,7 @@ app.add_typer(goal_app, name="goal")
 @app.callback()
 def main(ctx: typer.Context) -> None:
     """Initialisiert die Builder-Runtime."""
-    if ctx.invoked_subcommand != "goal":
+    if ctx.invoked_subcommand not in {"goal", "preflight"}:
         get_runtime()
 
 

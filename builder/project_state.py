@@ -1,6 +1,8 @@
 import json
+import os
 import platform
 import subprocess
+import tempfile
 from pathlib import Path
 
 from knowledge.verified_facts import VerifiedFacts
@@ -18,15 +20,23 @@ class ProjectState:
             text=True,
             check=False,
         )
+        if result.returncode != 0:
+            message = result.stderr.strip() or "command failed"
+            raise RuntimeError(
+                "{}: {}".format(" ".join(command), message)
+            )
         return result.stdout.strip()
 
     def collect(self) -> dict:
+        pytest_output = self._command(
+            ["python3", "-m", "pytest", "--version"]
+        ).split()
+        if len(pytest_output) < 2:
+            raise RuntimeError("pytest version could not be determined")
         state = {
             "verified_facts": VerifiedFacts().load(),
             "python_version": platform.python_version(),
-            "pytest_version": self._command(
-                ["python3", "-m", "pytest", "--version"]
-            ).split()[1],
+            "pytest_version": pytest_output[1],
             "git_branch": self._command(
                 ["git", "branch", "--show-current"]
             ),
@@ -43,10 +53,24 @@ class ProjectState:
 
     def save(self, state: dict) -> None:
         self.STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-        self.STATE_FILE.write_text(
-            json.dumps(state, indent=2, ensure_ascii=False),
-            encoding="utf-8",
+        serialized = json.dumps(state, indent=2, ensure_ascii=False) + "\n"
+        descriptor, temporary_name = tempfile.mkstemp(
+            dir=str(self.STATE_FILE.parent),
+            prefix=".current-state-",
+            suffix=".tmp",
         )
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                handle.write(serialized)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temporary_name, self.STATE_FILE)
+        except BaseException:
+            try:
+                os.unlink(temporary_name)
+            except FileNotFoundError:
+                pass
+            raise
 
     def load(self) -> dict:
         if not self.STATE_FILE.exists():

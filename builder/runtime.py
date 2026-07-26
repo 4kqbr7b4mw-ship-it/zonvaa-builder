@@ -17,6 +17,9 @@ class RuntimeManager:
         self.knowledge: dict = {}
         self.latest_session: Optional[Path] = None
         self.latest_session_content: str = ""
+        self.latest_handover: Optional[Path] = None
+        self.latest_context: Optional[Path] = None
+        self.latest_context_content: str = ""
         self.project_state: dict = {}
         self.verified_facts: dict = {}
         self.goal_engine: Optional[GoalEngine] = None
@@ -28,9 +31,25 @@ class RuntimeManager:
         self.constitution = ConstitutionManager().load()
         self.knowledge = knowledge_manager.load()
         self.latest_session = knowledge_manager.latest_session()
+        self.latest_handover = knowledge_manager.latest_handover()
+        context_candidates = [
+            path
+            for path in (self.latest_session, self.latest_handover)
+            if path is not None
+        ]
+        self.latest_context = max(
+            context_candidates,
+            key=lambda path: path.stat().st_mtime,
+            default=None,
+        )
 
         if self.latest_session is not None:
             self.latest_session_content = self.latest_session.read_text(
+                encoding="utf-8",
+                errors="replace",
+            )
+        if self.latest_context is not None:
+            self.latest_context_content = self.latest_context.read_text(
                 encoding="utf-8",
                 errors="replace",
             )
