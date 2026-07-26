@@ -3,7 +3,72 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Mission Context Workflow Integration
+## Abgeschlossener Plan: Power of Attorney Preparation Workflow
+
+### Ziel und Nicht-Ziele
+
+Den ersten realen Life-Decisions-Workflow für die strukturierte Vorbereitung
+und Überprüfung einer Vorsorgevollmacht auf dem bestehenden Goal Application
+Service aufbauen. Keine Rechtsberatung, Wirksamkeitsprüfung,
+Dokumenterstellung, Persistenz, Cloud- oder Netzwerkfunktion.
+
+### Geprüfter Ausgangszustand
+
+- `LifeDecisionCase` bildet Teilnehmer, Dokumentreferenzen, Fakten, Fragen,
+  Unsicherheiten, Fachprüfungen, Decision Records und Review Schedules bereits
+  als unveränderliches Aggregat mit stabilen IDs ab.
+- Der Goal Application Service erzwingt Mission Context und führt über
+  Orchestrator, Decision Engine, Planner und Execution Engine.
+- Es existiert kein generischer Intake-, Checklist- oder Recommendation-
+  Workflow. Die vorhandene Goal-Kette und das Life-Decisions-Aggregat sind die
+  Erweiterungspunkte.
+- Der Goal-CLI-Pfad unterstützt bereits typisierte optionale Artefakte und
+  maschinenlesbare Ergebnisse.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight und vollständige Bestandsaufnahme durchführen.
+- [x] Fachlich neutrale Workflow-Eingabe und Invarianten modellieren.
+- [x] Workflow mit Goal Application Service integrieren.
+- [x] Bestehenden Goal-CLI-Pfad minimal erweitern.
+- [x] Fach-, Sicherheits-, CLI- und Regressionstests ergänzen.
+- [x] ADR, vollständige Prüfung, Handover und Commit abschließen.
+
+### Entscheidungen und Begründungen
+
+- Der neue Domänenworkflow wird im bestehenden Paket `life_decisions`
+  implementiert und komponiert den vorhandenen Goal Application Service.
+- `LifeDecisionCase` bleibt das Aggregat; Workflow-Modelle referenzieren seine
+  Objekte nur über IDs.
+- Die Ausgabe enthält ausschließlich stabile IDs und Statuswerte.
+- Fehlende oder unbekannte Angaben erzeugen Fragen und Unsicherheiten, niemals
+  erfundene Fakten.
+
+### Risiken
+
+- Professionelle Prüfbedarfe dürfen nur explizit vorgegeben oder aus klaren
+  nutzerkontrollierten Statuswerten abgeleitet werden.
+- Personenbezeichnungen und Dokumentinhalte dürfen nicht in Ergebnis,
+  Decision Journal oder Handover gelangen.
+
+### Teststrategie
+
+- Vollständige, fehlende und ungeprüfte Fälle sowie Konflikte.
+- Aggregatfremde und doppelte IDs.
+- Fachprüfungs- und Unsicherheitssemantik.
+- Determinismus, Unveränderlichkeit, Mission-Context-Gate und CLI.
+- Vollständige Regression, Doctor, Preflight und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+Keine parallele Workflow- oder Persistenzarchitektur wurde benötigt. Der
+Workflow nutzt den bestehenden Goal-CLI-Pfad; `--apply`, `--record` und
+Knowledge-Artefakte bleiben für diesen fachlichen Pfad bewusst ausgeschlossen.
+Die vollständige Regression umfasst 307 erfolgreiche Tests. Doctor,
+Python-3.9-Kompilierung und `git diff --check` waren erfolgreich. ADR-0022
+dokumentiert die neue verbindliche Workflow-Grenze.
+
+## Abgeschlossener Plan: Mission Context Workflow Integration
 
 ### Ziel und Nicht-Ziele
 

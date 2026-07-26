@@ -21,6 +21,23 @@ from life_decisions.models import (
     UncertaintySeverity,
     VerifiedFact,
 )
+from life_decisions.power_of_attorney import (
+    AuthorityArea,
+    AuthorityCoverageStatus,
+    AuthorityScopeAssessment,
+    AuthorizedPersonAssessment,
+    ConflictStatus,
+    DocumentPresence,
+    EvidenceStatus,
+    OrganizationalNextAction,
+    PowerOfAttorneyDocumentAssessment,
+    PowerOfAttorneyWorkflow,
+    PowerOfAttorneyWorkflowError,
+    PowerOfAttorneyWorkflowInput,
+    PowerOfAttorneyWorkflowResult,
+    PowerOfAttorneyWorkflowStatus,
+    RepresentationMode,
+)
 
 __all__ = [
     "CaseStatus",
@@ -44,4 +61,19 @@ __all__ = [
     "Uncertainty",
     "UncertaintySeverity",
     "VerifiedFact",
+    "AuthorityArea",
+    "AuthorityCoverageStatus",
+    "AuthorityScopeAssessment",
+    "AuthorizedPersonAssessment",
+    "ConflictStatus",
+    "DocumentPresence",
+    "EvidenceStatus",
+    "OrganizationalNextAction",
+    "PowerOfAttorneyDocumentAssessment",
+    "PowerOfAttorneyWorkflow",
+    "PowerOfAttorneyWorkflowError",
+    "PowerOfAttorneyWorkflowInput",
+    "PowerOfAttorneyWorkflowResult",
+    "PowerOfAttorneyWorkflowStatus",
+    "RepresentationMode",
 ]

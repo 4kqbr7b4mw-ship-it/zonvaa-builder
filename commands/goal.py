@@ -17,6 +17,11 @@ from goal.why_assessment import (
     WhyAssessmentReason,
     WhyAssessmentStatus,
 )
+from life_decisions.input import parse_power_of_attorney_input
+from life_decisions.power_of_attorney import (
+    PowerOfAttorneyWorkflow,
+    PowerOfAttorneyWorkflowError,
+)
 
 
 class GoalInputError(ValueError):
@@ -201,14 +206,70 @@ def run_goal(
             runtime.identity_context.version,
         )
         artifacts = _create_artifacts(payload)
-    except (GoalInputError, TypeError, ValueError) as exc:
-        raise typer.BadParameter(str(exc), param_hint="--input") from None
-
-    try:
-        result = GoalApplicationService(
+        application_service = GoalApplicationService(
             runtime,
             mission_context=mission_context,
-        ).run(
+        )
+    except (GoalInputError, TypeError, ValueError, RuntimeError) as exc:
+        raise typer.BadParameter(str(exc), param_hint="--input") from None
+
+    workflow_value = payload.get("life_decisions_workflow")
+    if workflow_value is not None:
+        if apply or record or artifacts is not None:
+            raise typer.BadParameter(
+                "Life-Decisions-Workflow unterstützt weder artifacts, "
+                "--apply noch --record.",
+                param_hint="--input",
+            )
+        try:
+            workflow_data = _mapping(
+                workflow_value,
+                "life_decisions_workflow",
+            )
+            workflow_type = _string(workflow_data, "workflow_type")
+            if workflow_type != PowerOfAttorneyWorkflow.WORKFLOW_TYPE:
+                raise GoalInputError(
+                    "Unbekannter Life-Decisions-Workflow: {}".format(
+                        workflow_type
+                    )
+                )
+            workflow_input = parse_power_of_attorney_input(
+                _mapping(
+                    _required(workflow_data, "input"),
+                    "life_decisions_workflow.input",
+                )
+            )
+            workflow_result = PowerOfAttorneyWorkflow(
+                application_service
+            ).run(
+                workflow_input=workflow_input,
+                goal=goal,
+                role=role,
+                memory_types=memory_types,
+                constitution_rules=constitution_rules,
+                why_assessment=assessment,
+            )
+        except (
+            GoalInputError,
+            PowerOfAttorneyWorkflowError,
+            TypeError,
+            ValueError,
+        ) as exc:
+            raise typer.BadParameter(
+                str(exc),
+                param_hint="--input",
+            ) from None
+        typer.echo(
+            json.dumps(
+                workflow_result.to_dict(),
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
+        return
+
+    try:
+        result = application_service.run(
             goal=goal,
             role=role,
             memory_types=memory_types,
