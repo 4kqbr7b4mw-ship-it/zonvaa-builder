@@ -1,8 +1,9 @@
 import re
-from dataclasses import dataclass
-from datetime import datetime, timezone
+from dataclasses import dataclass, field
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any, Dict, Tuple
+from types import MappingProxyType
+from typing import Any, Callable, Dict, Mapping, Tuple
 
 from builder.runtime import RuntimeManager
 
@@ -11,35 +12,154 @@ class PreflightError(RuntimeError):
     """Raised when mandatory project context is structurally incomplete."""
 
 
+_VALIDATED_MISSION = object()
+
+
+@dataclass(frozen=True, init=False)
+class WorkflowContext:
+    schema_version: str
+    generated_at: datetime
+    project_root: str
+    git_branch: str
+    git_commit: str
+
+    @classmethod
+    def _from_mission(
+        cls,
+        mission_context: "MissionContext",
+    ) -> "WorkflowContext":
+        instance = object.__new__(cls)
+        object.__setattr__(
+            instance,
+            "schema_version",
+            mission_context.schema_version,
+        )
+        object.__setattr__(
+            instance,
+            "generated_at",
+            mission_context.generated_at,
+        )
+        object.__setattr__(
+            instance,
+            "project_root",
+            mission_context.project_root,
+        )
+        object.__setattr__(
+            instance,
+            "git_branch",
+            mission_context.git["branch"],
+        )
+        object.__setattr__(
+            instance,
+            "git_commit",
+            mission_context.git["commit"],
+        )
+        return instance
+
+
 @dataclass(frozen=True)
 class MissionContext:
     schema_version: str
     generated_at: datetime
     project_root: str
-    constitution: Dict[str, Any]
-    knowledge: Dict[str, Any]
-    verified_facts: Dict[str, Any]
-    project_state: Dict[str, Any]
-    latest_context: Dict[str, Any]
+    constitution: Mapping[str, Any]
+    knowledge: Mapping[str, Any]
+    verified_facts: Mapping[str, Any]
+    project_state: Mapping[str, Any]
+    latest_context: Mapping[str, Any]
     working_rules: Tuple[str, ...]
-    git: Dict[str, Any]
+    git: Mapping[str, Any]
+    _validation_token: object = field(
+        init=False,
+        repr=False,
+        compare=False,
+        default=None,
+    )
+
+    def __post_init__(self) -> None:
+        if self.schema_version != "1.0":
+            raise ValueError("MissionContext schema_version must be 1.0")
+        if not isinstance(self.generated_at, datetime):
+            raise TypeError("MissionContext generated_at must be a datetime")
+        if (
+            self.generated_at.tzinfo is None
+            or self.generated_at.utcoffset() is None
+        ):
+            raise ValueError(
+                "MissionContext generated_at must be timezone-aware"
+            )
+        if not isinstance(self.project_root, str) or not self.project_root:
+            raise ValueError("MissionContext project_root must not be empty")
+        if not isinstance(self.working_rules, tuple) or not all(
+            isinstance(rule, str) and rule
+            for rule in self.working_rules
+        ):
+            raise TypeError(
+                "MissionContext working_rules must be a tuple of strings"
+            )
+        for field_name in (
+            "constitution",
+            "knowledge",
+            "verified_facts",
+            "project_state",
+            "latest_context",
+            "git",
+        ):
+            value = getattr(self, field_name)
+            if not isinstance(value, Mapping):
+                raise TypeError(
+                    "MissionContext {} must be a mapping".format(field_name)
+                )
+            object.__setattr__(self, field_name, _deep_freeze(value))
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "schema_version": self.schema_version,
             "generated_at": self.generated_at.isoformat(),
             "project_root": self.project_root,
-            "constitution": self.constitution,
-            "knowledge": self.knowledge,
-            "verified_facts": self.verified_facts,
-            "project_state": self.project_state,
-            "latest_context": self.latest_context,
+            "constitution": _deep_thaw(self.constitution),
+            "knowledge": _deep_thaw(self.knowledge),
+            "verified_facts": _deep_thaw(self.verified_facts),
+            "project_state": _deep_thaw(self.project_state),
+            "latest_context": _deep_thaw(self.latest_context),
             "working_rules": list(self.working_rules),
-            "git": self.git,
+            "git": _deep_thaw(self.git),
         }
+
+    def for_workflow(self) -> WorkflowContext:
+        if self._validation_token is not _VALIDATED_MISSION:
+            raise PreflightError(
+                "WorkflowContext requires a validated MissionContext"
+            )
+        return WorkflowContext._from_mission(self)
+
+
+def _deep_freeze(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return MappingProxyType(
+            {
+                key: _deep_freeze(item)
+                for key, item in value.items()
+            }
+        )
+    if isinstance(value, (list, tuple)):
+        return tuple(_deep_freeze(item) for item in value)
+    return value
+
+
+def _deep_thaw(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {
+            key: _deep_thaw(item)
+            for key, item in value.items()
+        }
+    if isinstance(value, tuple):
+        return [_deep_thaw(item) for item in value]
+    return value
 
 
 class PreflightService:
+    MAX_CONTEXT_AGE = timedelta(minutes=5)
     REQUIRED_KNOWLEDGE_AREAS = {
         "adr",
         "protocols",
@@ -58,8 +178,13 @@ class PreflightService:
         "verified_facts",
     }
 
-    def __init__(self, runtime: RuntimeManager) -> None:
+    def __init__(
+        self,
+        runtime: RuntimeManager,
+        clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+    ) -> None:
         self.runtime = runtime
+        self.clock = clock
 
     def build(self) -> MissionContext:
         constitution = self.runtime.constitution
@@ -101,9 +226,9 @@ class PreflightService:
             )
             for key, value in self.runtime.knowledge.items()
         }
-        return MissionContext(
+        context = MissionContext(
             schema_version="1.0",
-            generated_at=datetime.now(timezone.utc),
+            generated_at=self.clock(),
             project_root=str(Path.cwd()),
             constitution={
                 "status": "loaded",
@@ -136,6 +261,63 @@ class PreflightService:
                 "clean": self.runtime.project_state["git_clean"],
             },
         )
+        self._validate(context, require_token=False)
+        object.__setattr__(
+            context,
+            "_validation_token",
+            _VALIDATED_MISSION,
+        )
+        return context
+
+    def validate(self, context: MissionContext) -> None:
+        self._validate(context, require_token=True)
+
+    def _validate(
+        self,
+        context: MissionContext,
+        require_token: bool,
+    ) -> None:
+        if not isinstance(context, MissionContext):
+            raise PreflightError(
+                "Goal workflow requires a validated MissionContext"
+            )
+        if (
+            require_token
+            and context._validation_token is not _VALIDATED_MISSION
+        ):
+            raise PreflightError(
+                "Goal workflow requires a validated MissionContext"
+            )
+        now = self.clock()
+        if now.tzinfo is None or now.utcoffset() is None:
+            raise RuntimeError("Preflight clock must be timezone-aware")
+        age = now - context.generated_at
+        if age < timedelta(seconds=-5) or age > self.MAX_CONTEXT_AGE:
+            raise PreflightError("MissionContext is stale")
+        expected_root = str(Path.cwd())
+        if context.project_root != expected_root:
+            raise PreflightError("MissionContext project root changed")
+        if context.constitution.get("status") != "loaded":
+            raise PreflightError("MissionContext Constitution is invalid")
+        if context.knowledge.get("status") != "loaded":
+            raise PreflightError("MissionContext Knowledge is invalid")
+        if context.git.get("branch") != self.runtime.project_state.get(
+            "git_branch"
+        ):
+            raise PreflightError("MissionContext Git branch changed")
+        if context.git.get("commit") != self.runtime.project_state.get(
+            "git_commit"
+        ):
+            raise PreflightError("MissionContext Git commit changed")
+        if context.project_state != _deep_freeze(
+            self.runtime.project_state
+        ):
+            raise PreflightError("MissionContext Project State changed")
+        if (
+            context.verified_facts
+            != _deep_freeze(self.runtime.verified_facts)
+        ):
+            raise PreflightError("MissionContext Verified Facts changed")
 
     def _constitution_version(self, content: str) -> str:
         match = re.search(r"^Version:\s*(.+?)\s*$", content, re.MULTILINE)
@@ -144,10 +326,14 @@ class PreflightService:
     def _working_rules(self) -> Tuple[str, ...]:
         agents_path = Path("AGENTS.md")
         if not agents_path.exists():
-            return ("AGENTS.md: missing",)
+            agents_path = self.runtime.project_root / "AGENTS.md"
+        if not agents_path.exists():
+            raise PreflightError("AGENTS.md is missing")
         rules = []
         for line in agents_path.read_text(encoding="utf-8").splitlines():
             match = re.match(r"^\d+\.\s+(.+)$", line)
             if match:
                 rules.append(match.group(1))
-        return tuple(rules) if rules else ("AGENTS.md: no numbered rules",)
+        if not rules:
+            raise PreflightError("AGENTS.md contains no numbered rules")
+        return tuple(rules)

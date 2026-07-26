@@ -12,6 +12,7 @@ class RuntimeManager:
     """Initialisiert und hält den aktuellen Builder-Zustand."""
 
     def __init__(self) -> None:
+        self.project_root = Path.cwd().resolve()
         self.identity_context: Optional[IdentityContext] = None
         self.constitution: Optional[str] = None
         self.knowledge: dict = {}

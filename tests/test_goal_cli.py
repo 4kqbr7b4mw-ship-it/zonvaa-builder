@@ -11,6 +11,7 @@ import commands.goal as goal_command
 from brain.context_collector import ContextCollector
 from builder.journal import DecisionJournal
 from builder.main import app
+from builder.preflight import PreflightService
 from builder.runtime import RuntimeManager
 from execution.engine import ExecutionEngine, TargetVerificationError
 from goal.engine import GoalEngine
@@ -73,7 +74,21 @@ def create_runtime():
     )
     runtime.constitution = "Full constitution"
     runtime.verified_facts = {"tests": "passing"}
+    runtime.knowledge = {
+        "adr": [],
+        "protocols": [],
+        "handovers": [],
+        "project": [],
+        "sessions": [],
+        "sources": [],
+        "verified_facts": runtime.verified_facts,
+    }
+    runtime.latest_context = None
     runtime.project_state = {
+        "python_version": "3.9.6",
+        "pytest_version": "8.4.2",
+        "git_branch": "feature",
+        "git_commit": "abc1234",
         "git_clean": True,
         "verified_facts": runtime.verified_facts,
     }
@@ -332,7 +347,12 @@ def test_goal_application_service_is_used(clean_cli, tmp_path, monkeypatch):
     result = invoke_json(tmp_path, input_data())
 
     assert result.exit_code == 0
-    service_class.assert_called_once_with(clean_cli)
+    service_class.assert_called_once()
+    assert service_class.call_args.args == (clean_cli,)
+    assert (
+        service_class.call_args.kwargs["mission_context"].git["commit"]
+        == "abc1234"
+    )
     service.run.assert_called_once()
 
 
@@ -360,6 +380,22 @@ def test_runtime_boot_error_is_reported_without_traceback(tmp_path, monkeypatch)
 
     assert result.exit_code != 0
     assert "Runtime konnte nicht gestartet werden" in result.output
+    assert "Traceback" not in result.output
+
+
+def test_goal_cli_aborts_when_preflight_context_is_invalid(
+    tmp_path,
+    monkeypatch,
+):
+    runtime = create_runtime()
+    runtime.knowledge = {}
+    monkeypatch.setattr(goal_command, "get_runtime", lambda: runtime)
+
+    result = invoke_json(tmp_path, input_data())
+
+    assert result.exit_code != 0
+    assert "Knowledge" in result.output
+    assert "areas are missing" in result.output
     assert "Traceback" not in result.output
 
 

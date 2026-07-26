@@ -3,7 +3,73 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Codex Context and Handover
+## Aktiver Plan: Mission Context Workflow Integration
+
+### Ziel und Nicht-Ziele
+
+Den bestehenden Goal Application Service durch einen validierten Mission
+Context sperren und dessen minimale Workflow-Sicht explizit bis zum
+Orchestrator übergeben. Keine neue Fachlogik, kein neuer Workflow, keine
+Netzwerk-, Cloud-, UI- oder Datenbankfunktion.
+
+### Geprüfter Ausgangszustand
+
+- Der Preflight erzeugt einen `MissionContext`, wurde aber vom Goal-Workflow
+  noch nicht verwendet.
+- `GoalApplicationService` injiziert bereits dieselbe Runtime in Collector,
+  Goal Engine und Orchestrator.
+- Der Orchestrator übergibt technischen Kontext, GoalContext, Identity und
+  WHY-Assessment an die Decision Engine und ruft Planner sowie Execution Engine
+  ausschließlich nach Freigabe auf.
+- Planner und Execution Engine benötigen keinen vollständigen Mission Context.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Verpflichtenden Preflight ausführen und Mission Context prüfen.
+- [x] Application-, Orchestrator-, Decision- und Execution-Verträge lesen.
+- [x] Mission Context tief unveränderlich und zeitlich validierbar machen.
+- [x] Goal Application Service durch Preflight-Validierung sperren.
+- [x] Minimale typisierte Workflow-Sicht an den Orchestrator übergeben.
+- [x] CLI- und Fehlerpfade integrieren.
+- [x] Fokussierte Tests ausführen.
+- [x] Vollständige Tests ausführen.
+- [x] Handover erzeugen.
+- [x] Geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Der bestehende Goal Application Service bildet die kleinste reale
+  vollständige Kette und wird erweitert.
+- Der vollständige Mission Context bleibt am Application-Service-Rand.
+  Der Orchestrator erhält nur unveränderliche Git- und Herkunftsmetadaten.
+- Decision Engine erhält weiterhin ausschließlich ihren technischen Kontext
+  und Goal-Vertrag; Planner und Execution Engine erhalten keinen überflüssigen
+  Projektkontext.
+- Ein WorkflowContext kann nur aus einem MissionContext abgeleitet werden.
+
+### Risiken
+
+- Zeitliche Gültigkeit ist auf fünf Minuten begrenzt; lange Pausen vor dem
+  Start eines Runs verlangen einen neuen Preflight.
+- Bestehende direkte Legacy-Orchestrator-Aufrufe bleiben kompatibel; nur der
+  Goal-basierte Pfad verlangt den WorkflowContext.
+
+### Teststrategie
+
+- Erfolgreicher vollständiger Goal-Workflow.
+- Fehlender, strukturell ungültiger und veralteter Mission Context.
+- Tiefe Unveränderlichkeit und deterministische Ableitung.
+- Minimale Kontextweitergabe pro Komponente.
+- Vollständige Regression, Doctor, Preflight und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+Keine Abweichung vom gewählten Goal-Workflow. Die vollständige Integration,
+Fehlerpfade und Kontextgrenzen sind umgesetzt. 292 Tests, Doctor, produktiver
+Preflight und `git diff --check` waren erfolgreich. Der lokale Handover ist
+erzeugt und gehört zum geprüften Abschlusscommit. Es wurde nicht gepusht.
+
+## Abgeschlossener Plan: Codex Context and Handover
 
 ### Ziel
 

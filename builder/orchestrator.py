@@ -2,6 +2,7 @@ from typing import Any, Iterable, Optional
 
 from brain.decision_engine import DecisionEngine
 from builder.planner import Planner
+from builder.preflight import WorkflowContext
 from execution.engine import ExecutionEngine, ExecutionError
 from execution.models import DocumentArtifact
 from goal.models import GoalContext
@@ -30,11 +31,19 @@ class Orchestrator:
         goal: str,
         context: dict[str, Any],
         goal_context: Optional[GoalContext] = None,
+        workflow_context: Optional[WorkflowContext] = None,
         identity_context: Optional[IdentityContext] = None,
         why_assessment: Optional[WhyAssessment] = None,
         document_artifacts: Optional[Iterable[DocumentArtifact]] = None,
         apply: bool = False,
     ) -> dict[str, Any]:
+        if goal_context is not None and not isinstance(
+            workflow_context,
+            WorkflowContext,
+        ):
+            raise ValueError(
+                "goal_context requires validated workflow_context"
+            )
         decision = self.decision_engine.decide(
             goal=goal,
             context=context,

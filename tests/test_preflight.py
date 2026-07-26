@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -8,16 +9,21 @@ from typer.testing import CliRunner
 import commands.preflight as preflight_command
 from builder.main import app
 from builder.preflight import PreflightError, PreflightService
+from builder.preflight import WorkflowContext
 
 
 runner = CliRunner()
 
 
 def runtime_context(tmp_path):
+    agents = tmp_path / "AGENTS.md"
+    if not agents.exists():
+        agents.write_text("1. Run preflight.\n", encoding="utf-8")
     session = tmp_path / "knowledge" / "sessions" / "latest.md"
     session.parent.mkdir(parents=True)
     session.write_text("# Latest", encoding="utf-8")
     return SimpleNamespace(
+        project_root=tmp_path,
         constitution="# Constitution\n\nVersion: 1.0\n",
         knowledge={
             "adr": [Path("knowledge/adr/ADR-0001.md")],
@@ -63,6 +69,59 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
         "Do not speculate.",
     ]
     assert context["git"]["commit"] == "abc1234"
+
+
+def test_mission_context_is_deeply_immutable(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    context = PreflightService(runtime_context(tmp_path)).build()
+
+    with pytest.raises(TypeError):
+        context.git["commit"] = "changed"
+    with pytest.raises(TypeError):
+        context.verified_facts["tests"]["verified"] = False
+
+
+def test_workflow_context_can_only_be_derived_from_mission_context(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    mission = PreflightService(runtime_context(tmp_path)).build()
+
+    with pytest.raises(TypeError):
+        WorkflowContext(
+            schema_version="1.0",
+            generated_at=mission.generated_at,
+            project_root=mission.project_root,
+            git_branch="feature",
+            git_commit="abc1234",
+        )
+    assert mission.for_workflow().git_commit == "abc1234"
+
+
+def test_preflight_is_deterministic_for_same_runtime_and_clock(
+    tmp_path,
+    monkeypatch,
+):
+    monkeypatch.chdir(tmp_path)
+    runtime = runtime_context(tmp_path)
+    now = datetime(2026, 7, 26, 12, 0, tzinfo=timezone.utc)
+    service = PreflightService(runtime, clock=lambda: now)
+
+    assert service.build().to_dict() == service.build().to_dict()
+
+
+def test_stale_mission_context_is_rejected(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    runtime = runtime_context(tmp_path)
+    now = datetime(2026, 7, 26, 12, 0, tzinfo=timezone.utc)
+    clock = [now]
+    service = PreflightService(runtime, clock=lambda: clock[0])
+    context = service.build()
+    clock[0] = now + timedelta(minutes=6)
+
+    with pytest.raises(PreflightError, match="stale"):
+        service.validate(context)
 
 
 def test_preflight_marks_absent_session_and_handover_as_missing(

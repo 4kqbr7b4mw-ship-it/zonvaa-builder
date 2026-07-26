@@ -8,6 +8,7 @@ import typer
 from builder.goal_application_service import GoalApplicationService
 from builder.journal import DecisionJournal
 from builder.orchestrator import GoalApplyError
+from builder.preflight import PreflightService
 from builder.runtime import get_runtime
 from execution.models import DocumentArtifact
 from goal.models import Goal
@@ -186,6 +187,7 @@ def run_goal(
 
     try:
         runtime = get_runtime()
+        mission_context = PreflightService(runtime).build()
     except (OSError, UnicodeError, RuntimeError) as exc:
         raise typer.BadParameter(
             "Runtime konnte nicht gestartet werden: {}".format(exc),
@@ -203,7 +205,10 @@ def run_goal(
         raise typer.BadParameter(str(exc), param_hint="--input") from None
 
     try:
-        result = GoalApplicationService(runtime).run(
+        result = GoalApplicationService(
+            runtime,
+            mission_context=mission_context,
+        ).run(
             goal=goal,
             role=role,
             memory_types=memory_types,

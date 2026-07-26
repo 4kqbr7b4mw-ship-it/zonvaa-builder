@@ -1,10 +1,12 @@
 from datetime import datetime, timezone
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import Mock
 
 import pytest
 
 from builder.orchestrator import Orchestrator
+from builder.preflight import PreflightService
 from goal.engine import GoalEngine
 from goal.models import Goal
 from goal.why_assessment import (
@@ -47,6 +49,33 @@ def create_identity(version="identity-version"):
     )
 
 
+def create_workflow_context():
+    runtime = SimpleNamespace(
+        project_root=Path.cwd(),
+        constitution="# Constitution\n\nVersion: 1.0",
+        knowledge={
+            "adr": [],
+            "protocols": [],
+            "handovers": [],
+            "project": [],
+            "sessions": [],
+            "sources": [],
+            "verified_facts": {},
+        },
+        verified_facts={},
+        project_state={
+            "python_version": "3.9.6",
+            "pytest_version": "8.4.2",
+            "git_branch": "feature",
+            "git_commit": "abc1234",
+            "git_clean": True,
+            "verified_facts": {},
+        },
+        latest_context=None,
+    )
+    return PreflightService(runtime).build().for_workflow()
+
+
 def create_assessment(
     goal,
     status=WhyAssessmentStatus.ALIGNED,
@@ -87,6 +116,7 @@ def goal_run(
             "risks": ["Repository ist nicht sauber."] if git_dirty else [],
         },
         goal_context=goal_context,
+        workflow_context=create_workflow_context(),
         identity_context=identity_context,
         why_assessment=why_assessment,
     )
@@ -107,6 +137,18 @@ def test_legacy_approved_call_keeps_existing_result_and_plan():
     }
     assert result["plan"]
     assert result["execution"]
+
+
+def test_goal_context_without_validated_workflow_context_is_rejected():
+    goal_context = create_goal_context()
+
+    with pytest.raises(ValueError, match="workflow_context"):
+        Orchestrator().run(
+            goal=goal_context.goal.title,
+            context={"summary": {"git_dirty": False}, "risks": []},
+            goal_context=goal_context,
+            identity_context=create_identity(),
+        )
 
 
 def test_legacy_technical_blocker_creates_no_plan_or_execution():
@@ -138,6 +180,7 @@ def test_goal_inputs_are_forwarded_unchanged_to_decision_engine():
         goal=goal_context.goal.title,
         context=context,
         goal_context=goal_context,
+        workflow_context=create_workflow_context(),
         identity_context=identity_context,
         why_assessment=assessment,
     )
@@ -229,6 +272,7 @@ def test_mismatched_assessment_goal_is_rejected_by_decision_engine():
             goal=goal_context.goal.title,
             context={"summary": {"git_dirty": False}, "risks": []},
             goal_context=goal_context,
+            workflow_context=create_workflow_context(),
             identity_context=create_identity(),
             why_assessment=assessment,
         )
@@ -246,6 +290,7 @@ def test_mismatched_identity_version_is_rejected_by_decision_engine():
             goal=goal_context.goal.title,
             context={"summary": {"git_dirty": False}, "risks": []},
             goal_context=goal_context,
+            workflow_context=create_workflow_context(),
             identity_context=create_identity(),
             why_assessment=assessment,
         )

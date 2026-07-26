@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 
 from builder.goal_application_service import GoalApplicationService
+from builder.preflight import PreflightService
 from builder.runtime import RuntimeManager
 from goal.models import Goal
 from goal.why_assessment import (
@@ -28,7 +29,10 @@ def test_booted_runtime_reaches_pending_execution(monkeypatch):
         status=WhyAssessmentStatus.ALIGNED,
         reason=WhyAssessmentReason.EXPLICIT_ALIGNMENT_CONFIRMED,
     )
-    service = GoalApplicationService(runtime)
+    service = GoalApplicationService(
+        runtime,
+        mission_context=PreflightService(runtime).build(),
+    )
 
     def clean_git(command):
         if command[:2] == ["git", "status"]:

@@ -1,4 +1,5 @@
-from datetime import datetime, timezone
+from dataclasses import replace
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -8,6 +9,11 @@ import brain.context_collector as collector_module
 from brain.context_analyzer import ContextAnalyzer
 from brain.context_collector import ContextCollector
 from builder.goal_application_service import GoalApplicationService
+from builder.preflight import (
+    PreflightError,
+    PreflightService,
+    WorkflowContext,
+)
 from builder.runtime import RuntimeManager
 from goal.engine import GoalEngine
 from goal.models import Goal
@@ -43,7 +49,21 @@ def create_runtime(git_clean=True):
     )
     runtime.constitution = "Full constitution text that must not be parsed."
     runtime.verified_facts = {"tests": "passing"}
+    runtime.knowledge = {
+        "adr": [],
+        "protocols": [],
+        "handovers": [],
+        "project": [],
+        "sessions": [],
+        "sources": [],
+        "verified_facts": runtime.verified_facts,
+    }
+    runtime.latest_context = None
     runtime.project_state = {
+        "python_version": "3.9.6",
+        "pytest_version": "8.4.2",
+        "git_branch": "feature",
+        "git_commit": "abc1234",
         "git_clean": git_clean,
         "verified_facts": runtime.verified_facts,
     }
@@ -73,6 +93,7 @@ def create_service(runtime, git_dirty=False, **overrides):
     collector.collect.return_value = create_project_context(runtime, git_dirty)
     return GoalApplicationService(
         runtime=runtime,
+        mission_context=PreflightService(runtime).build(),
         context_collector=collector,
         **overrides,
     )
@@ -143,7 +164,10 @@ def test_default_service_collector_uses_exact_runtime(monkeypatch):
         lambda: pytest.fail("global runtime must not be used"),
     )
 
-    service = GoalApplicationService(runtime)
+    service = GoalApplicationService(
+        runtime,
+        mission_context=PreflightService(runtime).build(),
+    )
 
     assert service.runtime is runtime
     assert service.context_collector.runtime is runtime
@@ -175,6 +199,7 @@ def test_service_passes_invocation_and_runtime_data_to_goal_engine():
         project_state=runtime.project_state,
     )
     goal_context = orchestrator.run.call_args.kwargs["goal_context"]
+    workflow_context = orchestrator.run.call_args.kwargs["workflow_context"]
     assert goal_context.goal is goal
     assert goal_context.role == role
     assert goal_context.memory_types == (
@@ -184,6 +209,8 @@ def test_service_passes_invocation_and_runtime_data_to_goal_engine():
     assert goal_context.constitution_rules == tuple(rules)
     assert goal_context.verified_facts == runtime.verified_facts
     assert goal_context.project_state == runtime.project_state
+    assert isinstance(workflow_context, WorkflowContext)
+    assert workflow_context.git_commit == "abc1234"
     assert orchestrator.run.call_args.kwargs["identity_context"] is runtime.identity_context
     assert result is orchestrator.run.return_value
 
@@ -210,6 +237,64 @@ def test_service_rejects_non_goal_value():
 def test_service_rejects_unbooted_runtime():
     with pytest.raises(RuntimeError, match="booted runtime"):
         GoalApplicationService(RuntimeManager())
+
+
+def test_service_rejects_booted_runtime_without_preflight():
+    with pytest.raises(PreflightError, match="MissionContext"):
+        GoalApplicationService(create_runtime())
+
+
+def test_service_rejects_invalid_mandatory_mission_context():
+    runtime = create_runtime()
+    context = PreflightService(runtime).build()
+    invalid = replace(
+        context,
+        constitution={"status": "missing"},
+    )
+
+    with pytest.raises(PreflightError, match="validated MissionContext"):
+        GoalApplicationService(runtime, mission_context=invalid)
+
+
+def test_service_revalidates_context_before_each_run():
+    runtime = create_runtime()
+    context = PreflightService(runtime).build()
+    service = create_service(runtime)
+    service.mission_context = context
+    service.preflight.clock = lambda: (
+        context.generated_at + timedelta(minutes=6)
+    )
+
+    with pytest.raises(PreflightError, match="stale"):
+        run_service(service, create_goal())
+
+
+def test_service_passes_only_minimal_workflow_context_to_orchestrator():
+    runtime = create_runtime()
+    context = PreflightService(runtime).build()
+    orchestrator = Mock()
+    orchestrator.run.return_value = {
+        "decision": {},
+        "plan": [],
+        "execution": [],
+    }
+    service = GoalApplicationService(
+        runtime,
+        mission_context=context,
+        context_collector=create_service(runtime).context_collector,
+        orchestrator=orchestrator,
+    )
+
+    run_service(service, create_goal())
+
+    assert service.mission_context is context
+    assert "mission_context" not in orchestrator.run.call_args.kwargs
+    workflow_context = orchestrator.run.call_args.kwargs["workflow_context"]
+    assert workflow_context == context.for_workflow()
+    assert not hasattr(workflow_context, "verified_facts")
+    assert not hasattr(workflow_context, "knowledge")
+    with pytest.raises(TypeError):
+        context.project_state["git_clean"] = False
 
 
 def test_without_assessment_needs_review_without_plan_or_execution():
