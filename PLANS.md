@@ -3,6 +3,73 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Architecture Integrator Agent
+
+### Ziel und Nicht-Ziele
+
+Einen deterministischen, rein beratenden Architecture Integrator einführen,
+der den verbindlichen Architekturkontext priorisiert lädt, externe Entwürfe
+nachvollziehbar vergleicht, eine nicht bindende Entscheidungsvorlage erzeugt
+und nur aus einer expliziten Chief-Architect-Entscheidung einen
+eigenständigen Codex-Auftrag ableitet. Keine automatische Freigabe, keine
+externen KI-Aufrufe, keine Produkt- oder Workflow-Änderung und keine
+Repository-Mutation durch die Analyse.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `449d12b` war erfolgreich.
+- Runtime lädt Constitution, Governance, Institution, Interaction und die
+  vorhandenen Knowledge-Bereiche; `knowledge/mdr` wird noch nicht durch den
+  KnowledgeManager entdeckt.
+- MDR-0001 ist verbindliche Detailquelle, ADR-0023/0024/0026 sind historisch.
+- Es gibt keinen Integrator, kein typisiertes Proposal-/Analyse-/
+  Chief-Decision-Modell und keinen Architecture-CLI-Zweig.
+- Handover, atomare lokale Ausgabe und unveränderliche Dataclass-/Enum-Muster
+  sind vorhanden und werden wiederverwendet.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Runtime, KnowledgeManager, Normquellen, CLI und Testkonventionen
+  prüfen.
+- [x] Typisierte Modelle, Kontext-Lader und deterministische Analyse
+  implementieren.
+- [x] Entscheidungsvorlage und bestätigungsgebundene Prompt-Erzeugung
+  ergänzen.
+- [x] CLI, ADR, Übersicht und Beispiele dokumentieren.
+- [x] Fokussierte und vollständige Tests, Doctor und Diff prüfen.
+- [x] Handover erzeugen und vorgegebenen Commit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- RuntimeManager und KnowledgeManager bleiben Quellen des geladenen Zustands;
+  der Integrator führt keinen parallelen Architekturspeicher ein.
+- Normative Priorität wird als explizite, stabile Enum-Reihenfolge modelliert.
+- Konflikte werden nur aus nachvollziehbarer textlicher Gegenläufigkeit
+  markiert und niemals automatisch aufgelöst; nicht belegbare Beziehungen
+  bleiben Ergänzung oder offene Frage.
+- Analyse bleibt read-only und gibt deterministisches JSON sowie eine kompakte
+  Vorlage aus.
+
+### Risiken und Teststrategie
+
+- Lexikalisch deterministische Analyse ersetzt keine menschliche semantische
+  Architekturentscheidung; geringe Konfidenz und offene Fragen müssen dies
+  sichtbar machen.
+- Historische ADRs dürfen Kontext liefern, aber keine aktuelle Normwirkung
+  erhalten.
+- Tests prüfen Priorität, Hashes, Konflikt/Additiv/Redundanz, Unveränderlichkeit,
+  fehlende Quellen, Prompt-Gate, Determinismus und unveränderte Quelldateien.
+
+### Abweichungen und Abschlusszustand
+
+Der Architecture Integrator lädt C1, MDR, C2, Spezifikationen, aktuelle ADRs,
+C3, historische ADRs und den letzten Handover in stabiler Priorität. Er
+erzeugt ausschließlich eine nicht bindende, nachvollziehbare Analyse und
+eine kompakte Entscheidungsvorlage. Ein eigenständiger Codex-Auftrag entsteht
+nur aus einem validierten Chief-Architect-Entscheidungsobjekt. MDR-0001 bleibt
+priorisierte Detailquelle; Analyse und CLI verändern keine Architekturquelle.
+442 Tests bestehen, Doctor und `git diff --check` sind erfolgreich.
+
 ## Abgeschlossener Plan: Guardian Master Decision Record
 
 ### Ziel und Nicht-Ziele

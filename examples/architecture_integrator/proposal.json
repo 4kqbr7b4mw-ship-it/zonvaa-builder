@@ -1,0 +1,19 @@
+{
+  "content": "- Architecture consultations receive a local review record.",
+  "known_constraints": [
+    "Do not weaken C1 or MDR-0001."
+  ],
+  "proposal_id": "example-proposal-001",
+  "related_layers": [
+    "GOVERNANCE",
+    "CROSS_LAYER"
+  ],
+  "requested_scope": "Add an auditable architecture consultation record.",
+  "source": "Anonymized external architecture draft",
+  "source_references": [
+    "knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md"
+  ],
+  "source_role": "OTHER",
+  "submitted_at": "2026-07-26T17:30:00+00:00",
+  "title": "Architecture consultation record"
+}

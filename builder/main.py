@@ -2,6 +2,10 @@ import typer
 
 from builder.runtime import get_runtime
 from commands.build import build
+from commands.architecture import (
+    create_codex_prompt,
+    integrate_architecture,
+)
 from commands.doctor import doctor
 from commands.handover import handover
 from commands.goal import run_goal
@@ -14,6 +18,7 @@ app = typer.Typer(help="ZONVAA Builder CLI")
 
 role_app = typer.Typer(help="Rollen verwalten")
 goal_app = typer.Typer(help="Ziele ausführen")
+architecture_app = typer.Typer(help="Architekturentwürfe integrieren")
 
 app.command("build")(build)
 app.command("handover")(handover)
@@ -24,9 +29,12 @@ app.command("release")(release)
 
 role_app.command("create")(create_role)
 goal_app.command("run")(run_goal)
+architecture_app.command("integrate")(integrate_architecture)
+architecture_app.command("codex-prompt")(create_codex_prompt)
 
 app.add_typer(role_app, name="role")
 app.add_typer(goal_app, name="goal")
+app.add_typer(architecture_app, name="architecture")
 
 
 @app.callback()

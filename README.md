@@ -1,5 +1,24 @@
 # ZONVAA Builder
 
+## Architekturentwürfe integrieren
+
+Der [Architecture Integrator](architecture_integrator/README.md) vergleicht
+externe Architekturentwürfe deterministisch mit Constitution, MDRs,
+Governance, Institution, Interaction und ADRs. Er berät ausschließlich; der
+Chief Architect entscheidet, und erst eine bestätigte Entscheidung kann in
+einen Codex-Auftrag überführt werden.
+
+```text
+python3 -m builder.main architecture integrate --input proposal.json
+python3 -m builder.main architecture codex-prompt \
+  --analysis analysis.json \
+  --decision decision.json \
+  --output codex-prompt.md
+```
+
+Die Befehle rufen keine externen KI-Dienste auf und veröffentlichen keine
+Architekturentscheidung.
+
 ## Goal ausführen
 
 Ein vorhandenes Goal kann programmgesteuert über den Goal Application Service ausgeführt werden:

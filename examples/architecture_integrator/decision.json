@@ -1,0 +1,14 @@
+{
+  "accepted_elements": [
+    "Architecture consultations receive a local review record."
+  ],
+  "decided_at": "2026-07-26T17:35:00+00:00",
+  "decided_by": "Chief Architect",
+  "decision": "ADOPT",
+  "decision_id": "example-decision-001",
+  "deferred_elements": [],
+  "modified_elements": [],
+  "proposal_id": "example-proposal-001",
+  "rationale": "The record improves traceability without granting decision authority.",
+  "rejected_elements": []
+}

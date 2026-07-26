@@ -11,6 +11,7 @@ class KnowledgeManager:
     REQUIRED_FOLDERS = (
         "adr",
         "handovers",
+        "mdr",
         "project",
         "protocols",
         "sessions",
@@ -34,6 +35,7 @@ class KnowledgeManager:
             )
         return {
             "adr": sorted((self.root / "adr").glob("*.md")),
+            "mdr": sorted((self.root / "mdr").glob("*.md")),
             "protocols": sorted((self.root / "protocols").glob("*.md")),
             "handovers": sorted(
                 list((self.root / "handovers").glob("*.md"))

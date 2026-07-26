@@ -1,0 +1,62 @@
+{
+  "additive_elements": [
+    "Architecture consultations receive a local review record."
+  ],
+  "affected_documents": [
+    "knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md"
+  ],
+  "affected_layers": [
+    "GOVERNANCE",
+    "CROSS_LAYER"
+  ],
+  "aligned_elements": [],
+  "applicable_norms": [
+    "C1-CONSTITUTION"
+  ],
+  "confidence": 0.5,
+  "conflicting_elements": [],
+  "decision_required": [
+    "Confirm the non-binding ADOPT recommendation for proposal example-proposal-001."
+  ],
+  "duplicate_elements": [],
+  "implementation_risks": [
+    "Deterministic lexical comparison cannot establish semantic equivalence beyond explicit textual propositions.",
+    "No proposal element is binding until the Chief Architect confirms a separate decision object."
+  ],
+  "loaded_context_sources": [
+    {
+      "hash": "5f73d5458924faa9caff8b10e23334177e610c53195699aca7bc18fd4874092f",
+      "norm_level": "C1",
+      "path": "constitution/constitution.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "C1-CONSTITUTION",
+      "status": "BINDING",
+      "version": "2.1"
+    }
+  ],
+  "proposal": {
+    "content": "- Architecture consultations receive a local review record.",
+    "known_constraints": [
+      "Do not weaken C1 or MDR-0001."
+    ],
+    "proposal_id": "example-proposal-001",
+    "related_layers": [
+      "GOVERNANCE",
+      "CROSS_LAYER"
+    ],
+    "requested_scope": "Add an auditable architecture consultation record.",
+    "source": "Anonymized external architecture draft",
+    "source_references": [
+      "knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md"
+    ],
+    "source_role": "OTHER",
+    "submitted_at": "2026-07-26T17:30:00+00:00",
+    "title": "Architecture consultation record"
+  },
+  "proposal_summary": "Proposal example-proposal-001 was compared with the loaded architecture. 0 aligned, 1 additive, 0 conflicting, and 0 duplicate elements were identified. The recommendation is advisory. Only the Chief Architect may decide.",
+  "recommendation": "ADOPT",
+  "schema_version": "1.0",
+  "unresolved_questions": [
+    "Chief Architect must confirm whether additive elements become binding architecture."
+  ]
+}
