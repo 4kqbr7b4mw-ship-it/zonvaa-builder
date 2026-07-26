@@ -10,6 +10,7 @@ ZONVAA. Er steht zwischen Constitution und fachlichem Wissen.
 - [Conversation](conversation.md): Gesprächsbeginn und Entscheidungsraum-Hypothesen
 - [Trust](trust.md): Vertrauensgrenzen und Reparatur
 - [Ethics](ethics.md): Autonomie, Schutz und Notfall-Override
+- [Continuity](continuity.md): Unternehmensunabhängigkeit, Portabilität und Sunset-Fähigkeit
 - [Anti-Patterns](anti_patterns.md): unzulässige Verhaltensmuster
 - [Guardian Research](guardian_research.md): Forschungsfelder und Evidenzregeln
 
@@ -22,4 +23,5 @@ ZONVAA. Er steht zwischen Constitution und fachlichem Wissen.
 5. Selbstwirksamkeit hat Vorrang vor Bindung.
 6. Notfälle dürfen die normale Gesprächsdramaturgie übersteuern.
 7. Fehler und Vertrauensbrüche müssen reparierbar sein.
-8. Untergeordnete technische Ebenen dürfen diese Regeln nicht umgehen.
+8. Nutzerwissen und Guardian-Kontext müssen unabhängig vom Fortbestand des Unternehmens portierbar bleiben.
+9. Untergeordnete technische Ebenen dürfen diese Regeln nicht umgehen.
