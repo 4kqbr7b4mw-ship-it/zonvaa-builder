@@ -3,6 +3,69 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Guardian Conversation Lab
+
+### Ziel und Nicht-Ziele
+
+ADR-0023 mit 100 anonymisierten, deterministischen Gesprächssimulationen
+fachlich validieren und daraus Style Guide, Regeln, Anti-Patterns, Taxonomie
+und offene Fragen ableiten. Keine UI, Sprachschnittstelle, Fachberatung,
+Workflow-Änderung oder neue Laufzeitkomponente.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `2850492` war erfolgreich.
+- Constitution 1.1 und ADR-0023 definieren S-V-N-P verbindlich.
+- Es gibt noch kein Conversation Lab, keine Simulationsmatrix und keinen
+  automatisierten Abdeckungstest.
+- Es existiert keine geeignete generische Lab- oder Conversation-Struktur.
+  Projektwissen und Sources sind die vorhandenen Ablagen für Dokumentation und
+  maschinenlesbare Testdaten.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, ADR-0023, Knowledge-Struktur und Testkonventionen prüfen.
+- [x] Deterministische Matrix mit 100 diversen Fällen erstellen.
+- [x] Style Guide, Regeln, Taxonomie und Anti-Patterns dokumentieren.
+- [x] Stabile S-V-N-P-, Datenschutz- und Abdeckungsregeln testen.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Das Lab bleibt Test- und Wissensartefakt; Produktcode wird nur bei einem
+  belegten Modellmangel verändert.
+- Hintergrundklassifikation bleibt unsichtbare Metadaten und erzeugt keinen
+  Workflow.
+- Qualität wird über explizite Kriterien und Coverage-Invarianten geprüft,
+  nicht durch LLM-Selbsteinschätzung.
+
+### Risiken
+
+- Simulationen beweisen kein reales Nutzervertrauen und ersetzen keine spätere
+  Forschung mit freiwilligen Teilnehmenden.
+- Regelbasierte Tests können Gesprächsqualität nur strukturell, nicht
+  semantisch vollständig bewerten.
+
+### Teststrategie
+
+- Exakt 100 eindeutige Fälle mit breiter Themen-, Stil-, Alters-, Bildungs-
+  und Emotionsabdeckung.
+- Keine Workflow-Sichtbarkeit, Fachberatung, Preislogik oder sensiblen Daten.
+- Zusammenfassung, Anschlussfrage, Klassifikation, Risiken und Verbesserung
+  sind pro Fall explizit.
+- Vollständige Regression, Doctor und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+Die Matrix enthält 100 eindeutige Einstiege über 25 Themen, vier
+Kommunikationsstile, fünf Altersgruppen, vier sprachliche Bildungskontexte,
+acht emotionale Zustände, alle Bedarfsklassen sowie bekannte, neue und nicht
+vorhandene Entscheidungsräume. Neun deterministische Lab-Tests prüfen
+Abdeckung, S-V-N-P-Grenzen, Datenschutz und unsichtbares Workflow-Routing.
+Kein Produktcode und kein fachlicher Workflow mussten geändert werden.
+334 Tests, Doctor und `git diff --check` waren erfolgreich.
+
 ## Abgeschlossener Plan: Guardian Conversation Principles
 
 ### Ziel und Nicht-Ziele

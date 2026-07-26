@@ -1,0 +1,74 @@
+{
+  "changed_files": [
+    "PLANS.md",
+    "knowledge/project/guardian-conversation-lab.md",
+    "knowledge/sources/guardian-conversation-lab.json",
+    "tests/guardian_conversation_lab_data.py",
+    "tests/test_guardian_conversation_lab.py"
+  ],
+  "checks": [
+    {
+      "command": "python3 -m pytest -q tests/test_guardian_conversation_lab.py",
+      "result": "9 passed",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m pytest -q",
+      "result": "334 passed in 11.56s",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m builder.main doctor",
+      "result": "ZONVAA Builder CLI funktioniert.",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "No errors.",
+      "status": "passed"
+    }
+  ],
+  "decisions": [
+    "The Conversation Lab is a test and knowledge artifact, not a new runtime architecture.",
+    "Background classification remains provisional and invisible in the first Guardian turn.",
+    "New decision spaces are marked without inventing workflows.",
+    "No new ADR was necessary because ADR-0023 already defines the governing contract."
+  ],
+  "ending_commit": null,
+  "functional_changes": [
+    "Added 100 anonymized deterministic Guardian conversation simulations.",
+    "Documented Guardian style, rules, anti-patterns, need taxonomy, decision-space handling, help gates, and open questions.",
+    "Validated hidden workflow matching without exposing it to the simulated user."
+  ],
+  "git_status": [
+    "M PLANS.md",
+    "?? knowledge/project/guardian-conversation-lab.md",
+    "?? knowledge/sources/guardian-conversation-lab.json",
+    "?? tests/guardian_conversation_lab_data.py",
+    "?? tests/test_guardian_conversation_lab.py"
+  ],
+  "intentionally_not_implemented": [
+    "No UI, speech interface, product runtime, pricing logic, network, cloud, or external dependency.",
+    "No legal, medical, or financial advice and no domain-workflow change."
+  ],
+  "open_risks": [
+    "Curated simulations cannot demonstrate actual sympathy or trust in real users.",
+    "Rule-based tests validate structure but cannot fully judge semantic conversation quality.",
+    "The governance and lifecycle of provisional background classifications remain open."
+  ],
+  "push_status": "not_pushed",
+  "recommended_next_step": "Define a minimal reviewable Guardian conversation contract only after deciding classification transparency, correction, and expiry.",
+  "relevant_adrs": [
+    "ADR-0008",
+    "ADR-0023"
+  ],
+  "schema_version": "1.0",
+  "starting_commit": "2850492b10ee27d00d2af15aa49fdad07160c2a7",
+  "task": "Validate Guardian conversations with 100 simulations",
+  "technical_changes": [
+    "Added a deterministic local matrix generator and machine-readable source artifact.",
+    "Added nine structural regression tests for diversity, SVNP, privacy, routing, and evaluation completeness.",
+    "Kept the lab entirely outside product runtime and domain workflows."
+  ],
+  "timestamp": "2026-07-26T15:02:00+00:00"
+}
