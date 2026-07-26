@@ -10,6 +10,7 @@ import commands.preflight as preflight_command
 from builder.main import app
 from builder.preflight import PreflightError, PreflightService
 from builder.preflight import WorkflowContext
+from governance.loader import GovernanceLoader
 from institution.models import InstitutionContext, InstitutionGuarantee
 from interaction.models import InteractionContext, InteractionPrinciple
 
@@ -24,6 +25,11 @@ def runtime_context(tmp_path):
     session = tmp_path / "knowledge" / "sessions" / "latest.md"
     session.parent.mkdir(parents=True)
     session.write_text("# Latest", encoding="utf-8")
+    constitution = (
+        Path(__file__).resolve().parents[1]
+        / "constitution"
+        / "constitution.md"
+    ).read_text(encoding="utf-8")
     return SimpleNamespace(
         project_root=tmp_path,
         institution_context=InstitutionContext(
@@ -40,7 +46,8 @@ def runtime_context(tmp_path):
             content_hash="b" * 64,
             principles=tuple(InteractionPrinciple),
         ),
-        constitution="# Constitution\n\nVersion: 1.0\n",
+        constitution=constitution,
+        governance_context=GovernanceLoader().load(constitution),
         knowledge={
             "adr": [Path("knowledge/adr/ADR-0001.md")],
             "protocols": [],
@@ -73,7 +80,19 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
 
     context = PreflightService(runtime_context(tmp_path)).build().to_dict()
 
-    assert context["schema_version"] == "1.2"
+    assert context["schema_version"] == "1.3"
+    assert context["governance"]["status"] == "loaded"
+    assert context["governance"]["constitution"]["version"] == "2.0"
+    assert context["governance"]["charter"]["version"] == "1.0"
+    assert (
+        context["governance"]["operative_rules"]["version"]
+        == "1.0"
+    )
+    assert context["governance"]["norm_levels"] == [
+        "c1_constitution",
+        "c2_governance_charter",
+        "c3_operative_rules",
+    ]
     assert context["institution"] == {
         "status": "loaded",
         "path": "institution/institution.md",
@@ -95,7 +114,7 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
     assert context["constitution"] == {
         "status": "loaded",
         "path": "constitution/constitution.md",
-        "version": "1.0",
+        "version": "2.0",
     }
     assert context["knowledge"]["status"] == "loaded"
     assert context["latest_context"]["kind"] == "sessions"
@@ -125,7 +144,7 @@ def test_workflow_context_can_only_be_derived_from_mission_context(
 
     with pytest.raises(TypeError):
         WorkflowContext(
-            schema_version="1.2",
+            schema_version="1.3",
             generated_at=mission.generated_at,
             project_root=mission.project_root,
             git_branch="feature",
@@ -181,6 +200,7 @@ def test_preflight_marks_absent_session_and_handover_as_missing(
     [
         ("institution_context", None, "Institution"),
         ("interaction_context", None, "Interaction"),
+        ("governance_context", None, "Governance"),
         ("constitution", "", "Constitution"),
         ("knowledge", {}, "Knowledge areas"),
         ("project_state", {}, "Project state fields"),
@@ -196,6 +216,14 @@ def test_preflight_rejects_structurally_incomplete_context(
     setattr(runtime, attribute, value)
 
     with pytest.raises(PreflightError, match=message):
+        PreflightService(runtime).build()
+
+
+def test_preflight_rejects_governance_for_another_constitution(tmp_path):
+    runtime = runtime_context(tmp_path)
+    runtime.constitution = runtime.constitution + "\nChanged.\n"
+
+    with pytest.raises(PreflightError, match="does not match"):
         PreflightService(runtime).build()
 
 

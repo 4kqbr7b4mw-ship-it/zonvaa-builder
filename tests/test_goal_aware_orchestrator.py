@@ -9,6 +9,7 @@ from builder.orchestrator import Orchestrator
 from builder.preflight import PreflightService
 from goal.engine import GoalEngine
 from goal.models import Goal
+from governance.loader import GovernanceLoader
 from goal.why_assessment import (
     WhyAssessment,
     WhyAssessmentReason,
@@ -52,11 +53,17 @@ def create_identity(version="identity-version"):
 
 
 def create_workflow_context():
+    constitution = (
+        Path(__file__).resolve().parents[1]
+        / "constitution"
+        / "constitution.md"
+    ).read_text(encoding="utf-8")
     runtime = SimpleNamespace(
         project_root=Path.cwd(),
         institution_context=InstitutionLoader().load(),
         interaction_context=InteractionLoader().load(),
-        constitution="# Constitution\n\nVersion: 1.0",
+        constitution=constitution,
+        governance_context=GovernanceLoader().load(constitution),
         knowledge={
             "adr": [],
             "protocols": [],

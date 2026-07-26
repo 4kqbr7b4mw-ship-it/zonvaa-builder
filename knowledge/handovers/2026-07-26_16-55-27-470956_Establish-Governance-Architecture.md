@@ -1,0 +1,82 @@
+# Handover: Establish Governance Architecture
+
+- Timestamp: `2026-07-26T16:55:27.470956+00:00`
+- Starting commit: `2a76fc61e540c9ef1a58c96ff4213aa43d9a9c19`
+- Ending commit: `missing`
+- Push status: `not_pushed`
+
+## Changed files
+
+- PLANS.md
+- builder/preflight.py
+- builder/runtime.py
+- constitution/constitution.md
+- governance/__init__.py
+- governance/charter.md
+- governance/loader.py
+- governance/models.py
+- governance/operative-rules.md
+- institution/institution.md
+- knowledge/adr/ADR-0027-governance-architecture.md
+- knowledge/handovers/2026-07-26_16-55-27-470956_Establish-Governance-Architecture.json
+- knowledge/handovers/2026-07-26_16-55-27-470956_Establish-Governance-Architecture.md
+- tests/test_goal_application_service.py
+- tests/test_goal_aware_orchestrator.py
+- tests/test_goal_cli.py
+- tests/test_governance.py
+- tests/test_institution.py
+- tests/test_power_of_attorney_workflow.py
+- tests/test_preflight.py
+
+## Functional changes
+
+- ZONVAA now separates permanent C1 protection goals, C2 governance mechanisms, and C3 operative rules.
+- Trust Council review, bounded veto escalation, user representation, audit transparency, incident correction, whistleblower protection, multikey constitutional change, and stewardship protection are binding governance contracts.
+
+## Technical changes
+
+- Added immutable typed GovernanceContext and a structural GovernanceLoader for C1, C2, and C3 integrity.
+- Runtime loads Governance after Constitution and Mission Context schema 1.3 proves all governance versions, hashes, protection goals, bodies, and trust domains.
+- Updated Institution to version 1.2 and Constitution to version 2.0.
+
+## Decisions
+
+- C1 contains only durable negative guarantees and protection goals.
+- C2 operationalizes the Institution governance guarantee without creating a parallel Institution.
+- Existing operational rules remain active in their current sources and are classified through a non-duplicating C3 register.
+- Trust Council veto is suspensive and bounded by review, mediation, re-review, and auditable independent escalation.
+- C1 changes require operational leadership, Trust Council, and user representation as independent keys.
+
+## Relevant ADRs
+
+- ADR-0023
+- ADR-0024
+- ADR-0025
+- ADR-0026
+- ADR-0027
+
+## Checks
+
+- `python3 -m pytest -q`: **passed** — 419 passed in 14.15s under Python 3.9.6
+- `python3 -m builder.main doctor`: **passed** — ZONVAA Builder CLI works
+- `python3 -m builder.main preflight`: **passed** — Mission Context schema 1.3 ready with Constitution 2.0, Governance 1.0, and Institution 1.2
+- `git diff --check`: **passed** — No whitespace errors
+
+## Open risks
+
+- No legal form, ownership protection, liability effect, insolvency resistance, quorum, or constitutional effectiveness has been legally validated.
+- Audit rotation, incident publication, user selection, mediation, and whistleblower protection are binding goals but lack approved operating and security procedures.
+- The GovernanceContext proves repository contracts; it does not instantiate independent governance bodies or enforce their real-world independence.
+
+## Intentionally not implemented
+
+- No fixed council size, profession quota, term, budget, majority, quorum, deadline, cooling period, appointing organization, or open-source insolvency rule was adopted.
+- No legal entity, audit platform, incident system, whistleblower channel, workflow authority, network access, or external governance action was implemented.
+
+## Recommended next step
+
+Define a typed governance proposal and review record contract for auditable C2 decisions without implementing organizations, voting, or external publication.
+
+## Git status
+
+- Work package changes present before commit; no unrelated paths detected.

@@ -15,6 +15,7 @@ from builder.preflight import PreflightService
 from builder.runtime import RuntimeManager
 from execution.engine import ExecutionEngine, TargetVerificationError
 from goal.engine import GoalEngine
+from governance.loader import GovernanceLoader
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
 from interaction.loader import InteractionLoader
@@ -76,7 +77,14 @@ def create_runtime():
     )
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
-    runtime.constitution = "Full constitution"
+    runtime.constitution = (
+        Path(__file__).resolve().parents[1]
+        / "constitution"
+        / "constitution.md"
+    ).read_text(encoding="utf-8")
+    runtime.governance_context = GovernanceLoader().load(
+        runtime.constitution
+    )
     runtime.verified_facts = {"tests": "passing"}
     runtime.knowledge = {
         "adr": [],

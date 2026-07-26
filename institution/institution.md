@@ -1,6 +1,6 @@
 # ZONVAA Institution
 
-Version: 1.1
+Version: 1.2
 Status: verbindlich
 
 ## Zweck und Rang
@@ -31,6 +31,11 @@ Langfristige Garantien werden versioniert, nachvollziehbar und nur durch eine
 bewusste Architekturentscheidung geändert. Operative Komponenten dürfen sie
 nicht selbst umdeuten, überschreiben oder umgehen. Konflikte werden sichtbar
 gemacht und vor Implementierung entschieden.
+
+Die Normhierarchie aus C1 Constitution, C2 Governance Charter und C3
+operativen Regeln konkretisiert diese Garantie. C2 organisiert unabhängige
+Prüfung und Verantwortung, ohne eine zweite Institution zu bilden. C3 darf
+weder C1 noch diese Institution-Garantien faktisch verändern.
 
 ## Nutzerhoheit
 

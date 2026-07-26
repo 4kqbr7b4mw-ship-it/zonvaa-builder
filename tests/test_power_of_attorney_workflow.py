@@ -14,6 +14,7 @@ from builder.main import app
 from builder.preflight import PreflightError
 from builder.runtime import RuntimeManager
 from goal.engine import GoalEngine
+from governance.loader import GovernanceLoader
 from goal.models import Goal
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
@@ -498,7 +499,14 @@ def test_existing_goal_cli_runs_power_of_attorney_workflow(
     )
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
-    runtime.constitution = "# Constitution\n\nVersion: 1.0"
+    runtime.constitution = (
+        Path(__file__).resolve().parents[1]
+        / "constitution"
+        / "constitution.md"
+    ).read_text(encoding="utf-8")
+    runtime.governance_context = GovernanceLoader().load(
+        runtime.constitution
+    )
     runtime.knowledge = {
         "adr": [],
         "protocols": [],

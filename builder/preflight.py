@@ -1,3 +1,4 @@
+import hashlib
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
@@ -6,6 +7,7 @@ from types import MappingProxyType
 from typing import Any, Callable, Dict, Mapping, Tuple
 
 from builder.runtime import RuntimeManager
+from governance import GovernanceContext
 from institution import InstitutionContext
 from interaction import InteractionContext
 
@@ -64,6 +66,7 @@ class MissionContext:
     schema_version: str
     generated_at: datetime
     project_root: str
+    governance: Mapping[str, Any]
     institution: Mapping[str, Any]
     interaction: Mapping[str, Any]
     constitution: Mapping[str, Any]
@@ -81,8 +84,8 @@ class MissionContext:
     )
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.2":
-            raise ValueError("MissionContext schema_version must be 1.2")
+        if self.schema_version != "1.3":
+            raise ValueError("MissionContext schema_version must be 1.3")
         if not isinstance(self.generated_at, datetime):
             raise TypeError("MissionContext generated_at must be a datetime")
         if (
@@ -102,6 +105,7 @@ class MissionContext:
                 "MissionContext working_rules must be a tuple of strings"
             )
         for field_name in (
+            "governance",
             "institution",
             "interaction",
             "constitution",
@@ -123,6 +127,7 @@ class MissionContext:
             "schema_version": self.schema_version,
             "generated_at": self.generated_at.isoformat(),
             "project_root": self.project_root,
+            "governance": _deep_thaw(self.governance),
             "institution": _deep_thaw(self.institution),
             "interaction": _deep_thaw(self.interaction),
             "constitution": _deep_thaw(self.constitution),
@@ -204,6 +209,16 @@ class PreflightService:
         constitution = self.runtime.constitution
         if not isinstance(constitution, str) or not constitution.strip():
             raise PreflightError("Constitution is missing or empty")
+        governance = getattr(self.runtime, "governance_context", None)
+        if not isinstance(governance, GovernanceContext):
+            raise PreflightError("Governance is missing or invalid")
+        if (
+            hashlib.sha256(constitution.encode("utf-8")).hexdigest()
+            != governance.constitution_hash
+        ):
+            raise PreflightError(
+                "Governance does not match the loaded Constitution"
+            )
 
         missing_areas = self.REQUIRED_KNOWLEDGE_AREAS - set(
             self.runtime.knowledge
@@ -241,9 +256,39 @@ class PreflightService:
             for key, value in self.runtime.knowledge.items()
         }
         context = MissionContext(
-            schema_version="1.2",
+            schema_version="1.3",
             generated_at=self.clock(),
             project_root=str(Path.cwd()),
+            governance={
+                "status": "loaded",
+                "constitution": {
+                    "path": "constitution/constitution.md",
+                    "version": constitution_version,
+                    "content_hash": governance.constitution_hash,
+                },
+                "charter": {
+                    "path": "governance/charter.md",
+                    "version": governance.charter_version,
+                    "content_hash": governance.charter_hash,
+                },
+                "operative_rules": {
+                    "path": "governance/operative-rules.md",
+                    "version": governance.operative_rules_version,
+                    "content_hash": governance.operative_rules_hash,
+                },
+                "norm_levels": [
+                    level.value for level in governance.norm_levels
+                ],
+                "protection_goals": [
+                    goal.value for goal in governance.protection_goals
+                ],
+                "bodies": [
+                    body.value for body in governance.bodies
+                ],
+                "trust_domains": [
+                    domain.value for domain in governance.trust_domains
+                ],
+            },
             institution={
                 "status": "loaded",
                 "path": "institution/institution.md",
@@ -333,6 +378,45 @@ class PreflightService:
             raise PreflightError("MissionContext project root changed")
         if context.constitution.get("status") != "loaded":
             raise PreflightError("MissionContext Constitution is invalid")
+        if context.governance.get("status") != "loaded":
+            raise PreflightError("MissionContext Governance is invalid")
+        governance = getattr(self.runtime, "governance_context", None)
+        if not isinstance(governance, GovernanceContext):
+            raise PreflightError("Runtime Governance changed")
+        expected_governance = {
+            "status": "loaded",
+            "constitution": {
+                "path": "constitution/constitution.md",
+                "version": self._constitution_version(
+                    self.runtime.constitution
+                ),
+                "content_hash": governance.constitution_hash,
+            },
+            "charter": {
+                "path": "governance/charter.md",
+                "version": governance.charter_version,
+                "content_hash": governance.charter_hash,
+            },
+            "operative_rules": {
+                "path": "governance/operative-rules.md",
+                "version": governance.operative_rules_version,
+                "content_hash": governance.operative_rules_hash,
+            },
+            "norm_levels": [
+                level.value for level in governance.norm_levels
+            ],
+            "protection_goals": [
+                goal.value for goal in governance.protection_goals
+            ],
+            "bodies": [
+                body.value for body in governance.bodies
+            ],
+            "trust_domains": [
+                domain.value for domain in governance.trust_domains
+            ],
+        }
+        if context.governance != _deep_freeze(expected_governance):
+            raise PreflightError("MissionContext Governance changed")
         if context.institution.get("status") != "loaded":
             raise PreflightError("MissionContext Institution is invalid")
         institution = getattr(self.runtime, "institution_context", None)

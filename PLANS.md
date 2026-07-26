@@ -3,6 +3,70 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Governance Architecture
+
+### Ziel und Nicht-Ziele
+
+Die bestehende Constitution in eine klare Normhierarchie aus C1
+Schutzverfassung, C2 Governance Charter und C3 operativen Regeln überführen.
+Governance-Organe, begrenzte Vetorechte, Audits, Eskalationen,
+Nutzerbeteiligung und Trägerschutz verbindlich definieren. Keine konkrete
+Rechtsform, Organbesetzung, Quote, Amtszeit, Frist oder technische
+Audit-/Whistleblower-Plattform implementieren.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `2a76fc6` war erfolgreich.
+- Constitution 1.4 vermischt dauerhafte Garantien mit Rollen,
+  Arbeitsabläufen, Runtime- und Kommunikationsregeln.
+- Institution 1.1 enthält Governance als langfristige Garantie, aber keine
+  Organe oder Prüfmechanismen.
+- Guardian Foundation und Interaction 1.0 schützen Nutzerhoheit,
+  Kontinuität, Offboarding und Autorisierung.
+- Es existiert keine konkurrierende Governance Charter oder
+  Governance-Runtime.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Constitution, Guardian, Institution, Interaction, Runtime und ADRs prüfen.
+- [x] C1, C2 und C3 ohne Regelverlust trennen und versionieren.
+- [x] Typisierten Governance-Vertrag und strukturellen Loader erstellen.
+- [x] Runtime und Mission Context minimal integrieren.
+- [x] ADR, Modell-, Loader-, Runtime- und Preflight-Tests ergänzen.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- C1 wird auf dauerhafte Negativ-Garantien und Schutzziele reduziert.
+- Bestehende Arbeits-, Runtime- und Kommunikationsregeln bleiben in einem
+  versionierten C3-Register erhalten, statt gelöscht oder in C1 versteinert
+  zu werden.
+- C2 operationalisiert die bestehende Institution-Governance-Garantie und
+  bildet keine zweite Institution.
+- Runtime hält einen unveränderlichen Governance-Kontext; konkrete Organe
+  oder Verfahren werden nicht implementiert.
+
+### Risiken und Teststrategie
+
+- Die Entflechtung darf keine bestehende Arbeits- oder Guardian-Regel
+  stillschweigend verlieren.
+- Gesellschafts-, Haftungs-, Insolvenz- und Auditwirkung bleiben ohne
+  fachliche Prüfung ausdrücklich unbestätigt.
+- Exakte Normstufen, Schutzziele, Organe, Vetodomänen, Hashes,
+  Boot-Reihenfolge und Preflight-Integrität werden deterministisch getestet.
+- Operative Workflows erhalten keine Governance-Inhalte oder neuen Rechte.
+
+### Abweichungen und Abschlusszustand
+
+Constitution 2.0 enthält ausschließlich C1-Negativ-Garantien und
+Schutzziele. Governance Charter 1.0 definiert C2; das C3-Register erhält
+bestehende operative Regeln in ihren bisherigen Quellen. Institution 1.2,
+Runtime und Mission Context 1.3 weisen Governance strukturell nach, ohne
+Organe oder Rechtswirkung vorzutäuschen. 419 Tests bestehen; Doctor und
+`git diff --check` sind erfolgreich. Konkrete Rechtsform, Besetzung,
+Quoren, Fristen, Audits und technische Hinweisgeberkanäle bleiben offen.
+
 ## Abgeschlossener Plan: Conversation & Interaction Architecture
 
 ### Ziel und Nicht-Ziele

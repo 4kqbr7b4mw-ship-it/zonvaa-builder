@@ -85,7 +85,7 @@ def test_canonical_institution_charter_loads_deterministically():
 
     assert first == second
     assert first.source == InstitutionLoader.DEFAULT_SOURCE.resolve()
-    assert first.version == "1.1"
+    assert first.version == "1.2"
     assert CORE_RULE in first.content
 
 
@@ -184,7 +184,7 @@ def test_runtime_boot_exposes_canonical_institution_context(monkeypatch):
     assert runtime.institution_context == InstitutionLoader().load()
 
 
-def test_runtime_loads_identity_then_institution_then_constitution(
+def test_runtime_loads_identity_institution_interaction_and_governance(
     monkeypatch,
 ):
     calls = []
@@ -192,6 +192,7 @@ def test_runtime_loads_identity_then_institution_then_constitution(
     institution_loader = runtime_module.InstitutionLoader
     interaction_loader = runtime_module.InteractionLoader
     constitution_manager = runtime_module.ConstitutionManager
+    governance_loader = runtime_module.GovernanceLoader
 
     class RecordingIdentityLoader:
         def load(self):
@@ -212,6 +213,11 @@ def test_runtime_loads_identity_then_institution_then_constitution(
         def load(self):
             calls.append("constitution")
             return constitution_manager().load()
+
+    class RecordingGovernanceLoader:
+        def load(self, constitution):
+            calls.append("governance")
+            return governance_loader().load(constitution)
 
     monkeypatch.setattr(
         runtime_module,
@@ -234,6 +240,11 @@ def test_runtime_loads_identity_then_institution_then_constitution(
         RecordingConstitutionManager,
     )
     monkeypatch.setattr(
+        runtime_module,
+        "GovernanceLoader",
+        RecordingGovernanceLoader,
+    )
+    monkeypatch.setattr(
         runtime_module.ProjectState,
         "collect",
         lambda self: {"verified_facts": {}},
@@ -241,9 +252,10 @@ def test_runtime_loads_identity_then_institution_then_constitution(
 
     RuntimeManager().boot()
 
-    assert calls[:4] == [
+    assert calls[:5] == [
         "identity",
         "institution",
         "interaction",
         "constitution",
+        "governance",
     ]

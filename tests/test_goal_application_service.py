@@ -17,6 +17,7 @@ from builder.preflight import (
 from builder.runtime import RuntimeManager
 from goal.engine import GoalEngine
 from goal.models import Goal
+from governance.loader import GovernanceLoader
 from goal.why_assessment import (
     WhyAssessment,
     WhyAssessmentReason,
@@ -51,7 +52,14 @@ def create_runtime(git_clean=True):
     )
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
-    runtime.constitution = "Full constitution text that must not be parsed."
+    runtime.constitution = (
+        Path(__file__).resolve().parents[1]
+        / "constitution"
+        / "constitution.md"
+    ).read_text(encoding="utf-8")
+    runtime.governance_context = GovernanceLoader().load(
+        runtime.constitution
+    )
     runtime.verified_facts = {"tests": "passing"}
     runtime.knowledge = {
         "adr": [],

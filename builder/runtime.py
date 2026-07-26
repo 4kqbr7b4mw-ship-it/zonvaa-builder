@@ -3,6 +3,7 @@ from typing import Optional
 
 from constitution.manager import ConstitutionManager
 from goal.engine import GoalEngine
+from governance import GovernanceContext, GovernanceLoader
 from identity import IdentityContext, IdentityLoader
 from institution import InstitutionContext, InstitutionLoader
 from interaction import InteractionContext, InteractionLoader
@@ -19,6 +20,7 @@ class RuntimeManager:
         self.institution_context: Optional[InstitutionContext] = None
         self.interaction_context: Optional[InteractionContext] = None
         self.constitution: Optional[str] = None
+        self.governance_context: Optional[GovernanceContext] = None
         self.knowledge: dict = {}
         self.latest_session: Optional[Path] = None
         self.latest_session_content: str = ""
@@ -36,6 +38,9 @@ class RuntimeManager:
         self.institution_context = InstitutionLoader().load()
         self.interaction_context = InteractionLoader().load()
         self.constitution = ConstitutionManager().load()
+        self.governance_context = GovernanceLoader().load(
+            self.constitution
+        )
         self.knowledge = knowledge_manager.load()
         self.latest_session = knowledge_manager.latest_session()
         self.latest_handover = knowledge_manager.latest_handover()
