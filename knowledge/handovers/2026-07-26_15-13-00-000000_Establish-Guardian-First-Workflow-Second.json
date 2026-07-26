@@ -1,0 +1,67 @@
+{
+  "changed_files": [
+    "PLANS.md",
+    "constitution/constitution.md",
+    "knowledge/adr/ADR-0024-guardian-first-workflow-second.md",
+    "knowledge/project/guardian-conversation-lab.md"
+  ],
+  "checks": [
+    {
+      "command": "python3 -m pytest -q",
+      "result": "334 passed in 10.79s",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m builder.main doctor",
+      "result": "ZONVAA Builder CLI funktioniert.",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "No errors.",
+      "status": "passed"
+    }
+  ],
+  "decisions": [
+    "Invisible everyday architecture must not become a black box.",
+    "Workflow existence cannot drive the visible conversation or be inferred from a keyword.",
+    "New decision spaces remain hypotheses until a separate architecture decision establishes a workflow.",
+    "No implementation was required for this architecture-only package."
+  ],
+  "ending_commit": null,
+  "functional_changes": [
+    "Established that the user always speaks with the Guardian rather than a workflow.",
+    "Placed provisional decision-space hypotheses before any workflow compatibility check.",
+    "Established user rights to correction, rejection, alternative paths, and recommendation traceability."
+  ],
+  "git_status": [
+    "M PLANS.md",
+    "M constitution/constitution.md",
+    "M knowledge/project/guardian-conversation-lab.md",
+    "?? knowledge/adr/ADR-0024-guardian-first-workflow-second.md"
+  ],
+  "intentionally_not_implemented": [
+    "No UI, conversation runtime, classification model, product logic, or workflow change.",
+    "No automatic workflow creation or domain behavior."
+  ],
+  "open_risks": [
+    "The technical form of correction, rejection, explanation, and classification expiry remains undecided.",
+    "Transparency must not turn ordinary conversation into a technical audit flow."
+  ],
+  "push_status": "not_pushed",
+  "recommended_next_step": "Define a minimal non-UI transparency contract for provisional decision-space hypotheses before implementing classification.",
+  "relevant_adrs": [
+    "ADR-0008",
+    "ADR-0023",
+    "ADR-0024"
+  ],
+  "schema_version": "1.0",
+  "starting_commit": "c37adbdc1b737da8f0b073217d3c3aa30ffe82d4",
+  "task": "Establish Guardian First, Workflow Second",
+  "technical_changes": [
+    "Added ADR-0024 as an explicit supplement to ADR-0023.",
+    "Updated the binding Constitution to version 1.2.",
+    "Aligned the Conversation Lab with default invisibility and on-request transparency."
+  ],
+  "timestamp": "2026-07-26T15:13:00+00:00"
+}

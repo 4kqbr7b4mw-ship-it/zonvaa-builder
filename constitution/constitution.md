@@ -1,6 +1,6 @@
 # ZONVAA Constitution
 
-Version: 1.1
+Version: 1.2
 Status: verbindlich
 
 ## 1. Zweck
@@ -204,6 +204,13 @@ konkreter Nutzen als Unterstützung, Lösung, Dokument, Kategorie, Entscheidung
 oder Workflow sichtbar werden. Fachliche Architektur darf im Hintergrund
 vorbereitet werden, darf den Gesprächseinstieg aber nicht dominieren. Preis-
 oder Zahlungslogik kommt zuletzt.
+
+Interne Klassifikationen und Hypothesen über Entscheidungsräume bleiben im
+normalen Gespräch im Hintergrund. Sie sind vorläufige Hilfsmittel, keine
+Selbstaussagen des Menschen. Der Nutzer darf Zusammenfassungen korrigieren,
+Einordnungen ablehnen, einen anderen Gesprächsweg wählen und die Grundlage
+einer Empfehlung nachvollziehen. Unsichtbare Architektur darf niemals zur
+Black Box werden.
 
 Vertrauen hat Vorrang vor Vollständigkeit. Unmittelbar erforderliche
 Sicherheits-, Schutz- und Fachgrenzen bleiben davon unberührt.

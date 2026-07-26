@@ -3,6 +3,67 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Guardian First, Workflow Second
+
+### Ziel und Nicht-Ziele
+
+Die aus dem Conversation Lab abgeleitete Guardian-First-Erkenntnis als
+verbindliche Ergänzung zu ADR-0023 verankern. Interne Entscheidungsräume
+bleiben im Alltag unsichtbar, müssen auf Wunsch aber nachvollziehbar,
+korrigierbar und ablehnbar sein. Keine Implementierung, UI, Produktlogik oder
+Workflow-Änderung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `c37adbd` war erfolgreich.
+- Constitution 1.1 und ADR-0023 priorisieren bereits Guardian und S-V-N-P.
+- Das Conversation Lab unterscheidet Bedarf, Entscheidungsraum und
+  Workflow-Match im Hintergrund.
+- Die bisherige Regel „unsichtbar“ definiert noch nicht verbindlich das Recht
+  auf spätere Erklärung, Korrektur und Ablehnung.
+- ADR-0023 bleibt gültig; die neue Entscheidung präzisiert ihre
+  Transparenzgrenze.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, ADR-0023, Constitution und Lab-Regeln prüfen.
+- [x] Ergänzende Architekturentscheidung ADR-0024 dokumentieren.
+- [x] Verbindliche Transparenzrechte in der Constitution verankern.
+- [x] Lab-Dokumentation widerspruchsfrei aktualisieren.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- ADR-0024 ergänzt ADR-0023 und ersetzt sie ausdrücklich nicht.
+- Entscheidungsräume entstehen als vorläufige Hypothesen vor jeder
+  Workflow-Prüfung.
+- Unsichtbarkeit bedeutet störungsfreie Alltagserfahrung, nicht Geheimhaltung
+  oder Black Box.
+- Ein neuer Workflow entsteht niemals dynamisch im Gespräch, sondern erst
+  nach ausreichendem Verständnis und einer späteren Architekturentscheidung.
+
+### Risiken
+
+- Transparenz darf den natürlichen Gesprächseinstieg nicht in einen
+  technischen Audit-Dialog verwandeln.
+- Vorläufige Hypothesen dürfen nicht als bestätigte Selbstaussage des Menschen
+  gespeichert oder verwendet werden.
+
+### Teststrategie
+
+- Dokumente auf Rangfolge und Widerspruch zu ADR-0023 prüfen.
+- Vollständige Regression, Doctor und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+ADR-0024 ergänzt ADR-0023 ausdrücklich und definiert Guardian First,
+Entscheidungsraum-Hypothesen vor Workflow-Prüfung sowie „im Alltag
+unsichtbar, auf Wunsch transparent“. Constitution 1.2 verankert
+Korrektur-, Ablehnungs-, Wahl- und Nachvollziehbarkeitsrechte. Das Lab wurde
+konsistent präzisiert. Es gab keine Implementierung oder Workflow-Änderung.
+334 Tests, Doctor und `git diff --check` waren erfolgreich.
+
 ## Abgeschlossener Plan: Guardian Conversation Lab
 
 ### Ziel und Nicht-Ziele

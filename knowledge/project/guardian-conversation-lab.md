@@ -73,7 +73,8 @@ vorhandenen Workflow.
    existiert und sein Vertrag zum ausdrücklich erkennbaren Anliegen passt.
 7. Ein neuer Entscheidungsraum wird markiert; es wird kein Workflow erfunden.
 8. Workflow-Existenz, interne Kategorie und Routing bleiben zunächst
-   unsichtbar.
+   unsichtbar, sind auf Wunsch aber verständlich zu erklären, zu korrigieren
+   oder abzulehnen.
 9. Zusammenfassungen enthalten nur im Beitrag erkennbare Informationen.
 10. Anschlussfragen öffnen den nächsten natürlichen Gesprächsschritt und
     optimieren nicht reflexartig fachliche Vollständigkeit.
@@ -107,7 +108,8 @@ vorhandenen Workflow.
 - `workflow_checked` dokumentiert ausschließlich die interne Prüfung.
 - `workflow_match` enthält nur die stabile ID eines tatsächlich vorhandenen
   Workflows oder `null`.
-- `workflow_visible_to_user` bleibt im ersten Turn immer `false`.
+- `workflow_visible_to_user` bleibt im ersten Turn immer `false`. Das
+  beschränkt nicht das spätere Recht auf Erklärung und Korrektur.
 
 ## Bekannte und neue Entscheidungsräume
 
@@ -209,8 +211,8 @@ nicht als empirische Wirkungsmessung verwendet werden.
 
 1. Wie wird hinreichendes Verständnis nach mehreren Turns nachweisbar, ohne
    einen starren Gesprächsstatus einzuführen?
-2. Wie kann ein Mensch die unsichtbare Hintergrundklassifikation einsehen,
-   korrigieren oder löschen?
+2. Wie werden die beschlossenen Auskunfts-, Korrektur- und Ablehnungsrechte
+   technisch umgesetzt, ohne den natürlichen Gesprächseinstieg zu dominieren?
 3. Wann verfällt eine vorläufige Klassifikation?
 4. Wie werden Themenwechsel erkannt, ohne alte Absichten fortzuschreiben?
 5. Welche unmittelbaren Safety-Ausnahmen benötigen eine eigene,
