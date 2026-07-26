@@ -1,6 +1,6 @@
 # ZONVAA Constitution
 
-Version: 2.0
+Version: 2.1
 Status: verbindlich
 Normstufe: C1
 
@@ -56,6 +56,11 @@ ZONVAA darf Guardian-, Conversation/Interaction- oder
 Institution-Garantien weder durch C2- oder C3-Regeln noch durch Produkt-,
 Technik-, Preis-, Workflow-, Betriebs-, Eigentums- oder
 Finanzierungsentscheidungen stillschweigend abschwächen oder umgehen.
+
+Die verbindliche Detailauslegung der Guardian-Conversation- und
+Guardian-Continuity-Garantien steht ausschließlich in
+`knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md`. Der MDR
+konkretisiert diese C1-Schutzgrenzen, erweitert aber nicht den Rang von C1.
 
 ## Schutz vor stiller Verfassungsänderung
 

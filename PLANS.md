@@ -3,6 +3,70 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Guardian Master Decision Record
+
+### Ziel und Nicht-Ziele
+
+Gemini Conversation/Interaction und Kimi Guardian Continuity in
+`MDR-0001` vollständig zu einem einzigen verbindlichen Architekturstand
+konsolidieren. Redundanzen zusammenführen, Bedeutungen erhalten und mögliche
+Spannungen ausdrücklich auflösen. Keine Produktcode-, Runtime-, UI-,
+Workflow-, Persistenz- oder Sicherheitsimplementierung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `8ff19cd` war erfolgreich.
+- Der Gemini-Entwurf ist in ADR-0026 und `interaction/interaction.md`
+  verarbeitet, aber nicht vollständig als alleinige Quelle erhalten.
+- Der Kimi-Entwurf ist als `knowledge/guardian/continuity.md` und
+  Guardian-Foundation-Querverweis dokumentiert.
+- ADR-0023, ADR-0024 und ADR-0026 sowie Guardian- und Interaction-Dokumente
+  enthalten überlappende verbindliche Aussagen.
+- Ein MDR-Verzeichnis und Master Decision Record existieren noch nicht.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Gemini-, Kimi-, Guardian-, Interaction-, Institution-, Governance- und
+  Constitution-Quellen vollständig prüfen.
+- [x] MDR-0001 vollständig und mit Herkunftsmatrix erstellen.
+- [x] Widersprüche und Spannungen dokumentieren, ohne neue Regeln zu
+  erfinden.
+- [x] Constitution, ADR-Status und Querverweise auf MDR-0001 umstellen.
+- [x] Dokumentationsverträge und betroffene Tests konsistent aktualisieren.
+- [x] Vollständige Tests, Doctor und `git diff --check` ausführen.
+- [x] Handover erzeugen und vorgegebenen Commit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- MDR-0001 wird einzige verbindliche Detailquelle für Guardian Conversation
+  und Continuity.
+- Historische ADRs und Guardian-Dateien bleiben als Herkunftsnachweis
+  erhalten, verlieren aber eigenständige normative Wirkung.
+- C1-Schutzziele und Institution-Garantien bleiben höherrangige Grenzen;
+  ihre Detailauslegung für diesen Bereich verweist auf MDR-0001.
+- Der technische Interaction-Vertrag bleibt Runtime-Nachweis, wird aber als
+  abgeleitete Projektion des MDR gekennzeichnet.
+
+### Risiken und Teststrategie
+
+- Die Konsolidierung darf keine Quelle verkürzen oder durch stärkere
+  Formulierungen neue Implementierungsversprechen erzeugen.
+- Portabilität und Löschung müssen Nutzerhoheit, gebundene Nachweise und
+  ausdrücklich autorisiertes digitales Vermächtnis gleichzeitig erhalten.
+- Dokumentstatus, Versionen, Loader-Integrität und alle bestehenden Tests
+  werden geprüft; Produktcode bleibt unverändert.
+
+### Abweichungen und Abschlusszustand
+
+MDR-0001 konsolidiert Gemini Conversation/Interaction und Kimi Guardian
+Continuity vollständig, dokumentiert fünf Spannungsfelder als aufgelöst und
+ist nun die einzige verbindliche Detailquelle. ADR-0023, ADR-0024 und
+ADR-0026 bleiben historische Nachweise; Interaction 1.1 ist eine abgeleitete
+Runtime-Projektion. Constitution 2.1, Institution 1.3 und Governance 1.1
+verweisen ohne Regelduplikation auf den MDR. Es wurde keine Produkt- oder
+Runtime-Logik implementiert. 425 Tests bestehen; Doctor und
+`git diff --check` sind erfolgreich.
+
 ## Abgeschlossener Plan: Governance Architecture
 
 ### Ziel und Nicht-Ziele

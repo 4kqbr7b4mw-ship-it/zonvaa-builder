@@ -4,6 +4,11 @@
 
 Beschlossen
 
+Für die Governance-Schutzdomäne Guardian Continuity ist ausschließlich
+`knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md` die
+inhaltliche Detailquelle. Diese Governance-Entscheidung bleibt im Übrigen
+unverändert gültig.
+
 ## Kontext
 
 Die Constitution 1.4 enthielt dauerhafte Schutzprinzipien gemeinsam mit

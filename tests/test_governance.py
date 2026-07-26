@@ -86,8 +86,8 @@ def test_canonical_governance_contract_loads_deterministically():
     second = GovernanceLoader().load(constitution)
 
     assert first == second
-    assert first.charter_version == "1.0"
-    assert first.operative_rules_version == "1.0"
+    assert first.charter_version == "1.1"
+    assert first.operative_rules_version == "1.1"
     assert first.norm_levels == tuple(NormLevel)
     assert first.protection_goals == tuple(ProtectionGoal)
     assert first.bodies == tuple(GovernanceBody)
@@ -242,14 +242,14 @@ def test_loader_rejects_wrong_norm_level_and_missing_version(tmp_path):
         )
     with pytest.raises(ValueError, match="C1 contract has no version"):
         GovernanceLoader().load(
-            canonical_constitution().replace("Version: 2.0\n", "")
+            canonical_constitution().replace("Version: 2.1\n", "")
         )
 
     charter = tmp_path / "charter.md"
     charter.write_text(
         GovernanceLoader.DEFAULT_CHARTER.read_text(
             encoding="utf-8"
-        ).replace("Version: 1.0\n", ""),
+        ).replace("Version: 1.1\n", ""),
         encoding="utf-8",
     )
     with pytest.raises(ValueError, match="version"):

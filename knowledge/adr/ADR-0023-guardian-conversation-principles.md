@@ -2,7 +2,11 @@
 
 ## Status
 
-Beschlossen
+Ersetzt durch MDR-0001
+
+Historischer Herkunftsnachweis ohne eigenständige normative Wirkung.
+Verbindliche Quelle ist
+`knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md`.
 
 ## Kontext
 

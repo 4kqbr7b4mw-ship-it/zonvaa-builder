@@ -82,11 +82,11 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
 
     assert context["schema_version"] == "1.3"
     assert context["governance"]["status"] == "loaded"
-    assert context["governance"]["constitution"]["version"] == "2.0"
-    assert context["governance"]["charter"]["version"] == "1.0"
+    assert context["governance"]["constitution"]["version"] == "2.1"
+    assert context["governance"]["charter"]["version"] == "1.1"
     assert (
         context["governance"]["operative_rules"]["version"]
-        == "1.0"
+        == "1.1"
     )
     assert context["governance"]["norm_levels"] == [
         "c1_constitution",
@@ -114,7 +114,7 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
     assert context["constitution"] == {
         "status": "loaded",
         "path": "constitution/constitution.md",
-        "version": "2.0",
+        "version": "2.1",
     }
     assert context["knowledge"]["status"] == "loaded"
     assert context["latest_context"]["kind"] == "sessions"

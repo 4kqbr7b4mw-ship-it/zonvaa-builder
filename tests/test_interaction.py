@@ -86,7 +86,7 @@ def test_canonical_interaction_contract_loads_deterministically():
 
     assert first == second
     assert first.source == InteractionLoader.DEFAULT_SOURCE.resolve()
-    assert first.version == "1.0"
+    assert first.version == "1.1"
     assert len(first.content_hash) == 64
     assert (
         "Guardian → Conversation/Interaction → Institution → Runtime"

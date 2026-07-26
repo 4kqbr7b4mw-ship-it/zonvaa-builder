@@ -4,6 +4,11 @@
 
 Beschlossen
 
+Guardian Conversation und Guardian Continuity werden ausschließlich durch
+`knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md`
+konkretisiert. Diese ADR bleibt als übergeordnete Institution-Entscheidung
+gültig.
+
 ## Kontext
 
 WHY, Constitution und Values enthalten bereits langfristige Aussagen über

@@ -1,14 +1,19 @@
 # ZONVAA Conversation & Interaction
 
-Version: 1.0
-Status: verbindlich
+Version: 1.1
+Status: abgeleiteter technischer Nachweis
+
+Normative Quelle:
+`knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md`
 
 ## Zweck und Schichtenfolge
 
 Die Conversation/Interaction-Ebene übersetzt Guardian-Haltung und
 Institution-Garantien in überprüfbare Grenzen zwischen Gespräch und Handlung.
-Sie ist ein Architekturvertrag, keine implementierte UI oder Conversation
-Runtime.
+Sie ist die von MDR-0001 abgeleitete, durch die Runtime ladbare Projektion
+des Architekturvertrags, keine eigenständige normative Quelle und keine
+implementierte UI oder Conversation Runtime. Bei jeder Abweichung gilt
+MDR-0001.
 
 Die verbindliche Schichtenfolge lautet:
 

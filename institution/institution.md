@@ -1,6 +1,6 @@
 # ZONVAA Institution
 
-Version: 1.2
+Version: 1.3
 Status: verbindlich
 
 ## Zweck und Rang
@@ -51,6 +51,11 @@ Der Guardian bleibt die konstante sichtbare Beziehung zu ZONVAA. Workflows,
 Modelle und interne Komponenten treten nicht an seine Stelle und wechseln
 nicht unbemerkt Rolle oder Identität. Das Wissen hinter dem Guardian darf
 wachsen; die institutionellen Garantien bleiben dabei erhalten.
+
+Die verbindliche Detailarchitektur für Guardian Conversation und Continuity
+steht ausschließlich in
+`knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md`. Diese
+Institution-Garantie bleibt deren übergeordnete Schutzgrenze.
 
 ## Transparenz
 

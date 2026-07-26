@@ -85,7 +85,7 @@ def test_canonical_institution_charter_loads_deterministically():
 
     assert first == second
     assert first.source == InstitutionLoader.DEFAULT_SOURCE.resolve()
-    assert first.version == "1.2"
+    assert first.version == "1.3"
     assert CORE_RULE in first.content
 
 

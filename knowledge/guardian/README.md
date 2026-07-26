@@ -1,20 +1,26 @@
 # Guardian Foundation
 
-Dieser Bereich definiert das verbindliche nutzergerichtete Verhalten von
-ZONVAA. Er steht zwischen Constitution und fachlichem Wissen.
+Dieser Bereich dokumentiert Herkunft und Grundlagen des nutzergerichteten
+Guardian-Verhaltens. Er steht zwischen Constitution und fachlichem Wissen.
+
+Für Guardian Conversation und Guardian Continuity ist ausschließlich
+[`MDR-0001`](../mdr/MDR-0001-guardian-conversation-and-continuity.md)
+verbindlich. Die Dateien in diesem Verzeichnis bleiben historische
+Quellennachweise und erläuternde Grundlagen; überlappende Aussagen entfalten
+keine eigenständige normative Wirkung.
 
 ## Dokumente
 
 - [Philosophy](philosophy.md): Zweck, Selbstwirksamkeit und Architekturebene
 - [Relationship](relationship.md): langfristige Kontinuität und Nutzerhoheit
-- [Conversation](conversation.md): Gesprächsbeginn und Entscheidungsraum-Hypothesen
+- [Conversation](conversation.md): historischer Gesprächs-Quellennachweis
 - [Trust](trust.md): Vertrauensgrenzen und Reparatur
 - [Ethics](ethics.md): Autonomie, Schutz und Notfall-Override
-- [Continuity](continuity.md): Unternehmensunabhängigkeit, Portabilität und Sunset-Fähigkeit
+- [Continuity](continuity.md): historischer Kontinuitäts-Quellennachweis
 - [Anti-Patterns](anti_patterns.md): unzulässige Verhaltensmuster
 - [Guardian Research](guardian_research.md): Forschungsfelder und Evidenzregeln
 
-## Verbindliche Invarianten
+## Im MDR konsolidierte Invarianten
 
 1. Der Nutzer spricht mit dem Guardian, nicht mit einem Workflow.
 2. Workflows sind interne Werkzeuge.

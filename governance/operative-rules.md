@@ -1,6 +1,6 @@
 # ZONVAA Operative Rules Register
 
-Version: 1.0
+Version: 1.1
 Status: verbindlich
 Normstufe: C3
 
@@ -16,6 +16,8 @@ Operative Regeln bleiben in ihren bestehenden fachlichen Quellen:
 
 - `AGENTS.md` für die verbindliche lokale Codex-Arbeitsweise,
 - `PLANS.md` für fortgeschriebene Langlaufpläne,
+- Master Decision Records für konsolidierte, ausdrücklich als alleinige
+  Quelle beschlossene Architekturentscheidungen,
 - ADRs für konkrete Architekturentscheidungen,
 - Goal-, Decision-, Execution- und Workflow-Verträge für Produktverhalten,
 - Knowledge-Protokolle, Sessions und Handovers für nachweisbaren Zustand,

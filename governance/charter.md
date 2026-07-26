@@ -1,6 +1,6 @@
 # ZONVAA Governance Charter
 
-Version: 1.0
+Version: 1.1
 Status: verbindlich
 Normstufe: C2
 
@@ -95,6 +95,9 @@ Mechanismen mit erheblichen Folgen für Nutzer oder Dritte.
 
 Änderungen, die persönliche Kontinuität, Export, Offboarding, Sunset oder
 Zugriff auf bestätigtes Wissen gefährden können.
+
+Für die inhaltliche Abgrenzung dieser Schutzdomäne ist ausschließlich
+`knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md` maßgeblich.
 
 ## Änderungen an C1 oder C2
 
