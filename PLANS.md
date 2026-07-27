@@ -3,6 +3,66 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Guardian Succession Architecture v1
+
+### Ziel und Nicht-Ziele
+
+Ziel ist ein generischer, typisierter und persistenzfreier Domänenkern für
+nutzerdefinierte ereignisgesteuerte Berechtigungsübergaben. Der Todesfall ist
+erster Anwendungsfall, aber keine fest verdrahtete Sonderlogik. Nicht
+implementiert werden Verifikation, Identitätsprüfung, Daten- oder
+Schlüsselübertragung, externe Persistenz, UI, Netzwerk oder Rechtsbewertung.
+
+### Geprüfter Ausgangszustand
+
+- `main`, lokaler HEAD und `origin/main` standen sauber auf
+  `8471f8bd41d9335ac14b7bef23a09cf7db1d4d90`.
+- Preflight war erfolgreich; Runtime, Guardian Runtime, Artifact Contract und
+  User-Owned Data wurden mit validierten Versionen und Hashes geladen.
+- ADR-0030 liefert die Autorisierungsgrenze, ADR-0032 die personengebundene
+  Wissensgrenze und ADR-0033 Referenzen statt zentraler Originaldaten.
+- Es bestand kein Succession-Domänenmodell und keine Succession-ADR.
+  ADR-0036 ist die nächste freie Nummer.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Git-Vorbedingungen, Preflight, AGENTS.md und bestehende Muster prüfen.
+- [x] Bindende ADRs und relevante Modelle auf Konflikte prüfen.
+- [x] Unveränderliche Succession-Modelle und Default-Deny-Eligibility bauen.
+- [x] Append-only Directive- und Audit-Historien modellieren.
+- [x] ADR-0036 und fokussierte Grenz-/Missbrauchstests ergänzen.
+- [x] Fokussierte und vollständige Tests, Doctor und Diff prüfen.
+- [x] JSON-/Markdown-Handover erzeugen und genau einen Commit erstellen.
+
+### Entscheidungen und Begründungen
+
+- Guardian Succession ist ein eigenes fachliches Paket und keine Erweiterung
+  des Guardian-Runtime-Wissenszustands oder des User Vault.
+- Eligibility prüft Voraussetzungen, autorisiert aber keine technische
+  Handlung; `authorized_actions` bleibt konstruktiv leer.
+- Mehrere Begünstigte werden durch getrennte Directives und Grants isoliert.
+- `CUSTOM` ist ein neutraler Erweiterungspunkt ohne Sonderberechtigung.
+- Revisionen und Auditereignisse sind unveränderliche, lückenlos geordnete
+  Werte; produktive Persistenz bleibt ausgeschlossen.
+
+### Risiken und Teststrategie
+
+- Externe Verifikation und Begünstigtenidentität sind Verträge, keine
+  technisch geprüften Tatsachen.
+- `ELIGIBLE` darf später nicht mit ausgeführter Freigabe verwechselt werden.
+- Fokussierte Tests decken Default Deny, Ressourcengranularität,
+  Begünstigtenisolation, Revisionsterminalität, Auditordnung,
+  Inhaltsabwesenheit und Determinismus ab. Danach laufen Gesamtsuite, Doctor
+  und `git diff --check`.
+
+### Abweichungen und Abschlusszustand
+
+Keine bindende ADR musste verändert, keine Runtime-/Knowledge-Integration
+eingeführt und keine Abhängigkeit ergänzt werden. 31 fokussierte
+Succession-Tests, 173 verwandte Architekturtests und die vollständige Suite
+mit 626 Tests bestanden. Doctor und `git diff --check` waren erfolgreich. Der
+JSON-/Markdown-Handover gehört zum Abschlusscommit; es erfolgte kein Push.
+
 ## Abgeschlossener Plan: Architecture-to-Codex Feedback Loop
 
 ### Ziel und Nicht-Ziele
