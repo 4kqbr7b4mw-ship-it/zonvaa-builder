@@ -1,0 +1,467 @@
+{
+  "additive_elements": [
+    "Create exactly one isolated documentation fixture at tests/fixtures/architecture-feedback-loop-e2e.md.",
+    "The fixture must state that it is an anonymized operational validation artifact, not a normative architecture source.",
+    "Do not modify product logic, existing architecture decisions, dependencies, remotes, or authorization rules.",
+    "Run python3 -m pytest -q tests/test_architecture_feedback_loop.py as the focused test.",
+    "Run python3 -m builder.main doctor and the complete required verification from the generated Codex order.",
+    "Create exactly one result commit and complete JSON and Markdown handovers.",
+    "Do not push."
+  ],
+  "affected_documents": [
+    "knowledge/adr/ADR-0034-automated-codex-execution-bridge.md",
+    "knowledge/adr/ADR-0035-architecture-codex-feedback-loop.md"
+  ],
+  "affected_layers": [
+    "CROSS_LAYER"
+  ],
+  "aligned_elements": [],
+  "applicable_norms": [
+    "C1-CONSTITUTION",
+    "MDR-0001-guardian-conversation-and-continuity",
+    "C2-GOVERNANCE-CHARTER",
+    "SPEC-INSTITUTION",
+    "SPEC-INTERACTION",
+    "ADR-0002-knowledge-system",
+    "ADR-0003-runtime-journal",
+    "ADR-0004-runtime-architecture",
+    "ADR-0005-decision-engine",
+    "ADR-0006-execution-engine",
+    "ADR-0007-knowledge-priority",
+    "ADR-0008-identity-first",
+    "ADR-0009-memory-architecture",
+    "ADR-0010-goal-engine",
+    "ADR-0011-goal-evaluation-contract",
+    "ADR-0012-why-assessment-model",
+    "ADR-0013-decision-why-integration",
+    "ADR-0014-goal-aware-orchestration",
+    "ADR-0015-goal-application-service",
+    "ADR-0016-decision-journal",
+    "ADR-0017-knowledge-proposal-execution",
+    "ADR-0018-life-decisions",
+    "ADR-0019-life-decisions-domain-model",
+    "ADR-0020-codex-context-and-handover",
+    "ADR-0021-mission-context-workflow-integration",
+    "ADR-0022-power-of-attorney-workflow",
+    "ADR-0025-institution-layer",
+    "ADR-0027-governance-architecture",
+    "ADR-0028-architecture-integrator-agent",
+    "ADR-0029-architecture-workflow-orchestrator",
+    "ADR-0030-artifact-authorization-state-contract",
+    "ADR-0031-architecture-workflow-v2",
+    "ADR-0032-guardian-runtime",
+    "ADR-0033-user-owned-data-architecture",
+    "ADR-0034-automated-codex-execution-bridge",
+    "ADR-0035-architecture-codex-feedback-loop",
+    "C3-OPERATIVE-RULES"
+  ],
+  "confidence": 0.5,
+  "conflicting_elements": [],
+  "decision_required": [
+    "Confirm the non-binding ADOPT recommendation for proposal proposal-feedback-loop-e2e-validation."
+  ],
+  "duplicate_elements": [],
+  "implementation_risks": [
+    "Deterministic lexical comparison cannot establish semantic equivalence beyond explicit textual propositions.",
+    "No proposal element is binding until the Chief Architect confirms a separate decision object."
+  ],
+  "loaded_context_sources": [
+    {
+      "hash": "5f73d5458924faa9caff8b10e23334177e610c53195699aca7bc18fd4874092f",
+      "norm_level": "C1",
+      "path": "constitution/constitution.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "C1-CONSTITUTION",
+      "status": "BINDING",
+      "version": "2.1"
+    },
+    {
+      "hash": "fbd8745d76848a6e89c5aa8eed5c89fc7cf2c33dd5066bdb26b991385b193359",
+      "norm_level": "MDR",
+      "path": "knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "MDR-0001-guardian-conversation-and-continuity",
+      "status": "BINDING",
+      "version": "MDR-0001"
+    },
+    {
+      "hash": "7d9d75b89800f4aae9ba3de7f84c020cd1e5948cef46108f106874113e5b5fb8",
+      "norm_level": "C2",
+      "path": "governance/charter.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "C2-GOVERNANCE-CHARTER",
+      "status": "BINDING",
+      "version": "1.1"
+    },
+    {
+      "hash": "300bc39687ad4e3fc14f8c1a1c15709b572dcdd39469a5e42daebc9d7c46c17a",
+      "norm_level": "SPECIFICATION",
+      "path": "institution/institution.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "SPEC-INSTITUTION",
+      "status": "BINDING",
+      "version": "1.3"
+    },
+    {
+      "hash": "c3c316423889255d3b9e240a34d83b7da5e3472b3d43cf5eeeee6d8cb703099e",
+      "norm_level": "SPECIFICATION",
+      "path": "interaction/interaction.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "SPEC-INTERACTION",
+      "status": "DERIVED",
+      "version": "1.2"
+    },
+    {
+      "hash": "d462e5b3c6d20c840ebb20f0177e7834dcca79935e09d9eabe68da44021fcb89",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0002-knowledge-system.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0002-knowledge-system",
+      "status": "BINDING",
+      "version": "ADR-0002"
+    },
+    {
+      "hash": "abefae21d01cb4571aa03d7700798137fc7862f02c7c5bcc2db12cbddd7ddea5",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0003-runtime-journal.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0003-runtime-journal",
+      "status": "STATUS_MISSING",
+      "version": "ADR-0003"
+    },
+    {
+      "hash": "5b9796d85f8ccd2476e01c4ab1788967014ae054dda6d50c073fc286d90d179f",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0004-runtime-architecture.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0004-runtime-architecture",
+      "status": "BINDING",
+      "version": "ADR-0004"
+    },
+    {
+      "hash": "d87c5f5082af265ac0887a65f937bcb41e7c55a824c7f74ccc408a40d822e3e2",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0005-decision-engine.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0005-decision-engine",
+      "status": "BINDING",
+      "version": "ADR-0005"
+    },
+    {
+      "hash": "09257f9ca34895ce48db14280524c07ac985133b86ada588fa626586f9bb9d1a",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0006-execution-engine.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0006-execution-engine",
+      "status": "BINDING",
+      "version": "ADR-0006"
+    },
+    {
+      "hash": "cd405ac684243645127b85b9136a1ca6f20fa462632643fa227f48fb87d753a1",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0007-knowledge-priority.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0007-knowledge-priority",
+      "status": "BINDING",
+      "version": "ADR-0007"
+    },
+    {
+      "hash": "34f349ab2b9d8a6878a5aad5768121b596f9ae6762ff51cd0ce9747c8cdc78a1",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0008-identity-first.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0008-identity-first",
+      "status": "BINDING",
+      "version": "ADR-0008"
+    },
+    {
+      "hash": "f8e229e44b618f77ee7c17457a111fe1407a07f5d15459e544508185606d45fc",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0009-memory-architecture.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0009-memory-architecture",
+      "status": "BINDING",
+      "version": "ADR-0009"
+    },
+    {
+      "hash": "1e714480a8585d943b200a4ab795a41d4732341cfe9bf295e9bee7016fa72291",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0010-goal-engine.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0010-goal-engine",
+      "status": "BINDING",
+      "version": "ADR-0010"
+    },
+    {
+      "hash": "3ec95d855bb9ecaa025003ee109fd962dc41b36865d03453595cd7e6282b6b6f",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0011-goal-evaluation-contract.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0011-goal-evaluation-contract",
+      "status": "BINDING",
+      "version": "ADR-0011"
+    },
+    {
+      "hash": "c5aeed3e7f1aa98952472b5e94412394d628fc8a1eb8f94f1a968eaf6f6ca153",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0012-why-assessment-model.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0012-why-assessment-model",
+      "status": "BINDING",
+      "version": "ADR-0012"
+    },
+    {
+      "hash": "5c21510ede04e2b8f16894dba83ccf15736408fd68ee748710e80565980977bb",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0013-decision-why-integration.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0013-decision-why-integration",
+      "status": "BINDING",
+      "version": "ADR-0013"
+    },
+    {
+      "hash": "444cfcc3ec386cec4a06b43e0aae93e16363f607f932ecc5dcdfd330ccd30e35",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0014-goal-aware-orchestration.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0014-goal-aware-orchestration",
+      "status": "BINDING",
+      "version": "ADR-0014"
+    },
+    {
+      "hash": "6a8d1f461ec27851081adf38f9139fa236f9e44da2629509709743a1433d82f7",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0015-goal-application-service.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0015-goal-application-service",
+      "status": "BINDING",
+      "version": "ADR-0015"
+    },
+    {
+      "hash": "9294da626e194dc6cf120a4854ce8bf6a254a15a3d06eb515850b614cc08f8cb",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0016-decision-journal.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0016-decision-journal",
+      "status": "BINDING",
+      "version": "ADR-0016"
+    },
+    {
+      "hash": "5f312b18ac887ccc60a9c3987e65ee321ebb4a98e26cbd6ec0957552c6b05f75",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0017-knowledge-proposal-execution.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0017-knowledge-proposal-execution",
+      "status": "BINDING",
+      "version": "ADR-0017"
+    },
+    {
+      "hash": "ad9dcf6121960d1050719fe61d8fd37d945391896ab3b4b66c6d260b489c9052",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0018-life-decisions.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0018-life-decisions",
+      "status": "BINDING",
+      "version": "ADR-0018"
+    },
+    {
+      "hash": "177e37e950dcf9987071ea599d7ca72c43fce0a86867a5b141519a1d1f1cced6",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0019-life-decisions-domain-model.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0019-life-decisions-domain-model",
+      "status": "BINDING",
+      "version": "ADR-0019"
+    },
+    {
+      "hash": "466c1564b5d7a2e1d59dc3b72cb30d30d6726e988eee96129f1f4e28eaef97e1",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0020-codex-context-and-handover.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0020-codex-context-and-handover",
+      "status": "BINDING",
+      "version": "ADR-0020"
+    },
+    {
+      "hash": "72d0d375ea63d87c1f29f5a078dc06c5ddbf22615cf781abcc8c1fbff6315799",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0021-mission-context-workflow-integration.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0021-mission-context-workflow-integration",
+      "status": "BINDING",
+      "version": "ADR-0021"
+    },
+    {
+      "hash": "abb9636a14763255f0823a6ff430d2dad9eeb10d5cec60c8d2fc6377944d4549",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0022-power-of-attorney-workflow.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0022-power-of-attorney-workflow",
+      "status": "BINDING",
+      "version": "ADR-0022"
+    },
+    {
+      "hash": "d6bbc06a16ad774e9f0fae5aaddeca5764c99a521e655ff1fdc895f9a335271e",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0025-institution-layer.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0025-institution-layer",
+      "status": "BINDING",
+      "version": "ADR-0025"
+    },
+    {
+      "hash": "2cbaf361991b354eab8fc4df8c46ea4d7643bf0b332ee29a07e564bba74a6b21",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0027-governance-architecture.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0027-governance-architecture",
+      "status": "BINDING",
+      "version": "ADR-0027"
+    },
+    {
+      "hash": "0579948a9f8ab36e4e97998a4641ba729afdb6a2c26eb9b9deb516177566907c",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0028-architecture-integrator-agent.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0028-architecture-integrator-agent",
+      "status": "BINDING",
+      "version": "ADR-0028"
+    },
+    {
+      "hash": "9e2e700dfaa635d2e32c901de8f72e204ef65979481a173b94951b7caedaddec",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0029-architecture-workflow-orchestrator.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0029-architecture-workflow-orchestrator",
+      "status": "BINDING",
+      "version": "ADR-0029"
+    },
+    {
+      "hash": "abae745cba6dfe2197ef2e45d3dea331f7e85f6d190343ff0ead71809e079da0",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0030-artifact-authorization-state-contract.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0030-artifact-authorization-state-contract",
+      "status": "BINDING",
+      "version": "ADR-0030"
+    },
+    {
+      "hash": "e9b2acbfd67c94991b24f7e197cad69f071f028868f42f35c313656c9581a1ac",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0031-architecture-workflow-v2.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0031-architecture-workflow-v2",
+      "status": "BINDING",
+      "version": "ADR-0031"
+    },
+    {
+      "hash": "1a3fcc9f95d895176419b5e05a4a2a135fe49712f482a7e1c5ef9a5ec1c6544c",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0032-guardian-runtime.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0032-guardian-runtime",
+      "status": "BINDING",
+      "version": "ADR-0032"
+    },
+    {
+      "hash": "6eedfe6aafa1f5fd11b438484cb891facbd2381ce2dc71b9febbacdef6fc7dfd",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0033-user-owned-data-architecture.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0033-user-owned-data-architecture",
+      "status": "BINDING",
+      "version": "ADR-0033"
+    },
+    {
+      "hash": "ac3ab79a0a639c792332fa9eb0d07e083de4f2faf4839a10d6fe78bb0edc9bc4",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0034-automated-codex-execution-bridge.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0034-automated-codex-execution-bridge",
+      "status": "BINDING",
+      "version": "ADR-0034"
+    },
+    {
+      "hash": "785a79e024c34c17fd489d1429774afd35561e0f540f8349a4585535866d21f0",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0035-architecture-codex-feedback-loop.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0035-architecture-codex-feedback-loop",
+      "status": "BINDING",
+      "version": "ADR-0035"
+    },
+    {
+      "hash": "a7fde4ba629bcbcbd459f565be5419e7b40f75cd3319e9a32786898e1eb8a99b",
+      "norm_level": "C3",
+      "path": "governance/operative-rules.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "C3-OPERATIVE-RULES",
+      "status": "BINDING",
+      "version": "1.1"
+    },
+    {
+      "hash": "e58321ad7ed7e59df345382a0f2f5cead2c89e48d7ad933b835e4a2176d9acc0",
+      "norm_level": "HISTORICAL",
+      "path": "knowledge/adr/ADR-0023-guardian-conversation-principles.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0023-guardian-conversation-principles",
+      "status": "HISTORICAL",
+      "version": "ADR-0023"
+    },
+    {
+      "hash": "1ca7f2b07328a5554832350a82286513eea5e53ecc20152110ac46457d6d259d",
+      "norm_level": "HISTORICAL",
+      "path": "knowledge/adr/ADR-0024-guardian-first-workflow-second.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0024-guardian-first-workflow-second",
+      "status": "HISTORICAL",
+      "version": "ADR-0024"
+    },
+    {
+      "hash": "1cea146720cca974e98653ddcb34abd4867aaad90d328a75f38ffb03663f7e83",
+      "norm_level": "HISTORICAL",
+      "path": "knowledge/adr/ADR-0026-conversation-interaction-architecture.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0026-conversation-interaction-architecture",
+      "status": "HISTORICAL",
+      "version": "ADR-0026"
+    },
+    {
+      "hash": "c89af5a924039da44bfcae596f3fe5998cbe2abeb4a023fef75d73072abec709",
+      "norm_level": "HANDOVER",
+      "path": "knowledge/handovers/2026-07-27_10-13-39-000000_Close-architecture-Codex-feedback-loop.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "LATEST-HANDOVER",
+      "status": "SUPPLEMENTAL",
+      "version": "unversioned"
+    }
+  ],
+  "proposal": {
+    "content": "- Create exactly one isolated documentation fixture at tests/fixtures/architecture-feedback-loop-e2e.md.\n- The fixture must state that it is an anonymized operational validation artifact, not a normative architecture source.\n- Do not modify product logic, existing architecture decisions, dependencies, remotes, or authorization rules.\n- Run python3 -m pytest -q tests/test_architecture_feedback_loop.py as the focused test.\n- Run python3 -m builder.main doctor and the complete required verification from the generated Codex order.\n- Create exactly one result commit and complete JSON and Markdown handovers.\n- Do not push.",
+    "known_constraints": [
+      "Chief Architect remains the only architecture decision authority.",
+      "No product logic or normative architecture document may change.",
+      "No push, dependency installation, remote change, or sensitive data.",
+      "The result commit is explicitly authorized and expected."
+    ],
+    "proposal_id": "proposal-feedback-loop-e2e-validation",
+    "related_layers": [
+      "CROSS_LAYER"
+    ],
+    "requested_scope": "Controlled real end-to-end validation of ADR-0035 transport and feedback behavior",
+    "source": "Chief Architect controlled validation",
+    "source_references": [
+      "knowledge/adr/ADR-0035-architecture-codex-feedback-loop.md",
+      "knowledge/adr/ADR-0034-automated-codex-execution-bridge.md"
+    ],
+    "source_role": "CHIEF_ARCHITECT",
+    "submitted_at": "2026-07-27T12:22:00+02:00",
+    "title": "Validate architecture feedback loop end to end"
+  },
+  "proposal_summary": "Proposal proposal-feedback-loop-e2e-validation was compared with the loaded architecture. 0 aligned, 7 additive, 0 conflicting, and 0 duplicate elements were identified. The recommendation is advisory. Only the Chief Architect may decide.",
+  "recommendation": "ADOPT",
+  "schema_version": "1.0",
+  "unresolved_questions": [
+    "Chief Architect must confirm whether additive elements become binding architecture."
+  ]
+}

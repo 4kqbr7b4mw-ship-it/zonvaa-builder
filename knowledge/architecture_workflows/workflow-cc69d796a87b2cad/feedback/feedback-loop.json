@@ -1,0 +1,28 @@
+{
+  "architecture_run_id": "architecture-run-13fdc9d6111c3326",
+  "authorization_id": "authorization-bd396a583ade9ae3",
+  "execution_id": "execution-5d483e4d5909d838",
+  "expected_execution_id": "execution-5d483e4d5909d838",
+  "handover_path": null,
+  "review_id": null,
+  "schema_version": "1.0",
+  "status": "EXECUTION_RUNNING",
+  "transitions": [
+    {
+      "occurred_at": "2026-07-27T12:23:00+02:00",
+      "reference": "decision-feedback-loop-e2e-validation",
+      "status": "DECISION_CONFIRMED"
+    },
+    {
+      "occurred_at": "2026-07-27T12:23:00+02:00",
+      "reference": "authorization-bd396a583ade9ae3",
+      "status": "EXECUTION_AUTHORIZED"
+    },
+    {
+      "occurred_at": "2026-07-27T12:23:00+02:00",
+      "reference": "execution-5d483e4d5909d838",
+      "status": "EXECUTION_RUNNING"
+    }
+  ],
+  "workflow_id": "workflow-cc69d796a87b2cad"
+}

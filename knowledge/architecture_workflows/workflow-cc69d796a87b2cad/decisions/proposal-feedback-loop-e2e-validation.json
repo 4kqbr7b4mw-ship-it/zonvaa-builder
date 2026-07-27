@@ -1,0 +1,19 @@
+{
+  "accepted_elements": [
+    "Create exactly one isolated documentation fixture at tests/fixtures/architecture-feedback-loop-e2e.md.",
+    "Mark the fixture as anonymized operational validation evidence and not as normative architecture.",
+    "Run the focused feedback-loop tests, complete suite, Doctor and git diff check.",
+    "Create exactly one result commit with complete JSON and Markdown handovers.",
+    "Do not modify product logic, normative architecture, dependencies, remotes or authorization rules.",
+    "Do not push."
+  ],
+  "decided_at": "2026-07-27T12:23:00+02:00",
+  "decided_by": "Chief Architect",
+  "decision": "ADOPT",
+  "decision_id": "decision-feedback-loop-e2e-validation",
+  "deferred_elements": [],
+  "modified_elements": [],
+  "proposal_id": "proposal-feedback-loop-e2e-validation",
+  "rationale": "This controlled, isolated result commit is explicitly authorized to validate the already accepted ADR-0035 pipeline without changing architecture.",
+  "rejected_elements": []
+}
