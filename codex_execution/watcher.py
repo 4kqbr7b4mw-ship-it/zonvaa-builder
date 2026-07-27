@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import json
-from typing import Callable, Tuple
+from typing import Callable, Optional, Tuple
 
 from architecture_integrator import WorkflowStatus
 from codex_execution.models import ExecutionStatus
@@ -16,9 +16,11 @@ class ArchitectureExecutionWatcher:
         self,
         service: CodexExecutionService,
         clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
+        completion_callback: Optional[Callable[[str], object]] = None,
     ) -> None:
         self.service = service
         self.clock = clock
+        self.completion_callback = completion_callback
 
     def run_once(self) -> Tuple[str, ...]:
         results = []
@@ -58,6 +60,11 @@ class ArchitectureExecutionWatcher:
                 results.append(
                     "{}:{}".format(workflow_id, record.status.value)
                 )
+                if (
+                    record.status is ExecutionStatus.SUCCEEDED
+                    and self.completion_callback is not None
+                ):
+                    self.completion_callback(workflow_id)
             except ExecutionBridgeError as error:
                 results.append(
                     "{}:ERROR:{}".format(

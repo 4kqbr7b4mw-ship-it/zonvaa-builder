@@ -1,5 +1,6 @@
 import hashlib
 import json
+from types import SimpleNamespace
 from dataclasses import FrozenInstanceError
 from datetime import datetime, timezone
 from pathlib import Path
@@ -72,6 +73,27 @@ def orchestrator(
         ArchitectureIntegrator(ArchitectureContextLoader(runtime)),
         ArchitectureWorkflowStore(root),
     )
+
+
+class FakeFeedbackLoop:
+    def authorize(self, workflow_id):
+        return SimpleNamespace(
+            to_dict=lambda: {
+                "workflow_id": workflow_id,
+                "approval_status": "CONFIRMED",
+            }
+        )
+
+    def advance(self, workflow_id):
+        return SimpleNamespace(
+            status=SimpleNamespace(
+                value="CHIEF_ARCHITECT_DECISION_REQUIRED"
+            ),
+            to_dict=lambda: {
+                "workflow_id": workflow_id,
+                "status": "CHIEF_ARCHITECT_DECISION_REQUIRED",
+            }
+        )
 
 
 def test_complete_workflow_persists_separate_reproducible_stages(
@@ -211,6 +233,11 @@ def test_cli_workflow_runs_all_gated_stages(
         "_workflow_orchestrator",
         lambda: flow,
     )
+    monkeypatch.setattr(
+        architecture_commands,
+        "_feedback_loop",
+        lambda **kwargs: FakeFeedbackLoop(),
+    )
     proposal_path = tmp_path / "proposal.json"
     decision_path = tmp_path / "decision.json"
     proposal_path.write_text(
@@ -339,6 +366,11 @@ def test_architecture_run_records_decisions_and_generates_prompt_automatically(
         "_workflow_orchestrator",
         lambda: flow,
     )
+    monkeypatch.setattr(
+        architecture_commands,
+        "_feedback_loop",
+        lambda **kwargs: FakeFeedbackLoop(),
+    )
     first = proposal("proposal-a", "First architecture statement.")
     second = proposal("proposal-b", "Second architecture statement.")
     workflow = flow.run(
@@ -378,6 +410,10 @@ def test_architecture_run_records_decisions_and_generates_prompt_automatically(
         ),
         "status": "CODEX_PROMPT_GENERATED",
         "workflow_id": workflow.workflow_id,
+        "feedback": {
+            "status": "CHIEF_ARCHITECT_DECISION_REQUIRED",
+            "workflow_id": workflow.workflow_id,
+        },
     }
     assert flow.store.status(workflow.workflow_id) is (
         WorkflowStatus.CODEX_PROMPT_GENERATED

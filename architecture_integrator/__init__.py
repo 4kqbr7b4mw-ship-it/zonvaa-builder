@@ -21,10 +21,25 @@ from architecture_integrator.workflow import (
     ArchitectureWorkflowStore,
     WorkflowStatus,
 )
+from architecture_integrator.feedback import (
+    ApprovalStatus,
+    ArchitectureFeedbackStore,
+    ArchitectureImplementationReview,
+    CodexHandoverIntake,
+    ExecutionAuthorization,
+    FeedbackLoopRecord,
+    FeedbackStatus,
+    FeedbackTransition,
+    HandoverDeviation,
+)
+from architecture_integrator.feedback_loop import ArchitectureFeedbackLoop
 
 __all__ = [
     "ArchitectureAnalysis",
     "ArchitectureContextLoader",
+    "ArchitectureFeedbackLoop",
+    "ArchitectureFeedbackStore",
+    "ArchitectureImplementationReview",
     "ArchitectureIntegrator",
     "ArchitectureLayer",
     "ArchitectureProposal",
@@ -34,12 +49,19 @@ __all__ = [
     "ArchitectureWorkflowStore",
     "ChiefArchitectDecision",
     "CodexPromptBuilder",
+    "CodexHandoverIntake",
     "Conflict",
     "ContextSource",
     "DecisionChoice",
+    "ExecutionAuthorization",
+    "FeedbackLoopRecord",
+    "FeedbackStatus",
+    "FeedbackTransition",
+    "HandoverDeviation",
     "NormLevel",
     "Recommendation",
     "SourceRole",
     "SourceStatus",
     "WorkflowStatus",
+    "ApprovalStatus",
 ]

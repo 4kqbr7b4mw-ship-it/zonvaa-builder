@@ -35,10 +35,11 @@ python3 -m builder.main architecture run \
 Der erste Aufruf speichert Proposals, Analysen und eine gemeinsame kompakte
 Entscheidungsvorlage unter `knowledge/architecture_workflows/`. Ohne
 bestätigte Entscheidung bleibt er in `WAITING_FOR_DECISION`. Der zweite
-Aufruf speichert ausschließlich explizite Chief-Architect-Entscheidungen und
-erzeugt den Codex-Prompt automatisch, sobald für jedes Proposal eine passende
-Entscheidung vorliegt. Der Workflow startet weder Codex noch Tests oder
-Commit.
+Aufruf speichert ausschließlich explizite Chief-Architect-Entscheidungen,
+erzeugt den Codex-Prompt und startet die autorisierte lokale Feedback-Kette,
+sobald für jedes Proposal eine passende Entscheidung vorliegt. Codex darf
+dabei Tests, Doctor, Commit und Handover ausführen, aber niemals die
+nachgelagerte Chief-Architect-Entscheidung ersetzen.
 
 Der erzeugte Prompt besitzt einen Hash- und Decision-Proof. Die
 [lokale Execution Bridge](../codex_execution/README.md) kann ausschließlich
@@ -47,6 +48,27 @@ diesen bestätigten kanonischen Auftrag an `codex exec` übergeben.
 Die bisherigen `architecture workflow analyze`, `decide` und
 `generate-codex`-Befehle bleiben für vorhandene Abläufe kompatibel, sind aber
 nicht mehr der Standardpfad.
+
+## Architecture-to-Codex Feedback
+
+Der bestätigte Workflow persistiert unter `feedback/` eine typisierte
+Execution-Autorisierung. Sie bindet Architecture-Run, Entscheidungen, Prompt
+und Hash, Repository, Basis-Commit, erlaubte Aktionen und erwartete
+Abschlussartefakte. Die bestehende Execution Bridge bleibt die einzige
+Ausführungsgrenze.
+
+Nach erfolgreicher Ausführung wird genau das im Execution Record referenzierte
+JSON-Handover gegen Execution-ID, Basis-/Ergebnis-Commit, Tests, Doctor,
+Git-Status und Push-Grenze geprüft. Der Integrator erzeugt daraus eine
+nicht bindende Entscheidungsvorlage und stoppt immer bei
+`CHIEF_ARCHITECT_DECISION_REQUIRED`.
+
+Der maschinenlesbare Gesamtstatus ist abrufbar mit:
+
+```bash
+python3 -m builder.main architecture workflow feedback-status \
+  --workflow-id workflow-0123456789abcdef
+```
 
 ## Kontextreihenfolge
 

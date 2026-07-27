@@ -1,11 +1,19 @@
 import hashlib
+import json
 import shutil
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional, Tuple
 
-from architecture_integrator import ArchitectureWorkflowStore, WorkflowStatus
+from architecture_integrator.feedback import (
+    ApprovalStatus,
+    ExecutionAuthorization,
+)
+from architecture_integrator.workflow import (
+    ArchitectureWorkflowStore,
+    WorkflowStatus,
+)
 from codex_execution.models import (
     AttemptTrigger,
     CheckStatus,
@@ -127,6 +135,19 @@ class CodexExecutionService:
     ) -> ExecutionRecord:
         prompt, prompt_hash = self._approved_prompt(workflow_id)
         execution_id = self.execution_id(workflow_id, prompt_hash)
+        authorization = self._feedback_authorization(workflow_id)
+        if authorization is not None:
+            if (
+                authorization.approval_status is not ApprovalStatus.CONFIRMED
+                or authorization.workflow_id != workflow_id
+                or authorization.expected_execution_id != execution_id
+                or authorization.prompt_hash != prompt_hash
+                or Path(authorization.repository).resolve()
+                != self.repository
+            ):
+                raise RuntimeError(
+                    "Execution authorization does not match the prompt"
+                )
         with self.executions.lock(workflow_id):
             existing = self.executions.existing(
                 workflow_id,
@@ -171,10 +192,24 @@ class CodexExecutionService:
             ).resolve()
             if root != self.repository:
                 raise RuntimeError("Git repository root changed")
-            if existing is None and git_status:
+            if (
+                authorization is not None
+                and commit != authorization.expected_base_commit
+            ):
                 raise RuntimeError(
-                    "New execution requires a clean working tree"
+                    "Repository HEAD differs from authorized base commit"
                 )
+            if existing is None and git_status:
+                if (
+                    authorization is None
+                    or not self._authorized_workflow_changes(
+                        workflow_id,
+                        git_status,
+                    )
+                ):
+                    raise RuntimeError(
+                        "New execution requires a clean working tree"
+                    )
             if existing is not None:
                 if branch != existing.starting_branch:
                     raise RuntimeError(
@@ -795,3 +830,36 @@ class CodexExecutionService:
             workflow_id,
             prompt_hash,
         )
+
+    def _feedback_authorization(
+        self,
+        workflow_id: str,
+    ) -> Optional[ExecutionAuthorization]:
+        path = (
+            self.workflows.folder(workflow_id)
+            / "feedback"
+            / "execution-authorization.json"
+        )
+        if not path.exists():
+            return None
+        if path.is_symlink() or not path.is_file():
+            raise ValueError("Execution authorization is unsafe")
+        return ExecutionAuthorization.from_dict(
+            json.loads(path.read_text(encoding="utf-8"))
+        )
+
+    def _authorized_workflow_changes(
+        self,
+        workflow_id: str,
+        git_status: Tuple[str, ...],
+    ) -> bool:
+        prefix = "knowledge/architecture_workflows/{}/".format(workflow_id)
+        paths = []
+        for line in git_status:
+            if len(line) < 4:
+                return False
+            path = line[3:]
+            if " -> " in path:
+                path = path.split(" -> ", 1)[1]
+            paths.append(path)
+        return bool(paths) and all(path.startswith(prefix) for path in paths)

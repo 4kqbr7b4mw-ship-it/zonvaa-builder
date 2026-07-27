@@ -93,3 +93,17 @@ watcher at any time.
 The Bridge cannot prevent a Codex process from having created a commit before a
 later independent verification fails. Such a commit is not approved as the
 result, is not changed automatically and is reported as a risk.
+
+## Feedback-loop authorization
+
+Architecture Workflow v2 may persist
+`feedback/execution-authorization.json`. When present, the Bridge additionally
+requires its confirmed approval status, workflow and deterministic
+Execution-ID, prompt hash, repository and expected base commit to match before
+Codex starts. Historical confirmed workflows without this additive artifact
+remain readable and executable under their existing prompt proof.
+
+After success, the watcher can hand the owning workflow directly to the
+Architecture feedback coordinator. The coordinator consumes the existing
+Execution Record and its immutable Attempt History; it does not copy or replace
+Bridge state.

@@ -6,6 +6,8 @@ import typer
 
 from architecture_integrator import (
     ArchitectureContextLoader,
+    ArchitectureFeedbackLoop,
+    ArchitectureFeedbackStore,
     ArchitectureIntegrator,
     ArchitectureWorkflowOrchestrator,
     ArchitectureWorkflowStore,
@@ -165,8 +167,6 @@ def analyze_workflow(
             sort_keys=True,
         )
     )
-
-
 def decide_workflow(
     workflow_id: str = typer.Option(..., "--workflow-id"),
     decision_file: Path = typer.Option(
@@ -207,6 +207,10 @@ def generate_workflow_codex(
         orchestrator = _workflow_orchestrator()
         path = orchestrator.generate_codex(workflow_id)
         status = orchestrator.store.status(workflow_id)
+        authorization = _feedback_loop(
+            workflows=orchestrator.store,
+            integrator=orchestrator.integrator,
+        ).authorize(workflow_id)
     except (OSError, RuntimeError, TypeError, ValueError) as error:
         _workflow_error("Codex prompt generation", error)
     typer.echo(
@@ -215,6 +219,7 @@ def generate_workflow_codex(
                 "workflow_id": workflow_id,
                 "status": status.value,
                 "codex_prompt": str(path),
+                "authorization": authorization.to_dict(),
             },
             indent=2,
             sort_keys=True,
@@ -272,17 +277,24 @@ def run_architecture(
     if result.status.value == "WAITING_FOR_DECISION":
         typer.echo(result.decision_template)
         return
+    feedback = _feedback_loop(
+        workflows=orchestrator.store,
+        integrator=orchestrator.integrator,
+    ).advance(result.workflow.workflow_id)
     typer.echo(
         json.dumps(
             {
                 "workflow_id": result.workflow.workflow_id,
                 "status": result.status.value,
                 "codex_prompt": str(result.codex_prompt),
+                "feedback": feedback.to_dict(),
             },
             indent=2,
             sort_keys=True,
         )
     )
+    if feedback.status.value == "FAILED":
+        raise typer.Exit(code=1)
 
 
 def execute_architecture(
@@ -346,8 +358,14 @@ def cancel_execution(
 def watch_executions_once() -> None:
     """Run one idempotent watcher scan for launchd."""
     try:
+        service = _execution_service()
+        feedback = _feedback_loop(
+            workflows=service.workflows,
+            execution=service,
+        )
         results = ArchitectureExecutionWatcher(
-            _execution_service()
+            service,
+            completion_callback=feedback.advance,
         ).run_once()
     except (OSError, RuntimeError, TypeError, ValueError) as error:
         _workflow_error("execution watcher", error)
@@ -371,6 +389,41 @@ def _execution_service() -> CodexExecutionService:
     return CodexExecutionService(
         workflows=workflows,
         executions=ExecutionStore(workflows),
+    )
+
+
+def feedback_status(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Show the machine-readable Architecture-to-Codex pipeline status."""
+    try:
+        workflows = ArchitectureWorkflowStore()
+        record = ArchitectureFeedbackStore(workflows).record(workflow_id)
+        if record is None:
+            raise RuntimeError("No feedback loop exists")
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("feedback status", error)
+    typer.echo(json.dumps(record.to_dict(), indent=2, sort_keys=True))
+
+
+def _feedback_loop(
+    workflows: Optional[ArchitectureWorkflowStore] = None,
+    execution: Optional[CodexExecutionService] = None,
+    integrator: Optional[ArchitectureIntegrator] = None,
+) -> ArchitectureFeedbackLoop:
+    workflow_store = workflows or ArchitectureWorkflowStore()
+    architecture_integrator = integrator or ArchitectureIntegrator(
+        ArchitectureContextLoader(get_runtime())
+    )
+    execution_service = execution or CodexExecutionService(
+        workflows=workflow_store,
+        executions=ExecutionStore(workflow_store),
+    )
+    return ArchitectureFeedbackLoop(
+        workflows=workflow_store,
+        execution=execution_service,
+        integrator=architecture_integrator,
+        repository=execution_service.repository,
     )
 
 
@@ -399,6 +452,7 @@ def _workflow_error(stage: str, error: BaseException) -> None:
 workflow_app.command("analyze")(analyze_workflow)
 workflow_app.command("decide")(decide_workflow)
 workflow_app.command("generate-codex")(generate_workflow_codex)
+workflow_app.command("feedback-status")(feedback_status)
 execution_app.command("status")(execution_status)
 execution_app.command("retry")(retry_execution)
 execution_app.command("cancel")(cancel_execution)

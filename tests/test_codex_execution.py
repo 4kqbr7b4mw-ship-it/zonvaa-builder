@@ -11,7 +11,12 @@ import subprocess
 from typer.testing import CliRunner
 
 import commands.architecture as architecture_commands
-from architecture_integrator import ArchitectureWorkflowStore
+from architecture_integrator import (
+    ApprovalStatus,
+    ArchitectureFeedbackStore,
+    ArchitectureWorkflowStore,
+    ExecutionAuthorization,
+)
 from codex_execution import (
     ArchitectureExecutionWatcher,
     AttemptTrigger,
@@ -47,6 +52,7 @@ class FakeRunner:
         tests_exit=0,
         doctor_exit=0,
         final_dirty=False,
+        initial_status="",
     ):
         self.repository = repository
         self.codex_exit = codex_exit
@@ -55,6 +61,7 @@ class FakeRunner:
         self.tests_exit = tests_exit
         self.doctor_exit = doctor_exit
         self.final_dirty = final_dirty
+        self.initial_status = initial_status
         self.codex_called = False
         self.commands = []
         self.prompts = []
@@ -78,7 +85,13 @@ class FakeRunner:
             return CommandResult(0, value + "\n", "")
         if args[:3] == ("git", "status", "--porcelain"):
             dirty = self.final_dirty and self.codex_called
-            return CommandResult(0, " M retained.txt\n" if dirty else "", "")
+            return CommandResult(
+                0,
+                " M retained.txt\n"
+                if dirty
+                else ("" if self.codex_called else self.initial_status),
+                "",
+            )
         if len(args) >= 3 and args[1:3] == ("login", "status"):
             return CommandResult(0, "Logged in\n", "")
         if "exec" in args:
@@ -197,6 +210,26 @@ def service(repository, runner=None, policy=ExecutionPolicy()):
         executions,
         prompt_path,
         prompt_hash,
+    )
+
+
+def feedback_authorization(bridge, prompt_hash, base_commit=START):
+    return ExecutionAuthorization(
+        authorization_id="authorization-0123456789abcdef",
+        architecture_run_id="architecture-run-0123456789abcdef",
+        workflow_id=WORKFLOW_ID,
+        expected_execution_id=bridge.execution_id(
+            WORKFLOW_ID, prompt_hash
+        ),
+        decision_artifacts=("decisions/proposal-a.json",),
+        approval_status=ApprovalStatus.CONFIRMED,
+        codex_prompt="prompts/codex-prompt.md",
+        prompt_hash=prompt_hash,
+        repository=str(bridge.repository),
+        expected_base_commit=base_commit,
+        allowed_actions=("create_commit", "create_handover"),
+        expected_completion_artifacts=("result_commit", "json_handover"),
+        authorized_at=NOW,
     )
 
 
@@ -792,3 +825,65 @@ def test_execution_attempt_model_is_frozen_and_rejects_wrong_identity(tmp_path):
     wrong = replace(attempt, execution_id="execution-0000000000000000")
     with pytest.raises(ValueError, match="another execution"):
         record.evolve(attempts=(wrong,))
+
+
+def test_feedback_authorization_blocks_wrong_repository_base_before_codex(
+    tmp_path,
+):
+    bridge, runner, _, _, prompt_hash = service(tmp_path)
+    authorization = feedback_authorization(
+        bridge,
+        prompt_hash,
+        base_commit="f" * 40,
+    )
+    ArchitectureFeedbackStore(bridge.workflows).write_authorization(
+        authorization
+    )
+
+    with pytest.raises(ExecutionBridgeError) as raised:
+        bridge.execute(WORKFLOW_ID)
+
+    assert raised.value.failure.step is ExecutionStep.PROMPT_VALIDATION
+    assert "authorized base commit" in raised.value.failure.exception_message
+    assert not runner.codex_called
+    assert bridge.status(WORKFLOW_ID) is None
+
+
+def test_authorized_workflow_artifacts_may_cross_clean_tree_boundary(
+    tmp_path,
+):
+    runner = FakeRunner(
+        tmp_path,
+        initial_status=(
+            "?? knowledge/architecture_workflows/{}/feedback/\n".format(
+                WORKFLOW_ID
+            )
+        ),
+    )
+    bridge, _, _, _, prompt_hash = service(tmp_path, runner=runner)
+    ArchitectureFeedbackStore(bridge.workflows).write_authorization(
+        feedback_authorization(bridge, prompt_hash)
+    )
+
+    record = bridge.execute(WORKFLOW_ID)
+
+    assert record.status is ExecutionStatus.SUCCEEDED
+    assert record.starting_git_status == (
+        "?? knowledge/architecture_workflows/{}/feedback/".format(
+            WORKFLOW_ID
+        ),
+    )
+
+
+def test_authorization_does_not_allow_unrelated_dirty_files(tmp_path):
+    runner = FakeRunner(tmp_path, initial_status=" M product.py\n")
+    bridge, _, _, _, prompt_hash = service(tmp_path, runner=runner)
+    ArchitectureFeedbackStore(bridge.workflows).write_authorization(
+        feedback_authorization(bridge, prompt_hash)
+    )
+
+    with pytest.raises(ExecutionBridgeError) as raised:
+        bridge.execute(WORKFLOW_ID)
+
+    assert "clean working tree" in raised.value.failure.exception_message
+    assert not runner.codex_called

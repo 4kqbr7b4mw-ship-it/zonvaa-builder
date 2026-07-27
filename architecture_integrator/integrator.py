@@ -3,6 +3,11 @@ import re
 from typing import Dict, Iterable, List, Optional, Set, Tuple
 
 from architecture_integrator.loader import ArchitectureContextLoader
+from architecture_integrator.feedback import (
+    ArchitectureImplementationReview,
+    CodexHandoverIntake,
+    stable_identifier,
+)
 from architecture_integrator.models import (
     ArchitectureAnalysis,
     ArchitectureProposal,
@@ -233,6 +238,51 @@ class ArchitectureIntegrator:
                 "## Entscheidung erforderlich",
                 self._lines(analysis.decision_required),
             )
+        )
+
+    def review_handover(
+        self,
+        intake: CodexHandoverIntake,
+    ) -> ArchitectureImplementationReview:
+        """Creates an advisory implementation review without approving it."""
+        if not isinstance(intake, CodexHandoverIntake):
+            raise TypeError("intake must be CodexHandoverIntake")
+        recommendation = (
+            "ADOPT_WITH_CHANGES" if intake.deviations else "ADOPT"
+        )
+        conflicts = tuple(item.message for item in intake.deviations)
+        return ArchitectureImplementationReview(
+            review_id=stable_identifier(
+                "review",
+                intake.architecture_run_id,
+                intake.execution_id,
+                intake.result_commit,
+                intake.handover_path,
+            ),
+            architecture_run_id=intake.architecture_run_id,
+            workflow_id=intake.workflow_id,
+            execution_id=intake.execution_id,
+            attempt_ids=intake.attempt_ids,
+            recommendation=recommendation,
+            original_decision_ids=intake.decision_ids,
+            codex_prompt="prompts/codex-prompt.md",
+            implementation_result=(
+                "Codex completed the authorized architecture order and "
+                "reported a result commit, checks and handover. The "
+                "Architecture Integrator reviewed the structured evidence "
+                "without approving the implementation."
+            ),
+            changed_files=intake.changed_files,
+            checks=intake.checks,
+            commit=intake.result_commit,
+            git_status=intake.git_status,
+            deviations=intake.deviations,
+            open_risks=intake.open_risks,
+            conflicts=conflicts,
+            decision_required=(
+                "Chief Architect must adopt, request changes, reject, or "
+                "defer the implementation result.",
+            ),
         )
 
     def _existing_statements(

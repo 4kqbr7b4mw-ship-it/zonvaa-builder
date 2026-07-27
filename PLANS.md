@@ -3,6 +3,70 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Architecture-to-Codex Feedback Loop
+
+### Ziel und Nicht-Ziele
+
+Bestätigte Architecture-Workflow-Entscheidungen ohne manuellen Dateitransport
+über die bestehende Execution Bridge ausführen, das resultierende Handover
+deterministisch validieren und dem Architecture Integrator als nicht bindende
+Review-Eingabe zuführen. Keine automatische Architekturfreigabe, kein Push,
+keine neue Queue, keine externe Persistenz und keine semantische KI-Bewertung.
+
+### Geprüfter Ausgangszustand
+
+- Phase 1 veröffentlichte Commit `3bf643b` erfolgreich auf `origin/main`;
+  Preflight auf diesem sauberen Stand war erfolgreich.
+- Architecture Workflow 2.0 persistiert Proposals, Analysen, bestätigte
+  Entscheidungen, Prompt und Prompt-Proof getrennt.
+- Die Execution Bridge prüft bestätigten Prompt, Basis-Repository, Commit,
+  Result-Commit, Tests, Doctor, Diff und ein JSON-/Markdown-Handover; Schema
+  1.2 erhält alle Attempts.
+- Die Bridge ordnet Handovers derzeit nur über Dateien im Result-Commit zu.
+  Es fehlen ein explizites Execution-Autorisierungsartefakt, ein persistierter
+  Feedback-Zustand, strukturierte Handover-Abweichungen und ein Integrator-
+  Review.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight und bestehende Workflow-, Execution- und Handover-Verträge prüfen.
+- [x] Typisierte Autorisierung, Feedback-Zustände und Persistenz ergänzen.
+- [x] Bridge-Autorisierungsprüfung und Handover-Validierung integrieren.
+- [x] Architecture-Integrator-Intake, Entscheidungsvorlage und CLI ergänzen.
+- [x] Idempotenz-, Sicherheits-, CLI- und End-to-End-Tests ergänzen.
+- [x] Vollständige Tests, Doctor, Diff, Handover und Commit abschließen.
+
+### Entscheidungen und Begründungen
+
+- Feedback-Artefakte liegen im bestehenden Architecture-Workflow-Ordner; es
+  entsteht keine parallele Workflow- oder Execution-Ablage.
+- Die Execution Bridge bleibt alleinige Ausführungsgrenze. Ein optional
+  vorhandenes typisiertes Autorisierungsartefakt verschärft ihre Prüfung,
+  ohne historische bestätigte Workflows unlesbar zu machen.
+- Handover-Zuordnung stützt sich auf den im Execution Record belegten
+  Result-Commit und explizite Artefaktpfade, nicht auf Zeitstempel oder
+  „neueste Datei“.
+
+### Risiken und Teststrategie
+
+- Bestehende Handover-Schema-1.0-Dateien tragen keine Execution-ID; die
+  eindeutige Zuordnung wird daher über Execution Record, Commit-Diff und
+  Basis-/Ergebnis-Commit belegt.
+- Deterministische lokale Tests verwenden simulierte Codex-Ergebnisse und
+  echte Workflow-, Store-, Bridge- und Handover-Pfade ohne Netzwerk,
+  Codex-Login oder launchd.
+
+### Abweichungen und Abschlusszustand
+
+Keine fachliche Abweichung vom freigegebenen Auftrag. Die kritische Prüfung
+ergab, dass der automatische Start die noch uncommittierten, aber bestätigten
+Kontrollartefakte des eigenen Architecture-Workflows transportieren muss.
+Diese eng begrenzte Ausnahme wurde typisiert autorisiert; jede Änderung
+außerhalb des zugeordneten Workflow-Ordners blockiert weiterhin. 74
+fokussierte Tests einschließlich kontrolliertem End-to-End-Artefaktfluss und
+594 vollständige Tests bestanden. Doctor und `git diff --check` waren
+erfolgreich. Der Abschlusscommit wird nicht gepusht.
+
 ## Abgeschlossener Plan: Immutable Execution Attempt History
 
 ### Ziel und Nicht-Ziele
