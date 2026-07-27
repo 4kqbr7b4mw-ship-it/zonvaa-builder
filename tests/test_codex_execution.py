@@ -125,9 +125,12 @@ class FakeRunner:
         raise AssertionError("Unexpected command: {}".format(args))
 
 
-def confirmed_workflow(repository: Path):
+def confirmed_workflow(
+    repository: Path,
+    workflow_id: str = WORKFLOW_ID,
+):
     root = repository / "knowledge" / "architecture_workflows"
-    folder = root / WORKFLOW_ID
+    folder = root / workflow_id
     for name in (
         "proposals",
         "analyses",
@@ -138,7 +141,7 @@ def confirmed_workflow(repository: Path):
         (folder / name).mkdir(parents=True, exist_ok=True)
     manifest = {
         "schema_version": "2.0",
-        "workflow_id": WORKFLOW_ID,
+        "workflow_id": workflow_id,
         "created_at": NOW.isoformat(),
         "proposal_ids": ["proposal-a"],
         "proposal_files": ["proposals/proposal-a.json"],
@@ -177,7 +180,7 @@ def confirmed_workflow(repository: Path):
         json.dumps(
             {
                 "schema_version": "1.0",
-                "workflow_id": WORKFLOW_ID,
+                "workflow_id": workflow_id,
                 "prompt_path": "prompts/codex-prompt.md",
                 "prompt_hash": prompt_hash,
                 "decision_ids": ["decision-a"],
@@ -518,6 +521,101 @@ def test_watcher_is_idempotent_and_retries_capacity_after_delay(tmp_path):
     assert [attempt.attempt_number for attempt in watched.attempts] == [1, 2]
     assert watched.attempts[0].trigger is AttemptTrigger.INITIAL
     assert watched.attempts[1].trigger is AttemptTrigger.RETRY
+
+
+def test_watcher_skips_legacy_workflow_without_prompt_proof(tmp_path):
+    bridge, runner, _, prompt_path, _ = service(tmp_path)
+    proof_path = bridge.workflows.prompt_proof_path(WORKFLOW_ID)
+    proof_path.unlink()
+    folder = bridge.workflows.folder(WORKFLOW_ID)
+    before = {
+        path.relative_to(folder): path.read_bytes()
+        for path in folder.rglob("*")
+        if path.is_file()
+    }
+
+    result = ArchitectureExecutionWatcher(
+        bridge,
+        clock=lambda: NOW,
+    ).run_once()
+
+    after = {
+        path.relative_to(folder): path.read_bytes()
+        for path in folder.rglob("*")
+        if path.is_file()
+    }
+    assert result == ()
+    assert runner.commands == []
+    assert before == after
+    assert prompt_path.read_text(encoding="utf-8") == (
+        "# Confirmed Codex order\n\nDo not push.\n"
+    )
+    assert not (folder / "executions").exists()
+
+
+def test_watcher_still_executes_workflow_with_valid_prompt_proof(tmp_path):
+    bridge, runner, _, _, _ = service(tmp_path)
+
+    result = ArchitectureExecutionWatcher(
+        bridge,
+        clock=lambda: NOW,
+    ).run_once()
+
+    assert result == ("{}:SUCCEEDED".format(WORKFLOW_ID),)
+    assert runner.codex_called is True
+
+
+def test_legacy_workflow_does_not_block_valid_workflow_in_same_scan(
+    tmp_path,
+):
+    legacy_id = "workflow-0000000000000000"
+    valid_id = "workflow-ffffffffffffffff"
+    workflows, _, _, _ = confirmed_workflow(tmp_path, legacy_id)
+    workflows.prompt_proof_path(legacy_id).unlink()
+    workflows, executions, _, _ = confirmed_workflow(tmp_path, valid_id)
+    runner = FakeRunner(tmp_path)
+    bridge = CodexExecutionService(
+        workflows=workflows,
+        executions=executions,
+        repository=tmp_path,
+        allowed_repository=tmp_path,
+        runner=runner,
+        clock=lambda: NOW,
+        codex_resolver=lambda: "/usr/local/bin/codex",
+    )
+
+    result = ArchitectureExecutionWatcher(
+        bridge,
+        clock=lambda: NOW,
+    ).run_once()
+
+    assert result == ("{}:SUCCEEDED".format(valid_id),)
+    assert runner.codex_called is True
+    assert not (
+        workflows.folder(legacy_id) / "executions"
+    ).exists()
+
+
+def test_watcher_reports_present_but_invalid_prompt_proof(tmp_path):
+    bridge, runner, _, _, _ = service(tmp_path)
+    proof_path = bridge.workflows.prompt_proof_path(WORKFLOW_ID)
+    proof = json.loads(proof_path.read_text(encoding="utf-8"))
+    proof["prompt_hash"] = "0" * 64
+    proof_path.write_text(json.dumps(proof), encoding="utf-8")
+
+    result = ArchitectureExecutionWatcher(
+        bridge,
+        clock=lambda: NOW,
+    ).run_once()
+
+    prefix = "{}:ERROR:".format(WORKFLOW_ID)
+    assert len(result) == 1
+    assert result[0].startswith(prefix)
+    failure = json.loads(result[0][len(prefix):])
+    assert failure["step"] == "WATCHER_SCAN"
+    assert failure["exception_type"] == "ValueError"
+    assert "hash changed" in failure["exception_message"]
+    assert runner.codex_called is False
 
 
 def test_launchd_template_is_restart_capable_and_runs_finite_scan():

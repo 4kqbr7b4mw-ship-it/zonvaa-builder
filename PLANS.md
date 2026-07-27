@@ -3,6 +3,62 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Watcher-Kompatibilität für Legacy-Workflows
+
+### Ziel und Nicht-Ziele
+
+Der Execution Watcher überspringt historische Workflows, deren
+`codex-prompt.md` vorhanden ist, deren zwingender Prompt-Proof aber vollständig
+fehlt. Vorhandene ungültige Proofs bleiben Fehler. Nicht geändert werden
+Workflow-Statussemantik, Proof-Schema, Autorisierung, historische Artefakte,
+Migration, Feedback Loop oder Guardian Succession.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `6772c54af823b34bea3ac234a85adefbcd5f2b2b`;
+  der Preflight war erfolgreich.
+- `ArchitectureWorkflowStore.status()` erkennt einen vorhandenen Markdown-
+  Prompt als `CODEX_PROMPT_GENERATED`.
+- Der Watcher rief deshalb für Legacy-Workflows `service.status()` auf, obwohl
+  `codex-prompt-proof.json` fehlte; die Servicevalidierung meldete folgerichtig
+  `INPUT_NOT_FOUND`.
+- `ArchitectureWorkflowStore.prompt_proof_path()` ist die vorhandene sichere
+  Pfadabstraktion für die minimale Watcher-Selektion.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Git-Vorbedingungen, Preflight und bestehende Watcher-/Store-Verträge prüfen.
+- [x] Ausschließlich vollständig fehlende Proofs vor Servicezugriff überspringen.
+- [x] Legacy-, gültige, gemischte und manipulierte Proof-Fälle testen.
+- [x] Fokussierte und vollständige Tests, Doctor, Diff und realen Scan prüfen.
+- [x] Handover und genau einen Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Die allgemeine Workflow-Statussemantik bleibt unverändert.
+- `exists() == false` und `is_symlink() == false` bezeichnet den eindeutigen
+  Legacy-Fall. Ein vorhandenes Verzeichnis, eine Datei oder auch ein defekter
+  Symlink wird nicht übersprungen und bleibt der Servicevalidierung ausgesetzt.
+- Der Watcher konstruiert keinen Pfad selbst und erzeugt weder Proof,
+  Execution-Verzeichnis noch Attempt für den Legacy-Workflow.
+
+### Risiken und Teststrategie
+
+- Historische Anzeigen können weiterhin `CODEX_PROMPT_GENERATED` melden; nur
+  die Ausführungsselektion wird gehärtet.
+- Tests prüfen unveränderte historische Bytes, keinen Runner-Aufruf, keine
+  Execution, Scan-Isolation und sichtbare Fehler für manipulierte Proofs.
+
+### Abweichungen und Abschlusszustand
+
+Die Änderung blieb am bevorzugten Lösungsort. Es waren weder Migration,
+Schemaänderung, Autorisierungslockerung noch historische Dateiänderung nötig.
+37 Execution-Bridge-, 15 Architecture-Workflow-, 10 Feedback-Loop- und
+insgesamt 630 Tests bestanden. Doctor und `git diff --check` waren
+erfolgreich. Der reale `watch-once`-Scan lieferte `results: []`; insbesondere
+entstand für `workflow-81d7ba505f25f885` kein Fehler. Der Handover gehört zum
+Abschlusscommit; es erfolgte kein Push.
+
 ## Abgeschlossener Plan: Guardian Succession Architecture v1
 
 ### Ziel und Nicht-Ziele

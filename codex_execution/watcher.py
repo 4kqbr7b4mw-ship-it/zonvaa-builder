@@ -40,6 +40,14 @@ class ArchitectureExecutionWatcher:
                     WorkflowStatus.CODEX_PROMPT_GENERATED
                 ):
                     continue
+                prompt_proof = self.service.workflows.prompt_proof_path(
+                    workflow_id
+                )
+                if (
+                    not prompt_proof.exists()
+                    and not prompt_proof.is_symlink()
+                ):
+                    continue
                 existing = self.service.status(workflow_id)
                 if existing is None:
                     record = self.service.execute(workflow_id)
