@@ -107,3 +107,8 @@ After success, the watcher can hand the owning workflow directly to the
 Architecture feedback coordinator. The coordinator consumes the existing
 Execution Record and its immutable Attempt History; it does not copy or replace
 Bridge state.
+
+The confirmed order explicitly authorizes a result commit. The Codex CLI
+therefore receives the repository's own `.git` directory as an additional
+writable directory while retaining `workspace-write` for the repository. No
+parent directory, home directory or external path is added.

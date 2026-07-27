@@ -292,6 +292,15 @@ def test_confirmed_workflow_executes_canonical_prompt_and_verifies_result(
         "never",
         "exec",
     )
+    assert codex_command[4:] == (
+        "--cd",
+        str(tmp_path),
+        "--sandbox",
+        "workspace-write",
+        "--add-dir",
+        str(tmp_path / ".git"),
+        "-",
+    )
     assert not any(command[:2] == ("git", "push") for command in runner.commands)
     assert executions.load(
         WORKFLOW_ID,

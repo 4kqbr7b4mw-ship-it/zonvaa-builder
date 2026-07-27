@@ -347,6 +347,8 @@ class CodexExecutionService:
                 str(self.repository),
                 "--sandbox",
                 "workspace-write",
+                "--add-dir",
+                str(self.repository / ".git"),
                 "-",
             )
             running_attempt = record.attempts[-1].transition(

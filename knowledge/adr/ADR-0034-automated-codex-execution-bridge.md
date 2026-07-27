@@ -97,12 +97,18 @@ Shell:
 
 ```text
 codex --ask-for-approval never exec \
-  --cd /Users/michaelgiese/zonvaa-builder --sandbox workspace-write -
+  --cd /Users/michaelgiese/zonvaa-builder --sandbox workspace-write \
+  --add-dir /Users/michaelgiese/zonvaa-builder/.git -
 ```
 
 Der geprüfte Prompt wird über stdin übergeben. Vorher werden Installation,
 `codex login status`, Git-Root, Arbeitsbaum und exklusiver Workflow-Lock
 geprüft. Es gibt keine Codex Cloud API.
+
+Der bestätigte Auftrag erwartet ausdrücklich einen Result-Commit. Deshalb ist
+ausschließlich das `.git`-Verzeichnis desselben bereits bestätigten
+Repositorys zusätzlich schreibbar. Die Freigabe erweitert weder Repository-
+Root noch Home-, Netzwerk- oder externe Dateisystemgrenzen.
 
 ### Ergebnisfreigabe
 
