@@ -479,7 +479,26 @@ class ArchitectureFeedbackStore:
         ) / "execution-authorization.json"
 
     def record_path(self, workflow_id: str) -> Path:
-        return self.folder(workflow_id, create=False) / "feedback-loop.json"
+        return self.runtime_folder(
+            workflow_id,
+            create=False,
+        ) / "feedback-loop.json"
+
+    def runtime_folder(
+        self,
+        workflow_id: str,
+        create: bool = True,
+    ) -> Path:
+        folder = (
+            self.workflows.folder(workflow_id)
+            / "executions"
+            / "feedback"
+        )
+        if create:
+            folder.mkdir(parents=True, exist_ok=True)
+        if folder.is_symlink():
+            raise ValueError("Feedback runtime folder cannot be a symlink")
+        return folder
 
     def record(self, workflow_id: str) -> Optional[FeedbackLoopRecord]:
         path = self.record_path(workflow_id)
@@ -490,7 +509,7 @@ class ArchitectureFeedbackStore:
         )
 
     def write_record(self, record: FeedbackLoopRecord) -> Path:
-        self.folder(record.workflow_id)
+        self.runtime_folder(record.workflow_id)
         path = self.record_path(record.workflow_id)
         previous = self.record(record.workflow_id)
         if previous is not None:
@@ -523,16 +542,22 @@ class ArchitectureFeedbackStore:
         return self._write_once(path, authorization.to_dict())
 
     def write_intake(self, intake: CodexHandoverIntake) -> Path:
-        path = self.folder(intake.workflow_id) / "handover-intake.json"
+        path = (
+            self.runtime_folder(intake.workflow_id)
+            / "handover-intake.json"
+        )
         return self._write_once(path, intake.to_dict())
 
     def write_review(
         self,
         review: ArchitectureImplementationReview,
     ) -> Tuple[Path, Path]:
-        json_path = self.folder(review.workflow_id) / "integrator-review.json"
+        json_path = (
+            self.runtime_folder(review.workflow_id)
+            / "integrator-review.json"
+        )
         markdown_path = (
-            self.folder(review.workflow_id) / "decision-proposal.md"
+            self.runtime_folder(review.workflow_id) / "decision-proposal.md"
         )
         self._write_once(json_path, review.to_dict())
         content = review.render() + "\n"

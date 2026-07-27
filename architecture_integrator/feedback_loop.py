@@ -287,7 +287,17 @@ class ArchitectureFeedbackLoop:
                 "HANDOVER_BASE_MISMATCH",
                 "Handover starting commit does not match the execution.",
             ))
-        if data.get("ending_commit") != execution.resulting_commit:
+        handover_schema = data.get("schema_version")
+        ending_commit = data.get("ending_commit")
+        if (
+            ending_commit != execution.resulting_commit
+            and not (
+                handover_schema == "1.0"
+                and ending_commit is None
+                and handover_path in execution.handover_paths
+                and execution.resulting_commit is not None
+            )
+        ):
             deviations.append(self._deviation(
                 "HANDOVER_RESULT_MISMATCH",
                 "Handover ending commit does not match the execution.",

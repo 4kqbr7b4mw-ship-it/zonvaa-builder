@@ -68,7 +68,10 @@ Der Feedback-Vertrag verwendet ausschließlich typisierte Zustände:
 - `CHIEF_ARCHITECT_DECISION_REQUIRED`
 - `FAILED`
 
-Übergänge werden geordnet und append-only im Workflow gespeichert.
+Übergänge werden geordnet und append-only im bestehenden, git-ignorierten
+`executions/feedback`-Laufzeitbereich des Workflows gespeichert. Autorisierung
+bleibt ein kontrolliertes Workflow-Artefakt; nach dem Result-Commit entstehende
+Intakes und Reviews verändern den Arbeitsbaum nicht.
 Wiederholungen verwenden identische Autorisierung, Intake und Review; sie
 starten keine erfolgreiche Execution erneut und erzeugen keine zweite
 Entscheidungsvorlage.
@@ -89,6 +92,13 @@ Schema 1.0 des bestehenden Handovers enthält keine Execution-ID. Bis zu einer
 separat beschlossenen Schemaentwicklung wird die Zugehörigkeit deshalb über
 den Execution Record und den belegten Commit-Diff hergestellt; es werden keine
 IDs nachträglich erfunden.
+
+`ending_commit` darf in Schema 1.0 `null` sein, weil ein im Result-Commit
+enthaltenes Handover dessen eigenen Hash nicht selbst referenzieren kann.
+Dieser Fall ist nur zulässig, wenn der Execution Record den Result-Commit
+enthält, das Handover ausdrücklich unter seinen Diff-Pfaden führt und der
+Basis-Commit übereinstimmt. Ein abweichender nichtleerer Hash bleibt ein
+Validierungsfehler.
 
 ### Integrator-Review
 

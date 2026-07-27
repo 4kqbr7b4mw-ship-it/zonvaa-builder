@@ -248,14 +248,19 @@ def test_complete_feedback_flow_is_idempotent_and_requires_decision(
     assert service.execute_count == 0
     store = ArchitectureFeedbackStore(workflows)
     review = json.loads(
-        (store.folder(workflow.workflow_id) / "integrator-review.json")
+        (
+            store.runtime_folder(workflow.workflow_id)
+            / "integrator-review.json"
+        )
         .read_text(encoding="utf-8")
     )
     assert review["execution_id"] == authorization.expected_execution_id
     assert review["recommendation"] == "ADOPT"
     assert "decision" not in review
     assert len(tuple(
-        store.folder(workflow.workflow_id).glob("integrator-review.json")
+        store.runtime_folder(workflow.workflow_id).glob(
+            "integrator-review.json"
+        )
     )) == 1
 
 
@@ -273,6 +278,25 @@ def test_handover_is_assigned_by_execution_and_commit(runtime, tmp_path):
 
     assert intake.execution_id == record.execution_id
     assert intake.starting_commit == BASE
+    assert intake.result_commit == RESULT
+    assert intake.deviations == ()
+
+
+def test_schema_1_handover_without_self_referential_commit_is_unambiguous(
+    runtime,
+    tmp_path,
+):
+    repository, workflow, _, _, loop, authorization = _setup(
+        runtime, tmp_path
+    )
+    handover = _handover(repository, authorization.expected_execution_id)
+    payload = json.loads((repository / handover).read_text(encoding="utf-8"))
+    payload["ending_commit"] = None
+    (repository / handover).write_text(json.dumps(payload), encoding="utf-8")
+    record = _record(workflow.workflow_id, authorization, handover)
+
+    intake = loop.validate_handover(authorization, record, handover)
+
     assert intake.result_commit == RESULT
     assert intake.deviations == ()
 
@@ -337,7 +361,7 @@ def test_controlled_end_to_end_starts_once_and_preserves_execution_evidence(
     assert result.status is FeedbackStatus.CHIEF_ARCHITECT_DECISION_REQUIRED
     intake = json.loads(
         (
-            loop.store.folder(workflow.workflow_id)
+            loop.store.runtime_folder(workflow.workflow_id)
             / "handover-intake.json"
         ).read_text(encoding="utf-8")
     )
@@ -379,6 +403,7 @@ def test_cli_exposes_machine_readable_pipeline_status(
     payload = json.loads(result.stdout)
     assert payload["workflow_id"] == workflow.workflow_id
     assert payload["status"] == "EXECUTION_AUTHORIZED"
+    assert "executions/feedback" in str(store.record_path(workflow.workflow_id))
 
 
 def test_handover_intake_redacts_sensitive_metadata(runtime, tmp_path):

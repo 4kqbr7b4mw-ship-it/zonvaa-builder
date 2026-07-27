@@ -52,7 +52,9 @@ nicht mehr der Standardpfad.
 ## Architecture-to-Codex Feedback
 
 Der bestätigte Workflow persistiert unter `feedback/` eine typisierte
-Execution-Autorisierung. Sie bindet Architecture-Run, Entscheidungen, Prompt
+Execution-Autorisierung. Laufzeitliche Transitions, Intake und Review liegen
+im bereits ignorierten `executions/feedback/`-Bereich. Die Autorisierung bindet
+Architecture-Run, Entscheidungen, Prompt
 und Hash, Repository, Basis-Commit, erlaubte Aktionen und erwartete
 Abschlussartefakte. Die bestehende Execution Bridge bleibt die einzige
 Ausführungsgrenze.
