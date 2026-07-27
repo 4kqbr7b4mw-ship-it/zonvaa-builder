@@ -19,10 +19,18 @@ from architecture_integrator.io import (
     write_text_atomic,
 )
 from builder.runtime import get_runtime
+from codex_execution import (
+    ArchitectureExecutionWatcher,
+    CodexExecutionService,
+    ExecutionStore,
+)
 
 
 workflow_app = typer.Typer(
     help="Persistente Architekturentscheidungs-Workflows verwalten"
+)
+execution_app = typer.Typer(
+    help="Lokale Codex-Ausführungen sicher verwalten"
 )
 
 
@@ -276,6 +284,77 @@ def run_architecture(
     )
 
 
+def execute_architecture(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Execute one confirmed workflow prompt through local Codex CLI."""
+    try:
+        record = _execution_service().execute(workflow_id)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution", error)
+    typer.echo(
+        json.dumps(record.to_dict(), indent=2, sort_keys=True)
+    )
+    if record.status.value != "SUCCEEDED":
+        raise typer.Exit(code=1)
+
+
+def execution_status(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Show the local execution record for one workflow."""
+    try:
+        record = _execution_service().status(workflow_id)
+        if record is None:
+            raise RuntimeError("No execution exists")
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution status", error)
+    typer.echo(
+        json.dumps(record.to_dict(), indent=2, sort_keys=True)
+    )
+
+
+def retry_execution(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Explicitly retry a failed, blocked or capacity-limited execution."""
+    try:
+        record = _execution_service().execute(workflow_id, retry=True)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution retry", error)
+    typer.echo(
+        json.dumps(record.to_dict(), indent=2, sort_keys=True)
+    )
+    if record.status.value != "SUCCEEDED":
+        raise typer.Exit(code=1)
+
+
+def cancel_execution(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Cancel a non-running local execution by explicit request."""
+    try:
+        record = _execution_service().cancel(workflow_id)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution cancellation", error)
+    typer.echo(
+        json.dumps(record.to_dict(), indent=2, sort_keys=True)
+    )
+
+
+def watch_executions_once() -> None:
+    """Run one idempotent watcher scan for launchd."""
+    try:
+        results = ArchitectureExecutionWatcher(
+            _execution_service()
+        ).run_once()
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution watcher", error)
+    typer.echo(
+        json.dumps({"results": list(results)}, indent=2, sort_keys=True)
+    )
+
+
 def _workflow_orchestrator() -> ArchitectureWorkflowOrchestrator:
     integrator = ArchitectureIntegrator(
         ArchitectureContextLoader(get_runtime())
@@ -283,6 +362,14 @@ def _workflow_orchestrator() -> ArchitectureWorkflowOrchestrator:
     return ArchitectureWorkflowOrchestrator(
         integrator,
         ArchitectureWorkflowStore(),
+    )
+
+
+def _execution_service() -> CodexExecutionService:
+    workflows = ArchitectureWorkflowStore()
+    return CodexExecutionService(
+        workflows=workflows,
+        executions=ExecutionStore(workflows),
     )
 
 
@@ -301,3 +388,7 @@ def _workflow_error(stage: str, error: BaseException) -> None:
 workflow_app.command("analyze")(analyze_workflow)
 workflow_app.command("decide")(decide_workflow)
 workflow_app.command("generate-codex")(generate_workflow_codex)
+execution_app.command("status")(execution_status)
+execution_app.command("retry")(retry_execution)
+execution_app.command("cancel")(cancel_execution)
+execution_app.command("watch-once")(watch_executions_once)

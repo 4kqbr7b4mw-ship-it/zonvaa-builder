@@ -1,5 +1,12 @@
 # ZONVAA Builder
 
+## Bestätigte Architektur lokal ausführen
+
+Die [Automated Codex Execution Bridge](codex_execution/README.md) übergibt
+ausschließlich vollständig bestätigte Architecture-Workflow-Prompts mit
+Decision- und Hash-Nachweis an die lokale Codex CLI. Sie prüft das Ergebnis,
+trifft aber keine Entscheidung, erstellt keinen Commit und pusht niemals.
+
 ## User-Owned Data
 
 ZONVAA ist eine Intelligence Layer, keine Dokumentenplattform. Der

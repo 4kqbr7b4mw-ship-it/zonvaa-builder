@@ -40,6 +40,10 @@ erzeugt den Codex-Prompt automatisch, sobald für jedes Proposal eine passende
 Entscheidung vorliegt. Der Workflow startet weder Codex noch Tests oder
 Commit.
 
+Der erzeugte Prompt besitzt einen Hash- und Decision-Proof. Die
+[lokale Execution Bridge](../codex_execution/README.md) kann ausschließlich
+diesen bestätigten kanonischen Auftrag an `codex exec` übergeben.
+
 Die bisherigen `architecture workflow analyze`, `decide` und
 `generate-codex`-Befehle bleiben für vorhandene Abläufe kompatibel, sind aber
 nicht mehr der Standardpfad.

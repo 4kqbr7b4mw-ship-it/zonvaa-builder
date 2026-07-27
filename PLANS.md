@@ -3,6 +3,76 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Automated Codex Execution Bridge
+
+### Ziel und Nicht-Ziele
+
+Einen lokalen, deterministischen und sicher gesperrten Transport vom
+vollständig freigegebenen Architecture Workflow zur installierten Codex CLI
+einführen. Nur kanonische Workflow-Prompts mit Decision Records und
+Hash-Nachweis dürfen nichtinteraktiv gestartet werden. Keine automatische
+Architekturentscheidung, kein Push, keine fremden Repositorys, keine Cloud-API,
+keine UI und keine externe Modellorchestrierung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `68732da` war erfolgreich; der Arbeitsbaum
+  war sauber.
+- Architecture Workflow 2.0 trennt Proposals, Analysen, Entscheidungen und
+  den kanonischen `prompts/codex-prompt.md`, besitzt aber weder Prompt-Proof
+  noch Ausführungszustand.
+- `codex exec` unterstützt lokal nichtinteraktive Prompt-Eingabe über stdin,
+  `--cd`, `--sandbox` und `--ask-for-approval`; Authentifizierung kann mit
+  `codex login status` geprüft werden.
+- Es existieren weder Watcher, Execution Record, Retry-Regel noch
+  Ausführungs-CLI.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Workflow Store, CLI, Codex-Hilfe, ADRs und Tests prüfen.
+- [x] Prompt-Proof und unveränderliches Execution-Modell implementieren.
+- [x] Sicheren Runner, Store, Locking, Verifikation und Retry ergänzen.
+- [x] CLI und idempotenten periodischen Watcher integrieren.
+- [x] launchd-Template, C3-Regel, ADR und Betriebsdokumentation ergänzen.
+- [x] Fokussierte und vollständige Tests, Doctor und Diff prüfen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Die Bridge erweitert den bestehenden Workflow Store. Execution Reports
+  liegen lokal im jeweiligen Workflow-Unterordner und werden ignoriert, damit
+  Statusaktualisierungen nach einem Result-Commit den Arbeitsbaum nicht
+  verunreinigen.
+- Die Bridge verwendet ausschließlich feste Argumentlisten ohne Shell und
+  übergibt den geprüften Prompt über stdin.
+- Ein periodischer `launchd`-Aufruf führt genau einen idempotenten Scan aus;
+  es gibt keine Busy-Wait-Schleife.
+- Codex bleibt für Implementierung, Tests, Handover und Commit verantwortlich.
+  Die Bridge prüft das Ergebnis und erzeugt weder Commit noch Push.
+
+### Risiken und Teststrategie
+
+- Ein Codex-Prozess kann vor einem späteren Testfehler bereits einen Commit
+  erzeugt haben; die Bridge darf diesen nicht als Erfolg freigeben oder
+  automatisch verändern.
+- Lokale Authentifizierung und Kapazität sind externe Zustände und werden nur
+  klassifiziert, nicht erfunden.
+- Tests mocken ausschließlich Codex- und Prozessaufrufe und prüfen Freigabe,
+  Hash, Pfade, Locking, Idempotenz, Kapazität, Retry, Ergebnisverifikation,
+  Reports und Watcher-Neustartfähigkeit.
+
+### Abweichungen und Abschlusszustand
+
+Das `launchd`-Template wird nicht automatisch in `~/Library/LaunchAgents`
+installiert, weil Aktivierung und Entfernung ausdrücklich unter
+Nutzerkontrolle bleiben. Der periodische endliche Scan ist vollständig
+implementiert und dokumentiert. Lokale Execution Reports sind absichtlich
+Git-ignorierter Laufzeitstatus; der durch Codex erzeugte Handover bleibt Teil
+des Result-Commits. 567 Tests, Doctor, CLI-Hilfe, Plist-Lint, Codex-CLI- und
+Authentifizierungsprüfung sowie `git diff --check` waren erfolgreich. Der
+Arbeitspaket-Handover gehört zum lokalen Abschlusscommit; es wurde nicht
+gepusht.
+
 ## Abgeschlossener Plan: User-Owned Data Architecture
 
 ### Ziel und Nicht-Ziele

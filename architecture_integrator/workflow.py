@@ -411,7 +411,27 @@ class ArchitectureWorkflowStore:
                 "Workflow is not ready for Codex prompt generation"
             )
         path = self.prompt_path(workflow_id)
-        write_text_atomic(path, content + "\n")
+        serialized = content + "\n"
+        decisions = self.decisions(workflow_id)
+        write_text_atomic(path, serialized)
+        try:
+            write_json(
+                self.prompt_proof_path(workflow_id),
+                {
+                    "schema_version": "1.0",
+                    "workflow_id": workflow_id,
+                    "prompt_path": "prompts/codex-prompt.md",
+                    "prompt_hash": hashlib.sha256(
+                        serialized.encode("utf-8")
+                    ).hexdigest(),
+                    "decision_ids": [
+                        decision.decision_id for decision in decisions
+                    ],
+                },
+            )
+        except BaseException:
+            path.unlink()
+            raise
         return path
 
     def folder(self, workflow_id: str) -> Path:
@@ -431,6 +451,43 @@ class ArchitectureWorkflowStore:
             workflow_id,
             "prompts",
         ) / "codex-prompt.md"
+
+    def prompt_proof_path(self, workflow_id: str) -> Path:
+        _workflow_id(workflow_id)
+        return self._safe_subfolder(
+            workflow_id,
+            "prompts",
+        ) / "codex-prompt-proof.json"
+
+    def prompt_proof(self, workflow_id: str) -> Dict[str, Any]:
+        path = self.prompt_proof_path(workflow_id)
+        data = json.loads(path.read_text(encoding="utf-8"))
+        expected = {
+            "schema_version",
+            "workflow_id",
+            "prompt_path",
+            "prompt_hash",
+            "decision_ids",
+        }
+        if not isinstance(data, dict) or set(data) != expected:
+            raise ValueError("Codex prompt proof has invalid fields")
+        if (
+            data["schema_version"] != "1.0"
+            or data["workflow_id"] != workflow_id
+            or data["prompt_path"] != "prompts/codex-prompt.md"
+        ):
+            raise ValueError("Codex prompt proof is invalid")
+        decisions = self.decisions(workflow_id)
+        if data["decision_ids"] != [
+            decision.decision_id for decision in decisions
+        ]:
+            raise ValueError("Codex prompt proof decisions changed")
+        prompt_hash = hashlib.sha256(
+            self.prompt_path(workflow_id).read_bytes()
+        ).hexdigest()
+        if data["prompt_hash"] != prompt_hash:
+            raise ValueError("Codex prompt hash changed")
+        return data
 
     def _decision_paths(
         self,

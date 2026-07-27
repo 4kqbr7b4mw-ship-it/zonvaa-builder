@@ -1,3 +1,4 @@
+import hashlib
 import json
 from dataclasses import FrozenInstanceError
 from datetime import datetime, timezone
@@ -383,6 +384,15 @@ def test_architecture_run_records_decisions_and_generates_prompt_automatically(
     )
     assert len(flow.store.decisions(workflow.workflow_id)) == 2
     assert flow.store.prompt_path(workflow.workflow_id).is_file()
+    proof = flow.store.prompt_proof(workflow.workflow_id)
+    assert proof["workflow_id"] == workflow.workflow_id
+    assert proof["decision_ids"] == [
+        "decision-proposal-a",
+        "decision-proposal-b",
+    ]
+    assert proof["prompt_hash"] == hashlib.sha256(
+        flow.store.prompt_path(workflow.workflow_id).read_bytes()
+    ).hexdigest()
 
 
 def test_architecture_run_waits_when_only_some_decisions_exist(

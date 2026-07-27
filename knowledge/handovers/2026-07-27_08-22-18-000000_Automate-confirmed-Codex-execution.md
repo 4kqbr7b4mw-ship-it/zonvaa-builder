@@ -1,0 +1,92 @@
+# Handover: Automate confirmed Codex execution
+
+- Timestamp: `2026-07-27T08:22:18+00:00`
+- Starting commit: `68732dada82c242a244dfc0ccdc0780cf68c56a3`
+- Ending commit: `missing`
+- Push status: `not_pushed`
+
+## Changed files
+
+- .gitignore
+- PLANS.md
+- README.md
+- architecture_integrator/README.md
+- architecture_integrator/workflow.py
+- automation/com.zonvaa.codex-execution.plist
+- builder/main.py
+- codex_execution/README.md
+- codex_execution/__init__.py
+- codex_execution/models.py
+- codex_execution/policy.md
+- codex_execution/runner.py
+- codex_execution/service.py
+- codex_execution/store.py
+- codex_execution/watcher.py
+- commands/architecture.py
+- knowledge/adr/ADR-0034-automated-codex-execution-bridge.md
+- knowledge/handovers/2026-07-27_08-22-18-000000_Automate-confirmed-Codex-execution.json
+- knowledge/handovers/2026-07-27_08-22-18-000000_Automate-confirmed-Codex-execution.md
+- tests/test_architecture_workflow.py
+- tests/test_codex_execution.py
+
+## Functional changes
+
+- Confirmed Architecture Workflow prompts can be transported automatically to the official local Codex CLI.
+- Workflow, decisions, canonical prompt path and prompt SHA-256 are verified before any execution.
+- Execution status, checks, result commit, handover, retry state and failures are recorded as local JSON and Markdown.
+- A finite idempotent watcher supports periodic macOS launchd invocation without a busy-wait loop.
+
+## Technical changes
+
+- Added immutable typed execution records, fixed-argv subprocess runner, atomic local store and exclusive workflow lock.
+- Added deterministic prompt proofs and execution IDs with duplicate-success prevention.
+- Added fixed-repository, symlink, Git-root, clean-tree, Codex installation and authentication gates.
+- Added post-Codex verification for full tests, Doctor, worktree and commit diff checks, result commit, handover and clean status.
+- Added manual execute, status, retry, cancel and watch-once CLI commands plus a versioned C3 retry policy.
+
+## Decisions
+
+- The Chief Architect remains the only architecture authority and the Bridge never edits decisions.
+- The approved prompt is passed through stdin to codex exec with workspace-write sandbox and no interactive approvals.
+- The Bridge never commits, resets, pushes or creates pull requests.
+- Execution reports are Git-ignored local workflow runtime state because they are finalized after the Codex result commit.
+- launchd installation remains an explicit user-controlled one-time operation.
+
+## Relevant ADRs
+
+- ADR-0028 Architecture Integrator Agent
+- ADR-0029 Architecture Workflow Orchestrator
+- ADR-0034 Automated Codex Execution Bridge
+
+## Checks
+
+- `python3 -m pytest -q tests/test_codex_execution.py tests/test_architecture_workflow.py`: **passed** — 30 passed in 2.96s
+- `python3 -m pytest -q`: **passed** — 567 passed in 19.08s
+- `python3 -m builder.main doctor`: **passed** — ZONVAA Builder CLI funktioniert.
+- `python3 -m builder.main architecture execute --help`: **passed** — Manual execution CLI is available.
+- `plutil -lint automation/com.zonvaa.codex-execution.plist`: **passed** — launchd template is valid.
+- `codex --version && codex login status`: **passed** — codex-cli 0.146.0-alpha.3.1 is installed and authenticated using ChatGPT.
+- `git diff --check`: **passed** — No whitespace errors.
+
+## Open risks
+
+- Codex authentication and usage capacity remain external runtime conditions.
+- A Codex process may create a commit before a later independent verification fails; the Bridge will not approve, reset or alter it.
+- The launchd template depends on the current absolute repository, virtual-environment and ChatGPT application paths.
+- A running Codex process must be stopped at the operating-system level before its record can be cancelled safely.
+
+## Intentionally not implemented
+
+- Automatic Chief-Architect decisions or modification of Decision Records.
+- Codex Cloud API, Gemini or Kimi orchestration, server infrastructure or UI.
+- Automatic commit, reset, push, force-push, pull request or merge.
+- Automatic launchd installation or access to another repository.
+
+## Recommended next step
+
+After reviewing the committed bridge, explicitly install the launchd plist and run one controlled confirmed workflow to validate real Codex capacity and end-to-end operational behavior.
+
+## Git status
+
+- Automated Codex Execution Bridge files are ready for the final local commit.
+- Branch main; starting HEAD 68732dada82c242a244dfc0ccdc0780cf68c56a3.
