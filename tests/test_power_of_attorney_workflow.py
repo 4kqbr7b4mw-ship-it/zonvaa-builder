@@ -7,6 +7,7 @@ from typing import Callable, NamedTuple, Tuple, get_type_hints
 import pytest
 from typer.testing import CliRunner
 
+from artifact_contract.loader import ArtifactContractLoader
 import commands.goal as goal_command
 from brain.context_collector import ContextCollector
 from builder.goal_application_service import GoalApplicationService
@@ -456,6 +457,7 @@ def test_workflow_cannot_be_constructed_without_mission_context():
     )
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
+    runtime.artifact_contract_context = ArtifactContractLoader().load()
     runtime.goal_engine = GoalEngine()
     with pytest.raises(PreflightError, match="MissionContext"):
         GoalApplicationService(runtime)
@@ -499,6 +501,7 @@ def test_existing_goal_cli_runs_power_of_attorney_workflow(
     )
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
+    runtime.artifact_contract_context = ArtifactContractLoader().load()
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

@@ -1,0 +1,495 @@
+{
+  "additive_elements": [
+    "ZONVAA UX- & Conversation-Architektur: Artefakte & Berechtigungen",
+    "Diese Architektur beschreibt die psychologische und visuelle Interaktionsschicht für den Umgang mit sensiblen Dokumenten, Freigaben und Familienkonflikten in ZONVAA. Sie baut auf der strikten Trennung zwischen dem Sanctuary (Gesprächsraum / Conversation Engine) und der Workbench (Institution Board / Rechte-Artefakte) auf.",
+    "1. Das Konzept der „Menschlichen Transaktion“",
+    "Rechtliche Freigaben und Datenzugriffe basieren in herkömmlichen Systemen auf technischer Sprache. ZONVAA übersetzt dieses Paradigma in menschliche Schutzräume.",
+    "Prinzipien der Berechtigungs-Psychologie",
+    "Kein Berechtigungs-Jargon: Weder im Chat noch auf dem Board existieren Begriffe wie Admin, User, Access, Grant, Revoke, Sync, Read/Write, Permission.",
+    "Beziehungs-Metaphern statt Rollen-Matrizen:",
+    "Zugriff erteilen → „In den Raum holen“",
+    "Eingeschränkte Leserechte → „Nur zum Durchlesen hinlegen“",
+    "Vollmacht erteilen → „Schlüssel übergeben“",
+    "Berechtigung entziehen → „Wieder zu sich nehmen“",
+    "Getrennte Wahrnehmungsebenen: Das Verfassen/Besprechen eines Dokuments ist eine Gedankenebene (Sanctuary). Das Freigeben ist eine Handlungsebene (Workbench). Beide Räume dürfen visuell und kognitiv niemals verschmelzen.",
+    "2. Artefakt-Zustände (Sichtbar vs. Unsichtbar)",
+    "Ein Artefakt durchläuft einen Lebenszyklus, der dem Nutzer maximale emotionale und rechtliche Sicherheit garantiert:",
+    "GEDANKE / CHAT → ENTWURF → UNSICHTBARES ARTEFAKT (nur Eigentümer) → SICHTBARES ARTEFAKT (persönliches Board) → GEMEINSAMES ARTEFAKT (Shared Safe / Familie)",
+    "Die vier Artefakt-Zustände",
+    "Entwurf (Latenz)",
+    "Nur im Fließtext des Chats verankert.",
+    "Lokale Engine-Instanz.",
+    "Der Nutzer spricht über ein Thema. Die KI strukturiert im Hintergrund, erzeugt aber noch kein sichtbares Objekt.",
+    "Persönlich (Lokal)",
+    "Nur für den Ersteller auf seinem persönlichen Institution Board sichtbar.",
+    "Verschlüsselter Tresor des Nutzers.",
+    "Für niemanden sonst einsehbar.",
+    "Bereitgestellt (Ruhend)",
+    "Auf dem Board als „Bereit zur Freigabe“ markiert.",
+    "Schnittstelle zum Shared Safe.",
+    "Ein Schlüssel wurde vorbereitet, aber noch nicht übergeben.",
+    "Geteilt (Aktiv)",
+    "Für ausgewählte Personen im gemeinsamen Familien-Board sichtbar.",
+    "Kryptografischer Consensus-Graph (Zero-Knowledge).",
+    "Änderungen erfordern Transparenz.",
+    "3. Schutz vor versehentlichen Freigaben und sensible Dokumente",
+    "Je sensibler ein Dokument, desto höher muss die kognitive Reibung vor der Freigabe sein. ZONVAA nutzt einen „Autorisierungs-Graben“.",
+    "Drei-Ebenen-Schutzbarriere",
+    "Gesprächs-Reflexion: „Möchtest du das wirklich teilen?“",
+    "Physische Haptik: 3-Sekunden-Press-and-Hold auf der Workbench.",
+    "Einmal-Schlüssel: Biometrie, SMS oder physisches Token.",
+    "Kein Ein-Klick-Share.",
+    "Sensible Artefakte erfordern eine bewusste Halte-Geste.",
+    "Vor der Übergabe zeigt das Board exakt, was die Zielperson sehen wird und was nicht.",
+    "4. Gemeinsames Arbeiten und Konflikte in Familien",
+    "Der Guardian wird niemals Schiedsrichter oder Partei.",
+    "Zero-Knowledge-Familienraum",
+    "Es gibt keine globale Wahrheit im Chat.",
+    "Vertrauliche Informationen einer personengebundenen Guardian-Instanz sind für andere Instanzen unsichtbar und nicht verarbeitbar.",
+    "Widersprüchliche Wünsche auf dem Shared Board",
+    "Kein Überschreiben von Inhalten.",
+    "Gegensätzliche Perspektiven stehen sichtbar nebeneinander.",
+    "Die Engine validiert keine Seite.",
+    "Das Artefakt bleibt eingefroren, bis eine gemeinsam tragfähige Form gefunden wurde.",
+    "5. Warnungen, Rückfragen und Schweigen",
+    "Schweigen",
+    "Bei hochemotionalen Freigabe- oder Widerrufsimpulsen:",
+    "keine sofortige Workbench-Aktion,",
+    "keine alarmistische Warnmeldung,",
+    "keine technische Eskalation,",
+    "stattdessen Entlastung und Zeitgewinn.",
+    "Sanfte Rückfrage",
+    "Nur bei rechtlich oder organisatorisch schwer umkehrbaren Handlungen:",
+    "Konsequenzen konkret und ruhig benennen,",
+    "eine reversible Alternative anbieten,",
+    "keine technische oder drohende Sprache.",
+    "6. Widerruf und Kontrollrückgabe",
+    "Souveräner Widerruf",
+    "Keine Rechtfertigungspflicht.",
+    "Das Artefakt zieht sich aus dem gemeinsamen Raum auf das persönliche Board zurück.",
+    "Die Gegenseite sieht nur „Nicht verfügbar“ oder „In Überarbeitung“.",
+    "Keine Offenlegung des Grundes.",
+    "Emergency Lock",
+    "Unauffällige Geste auf dem Institution Board.",
+    "Alle externen Freigaben werden sofort eingefroren.",
+    "Artefakte werden lokal isoliert.",
+    "Externe Parteien werden nicht informiert.",
+    "Der Guardian unterstützt neutral bei der Wiederherstellung persönlicher Sicherheit.",
+    "7. Guardian-Artefakt-Manifest",
+    "Kein Chat-Text verändert automatisch ein Recht auf dem Board.",
+    "Keine Freigabe geschieht ohne bewusste, gesonderte Handlung.",
+    "Berechtigungen werden nicht in technischem Jargon erklärt.",
+    "Familienkonflikte werden nicht durch die KI entschieden.",
+    "Jeder Widerruf geschieht sofort, still und ohne Rechtfertigungszwang."
+  ],
+  "affected_documents": [
+    "constitution/constitution.md",
+    "governance/charter.md",
+    "institution/institution.md",
+    "interaction/interaction.md",
+    "knowledge/adr/ADR-0002-knowledge-system.md",
+    "knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md"
+  ],
+  "affected_layers": [
+    "CONVERSATION",
+    "INTERACTION",
+    "INSTITUTION",
+    "CROSS_LAYER"
+  ],
+  "aligned_elements": [],
+  "applicable_norms": [
+    "C1-CONSTITUTION",
+    "MDR-0001-guardian-conversation-and-continuity",
+    "C2-GOVERNANCE-CHARTER",
+    "SPEC-INSTITUTION",
+    "SPEC-INTERACTION",
+    "ADR-0002-knowledge-system",
+    "ADR-0003-runtime-journal",
+    "ADR-0004-runtime-architecture",
+    "ADR-0005-decision-engine",
+    "ADR-0006-execution-engine",
+    "ADR-0007-knowledge-priority",
+    "ADR-0008-identity-first",
+    "ADR-0009-memory-architecture",
+    "ADR-0010-goal-engine",
+    "ADR-0011-goal-evaluation-contract",
+    "ADR-0012-why-assessment-model",
+    "ADR-0013-decision-why-integration",
+    "ADR-0014-goal-aware-orchestration",
+    "ADR-0015-goal-application-service",
+    "ADR-0016-decision-journal",
+    "ADR-0017-knowledge-proposal-execution",
+    "ADR-0018-life-decisions",
+    "ADR-0019-life-decisions-domain-model",
+    "ADR-0020-codex-context-and-handover",
+    "ADR-0021-mission-context-workflow-integration",
+    "ADR-0022-power-of-attorney-workflow",
+    "ADR-0025-institution-layer",
+    "ADR-0027-governance-architecture",
+    "ADR-0028-architecture-integrator-agent",
+    "ADR-0029-architecture-workflow-orchestrator",
+    "C3-OPERATIVE-RULES"
+  ],
+  "confidence": 0.51,
+  "conflicting_elements": [],
+  "decision_required": [
+    "Confirm the non-binding ADOPT recommendation for proposal artifact-authorization-gemini-ux."
+  ],
+  "duplicate_elements": [
+    "Regeln:"
+  ],
+  "implementation_risks": [
+    "Deterministic lexical comparison cannot establish semantic equivalence beyond explicit textual propositions.",
+    "No proposal element is binding until the Chief Architect confirms a separate decision object."
+  ],
+  "loaded_context_sources": [
+    {
+      "hash": "5f73d5458924faa9caff8b10e23334177e610c53195699aca7bc18fd4874092f",
+      "norm_level": "C1",
+      "path": "constitution/constitution.md",
+      "relevance": "direct:CONVERSATION,INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "C1-CONSTITUTION",
+      "status": "BINDING",
+      "version": "2.1"
+    },
+    {
+      "hash": "fbd8745d76848a6e89c5aa8eed5c89fc7cf2c33dd5066bdb26b991385b193359",
+      "norm_level": "MDR",
+      "path": "knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md",
+      "relevance": "direct:CONVERSATION,INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "MDR-0001-guardian-conversation-and-continuity",
+      "status": "BINDING",
+      "version": "MDR-0001"
+    },
+    {
+      "hash": "7d9d75b89800f4aae9ba3de7f84c020cd1e5948cef46108f106874113e5b5fb8",
+      "norm_level": "C2",
+      "path": "governance/charter.md",
+      "relevance": "direct:CONVERSATION,INSTITUTION,CROSS_LAYER",
+      "source_id": "C2-GOVERNANCE-CHARTER",
+      "status": "BINDING",
+      "version": "1.1"
+    },
+    {
+      "hash": "300bc39687ad4e3fc14f8c1a1c15709b572dcdd39469a5e42daebc9d7c46c17a",
+      "norm_level": "SPECIFICATION",
+      "path": "institution/institution.md",
+      "relevance": "direct:CONVERSATION,INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "SPEC-INSTITUTION",
+      "status": "BINDING",
+      "version": "1.3"
+    },
+    {
+      "hash": "ffc0ec59754f36082d0e969da182cce874ddd713b256c0bd3b7a6f83c68f9092",
+      "norm_level": "SPECIFICATION",
+      "path": "interaction/interaction.md",
+      "relevance": "direct:CONVERSATION,INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "SPEC-INTERACTION",
+      "status": "DERIVED",
+      "version": "1.1"
+    },
+    {
+      "hash": "d462e5b3c6d20c840ebb20f0177e7834dcca79935e09d9eabe68da44021fcb89",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0002-knowledge-system.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0002-knowledge-system",
+      "status": "BINDING",
+      "version": "ADR-0002"
+    },
+    {
+      "hash": "abefae21d01cb4571aa03d7700798137fc7862f02c7c5bcc2db12cbddd7ddea5",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0003-runtime-journal.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0003-runtime-journal",
+      "status": "STATUS_MISSING",
+      "version": "ADR-0003"
+    },
+    {
+      "hash": "5b9796d85f8ccd2476e01c4ab1788967014ae054dda6d50c073fc286d90d179f",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0004-runtime-architecture.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0004-runtime-architecture",
+      "status": "BINDING",
+      "version": "ADR-0004"
+    },
+    {
+      "hash": "d87c5f5082af265ac0887a65f937bcb41e7c55a824c7f74ccc408a40d822e3e2",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0005-decision-engine.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0005-decision-engine",
+      "status": "BINDING",
+      "version": "ADR-0005"
+    },
+    {
+      "hash": "09257f9ca34895ce48db14280524c07ac985133b86ada588fa626586f9bb9d1a",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0006-execution-engine.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0006-execution-engine",
+      "status": "BINDING",
+      "version": "ADR-0006"
+    },
+    {
+      "hash": "cd405ac684243645127b85b9136a1ca6f20fa462632643fa227f48fb87d753a1",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0007-knowledge-priority.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0007-knowledge-priority",
+      "status": "BINDING",
+      "version": "ADR-0007"
+    },
+    {
+      "hash": "34f349ab2b9d8a6878a5aad5768121b596f9ae6762ff51cd0ce9747c8cdc78a1",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0008-identity-first.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0008-identity-first",
+      "status": "BINDING",
+      "version": "ADR-0008"
+    },
+    {
+      "hash": "f8e229e44b618f77ee7c17457a111fe1407a07f5d15459e544508185606d45fc",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0009-memory-architecture.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0009-memory-architecture",
+      "status": "BINDING",
+      "version": "ADR-0009"
+    },
+    {
+      "hash": "1e714480a8585d943b200a4ab795a41d4732341cfe9bf295e9bee7016fa72291",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0010-goal-engine.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0010-goal-engine",
+      "status": "BINDING",
+      "version": "ADR-0010"
+    },
+    {
+      "hash": "3ec95d855bb9ecaa025003ee109fd962dc41b36865d03453595cd7e6282b6b6f",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0011-goal-evaluation-contract.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0011-goal-evaluation-contract",
+      "status": "BINDING",
+      "version": "ADR-0011"
+    },
+    {
+      "hash": "c5aeed3e7f1aa98952472b5e94412394d628fc8a1eb8f94f1a968eaf6f6ca153",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0012-why-assessment-model.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0012-why-assessment-model",
+      "status": "BINDING",
+      "version": "ADR-0012"
+    },
+    {
+      "hash": "5c21510ede04e2b8f16894dba83ccf15736408fd68ee748710e80565980977bb",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0013-decision-why-integration.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0013-decision-why-integration",
+      "status": "BINDING",
+      "version": "ADR-0013"
+    },
+    {
+      "hash": "444cfcc3ec386cec4a06b43e0aae93e16363f607f932ecc5dcdfd330ccd30e35",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0014-goal-aware-orchestration.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0014-goal-aware-orchestration",
+      "status": "BINDING",
+      "version": "ADR-0014"
+    },
+    {
+      "hash": "6a8d1f461ec27851081adf38f9139fa236f9e44da2629509709743a1433d82f7",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0015-goal-application-service.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0015-goal-application-service",
+      "status": "BINDING",
+      "version": "ADR-0015"
+    },
+    {
+      "hash": "9294da626e194dc6cf120a4854ce8bf6a254a15a3d06eb515850b614cc08f8cb",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0016-decision-journal.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0016-decision-journal",
+      "status": "BINDING",
+      "version": "ADR-0016"
+    },
+    {
+      "hash": "5f312b18ac887ccc60a9c3987e65ee321ebb4a98e26cbd6ec0957552c6b05f75",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0017-knowledge-proposal-execution.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0017-knowledge-proposal-execution",
+      "status": "BINDING",
+      "version": "ADR-0017"
+    },
+    {
+      "hash": "ad9dcf6121960d1050719fe61d8fd37d945391896ab3b4b66c6d260b489c9052",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0018-life-decisions.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0018-life-decisions",
+      "status": "BINDING",
+      "version": "ADR-0018"
+    },
+    {
+      "hash": "177e37e950dcf9987071ea599d7ca72c43fce0a86867a5b141519a1d1f1cced6",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0019-life-decisions-domain-model.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0019-life-decisions-domain-model",
+      "status": "BINDING",
+      "version": "ADR-0019"
+    },
+    {
+      "hash": "466c1564b5d7a2e1d59dc3b72cb30d30d6726e988eee96129f1f4e28eaef97e1",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0020-codex-context-and-handover.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0020-codex-context-and-handover",
+      "status": "BINDING",
+      "version": "ADR-0020"
+    },
+    {
+      "hash": "72d0d375ea63d87c1f29f5a078dc06c5ddbf22615cf781abcc8c1fbff6315799",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0021-mission-context-workflow-integration.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0021-mission-context-workflow-integration",
+      "status": "BINDING",
+      "version": "ADR-0021"
+    },
+    {
+      "hash": "abb9636a14763255f0823a6ff430d2dad9eeb10d5cec60c8d2fc6377944d4549",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0022-power-of-attorney-workflow.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0022-power-of-attorney-workflow",
+      "status": "BINDING",
+      "version": "ADR-0022"
+    },
+    {
+      "hash": "d6bbc06a16ad774e9f0fae5aaddeca5764c99a521e655ff1fdc895f9a335271e",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0025-institution-layer.md",
+      "relevance": "direct:CONVERSATION,INSTITUTION,CROSS_LAYER",
+      "source_id": "ADR-0025-institution-layer",
+      "status": "BINDING",
+      "version": "ADR-0025"
+    },
+    {
+      "hash": "2cbaf361991b354eab8fc4df8c46ea4d7643bf0b332ee29a07e564bba74a6b21",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0027-governance-architecture.md",
+      "relevance": "direct:CONVERSATION,INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "ADR-0027-governance-architecture",
+      "status": "BINDING",
+      "version": "ADR-0027"
+    },
+    {
+      "hash": "0579948a9f8ab36e4e97998a4641ba729afdb6a2c26eb9b9deb516177566907c",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0028-architecture-integrator-agent.md",
+      "relevance": "direct:CONVERSATION,INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "ADR-0028-architecture-integrator-agent",
+      "status": "BINDING",
+      "version": "ADR-0028"
+    },
+    {
+      "hash": "9e2e700dfaa635d2e32c901de8f72e204ef65979481a173b94951b7caedaddec",
+      "norm_level": "ADR",
+      "path": "knowledge/adr/ADR-0029-architecture-workflow-orchestrator.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "ADR-0029-architecture-workflow-orchestrator",
+      "status": "BINDING",
+      "version": "ADR-0029"
+    },
+    {
+      "hash": "a7fde4ba629bcbcbd459f565be5419e7b40f75cd3319e9a32786898e1eb8a99b",
+      "norm_level": "C3",
+      "path": "governance/operative-rules.md",
+      "relevance": "direct:INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "C3-OPERATIVE-RULES",
+      "status": "BINDING",
+      "version": "1.1"
+    },
+    {
+      "hash": "e58321ad7ed7e59df345382a0f2f5cead2c89e48d7ad933b835e4a2176d9acc0",
+      "norm_level": "HISTORICAL",
+      "path": "knowledge/adr/ADR-0023-guardian-conversation-principles.md",
+      "relevance": "direct:CONVERSATION,CROSS_LAYER",
+      "source_id": "ADR-0023-guardian-conversation-principles",
+      "status": "HISTORICAL",
+      "version": "ADR-0023"
+    },
+    {
+      "hash": "1ca7f2b07328a5554832350a82286513eea5e53ecc20152110ac46457d6d259d",
+      "norm_level": "HISTORICAL",
+      "path": "knowledge/adr/ADR-0024-guardian-first-workflow-second.md",
+      "relevance": "direct:CONVERSATION,CROSS_LAYER",
+      "source_id": "ADR-0024-guardian-first-workflow-second",
+      "status": "HISTORICAL",
+      "version": "ADR-0024"
+    },
+    {
+      "hash": "1cea146720cca974e98653ddcb34abd4867aaad90d328a75f38ffb03663f7e83",
+      "norm_level": "HISTORICAL",
+      "path": "knowledge/adr/ADR-0026-conversation-interaction-architecture.md",
+      "relevance": "direct:CONVERSATION,INTERACTION,INSTITUTION,CROSS_LAYER",
+      "source_id": "ADR-0026-conversation-interaction-architecture",
+      "status": "HISTORICAL",
+      "version": "ADR-0026"
+    },
+    {
+      "hash": "e02c7eb65309b10dd46a7a71c3ba64ec98f2160ad110f6656efee97ad57488b7",
+      "norm_level": "HANDOVER",
+      "path": "knowledge/handovers/2026-07-26_18-31-19-000000_Build-Architecture-Workflow-Orchestrator.md",
+      "relevance": "direct:CROSS_LAYER",
+      "source_id": "LATEST-HANDOVER",
+      "status": "SUPPLEMENTAL",
+      "version": "unversioned"
+    }
+  ],
+  "proposal": {
+    "content": "# ZONVAA UX- & Conversation-Architektur: Artefakte & Berechtigungen\n\nDiese Architektur beschreibt die psychologische und visuelle Interaktionsschicht für den Umgang mit sensiblen Dokumenten, Freigaben und Familienkonflikten in ZONVAA. Sie baut auf der strikten Trennung zwischen dem Sanctuary (Gesprächsraum / Conversation Engine) und der Workbench (Institution Board / Rechte-Artefakte) auf.\n\n## 1. Das Konzept der „Menschlichen Transaktion“\n\nRechtliche Freigaben und Datenzugriffe basieren in herkömmlichen Systemen auf technischer Sprache. ZONVAA übersetzt dieses Paradigma in menschliche Schutzräume.\n\n### Prinzipien der Berechtigungs-Psychologie\n\n- Kein Berechtigungs-Jargon: Weder im Chat noch auf dem Board existieren Begriffe wie Admin, User, Access, Grant, Revoke, Sync, Read/Write, Permission.\n- Beziehungs-Metaphern statt Rollen-Matrizen:\n  - Zugriff erteilen → „In den Raum holen“\n  - Eingeschränkte Leserechte → „Nur zum Durchlesen hinlegen“\n  - Vollmacht erteilen → „Schlüssel übergeben“\n  - Berechtigung entziehen → „Wieder zu sich nehmen“\n- Getrennte Wahrnehmungsebenen: Das Verfassen/Besprechen eines Dokuments ist eine Gedankenebene (Sanctuary). Das Freigeben ist eine Handlungsebene (Workbench). Beide Räume dürfen visuell und kognitiv niemals verschmelzen.\n\n## 2. Artefakt-Zustände (Sichtbar vs. Unsichtbar)\n\nEin Artefakt durchläuft einen Lebenszyklus, der dem Nutzer maximale emotionale und rechtliche Sicherheit garantiert:\n\nGEDANKE / CHAT → ENTWURF → UNSICHTBARES ARTEFAKT (nur Eigentümer) → SICHTBARES ARTEFAKT (persönliches Board) → GEMEINSAMES ARTEFAKT (Shared Safe / Familie)\n\n### Die vier Artefakt-Zustände\n\n1. Entwurf (Latenz)\n   - Nur im Fließtext des Chats verankert.\n   - Lokale Engine-Instanz.\n   - Der Nutzer spricht über ein Thema. Die KI strukturiert im Hintergrund, erzeugt aber noch kein sichtbares Objekt.\n\n2. Persönlich (Lokal)\n   - Nur für den Ersteller auf seinem persönlichen Institution Board sichtbar.\n   - Verschlüsselter Tresor des Nutzers.\n   - Für niemanden sonst einsehbar.\n\n3. Bereitgestellt (Ruhend)\n   - Auf dem Board als „Bereit zur Freigabe“ markiert.\n   - Schnittstelle zum Shared Safe.\n   - Ein Schlüssel wurde vorbereitet, aber noch nicht übergeben.\n\n4. Geteilt (Aktiv)\n   - Für ausgewählte Personen im gemeinsamen Familien-Board sichtbar.\n   - Kryptografischer Consensus-Graph (Zero-Knowledge).\n   - Änderungen erfordern Transparenz.\n\n## 3. Schutz vor versehentlichen Freigaben und sensible Dokumente\n\nJe sensibler ein Dokument, desto höher muss die kognitive Reibung vor der Freigabe sein. ZONVAA nutzt einen „Autorisierungs-Graben“.\n\n### Drei-Ebenen-Schutzbarriere\n\n1. Gesprächs-Reflexion: „Möchtest du das wirklich teilen?“\n2. Physische Haptik: 3-Sekunden-Press-and-Hold auf der Workbench.\n3. Einmal-Schlüssel: Biometrie, SMS oder physisches Token.\n\nRegeln:\n\n- Kein Ein-Klick-Share.\n- Sensible Artefakte erfordern eine bewusste Halte-Geste.\n- Vor der Übergabe zeigt das Board exakt, was die Zielperson sehen wird und was nicht.\n\n## 4. Gemeinsames Arbeiten und Konflikte in Familien\n\nDer Guardian wird niemals Schiedsrichter oder Partei.\n\n### Zero-Knowledge-Familienraum\n\n- Es gibt keine globale Wahrheit im Chat.\n- Vertrauliche Informationen einer personengebundenen Guardian-Instanz sind für andere Instanzen unsichtbar und nicht verarbeitbar.\n\n### Widersprüchliche Wünsche auf dem Shared Board\n\n- Kein Überschreiben von Inhalten.\n- Gegensätzliche Perspektiven stehen sichtbar nebeneinander.\n- Die Engine validiert keine Seite.\n- Das Artefakt bleibt eingefroren, bis eine gemeinsam tragfähige Form gefunden wurde.\n\n## 5. Warnungen, Rückfragen und Schweigen\n\n### Schweigen\n\nBei hochemotionalen Freigabe- oder Widerrufsimpulsen:\n\n- keine sofortige Workbench-Aktion,\n- keine alarmistische Warnmeldung,\n- keine technische Eskalation,\n- stattdessen Entlastung und Zeitgewinn.\n\n### Sanfte Rückfrage\n\nNur bei rechtlich oder organisatorisch schwer umkehrbaren Handlungen:\n\n- Konsequenzen konkret und ruhig benennen,\n- eine reversible Alternative anbieten,\n- keine technische oder drohende Sprache.\n\n## 6. Widerruf und Kontrollrückgabe\n\n### Souveräner Widerruf\n\n- Keine Rechtfertigungspflicht.\n- Das Artefakt zieht sich aus dem gemeinsamen Raum auf das persönliche Board zurück.\n- Die Gegenseite sieht nur „Nicht verfügbar“ oder „In Überarbeitung“.\n- Keine Offenlegung des Grundes.\n\n### Emergency Lock\n\n- Unauffällige Geste auf dem Institution Board.\n- Alle externen Freigaben werden sofort eingefroren.\n- Artefakte werden lokal isoliert.\n- Externe Parteien werden nicht informiert.\n- Der Guardian unterstützt neutral bei der Wiederherstellung persönlicher Sicherheit.\n\n## 7. Guardian-Artefakt-Manifest\n\n1. Kein Chat-Text verändert automatisch ein Recht auf dem Board.\n2. Keine Freigabe geschieht ohne bewusste, gesonderte Handlung.\n3. Berechtigungen werden nicht in technischem Jargon erklärt.\n4. Familienkonflikte werden nicht durch die KI entschieden.\n5. Jeder Widerruf geschieht sofort, still und ohne Rechtfertigungszwang.",
+    "known_constraints": [
+      "Gespräch und institutionelle Handlung bleiben getrennt.",
+      "Gesprächsinhalte erzeugen keine Autorisierung.",
+      "Konkrete Gesten, Zeitwerte, Biometrie und Kryptografie sind keine bereits bestätigten Architekturvorgaben."
+    ],
+    "proposal_id": "artifact-authorization-gemini-ux",
+    "related_layers": [
+      "CONVERSATION",
+      "INTERACTION",
+      "INSTITUTION",
+      "CROSS_LAYER"
+    ],
+    "requested_scope": "Typisierter Artefakt- und Autorisierungszustandsvertrag",
+    "source": "ZONVAA_Gemini_Artefakte_Berechtigungen.md",
+    "source_references": [
+      "constitution/constitution.md",
+      "knowledge/mdr/MDR-0001-guardian-conversation-and-continuity.md",
+      "interaction/interaction.md",
+      "institution/institution.md",
+      "governance/charter.md"
+    ],
+    "source_role": "GEMINI",
+    "submitted_at": "2026-07-26T19:06:00+02:00",
+    "title": "UX- und Conversation-Architektur für Artefakte und Berechtigungen"
+  },
+  "proposal_summary": "Proposal artifact-authorization-gemini-ux was compared with the loaded architecture. 0 aligned, 81 additive, 0 conflicting, and 1 duplicate elements were identified. The recommendation is advisory. Only the Chief Architect may decide.",
+  "recommendation": "ADOPT",
+  "schema_version": "1.0",
+  "unresolved_questions": [
+    "Chief Architect must confirm whether additive elements become binding architecture."
+  ]
+}

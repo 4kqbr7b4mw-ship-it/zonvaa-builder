@@ -86,7 +86,7 @@ def test_canonical_interaction_contract_loads_deterministically():
 
     assert first == second
     assert first.source == InteractionLoader.DEFAULT_SOURCE.resolve()
-    assert first.version == "1.1"
+    assert first.version == "1.2"
     assert len(first.content_hash) == 64
     assert (
         "Guardian → Conversation/Interaction → Institution → Runtime"
@@ -131,6 +131,17 @@ def test_contract_marks_concrete_mechanisms_as_open():
     assert "biometrische Verfahren" in content
     assert "Zero-Knowledge-Verfahren" in content
     assert "PDF-" in content
+
+
+def test_contract_points_to_typed_artifact_boundary_without_new_layer():
+    content = InteractionLoader().load().content
+
+    assert "`artifact_contract/contract.md`" in content
+    assert "keine neue Architekturschicht" in content
+    assert "Prinzipien, Rollen, Vetos und Prüfpflichten gehören zu C2" in (
+        content
+    )
+    assert "konkrete Fristen" in content
 
 
 @pytest.mark.parametrize(

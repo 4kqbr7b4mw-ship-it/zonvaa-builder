@@ -6,6 +6,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import Any, Callable, Dict, Mapping, Tuple
 
+from artifact_contract import ArtifactContractContext
 from builder.runtime import RuntimeManager
 from governance import GovernanceContext
 from institution import InstitutionContext
@@ -69,6 +70,7 @@ class MissionContext:
     governance: Mapping[str, Any]
     institution: Mapping[str, Any]
     interaction: Mapping[str, Any]
+    artifact_contract: Mapping[str, Any]
     constitution: Mapping[str, Any]
     knowledge: Mapping[str, Any]
     verified_facts: Mapping[str, Any]
@@ -84,8 +86,8 @@ class MissionContext:
     )
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.3":
-            raise ValueError("MissionContext schema_version must be 1.3")
+        if self.schema_version != "1.4":
+            raise ValueError("MissionContext schema_version must be 1.4")
         if not isinstance(self.generated_at, datetime):
             raise TypeError("MissionContext generated_at must be a datetime")
         if (
@@ -108,6 +110,7 @@ class MissionContext:
             "governance",
             "institution",
             "interaction",
+            "artifact_contract",
             "constitution",
             "knowledge",
             "verified_facts",
@@ -130,6 +133,7 @@ class MissionContext:
             "governance": _deep_thaw(self.governance),
             "institution": _deep_thaw(self.institution),
             "interaction": _deep_thaw(self.interaction),
+            "artifact_contract": _deep_thaw(self.artifact_contract),
             "constitution": _deep_thaw(self.constitution),
             "knowledge": _deep_thaw(self.knowledge),
             "verified_facts": _deep_thaw(self.verified_facts),
@@ -206,6 +210,15 @@ class PreflightService:
         interaction = getattr(self.runtime, "interaction_context", None)
         if not isinstance(interaction, InteractionContext):
             raise PreflightError("Interaction is missing or invalid")
+        artifact_contract = getattr(
+            self.runtime,
+            "artifact_contract_context",
+            None,
+        )
+        if not isinstance(artifact_contract, ArtifactContractContext):
+            raise PreflightError(
+                "Artifact contract is missing or invalid"
+            )
         constitution = self.runtime.constitution
         if not isinstance(constitution, str) or not constitution.strip():
             raise PreflightError("Constitution is missing or empty")
@@ -256,7 +269,7 @@ class PreflightService:
             for key, value in self.runtime.knowledge.items()
         }
         context = MissionContext(
-            schema_version="1.3",
+            schema_version="1.4",
             generated_at=self.clock(),
             project_root=str(Path.cwd()),
             governance={
@@ -307,6 +320,28 @@ class PreflightService:
                 "principles": [
                     principle.value
                     for principle in interaction.principles
+                ],
+            },
+            artifact_contract={
+                "status": "loaded",
+                "path": "artifact_contract/contract.md",
+                "version": artifact_contract.version,
+                "content_hash": artifact_contract.content_hash,
+                "states": [
+                    state.value for state in artifact_contract.states
+                ],
+                "authorization_scopes": [
+                    scope.value
+                    for scope in artifact_contract.authorization_scopes
+                ],
+                "history_data_classes": [
+                    data_class.value
+                    for data_class
+                    in artifact_contract.history_data_classes
+                ],
+                "transition_types": [
+                    transition.value
+                    for transition in artifact_contract.transition_types
                 ],
             },
             constitution={
@@ -449,6 +484,45 @@ class PreflightService:
             )
         ):
             raise PreflightError("MissionContext Interaction changed")
+        if context.artifact_contract.get("status") != "loaded":
+            raise PreflightError(
+                "MissionContext Artifact contract is invalid"
+            )
+        artifact_contract = getattr(
+            self.runtime,
+            "artifact_contract_context",
+            None,
+        )
+        if not isinstance(artifact_contract, ArtifactContractContext):
+            raise PreflightError("Runtime Artifact contract changed")
+        expected_artifact_contract = {
+            "status": "loaded",
+            "path": "artifact_contract/contract.md",
+            "version": artifact_contract.version,
+            "content_hash": artifact_contract.content_hash,
+            "states": [
+                state.value for state in artifact_contract.states
+            ],
+            "authorization_scopes": [
+                scope.value
+                for scope in artifact_contract.authorization_scopes
+            ],
+            "history_data_classes": [
+                data_class.value
+                for data_class
+                in artifact_contract.history_data_classes
+            ],
+            "transition_types": [
+                transition.value
+                for transition in artifact_contract.transition_types
+            ],
+        }
+        if context.artifact_contract != _deep_freeze(
+            expected_artifact_contract
+        ):
+            raise PreflightError(
+                "MissionContext Artifact contract changed"
+            )
         if context.knowledge.get("status") != "loaded":
             raise PreflightError("MissionContext Knowledge is invalid")
         if context.git.get("branch") != self.runtime.project_state.get(

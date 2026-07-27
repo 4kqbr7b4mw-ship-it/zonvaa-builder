@@ -7,6 +7,13 @@ import pytest
 from typer.testing import CliRunner
 
 import commands.preflight as preflight_command
+from artifact_contract.models import (
+    ArtifactContractContext,
+    ArtifactState,
+    ArtifactTransitionType,
+    AuthorizationScope,
+    HistoryDataClass,
+)
 from builder.main import app
 from builder.preflight import PreflightError, PreflightService
 from builder.preflight import WorkflowContext
@@ -46,6 +53,16 @@ def runtime_context(tmp_path):
             content_hash="b" * 64,
             principles=tuple(InteractionPrinciple),
         ),
+        artifact_contract_context=ArtifactContractContext(
+            content="# Artifact contract",
+            source=tmp_path / "artifact_contract" / "contract.md",
+            version="1.0",
+            content_hash="c" * 64,
+            states=tuple(ArtifactState),
+            authorization_scopes=tuple(AuthorizationScope),
+            history_data_classes=tuple(HistoryDataClass),
+            transition_types=tuple(ArtifactTransitionType),
+        ),
         constitution=constitution,
         governance_context=GovernanceLoader().load(constitution),
         knowledge={
@@ -80,7 +97,7 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
 
     context = PreflightService(runtime_context(tmp_path)).build().to_dict()
 
-    assert context["schema_version"] == "1.3"
+    assert context["schema_version"] == "1.4"
     assert context["governance"]["status"] == "loaded"
     assert context["governance"]["constitution"]["version"] == "2.1"
     assert context["governance"]["charter"]["version"] == "1.1"
@@ -109,6 +126,22 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
         "content_hash": "b" * 64,
         "principles": [
             principle.value for principle in InteractionPrinciple
+        ],
+    }
+    assert context["artifact_contract"] == {
+        "status": "loaded",
+        "path": "artifact_contract/contract.md",
+        "version": "1.0",
+        "content_hash": "c" * 64,
+        "states": [state.value for state in ArtifactState],
+        "authorization_scopes": [
+            scope.value for scope in AuthorizationScope
+        ],
+        "history_data_classes": [
+            data_class.value for data_class in HistoryDataClass
+        ],
+        "transition_types": [
+            transition.value for transition in ArtifactTransitionType
         ],
     }
     assert context["constitution"] == {
@@ -144,7 +177,7 @@ def test_workflow_context_can_only_be_derived_from_mission_context(
 
     with pytest.raises(TypeError):
         WorkflowContext(
-            schema_version="1.3",
+            schema_version="1.4",
             generated_at=mission.generated_at,
             project_root=mission.project_root,
             git_branch="feature",
@@ -200,6 +233,7 @@ def test_preflight_marks_absent_session_and_handover_as_missing(
     [
         ("institution_context", None, "Institution"),
         ("interaction_context", None, "Interaction"),
+        ("artifact_contract_context", None, "Artifact contract"),
         ("governance_context", None, "Governance"),
         ("constitution", "", "Constitution"),
         ("knowledge", {}, "Knowledge areas"),

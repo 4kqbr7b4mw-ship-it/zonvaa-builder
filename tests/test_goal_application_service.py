@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from artifact_contract.loader import ArtifactContractLoader
 import brain.context_collector as collector_module
 from brain.context_analyzer import ContextAnalyzer
 from brain.context_collector import ContextCollector
@@ -52,6 +53,7 @@ def create_runtime(git_clean=True):
     )
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
+    runtime.artifact_contract_context = ArtifactContractLoader().load()
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

@@ -1,0 +1,94 @@
+# Handover: Integrate Artifact Authorization State Contract
+
+- Timestamp: `2026-07-27T05:21:46+00:00`
+- Starting commit: `9e84c51b9efb997c6a36d321c9455243c9c47b17`
+- Ending commit: `missing`
+- Push status: `not_pushed`
+
+## Changed files
+
+- PLANS.md
+- artifact_contract/__init__.py
+- artifact_contract/contract.md
+- artifact_contract/loader.py
+- artifact_contract/models.py
+- builder/preflight.py
+- builder/runtime.py
+- interaction/interaction.md
+- knowledge/adr/ADR-0030-artifact-authorization-state-contract.md
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/analyses/artifact-authorization-gemini-ux.json
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/analyses/artifact-authorization-kimi-contract.json
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/decision_proposals/artifact-authorization-gemini-ux.md
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/decision_proposals/artifact-authorization-kimi-contract.md
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/decisions/artifact-authorization-gemini-ux.json
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/decisions/artifact-authorization-kimi-contract.json
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/prompts/codex-prompt.md
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/proposals/artifact-authorization-gemini-ux.json
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/proposals/artifact-authorization-kimi-contract.json
+- knowledge/architecture_workflows/workflow-81d7ba505f25f885/workflow.json
+- knowledge/handovers/2026-07-27_05-21-46-000000_Integrate-Artifact-Authorization-State-Contract.json
+- knowledge/handovers/2026-07-27_05-21-46-000000_Integrate-Artifact-Authorization-State-Contract.md
+- tests/test_artifact_contract.py
+- tests/test_goal_application_service.py
+- tests/test_goal_aware_orchestrator.py
+- tests/test_goal_cli.py
+- tests/test_interaction.py
+- tests/test_power_of_attorney_workflow.py
+- tests/test_preflight.py
+- tests/test_runtime.py
+
+## Functional changes
+
+- Artifact state, authorization, sovereignty, participant access, history class, and audited transition data now have one immutable typed contract.
+- Runtime and preflight now prove the canonical artifact contract version, hash, and stable enum sets before approved workflows can run.
+- No conversation, relationship, document plan, or unlisted participant silently creates artifact authority.
+
+## Technical changes
+
+- Added Python 3.9-compatible frozen dataclasses and stable enums with temporal, identity, uniqueness, authorization, transition-chain, and history-class validation.
+- Added a deterministic UTF-8 loader and canonical Markdown contract without persistence or execution logic.
+- Raised Mission Context to schema 1.4 and added deterministic artifact contract integrity validation.
+- Added ADR-0030, updated the derived Interaction contract to 1.2, and preserved the confirmed workflow evidence.
+
+## Decisions
+
+- Exactly one responsible sovereign is referenced per artifact while multiple explicitly authorized participants remain possible.
+- Irreversibility is explicit per transition and C2 principles remain separate from C3 operational parameters.
+- Histories are classified as immutable, retention-required, deletable, or anonymizable instead of being universally undeletable.
+- Revocation remains immediate in the model while documented bindings are references only and historic transitions remain valid when authorized at their occurrence time.
+- The artifact state contract is a technical projection of Interaction and not a new architecture layer or an extension of execution.DocumentArtifact.
+
+## Relevant ADRs
+
+- MDR-0001
+- ADR-0026
+- ADR-0027
+- ADR-0029
+- ADR-0030
+
+## Checks
+
+- `python3 -m pytest -q`: **passed** — 479 passed in 13.72s under Python 3.9.6
+- `python3 -m builder.main doctor`: **passed** — ZONVAA Builder CLI works
+- `python3 -m builder.main preflight`: **passed** — Mission Context 1.4 loaded Artifact Contract 1.0 with verified SHA-256 integrity
+- `git diff --check`: **passed** — No whitespace errors in tracked changes before staging
+
+## Open risks
+
+- The contract models and validates state but intentionally does not persist or execute transitions.
+- Concrete C3 timing, quorum, confirmation, retention, deletion, anonymization, export, and security mechanisms remain undefined.
+- Decision records are structurally validated local evidence but do not authenticate the real-world identity of the Chief Architect.
+
+## Intentionally not implemented
+
+- No UI, database, cloud, network, document analysis, external action, legal-effect evaluation, or Life Decisions workflow change was implemented.
+- No fixed gesture, timing, quorum, biometric, SMS, token, cryptographic, signature, Zero-Knowledge, emergency, or automatic event mechanism was introduced.
+- No universal history immutability, legal effectiveness, evidentiary guarantee, or automatic authority was claimed.
+
+## Recommended next step
+
+Define the C3 transition policy registry and lifecycle service only after retention, deletion, anonymization, authorization-strength, and export requirements receive separate approval.
+
+## Git status
+
+- Work package changes and confirmed workflow evidence are present before the single commit; no unrelated paths were detected.

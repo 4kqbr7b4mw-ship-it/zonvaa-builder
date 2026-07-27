@@ -3,6 +3,74 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Typisierter Artefakt- und Autorisierungszustandsvertrag
+
+### Ziel und Nicht-Ziele
+
+Die bestätigte Chief-Architect-Entscheidung aus
+`workflow-81d7ba505f25f885` als kleinen, versionierten und typisierten
+Artefakt-/Autorisierungsvertrag integrieren. Gespräch und Handlung,
+Hoheitsträger und Beteiligte, Zustandswechsel, Autorisierung sowie
+datenklassengerechte Historien bleiben explizit getrennt. Keine UI,
+Persistenz, Kryptografie, Rechtswirkungsbehauptung, Notfallautomatik oder
+fachliche Workflow-Änderung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `9e84c51` war erfolgreich; der Arbeitsbaum
+  enthält ausschließlich den bestätigten, uncommittierten Architecture
+  Workflow.
+- MDR-0001 und Interaction 1.1 definieren Artefakt- und
+  Autorisierungsgrenzen, aber noch kein ausführbares typisiertes
+  Zustandsmodell.
+- Runtime und Mission Context weisen Constitution, Governance, Institution
+  und Interaction nach; ein eigener Artefaktvertrags-Nachweis fehlt.
+- `DocumentArtifact` ist ausschließlich ein Schreibplan-Objekt und darf nicht
+  zum fachlichen Artefaktzustandsmodell erweitert werden.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Workflow-Entscheidungen, bestehende Schichten und Tests
+  prüfen.
+- [x] Typisierte unveränderliche Zustands-, Autorisierungs- und
+  Historienmodelle erstellen.
+- [x] Versionierten Vertrag laden und in Runtime/Preflight nachweisen.
+- [x] ADR und abgeleitete Interaction-Dokumentation konsistent aktualisieren.
+- [x] Fokussierte und vollständige Tests, Doctor und Diff prüfen.
+- [x] JSON-/Markdown-Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Der Vertrag wird als eigene technische Komponente unterhalb der bestehenden
+  Interaction-Grenze modelliert; er bildet keine neue Architekturschicht.
+- Das bestehende `execution.DocumentArtifact` bleibt unverändert, da es
+  ausschließlich sichere Dokumenterzeugung beschreibt.
+- C2-Eigenschaften und C3-Ausführungsparameter werden im Modell explizit
+  getrennt; konkrete Werte bleiben offen.
+
+### Risiken und Teststrategie
+
+- Zustandsnamen dürfen keine rechtliche Wirksamkeit behaupten.
+- Historienklassifikation darf weder pauschale Unlöschbarkeit noch stille
+  Löschung erlauben.
+- Tests prüfen stabile Enums, Unveränderlichkeit, eindeutige IDs,
+  Hoheitsträger, Autorisierungs- und Übergangsinvarianten, Loader-Integrität,
+  Runtime- und Preflight-Nachweis sowie bestehende Rückwärtskompatibilität.
+
+### Abweichungen und Abschlusszustand
+
+Der unterbrochene Zwischenstand enthielt bereits Paketgerüst, Vertrag und
+Plan, aber noch keine Runtime-/Preflight-Integration, ADR oder Tests. Bei der
+Prüfung wurde zusätzlich korrigiert, dass ein späterer Widerruf eine zuvor
+ordnungsgemäß autorisierte historische Transition nicht nachträglich
+ungültig machen darf.
+
+Der Vertrag ist nun als unveränderliches Python-3.9-Modell, versionierte
+Markdown-Quelle, Loader, Runtime-Kontext und Mission-Context-1.4-Nachweis
+vollständig. Er führt keine Transition aus. Bestehende explizite Test-Runtimes
+wurden ausschließlich um denselben kanonischen Vertragskontext ergänzt.
+479 Tests bestehen; Doctor, Preflight und `git diff --check` sind erfolgreich.
+
 ## Abgeschlossener Plan: Architecture Workflow Orchestrator
 
 ### Ziel und Nicht-Ziele

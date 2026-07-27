@@ -5,6 +5,7 @@ from unittest.mock import Mock
 
 import pytest
 
+from artifact_contract.loader import ArtifactContractLoader
 from builder.orchestrator import Orchestrator
 from builder.preflight import PreflightService
 from goal.engine import GoalEngine
@@ -62,6 +63,7 @@ def create_workflow_context():
         project_root=Path.cwd(),
         institution_context=InstitutionLoader().load(),
         interaction_context=InteractionLoader().load(),
+        artifact_contract_context=ArtifactContractLoader().load(),
         constitution=constitution,
         governance_context=GovernanceLoader().load(constitution),
         knowledge={

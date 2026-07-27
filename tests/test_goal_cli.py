@@ -7,6 +7,7 @@ from unittest.mock import Mock
 import pytest
 from typer.testing import CliRunner
 
+from artifact_contract.loader import ArtifactContractLoader
 import commands.goal as goal_command
 from brain.context_collector import ContextCollector
 from builder.journal import DecisionJournal
@@ -77,6 +78,7 @@ def create_runtime():
     )
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
+    runtime.artifact_contract_context = ArtifactContractLoader().load()
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

@@ -1,6 +1,7 @@
 from pathlib import Path
 from typing import Optional
 
+from artifact_contract import ArtifactContractContext, ArtifactContractLoader
 from constitution.manager import ConstitutionManager
 from goal.engine import GoalEngine
 from governance import GovernanceContext, GovernanceLoader
@@ -19,6 +20,9 @@ class RuntimeManager:
         self.identity_context: Optional[IdentityContext] = None
         self.institution_context: Optional[InstitutionContext] = None
         self.interaction_context: Optional[InteractionContext] = None
+        self.artifact_contract_context: Optional[
+            ArtifactContractContext
+        ] = None
         self.constitution: Optional[str] = None
         self.governance_context: Optional[GovernanceContext] = None
         self.knowledge: dict = {}
@@ -37,6 +41,7 @@ class RuntimeManager:
         self.identity_context = IdentityLoader().load()
         self.institution_context = InstitutionLoader().load()
         self.interaction_context = InteractionLoader().load()
+        self.artifact_contract_context = ArtifactContractLoader().load()
         self.constitution = ConstitutionManager().load()
         self.governance_context = GovernanceLoader().load(
             self.constitution

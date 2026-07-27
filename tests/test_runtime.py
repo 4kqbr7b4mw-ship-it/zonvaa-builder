@@ -4,6 +4,7 @@ from builder.runtime import RuntimeManager
 def test_runtime_boot():
     runtime = RuntimeManager().boot()
 
+    assert runtime.artifact_contract_context is not None
     assert runtime.constitution is not None
     assert runtime.knowledge
     assert runtime.latest_session is not None

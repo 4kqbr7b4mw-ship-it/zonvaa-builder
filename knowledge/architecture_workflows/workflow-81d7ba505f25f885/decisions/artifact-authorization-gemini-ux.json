@@ -1,0 +1,39 @@
+{
+  "accepted_elements": [
+    "Typisierte, versionierte Artefaktzustände",
+    "Explizite, granulare, zweckgebundene, nachvollziehbare und widerrufbare Autorisierung",
+    "Strikte Trennung zwischen Gespräch und autorisierter Handlung",
+    "Keine impliziten Familien-, Rollen- oder Zugriffsrechte",
+    "Isolierte personengebundene Kontexte",
+    "Sichtbare Konflikte ohne automatische Parteinahme",
+    "Keine stille Überschreibung paralleler Zustandsänderungen",
+    "Auditierbare Zustandsübergänge",
+    "Exportierbare und langfristig interpretierbare Historien"
+  ],
+  "decided_at": "2026-07-26T21:27:52+02:00",
+  "decided_by": "Chief Architect",
+  "decision": "ADOPT_WITH_CHANGES",
+  "decision_id": "decision-artifact-authorization-gemini-ux",
+  "deferred_elements": [],
+  "modified_elements": [
+    "Genau ein verantwortlicher Hoheitsträger pro Artefakt; mehrere autorisierte Beteiligte bleiben möglich.",
+    "Irreversibilität wird je Übergangstyp definiert.",
+    "C2 regelt Prinzipien, Rollen, Vetos und Prüfpflichten.",
+    "C3 regelt konkrete Fristen, Gesten, Quoren und technische Verfahren.",
+    "Historien werden nach Datenklasse unterschieden: unveränderbar, aufbewahrungspflichtig, löschbar oder anonymisierbar.",
+    "Widerrufe wirken sofort, soweit keine dokumentierte rechtliche oder technische Bindung entgegensteht.",
+    "Notfall- und automatische Ereignisübergänge werden separat behandelt.",
+    "Unbestätigte Rechtswirkungs- und Kryptografiebegriffe werden entfernt oder neutral formuliert.",
+    "Nicht vorhandene Referenzen werden ersetzt oder entfernt."
+  ],
+  "proposal_id": "artifact-authorization-gemini-ux",
+  "rationale": "Der gemeinsame Kern stärkt Nutzerhoheit, Nachvollziehbarkeit und die Trennung zwischen Gespräch und Handlung. Technische, rechtliche und operative Details benötigen gesonderte Prüfung.",
+  "rejected_elements": [
+    "Zwingende Drei-Sekunden-Geste",
+    "Verpflichtende Biometrie-, SMS- oder Token-Vorgaben",
+    "Unbestätigte Zero-Knowledge-, Signatur- oder Verschlüsselungsbehauptungen",
+    "Pauschale rechtliche Wirksamkeits- oder Beweisgarantien",
+    "Automatische externe Notfall- oder Amtsmaßnahmen",
+    "Absolute Unlöschbarkeit sämtlicher Historien"
+  ]
+}

@@ -1,6 +1,6 @@
 # ZONVAA Conversation & Interaction
 
-Version: 1.1
+Version: 1.2
 Status: abgeleiteter technischer Nachweis
 
 Normative Quelle:
@@ -89,6 +89,13 @@ Ein Artefakt behauptet keine fachliche Richtigkeit oder rechtliche Wirksamkeit,
 die nicht extern bestätigt wurde. Automatisch erzeugte Formulierungen sind
 allein durch ihre Erzeugung weder rechtskonform noch wirksam.
 
+Der typisierte technische Zustands- und Autorisierungsvertrag liegt unter
+`artifact_contract/contract.md`. Er konkretisiert diese Grenze mit stabilen
+Zuständen, genau einem verantwortlichen Hoheitsträger, ausdrücklich
+autorisierten Beteiligten, auditierbaren Übergängen und differenzierten
+Historienklassen. Er bildet keine neue Architekturschicht und erzeugt keine
+Persistenz oder Handlungsvollmacht.
+
 ## Artefakt-Insel
 
 Die Artefakt-Insel ist der begrenzte Bereich im Institution Board, in dem ein
@@ -113,6 +120,10 @@ Die Form der Autorisierung ist risikobasiert festzulegen. Dieser Vertrag
 bestimmt weder Geste, Zeitdauer, Biometrie noch konkretes Sicherheitsverfahren.
 Höheres Risiko erfordert eine später gesondert definierte stärkere
 Bestätigung.
+
+Der technische Artefaktvertrag trennt C2-Prinzipien von C3-Ausführung:
+Prinzipien, Rollen, Vetos und Prüfpflichten gehören zu C2; konkrete Fristen,
+Gesten, Quoren und technische Verfahren zu C3.
 
 ## Personengebundene Guardian-Instanzen
 

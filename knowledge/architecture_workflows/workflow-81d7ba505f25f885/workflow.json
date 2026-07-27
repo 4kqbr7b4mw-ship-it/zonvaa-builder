@@ -1,0 +1,21 @@
+{
+  "analysis_files": [
+    "analyses/artifact-authorization-gemini-ux.json",
+    "analyses/artifact-authorization-kimi-contract.json"
+  ],
+  "created_at": "2026-07-26T19:06:00+02:00",
+  "decision_template_files": [
+    "decision_proposals/artifact-authorization-gemini-ux.md",
+    "decision_proposals/artifact-authorization-kimi-contract.md"
+  ],
+  "proposal_files": [
+    "proposals/artifact-authorization-gemini-ux.json",
+    "proposals/artifact-authorization-kimi-contract.json"
+  ],
+  "proposal_ids": [
+    "artifact-authorization-gemini-ux",
+    "artifact-authorization-kimi-contract"
+  ],
+  "schema_version": "1.0",
+  "workflow_id": "workflow-81d7ba505f25f885"
+}
