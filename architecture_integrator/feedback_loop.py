@@ -174,10 +174,35 @@ class ArchitectureFeedbackLoop:
                 else execution.status.value,
                 execution_id=execution.execution_id,
             )
+        return self.review_completed_execution(
+            record,
+            authorization,
+            execution,
+            tuple(item.decision_id for item in self.workflows.decisions(
+                authorization.workflow_id
+            )),
+            execution.completed_at or execution.started_at,
+        )
+
+    def review_completed_execution(
+        self,
+        record: FeedbackLoopRecord,
+        authorization: ExecutionAuthorization,
+        execution: ExecutionRecord,
+        decision_ids: Tuple[str, ...],
+        occurred_at,
+    ) -> FeedbackLoopRecord:
+        """Routes a verified completed execution through the sole review path."""
+        if execution.status is not ExecutionStatus.SUCCEEDED:
+            raise ValueError("Completed execution must be successful")
+        if occurred_at is None:
+            raise ValueError("Review transition time is required")
+        if record.status is FeedbackStatus.CHIEF_ARCHITECT_DECISION_REQUIRED:
+            return record
         record = self._advance_record(
             record,
             FeedbackStatus.EXECUTION_COMPLETED,
-            execution.completed_at or execution.started_at,
+            occurred_at,
             execution.execution_id,
             execution_id=execution.execution_id,
         )
@@ -185,23 +210,28 @@ class ArchitectureFeedbackLoop:
         record = self._advance_record(
             record,
             FeedbackStatus.HANDOVER_DISCOVERED,
-            execution.completed_at or execution.started_at,
+            occurred_at,
             handover_path,
             handover_path=handover_path,
         )
-        intake = self.validate_handover(authorization, execution, handover_path)
+        intake = self.validate_handover(
+            authorization,
+            execution,
+            handover_path,
+            decision_ids=decision_ids,
+        )
         self.store.write_intake(intake)
         if intake.deviations:
             return self._advance_record(
                 record,
                 FeedbackStatus.FAILED,
-                execution.completed_at or execution.started_at,
+                occurred_at,
                 ",".join(item.code for item in intake.deviations),
             )
         record = self._advance_record(
             record,
             FeedbackStatus.HANDOVER_VALIDATED,
-            execution.completed_at or execution.started_at,
+            occurred_at,
             handover_path,
         )
         review = self.integrator.review_handover(intake)
@@ -209,14 +239,14 @@ class ArchitectureFeedbackLoop:
         record = self._advance_record(
             record,
             FeedbackStatus.INTEGRATOR_REVIEW_READY,
-            execution.completed_at or execution.started_at,
+            occurred_at,
             review.review_id,
             review_id=review.review_id,
         )
         return self._advance_record(
             record,
             FeedbackStatus.CHIEF_ARCHITECT_DECISION_REQUIRED,
-            execution.completed_at or execution.started_at,
+            occurred_at,
             review.review_id,
         )
 
@@ -225,6 +255,7 @@ class ArchitectureFeedbackLoop:
         authorization: ExecutionAuthorization,
         execution: ExecutionRecord,
         handover_path: str,
+        decision_ids: Optional[Tuple[str, ...]] = None,
     ) -> CodexHandoverIntake:
         deviations = []
         if execution.execution_id != authorization.expected_execution_id:
@@ -377,13 +408,22 @@ class ArchitectureFeedbackLoop:
                 "UNAUTHORIZED_PUSH_STATUS",
                 "Handover does not confirm that no push occurred.",
             ))
-        decisions = self.workflows.decisions(authorization.workflow_id)
+        resolved_decision_ids = (
+            decision_ids
+            if decision_ids is not None
+            else tuple(
+                item.decision_id
+                for item in self.workflows.decisions(
+                    authorization.workflow_id
+                )
+            )
+        )
         return CodexHandoverIntake(
             architecture_run_id=authorization.architecture_run_id,
             workflow_id=authorization.workflow_id,
             execution_id=execution.execution_id,
             authorization_id=authorization.authorization_id,
-            decision_ids=tuple(item.decision_id for item in decisions),
+            decision_ids=resolved_decision_ids,
             attempt_ids=tuple(
                 item.attempt_id for item in execution.attempts
             ),

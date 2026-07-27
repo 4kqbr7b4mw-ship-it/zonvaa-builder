@@ -44,6 +44,11 @@ class ExecutionStatus(str, Enum):
     CANCELLED = "CANCELLED"
 
 
+class ExecutionOrigin(str, Enum):
+    EXECUTION_BRIDGE = "EXECUTION_BRIDGE"
+    RECONSTRUCTED = "RECONSTRUCTED"
+
+
 class CheckStatus(str, Enum):
     NOT_RUN = "NOT_RUN"
     PASSED = "PASSED"
@@ -423,13 +428,13 @@ class ExecutionRecord:
     execution_id: str
     workflow_id: str
     prompt_path: str
-    prompt_hash: str
+    prompt_hash: Optional[str]
     repository_path: str
-    starting_branch: str
+    starting_branch: Optional[str]
     starting_commit: str
-    starting_git_status: Tuple[str, ...]
+    starting_git_status: Optional[Tuple[str, ...]]
     status: ExecutionStatus
-    started_at: datetime
+    started_at: Optional[datetime]
     completed_at: Optional[datetime]
     codex_exit_code: Optional[int]
     test_status: CheckStatus
@@ -443,40 +448,66 @@ class ExecutionRecord:
     attempts: Tuple[ExecutionAttempt, ...]
     retry_count: int
     push_status: str = "not_pushed"
-    schema_version: str = "1.2"
+    origin: ExecutionOrigin = ExecutionOrigin.EXECUTION_BRIDGE
+    reconstructed_at: Optional[datetime] = None
+    authorization_reference: Optional[str] = None
+    reconstruction_source: Optional[str] = None
+    schema_version: str = "1.3"
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.2":
+        if self.schema_version != "1.3":
             raise ValueError("Unsupported execution record schema")
         for value, name in (
             (self.execution_id, "execution_id"),
             (self.workflow_id, "workflow_id"),
             (self.prompt_path, "prompt_path"),
             (self.repository_path, "repository_path"),
-            (self.starting_branch, "starting_branch"),
             (self.starting_commit, "starting_commit"),
         ):
             _text(value, name)
-        if re.fullmatch(r"execution-[0-9a-f]{16}", self.execution_id) is None:
+        _optional_text(self.starting_branch, "starting_branch")
+        if re.fullmatch(
+            r"(?:execution|reconstructed-execution)-[0-9a-f]{16}",
+            self.execution_id,
+        ) is None:
             raise ValueError("execution_id is invalid")
         if re.fullmatch(r"workflow-[0-9a-f]{16}", self.workflow_id) is None:
             raise ValueError("workflow_id is invalid")
-        if re.fullmatch(r"[0-9a-f]{64}", self.prompt_hash) is None:
+        if self.prompt_hash is not None and re.fullmatch(
+            r"[0-9a-f]{64}",
+            self.prompt_hash,
+        ) is None:
             raise ValueError("prompt_hash must be SHA-256")
         if re.fullmatch(r"[0-9a-f]{7,64}", self.starting_commit) is None:
             raise ValueError("starting_commit is invalid")
-        if not isinstance(self.starting_git_status, tuple) or not all(
-            isinstance(item, str) and item
-            for item in self.starting_git_status
+        if self.starting_git_status is not None and (
+            not isinstance(self.starting_git_status, tuple)
+            or not all(
+                isinstance(item, str) and item
+                for item in self.starting_git_status
+            )
         ):
             raise TypeError("starting_git_status must contain strings")
         if not isinstance(self.status, ExecutionStatus):
             raise TypeError("status must be ExecutionStatus")
-        _aware(self.started_at, "started_at")
+        if not isinstance(self.origin, ExecutionOrigin):
+            raise TypeError("origin must be ExecutionOrigin")
+        if self.started_at is not None:
+            _aware(self.started_at, "started_at")
         if self.completed_at is not None:
             _aware(self.completed_at, "completed_at")
-            if self.completed_at < self.started_at:
+            if (
+                self.started_at is not None
+                and self.completed_at < self.started_at
+            ):
                 raise ValueError("completed_at precedes started_at")
+        if self.reconstructed_at is not None:
+            _aware(self.reconstructed_at, "reconstructed_at")
+        _optional_text(
+            self.authorization_reference,
+            "authorization_reference",
+        )
+        _optional_text(self.reconstruction_source, "reconstruction_source")
         if self.codex_exit_code is not None and (
             isinstance(self.codex_exit_code, bool)
             or not isinstance(self.codex_exit_code, int)
@@ -537,11 +568,53 @@ class ExecutionRecord:
             ExecutionStatus.WAITING_FOR_CAPACITY,
             ExecutionStatus.CANCELLED,
         }
-        if self.status in terminal and self.completed_at is None:
+        if (
+            self.origin is ExecutionOrigin.EXECUTION_BRIDGE
+            and self.started_at is None
+        ):
+            raise ValueError("Bridge execution requires started_at")
+        if (
+            self.origin is ExecutionOrigin.EXECUTION_BRIDGE
+            and (
+                not self.execution_id.startswith("execution-")
+                or self.reconstructed_at is not None
+                or self.prompt_hash is None
+                or self.starting_branch is None
+                or self.starting_git_status is None
+                or self.reconstruction_source is not None
+            )
+        ):
+            raise ValueError("Bridge execution origin is inconsistent")
+        if (
+            self.origin is ExecutionOrigin.RECONSTRUCTED
+            and (
+                not self.execution_id.startswith(
+                    "reconstructed-execution-"
+                )
+                or self.started_at is not None
+                or self.completed_at is not None
+                or self.codex_exit_code is not None
+                or self.attempts
+                or self.reconstructed_at is None
+                or self.authorization_reference is None
+                or self.starting_branch is not None
+                or self.starting_git_status is not None
+                or self.reconstruction_source is None
+            )
+        ):
+            raise ValueError("Reconstructed execution contains invented data")
+        if (
+            self.origin is ExecutionOrigin.EXECUTION_BRIDGE
+            and self.status in terminal
+            and self.completed_at is None
+        ):
             raise ValueError("Terminal execution requires completed_at")
         if self.status is ExecutionStatus.SUCCEEDED:
             if (
-                self.codex_exit_code != 0
+                (
+                    self.origin is ExecutionOrigin.EXECUTION_BRIDGE
+                    and self.codex_exit_code != 0
+                )
                 or self.test_status is not CheckStatus.PASSED
                 or self.doctor_status is not CheckStatus.PASSED
                 or self.diff_check_status is not CheckStatus.PASSED
@@ -569,9 +642,17 @@ class ExecutionRecord:
             "repository_path": self.repository_path,
             "starting_branch": self.starting_branch,
             "starting_commit": self.starting_commit,
-            "starting_git_status": list(self.starting_git_status),
+            "starting_git_status": (
+                list(self.starting_git_status)
+                if self.starting_git_status is not None
+                else None
+            ),
             "status": self.status.value,
-            "started_at": self.started_at.isoformat(),
+            "started_at": (
+                self.started_at.isoformat()
+                if self.started_at is not None
+                else None
+            ),
             "completed_at": (
                 self.completed_at.isoformat()
                 if self.completed_at is not None
@@ -589,4 +670,12 @@ class ExecutionRecord:
             "attempts": [attempt.to_dict() for attempt in self.attempts],
             "retry_count": self.retry_count,
             "push_status": self.push_status,
+            "origin": self.origin.value,
+            "reconstructed_at": (
+                self.reconstructed_at.isoformat()
+                if self.reconstructed_at is not None
+                else None
+            ),
+            "authorization_reference": self.authorization_reference,
+            "reconstruction_source": self.reconstruction_source,
         }

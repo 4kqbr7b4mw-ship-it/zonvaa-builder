@@ -36,6 +36,15 @@ Markdown zeigt Anzahl, Status, Zeiten und Ergebnis jedes Attempts. Historische
 Schema-1.0/1.1-Records bleiben lesbar und erhalten eine leere History, weil
 Einzelversuchsdaten nicht nachträglich erfunden werden.
 
+Schema 1.3 ergänzt die Herkunft `EXECUTION_BRIDGE` oder `RECONSTRUCTED`.
+Rekonstruktion führt einen ausdrücklich autorisierten Direktauftrag nicht
+erneut aus. Sie verifiziert Basis- und Result-Commit, explizite Handover-Pfade
+und maschinenlesbare Checks, speichert keine erfundenen Attempts oder
+Ausführungszeiten und führt den Record anschließend durch dieselbe
+Handover-Validierung und Integrator-Review wie die Bridge. Ein Handover allein
+ist niemals Autorisierung. Schema-1.0 bis 1.2 bleiben als Bridge-Records
+lesbar.
+
 ## Manual commands
 
 ```text
@@ -44,6 +53,9 @@ python3 -m builder.main architecture execution status --workflow-id workflow-012
 python3 -m builder.main architecture execution retry --workflow-id workflow-0123456789abcdef
 python3 -m builder.main architecture execution cancel --workflow-id workflow-0123456789abcdef
 python3 -m builder.main architecture execution watch-once
+python3 -m builder.main architecture execution reconstruct \
+  --authorization knowledge/execution_reconstruction/authorization.json \
+  --reconstructed-at 2026-07-27T17:00:00+00:00
 ```
 
 `execute` only accepts `CODEX_PROMPT_GENERATED`. Failed or blocked records need

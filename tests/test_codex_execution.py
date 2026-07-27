@@ -268,7 +268,7 @@ def test_confirmed_workflow_executes_canonical_prompt_and_verifies_result(
     record = bridge.execute(WORKFLOW_ID)
 
     assert record.status is ExecutionStatus.SUCCEEDED
-    assert record.schema_version == "1.2"
+    assert record.schema_version == "1.3"
     assert record.failure is None
     assert len(record.attempts) == 1
     attempt = record.attempts[0]
@@ -891,7 +891,7 @@ def test_legacy_execution_record_loads_without_invented_attempts(
 
     legacy = executions.load(WORKFLOW_ID, record.execution_id)
 
-    assert legacy.schema_version == "1.2"
+    assert legacy.schema_version == "1.3"
     assert legacy.status is ExecutionStatus.SUCCEEDED
     assert legacy.attempts == ()
 

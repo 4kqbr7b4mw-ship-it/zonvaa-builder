@@ -3,6 +3,72 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Execution Reconstruction Architecture v1
+
+### Ziel und Nicht-Ziele
+
+Ein ausdrücklich autorisierter Direktauftrag kann aus verifizierbaren
+Repository-, Git- und Handover-Artefakten einen fehlenden Execution-Kontext
+rekonstruieren und danach den einzigen bestehenden Feedback-Loop-Pfad
+verwenden. Nicht ausgeführt werden Codex, Retry, Commit, Push, historische
+Handover-Änderungen oder eine zweite Reviewlogik.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `ccffb0fc8bede9bb161dd4422f0479918d76fb55`;
+  der Preflight war erfolgreich. `origin/main` durfte vertragsgemäß
+  zurückliegen.
+- Execution Record Schema 1.2 unterschied keine rekonstruierte Herkunft und
+  verlangte echte Bridge-Zeitpunkte und Attempts.
+- ADR-0035 besitzt bereits Handover-Validierung, Intake, Integrator-Review und
+  den Endzustand `CHIEF_ARCHITECT_DECISION_REQUIRED`.
+- Der Guardian-Succession-Result-Commit ist direkter Nachfolger des belegten
+  Basis-Commits und enthält beide ausdrücklich bezeichneten Handovers.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Git-Vorbedingungen, Preflight, Ausführungs- und Feedback-Verträge prüfen.
+- [x] Typisierte Autorisierung, Rekonstruktionsmodelle und Herkunft ergänzen.
+- [x] Git-, Handover-, Check-, Pfad- und Konfliktvalidierung implementieren.
+- [x] Bestehenden Feedback Loop über einen Completed-Execution-Einstieg nutzen.
+- [x] CLI und fokussierte Sicherheits-/Kompatibilitätstests ergänzen.
+- [x] ADR, reale Guardian-Succession-Rekonstruktion und Gesamttests abschließen.
+- [x] JSON-/Markdown-Handover erzeugen und genau einen Commit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- Rekonstruktionsautorisierung ist ein eigener, bestätigter Vertrag; weder
+  Commit noch Handover erzeugen Autorität.
+- Rekonstruierte Records haben keine erfundenen Start-/Endzeiten, Branch- oder
+  Git-Statuswerte und keine Attempts.
+- Die deterministische Identität bindet Autorisierung, Basis, Resultat,
+  JSON-Handover und optionalen Prompt-Hash.
+- Schema 1.3 kennzeichnet `RECONSTRUCTED`; Legacy-Records werden weiterhin als
+  `EXECUTION_BRIDGE` gelesen.
+
+### Risiken und Teststrategie
+
+- Rekonstruktion beweist belegte Artefakte, aber nicht die historische
+  Prozessausführung selbst.
+- Schema-1.0-Handovers können ihren eigenen Result-Hash nicht enthalten; die
+  Ausnahme bleibt an explizite Autorisierung, Commit-Zugehörigkeit und den
+  rekonstruierten Kontext gebunden.
+- Tests prüfen Default-Blockierung, Pfad- und Symlinkgrenzen, Git-Konflikte,
+  Check-Fehler, Idempotenz, Legacy-Lesen und genau einen Integrator-Review.
+
+### Abweichungen und Abschlusszustand
+
+Es war keine zweite Reviewlogik erforderlich. Der vorhandene Feedback Loop
+erhielt nur einen Einstieg für eine bereits erfolgreich verifizierte
+Execution. Die reale Guardian-Succession-Rekonstruktion erzeugte stabil
+`reconstructed-execution-65acb84722b55b94`,
+`architecture-run-0f27ec8e4006bd1a` und
+`review-7c594772df053366`; sieben Transitionen endeten bei
+`CHIEF_ARCHITECT_DECISION_REQUIRED`, ohne Attempt oder erfundene
+Ausführungszeit. 79 fokussierte und 647 vollständige Tests bestanden. Doctor
+und `git diff --check` waren erfolgreich. Der Abschlusscommit wird nicht
+gepusht.
+
 ## Abgeschlossener Plan: Watcher-Kompatibilität für Legacy-Workflows
 
 ### Ziel und Nicht-Ziele

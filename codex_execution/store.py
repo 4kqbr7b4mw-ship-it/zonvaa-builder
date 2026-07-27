@@ -12,6 +12,7 @@ from codex_execution.models import (
     ExecutionAttempt,
     ExecutionFailure,
     ExecutionFailureKind,
+    ExecutionOrigin,
     ExecutionRecord,
     ExecutionStep,
     ExecutionStatus,
@@ -35,7 +36,9 @@ class ExecutionStore:
         return folder
 
     def path(self, workflow_id: str, execution_id: str) -> Path:
-        if not execution_id.startswith("execution-"):
+        if not execution_id.startswith(
+            ("execution-", "reconstructed-execution-")
+        ):
             raise ValueError("execution_id is invalid")
         return self.folder(workflow_id) / "{}.json".format(execution_id)
 
@@ -105,9 +108,17 @@ class ExecutionStore:
             repository_path=data["repository_path"],
             starting_branch=data["starting_branch"],
             starting_commit=data["starting_commit"],
-            starting_git_status=tuple(data["starting_git_status"]),
+            starting_git_status=(
+                tuple(data["starting_git_status"])
+                if data.get("starting_git_status") is not None
+                else None
+            ),
             status=ExecutionStatus(data["status"]),
-            started_at=datetime.fromisoformat(data["started_at"]),
+            started_at=(
+                datetime.fromisoformat(data["started_at"])
+                if data["started_at"] is not None
+                else None
+            ),
             completed_at=(
                 datetime.fromisoformat(data["completed_at"])
                 if data["completed_at"] is not None
@@ -125,7 +136,17 @@ class ExecutionStore:
             attempts=attempts,
             retry_count=data["retry_count"],
             push_status=data["push_status"],
-            schema_version="1.2",
+            origin=ExecutionOrigin(
+                data.get("origin", "EXECUTION_BRIDGE")
+            ),
+            reconstructed_at=(
+                datetime.fromisoformat(data["reconstructed_at"])
+                if data.get("reconstructed_at") is not None
+                else None
+            ),
+            authorization_reference=data.get("authorization_reference"),
+            reconstruction_source=data.get("reconstruction_source"),
+            schema_version="1.3",
         )
 
     def existing(
@@ -239,7 +260,10 @@ class ExecutionStore:
     def _markdown(self, record: ExecutionRecord) -> str:
         duration = (
             (record.completed_at - record.started_at).total_seconds()
-            if record.completed_at is not None
+            if (
+                record.completed_at is not None
+                and record.started_at is not None
+            )
             else None
         )
         lines = [
@@ -251,6 +275,7 @@ class ExecutionStore:
                 record.prompt_hash,
             ),
             "- Status: `{}`".format(record.status.value),
+            "- Origin: `{}`".format(record.origin.value),
             "- Start commit: `{}`".format(record.starting_commit),
             "- Result commit: `{}`".format(
                 record.resulting_commit or "missing"
@@ -267,7 +292,11 @@ class ExecutionStore:
                 ", ".join(record.handover_paths) or "missing"
             ),
             "- Git status at start: {}".format(
-                ", ".join(record.starting_git_status) or "clean"
+                (
+                    ", ".join(record.starting_git_status) or "clean"
+                    if record.starting_git_status is not None
+                    else "not reconstructed"
+                )
             ),
             "- Duration seconds: {}".format(
                 duration if duration is not None else "running"

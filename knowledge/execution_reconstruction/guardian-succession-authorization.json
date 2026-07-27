@@ -1,0 +1,19 @@
+{
+  "allowed_actions": [
+    "reconstruct_execution",
+    "create_review"
+  ],
+  "authorization_id": "reconstruction-authorization-guardian-succession-v1",
+  "authorized_at": "2026-07-27T16:56:31+00:00",
+  "decision_reference": "codex-order:execution-reconstruction-architecture-v1",
+  "expected_handover_paths": [
+    "knowledge/handovers/2026-07-27_14-25-00-000000_Guardian-Succession-Architecture-v1.json",
+    "knowledge/handovers/2026-07-27_14-25-00-000000_Guardian-Succession-Architecture-v1.md"
+  ],
+  "expected_result_commit": "6772c54af823b34bea3ac234a85adefbcd5f2b2b",
+  "expected_start_commit": "8471f8bd41d9335ac14b7bef23a09cf7db1d4d90",
+  "prompt_hash": "786dfa9c1b1ecfd70a58ad38f4460703beb255356db6d15f3f4d225457dc8ebe",
+  "repository": "/Users/michaelgiese/zonvaa-builder",
+  "schema_version": "1.0",
+  "status": "CONFIRMED"
+}

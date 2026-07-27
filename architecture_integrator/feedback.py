@@ -611,6 +611,11 @@ def stable_identifier(prefix: str, *values: str) -> str:
 
 def _identifier(value: object, name: str, prefix: str) -> None:
     _text(value, name)
+    if (
+        prefix == "execution"
+        and str(value).startswith("reconstructed-execution-")
+    ):
+        return
     if not str(value).startswith(prefix + "-"):
         raise ValueError("{} is invalid".format(name))
 

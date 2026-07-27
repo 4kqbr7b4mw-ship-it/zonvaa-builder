@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from pathlib import Path
 from typing import List, Optional
 
@@ -26,6 +27,13 @@ from codex_execution import (
     CodexExecutionService,
     ExecutionBridgeError,
     ExecutionStore,
+)
+from codex_execution.reconstruction import (
+    ExecutionReconstructionAuthorization,
+    ExecutionReconstructionError,
+    ExecutionReconstructionRequest,
+    ExecutionReconstructionService,
+    ReconstructionSource,
 )
 
 
@@ -374,6 +382,53 @@ def watch_executions_once() -> None:
     )
 
 
+def reconstruct_execution(
+    authorization_file: Path = typer.Option(
+        ...,
+        "--authorization",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True,
+    ),
+    reconstructed_at: str = typer.Option(..., "--reconstructed-at"),
+) -> None:
+    """Reconstruct and review one explicitly authorized direct execution."""
+    try:
+        authorization = ExecutionReconstructionAuthorization.from_dict(
+            json.loads(authorization_file.read_text(encoding="utf-8"))
+        )
+        workflows = ArchitectureWorkflowStore()
+        service = ExecutionReconstructionService(
+            repository=Path.cwd(),
+            workflows=workflows,
+            integrator=ArchitectureIntegrator(
+                ArchitectureContextLoader(get_runtime())
+            ),
+        )
+        result = service.reconstruct(
+            ExecutionReconstructionRequest(
+                authorization=authorization,
+                reconstructed_at=datetime.fromisoformat(reconstructed_at),
+                source=ReconstructionSource.CHIEF_ARCHITECT_AUTHORIZATION,
+            )
+        )
+    except ExecutionReconstructionError as error:
+        typer.echo(
+            json.dumps(
+                {"error": error.failure.to_dict()},
+                indent=2,
+                sort_keys=True,
+            ),
+            err=True,
+        )
+        raise typer.Exit(code=1)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution reconstruction", error)
+    typer.echo(json.dumps(result.to_dict(), indent=2, sort_keys=True))
+
+
 def _workflow_orchestrator() -> ArchitectureWorkflowOrchestrator:
     integrator = ArchitectureIntegrator(
         ArchitectureContextLoader(get_runtime())
@@ -457,3 +512,4 @@ execution_app.command("status")(execution_status)
 execution_app.command("retry")(retry_execution)
 execution_app.command("cancel")(cancel_execution)
 execution_app.command("watch-once")(watch_executions_once)
+execution_app.command("reconstruct")(reconstruct_execution)
