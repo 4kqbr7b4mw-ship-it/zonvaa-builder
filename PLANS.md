@@ -3,6 +3,73 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Guardian Runtime Knowledge Model
+
+### Ziel und Nicht-Ziele
+
+Einen personengebundenen, typisierten Guardian-Runtime-Zustandsvertrag für
+quellen-, zeit-, unsicherheits- und retention-sensitives Wissen einführen.
+Runtime und Preflight weisen Vertrag und aktiven beziehungsweise ausdrücklich
+ungebundenen Snapshot nach. Zustandsänderungen werden ausschließlich geplant,
+nicht persistiert oder ausgeführt. Keine Datenbank, Cloud, Dokumentanalyse,
+semantische Suche, externe KI, UI oder autonome Entscheidung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `e3cea74` war erfolgreich.
+- ADR-0009 klassifiziert Memory-Metadaten, besitzt aber weder
+  personengebundene Wissenseinheiten noch Provenienz-, Konflikt- oder
+  Übergangsmodell.
+- Runtime und Mission Context weisen Constitution, Governance, Institution,
+  Interaction und Artefaktvertrag nach; ein Guardian-Runtime-Vertrag fehlt.
+- KnowledgeManager bleibt die einzige Knowledge-Schnittstelle; Originale
+  werden bereits als Referenzen statt als zentrale Dokumentkopien verstanden.
+- Der Artefaktvertrag ist die Grenze für spätere Mehrparteienfreigaben und
+  wird nicht durch eine zweite Rechte-Engine dupliziert.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Normquellen, Memory, Knowledge, Runtime und Tests prüfen.
+- [x] Typisierte Knowledge-, Provenienz-, Memory-, Retention- und
+  Snapshot-Modelle implementieren.
+- [x] Deterministische, nicht ausführende Übergangsplanung ergänzen.
+- [x] Versionierten Vertrag in Runtime und Mission Context integrieren.
+- [x] Preflight-Invarianten und fokussierte Tests ergänzen.
+- [x] ADR, Modellübersicht und CLI-Grenze dokumentieren.
+- [x] Vollständige Tests, Doctor und Diff prüfen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- ADR-0009 bleibt die übergeordnete Memory-Klassifikation. Die Guardian
+  Runtime konkretisiert sie, ohne den KnowledgeManager oder bestehende
+  Ablagen zu ersetzen.
+- Ein ungebundener leerer Snapshot ist im Builder zulässig und ausdrücklich
+  als solcher markiert. Personenwissen ist erst mit gemeinsam vorhandener
+  Guardian-, Subject- und Owner-Zuordnung zulässig.
+- Mehrparteienübertragung wird in dieser Schicht nicht ausgeführt. Sie bleibt
+  am bestehenden Artefakt- und Autorisierungsvertrag gesperrt.
+
+### Risiken und Teststrategie
+
+- Confidence darf nicht mit Verification verwechselt werden.
+- Widerspruch, Supersession, Widerruf und Retention dürfen keine Quelle
+  stillschweigend entfernen.
+- Übergänge müssen vorherigen und neuen Zustand vollständig nachweisen und
+  dürfen Knowledge Types nicht implizit konvertieren.
+- Tests prüfen Typen, Zeit, Provenienz, Isolation, Retention,
+  Autorisierungsgate, Hashes, deterministische Planung und Preflight.
+
+### Abweichungen und Abschlusszustand
+
+Ein Guardian-Runtime-CLI wurde bewusst nicht ergänzt: Ohne freigegebenen
+produktiven Serializer oder Store würde er eine zweite Lade- und
+Persistenzgrenze schaffen. Die neue Schicht stellt stattdessen unveränderliche
+Verträge, Validierung und reine Übergangsplanung bereit. Der bestehende
+Artefaktvertrag liefert die typisierte Autorisierungsevidenz. 521 Tests,
+Doctor, produktiver Preflight und `git diff --check` waren erfolgreich. Der
+lokale Handover gehört zum Abschlusscommit; es wurde nicht gepusht.
+
 ## Aktiver Plan: Architecture Workflow v2
 
 ### Ziel und Nicht-Ziele

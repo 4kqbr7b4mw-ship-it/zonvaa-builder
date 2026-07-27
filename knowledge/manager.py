@@ -1,6 +1,11 @@
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Optional
 
+from guardian_runtime import (
+    GuardianRuntimeSnapshot,
+    KnowledgeItem,
+)
 from knowledge.memory import MemoryRecord
 from knowledge.verified_facts import VerifiedFacts
 
@@ -54,6 +59,22 @@ class KnowledgeManager:
     def classify_memory(self, **metadata: Any) -> MemoryRecord:
         """Validate memory metadata without introducing another knowledge store."""
         return MemoryRecord(**metadata)
+
+    def validate_guardian_knowledge(
+        self,
+        knowledge_item: KnowledgeItem,
+    ) -> KnowledgeItem:
+        """Validate typed Guardian knowledge without persisting it."""
+        if not isinstance(knowledge_item, KnowledgeItem):
+            raise TypeError("knowledge_item must be KnowledgeItem")
+        return knowledge_item
+
+    def unbound_guardian_runtime(
+        self,
+        captured_at: datetime,
+    ) -> GuardianRuntimeSnapshot:
+        """Provide the explicit empty runtime state for no active person."""
+        return GuardianRuntimeSnapshot.unbound(captured_at)
 
     def latest_session(self):
         return self._latest_file(self.root / "sessions", ("*.md",))

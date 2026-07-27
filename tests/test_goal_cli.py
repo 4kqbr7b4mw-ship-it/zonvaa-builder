@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 from unittest.mock import Mock
 
@@ -17,6 +18,10 @@ from builder.runtime import RuntimeManager
 from execution.engine import ExecutionEngine, TargetVerificationError
 from goal.engine import GoalEngine
 from governance.loader import GovernanceLoader
+from guardian_runtime import (
+    GuardianRuntimeContractLoader,
+    GuardianRuntimeSnapshot,
+)
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
 from interaction.loader import InteractionLoader
@@ -79,6 +84,12 @@ def create_runtime():
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
     runtime.artifact_contract_context = ArtifactContractLoader().load()
+    runtime.guardian_runtime_contract_context = (
+        GuardianRuntimeContractLoader().load()
+    )
+    runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
+        datetime.now(timezone.utc)
+    )
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

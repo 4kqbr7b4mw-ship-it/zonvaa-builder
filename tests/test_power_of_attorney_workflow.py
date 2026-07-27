@@ -16,6 +16,10 @@ from builder.preflight import PreflightError
 from builder.runtime import RuntimeManager
 from goal.engine import GoalEngine
 from governance.loader import GovernanceLoader
+from guardian_runtime import (
+    GuardianRuntimeContractLoader,
+    GuardianRuntimeSnapshot,
+)
 from goal.models import Goal
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
@@ -458,6 +462,12 @@ def test_workflow_cannot_be_constructed_without_mission_context():
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
     runtime.artifact_contract_context = ArtifactContractLoader().load()
+    runtime.guardian_runtime_contract_context = (
+        GuardianRuntimeContractLoader().load()
+    )
+    runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
+        datetime.now(timezone.utc)
+    )
     runtime.goal_engine = GoalEngine()
     with pytest.raises(PreflightError, match="MissionContext"):
         GoalApplicationService(runtime)
@@ -502,6 +512,12 @@ def test_existing_goal_cli_runs_power_of_attorney_workflow(
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
     runtime.artifact_contract_context = ArtifactContractLoader().load()
+    runtime.guardian_runtime_contract_context = (
+        GuardianRuntimeContractLoader().load()
+    )
+    runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
+        datetime.now(timezone.utc)
+    )
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

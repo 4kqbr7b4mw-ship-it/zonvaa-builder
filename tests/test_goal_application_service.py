@@ -19,6 +19,10 @@ from builder.runtime import RuntimeManager
 from goal.engine import GoalEngine
 from goal.models import Goal
 from governance.loader import GovernanceLoader
+from guardian_runtime import (
+    GuardianRuntimeContractLoader,
+    GuardianRuntimeSnapshot,
+)
 from goal.why_assessment import (
     WhyAssessment,
     WhyAssessmentReason,
@@ -54,6 +58,12 @@ def create_runtime(git_clean=True):
     runtime.institution_context = InstitutionLoader().load()
     runtime.interaction_context = InteractionLoader().load()
     runtime.artifact_contract_context = ArtifactContractLoader().load()
+    runtime.guardian_runtime_contract_context = (
+        GuardianRuntimeContractLoader().load()
+    )
+    runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
+        datetime.now(timezone.utc)
+    )
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

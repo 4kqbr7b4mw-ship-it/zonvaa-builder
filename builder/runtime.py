@@ -1,9 +1,15 @@
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
 from artifact_contract import ArtifactContractContext, ArtifactContractLoader
 from constitution.manager import ConstitutionManager
 from goal.engine import GoalEngine
+from guardian_runtime import (
+    GuardianRuntimeContractContext,
+    GuardianRuntimeContractLoader,
+    GuardianRuntimeSnapshot,
+)
 from governance import GovernanceContext, GovernanceLoader
 from identity import IdentityContext, IdentityLoader
 from institution import InstitutionContext, InstitutionLoader
@@ -22,6 +28,12 @@ class RuntimeManager:
         self.interaction_context: Optional[InteractionContext] = None
         self.artifact_contract_context: Optional[
             ArtifactContractContext
+        ] = None
+        self.guardian_runtime_contract_context: Optional[
+            GuardianRuntimeContractContext
+        ] = None
+        self.guardian_runtime_snapshot: Optional[
+            GuardianRuntimeSnapshot
         ] = None
         self.constitution: Optional[str] = None
         self.governance_context: Optional[GovernanceContext] = None
@@ -42,6 +54,14 @@ class RuntimeManager:
         self.institution_context = InstitutionLoader().load()
         self.interaction_context = InteractionLoader().load()
         self.artifact_contract_context = ArtifactContractLoader().load()
+        self.guardian_runtime_contract_context = (
+            GuardianRuntimeContractLoader().load()
+        )
+        self.guardian_runtime_snapshot = (
+            knowledge_manager.unbound_guardian_runtime(
+                datetime.now(timezone.utc)
+            )
+        )
         self.constitution = ConstitutionManager().load()
         self.governance_context = GovernanceLoader().load(
             self.constitution

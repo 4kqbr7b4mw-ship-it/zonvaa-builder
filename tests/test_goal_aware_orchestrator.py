@@ -11,6 +11,10 @@ from builder.preflight import PreflightService
 from goal.engine import GoalEngine
 from goal.models import Goal
 from governance.loader import GovernanceLoader
+from guardian_runtime import (
+    GuardianRuntimeContractLoader,
+    GuardianRuntimeSnapshot,
+)
 from goal.why_assessment import (
     WhyAssessment,
     WhyAssessmentReason,
@@ -64,6 +68,12 @@ def create_workflow_context():
         institution_context=InstitutionLoader().load(),
         interaction_context=InteractionLoader().load(),
         artifact_contract_context=ArtifactContractLoader().load(),
+        guardian_runtime_contract_context=(
+            GuardianRuntimeContractLoader().load()
+        ),
+        guardian_runtime_snapshot=GuardianRuntimeSnapshot.unbound(
+            datetime.now(timezone.utc)
+        ),
         constitution=constitution,
         governance_context=GovernanceLoader().load(constitution),
         knowledge={

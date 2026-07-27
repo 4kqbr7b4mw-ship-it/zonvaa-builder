@@ -9,6 +9,12 @@ from typing import Any, Callable, Dict, Mapping, Tuple
 from artifact_contract import ArtifactContractContext
 from builder.runtime import RuntimeManager
 from governance import GovernanceContext
+from guardian_runtime import (
+    GuardianRuntimeContractContext,
+    GuardianRuntimeSnapshot,
+    RetentionClass,
+    Validity,
+)
 from institution import InstitutionContext
 from interaction import InteractionContext
 
@@ -71,6 +77,7 @@ class MissionContext:
     institution: Mapping[str, Any]
     interaction: Mapping[str, Any]
     artifact_contract: Mapping[str, Any]
+    guardian_runtime: Mapping[str, Any]
     constitution: Mapping[str, Any]
     knowledge: Mapping[str, Any]
     verified_facts: Mapping[str, Any]
@@ -86,8 +93,8 @@ class MissionContext:
     )
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.4":
-            raise ValueError("MissionContext schema_version must be 1.4")
+        if self.schema_version != "1.5":
+            raise ValueError("MissionContext schema_version must be 1.5")
         if not isinstance(self.generated_at, datetime):
             raise TypeError("MissionContext generated_at must be a datetime")
         if (
@@ -111,6 +118,7 @@ class MissionContext:
             "institution",
             "interaction",
             "artifact_contract",
+            "guardian_runtime",
             "constitution",
             "knowledge",
             "verified_facts",
@@ -134,6 +142,7 @@ class MissionContext:
             "institution": _deep_thaw(self.institution),
             "interaction": _deep_thaw(self.interaction),
             "artifact_contract": _deep_thaw(self.artifact_contract),
+            "guardian_runtime": _deep_thaw(self.guardian_runtime),
             "constitution": _deep_thaw(self.constitution),
             "knowledge": _deep_thaw(self.knowledge),
             "verified_facts": _deep_thaw(self.verified_facts),
@@ -219,6 +228,37 @@ class PreflightService:
             raise PreflightError(
                 "Artifact contract is missing or invalid"
             )
+        guardian_runtime_contract = getattr(
+            self.runtime,
+            "guardian_runtime_contract_context",
+            None,
+        )
+        if not isinstance(
+            guardian_runtime_contract,
+            GuardianRuntimeContractContext,
+        ):
+            raise PreflightError(
+                "Guardian Runtime contract is missing or invalid"
+            )
+        self._validate_guardian_runtime_contract(
+            guardian_runtime_contract
+        )
+        guardian_runtime_snapshot = getattr(
+            self.runtime,
+            "guardian_runtime_snapshot",
+            None,
+        )
+        if not isinstance(
+            guardian_runtime_snapshot,
+            GuardianRuntimeSnapshot,
+        ):
+            raise PreflightError(
+                "Guardian Runtime snapshot is missing or invalid"
+            )
+        self._validate_guardian_runtime_snapshot(
+            guardian_runtime_snapshot,
+            self.clock(),
+        )
         constitution = self.runtime.constitution
         if not isinstance(constitution, str) or not constitution.strip():
             raise PreflightError("Constitution is missing or empty")
@@ -269,7 +309,7 @@ class PreflightService:
             for key, value in self.runtime.knowledge.items()
         }
         context = MissionContext(
-            schema_version="1.4",
+            schema_version="1.5",
             generated_at=self.clock(),
             project_root=str(Path.cwd()),
             governance={
@@ -344,6 +384,10 @@ class PreflightService:
                     for transition in artifact_contract.transition_types
                 ],
             },
+            guardian_runtime=self._guardian_runtime_summary(
+                guardian_runtime_contract,
+                guardian_runtime_snapshot,
+            ),
             constitution={
                 "status": "loaded",
                 "path": "constitution/constitution.md",
@@ -523,6 +567,41 @@ class PreflightService:
             raise PreflightError(
                 "MissionContext Artifact contract changed"
             )
+        guardian_runtime_contract = getattr(
+            self.runtime,
+            "guardian_runtime_contract_context",
+            None,
+        )
+        guardian_runtime_snapshot = getattr(
+            self.runtime,
+            "guardian_runtime_snapshot",
+            None,
+        )
+        if not isinstance(
+            guardian_runtime_contract,
+            GuardianRuntimeContractContext,
+        ):
+            raise PreflightError("Runtime Guardian Runtime contract changed")
+        self._validate_guardian_runtime_contract(
+            guardian_runtime_contract
+        )
+        if not isinstance(
+            guardian_runtime_snapshot,
+            GuardianRuntimeSnapshot,
+        ):
+            raise PreflightError("Runtime Guardian Runtime snapshot changed")
+        self._validate_guardian_runtime_snapshot(
+            guardian_runtime_snapshot,
+            now,
+        )
+        expected_guardian_runtime = self._guardian_runtime_summary(
+            guardian_runtime_contract,
+            guardian_runtime_snapshot,
+        )
+        if context.guardian_runtime != _deep_freeze(
+            expected_guardian_runtime
+        ):
+            raise PreflightError("MissionContext Guardian Runtime changed")
         if context.knowledge.get("status") != "loaded":
             raise PreflightError("MissionContext Knowledge is invalid")
         if context.git.get("branch") != self.runtime.project_state.get(
@@ -542,6 +621,136 @@ class PreflightService:
             != _deep_freeze(self.runtime.verified_facts)
         ):
             raise PreflightError("MissionContext Verified Facts changed")
+
+    def _guardian_runtime_summary(
+        self,
+        contract: GuardianRuntimeContractContext,
+        snapshot: GuardianRuntimeSnapshot,
+    ) -> Dict[str, Any]:
+        return {
+            "status": (
+                "bound"
+                if snapshot.active_subject_id is not None
+                else "unbound"
+            ),
+            "contract": {
+                "path": "guardian_runtime/contract.md",
+                "version": contract.version,
+                "content_hash": contract.content_hash,
+                "knowledge_types": [
+                    item.value for item in contract.knowledge_types
+                ],
+                "verification_statuses": [
+                    item.value for item in contract.verification_statuses
+                ],
+                "confidence_levels": [
+                    item.value for item in contract.confidence_levels
+                ],
+                "validity_states": [
+                    item.value for item in contract.validity_states
+                ],
+                "retention_classes": [
+                    item.value for item in contract.retention_classes
+                ],
+                "memory_scopes": [
+                    item.value for item in contract.memory_scopes
+                ],
+                "transition_types": [
+                    item.value for item in contract.transition_types
+                ],
+            },
+            "snapshot_schema_version": snapshot.schema_version,
+            "active_guardian_id": snapshot.active_guardian_id,
+            "active_subject_id": snapshot.active_subject_id,
+            "knowledge_snapshot_version": (
+                snapshot.knowledge_snapshot_version
+            ),
+            "applicable_memory_scope": [
+                item.value for item in snapshot.applicable_memory_scope
+            ],
+            "unresolved_conflicts": [
+                item.conflict_id
+                for item in snapshot.unresolved_conflicts
+            ],
+            "open_hypotheses": list(snapshot.open_hypotheses),
+            "active_authorizations": list(
+                item.authorization_id
+                for item in snapshot.active_authorizations
+            ),
+            "retention_constraints": [
+                item.to_dict()
+                for item in snapshot.retention_constraints
+            ],
+            "provenance_integrity": snapshot.provenance_integrity,
+            "runtime_context_hash": snapshot.runtime_context_hash,
+        }
+
+    def _validate_guardian_runtime_contract(
+        self,
+        contract: GuardianRuntimeContractContext,
+    ) -> None:
+        if contract.version != "1.0":
+            raise PreflightError(
+                "Guardian Runtime contract version is unsupported"
+            )
+        if (
+            hashlib.sha256(contract.content.encode("utf-8")).hexdigest()
+            != contract.content_hash
+        ):
+            raise PreflightError(
+                "Guardian Runtime contract integrity failed"
+            )
+
+    def _validate_guardian_runtime_snapshot(
+        self,
+        snapshot: GuardianRuntimeSnapshot,
+        now: datetime,
+    ) -> None:
+        try:
+            for transition in snapshot.transitions:
+                transition.validate()
+            calculated_hash = snapshot.calculate_hash()
+        except (TypeError, ValueError) as exc:
+            raise PreflightError(
+                "Guardian Runtime contains an invalid type transition"
+            ) from exc
+        if calculated_hash != snapshot.runtime_context_hash:
+            raise PreflightError("Guardian Runtime hash changed")
+        if snapshot.active_guardian_id is None:
+            if snapshot.active_subject_id is not None:
+                raise PreflightError(
+                    "Guardian Runtime user assignment is incomplete"
+                )
+        elif snapshot.active_subject_id is None:
+            raise PreflightError(
+                "Guardian Runtime user assignment is incomplete"
+            )
+        if not snapshot.provenance_integrity:
+            raise PreflightError(
+                "Guardian Runtime provenance integrity failed"
+            )
+        for item in snapshot.knowledge_items:
+            if (
+                item.valid_until is not None
+                and item.valid_until <= now
+                and item.validity
+                not in {Validity.EXPIRED, Validity.SUPERSEDED}
+            ):
+                raise PreflightError(
+                    "Guardian Runtime contains stale knowledge: {}".format(
+                        item.knowledge_id
+                    )
+                )
+            if (
+                item.retention_class is RetentionClass.KEEP_UNTIL_DATE
+                and item.retention_until is not None
+                and item.retention_until <= now
+            ):
+                raise PreflightError(
+                    "Guardian Runtime retention requires review: {}".format(
+                        item.knowledge_id
+                    )
+                )
 
     def _constitution_version(self, content: str) -> str:
         match = re.search(r"^Version:\s*(.+?)\s*$", content, re.MULTILINE)

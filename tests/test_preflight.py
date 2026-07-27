@@ -8,16 +8,39 @@ from typer.testing import CliRunner
 
 import commands.preflight as preflight_command
 from artifact_contract.models import (
+    ArtifactAuthorization,
     ArtifactContractContext,
     ArtifactState,
     ArtifactTransitionType,
     AuthorizationScope,
+    AuthorizationStatus,
     HistoryDataClass,
 )
 from builder.main import app
 from builder.preflight import PreflightError, PreflightService
 from builder.preflight import WorkflowContext
 from governance.loader import GovernanceLoader
+from guardian_runtime import (
+    ArtifactAuthorizationEvidence,
+    Confidence,
+    ExtractionMethod,
+    GuardianMemory,
+    GuardianRuntimeContractLoader,
+    GuardianRuntimeSnapshot,
+    KnowledgeItem,
+    KnowledgeTransition,
+    KnowledgeType,
+    Provenance,
+    RetentionClass,
+    Sensitivity,
+    SourceType,
+    TransitionResult,
+    TransitionType,
+    Validity,
+    VerificationMethod,
+    VerificationStatus,
+    Visibility,
+)
 from institution.models import InstitutionContext, InstitutionGuarantee
 from interaction.models import InteractionContext, InteractionPrinciple
 
@@ -63,6 +86,12 @@ def runtime_context(tmp_path):
             history_data_classes=tuple(HistoryDataClass),
             transition_types=tuple(ArtifactTransitionType),
         ),
+        guardian_runtime_contract_context=(
+            GuardianRuntimeContractLoader().load()
+        ),
+        guardian_runtime_snapshot=GuardianRuntimeSnapshot.unbound(
+            datetime(2026, 7, 26, 11, 59, tzinfo=timezone.utc)
+        ),
         constitution=constitution,
         governance_context=GovernanceLoader().load(constitution),
         knowledge={
@@ -87,6 +116,67 @@ def runtime_context(tmp_path):
     )
 
 
+def guardian_knowledge(**overrides):
+    now = datetime(2026, 7, 26, 12, 0, tzinfo=timezone.utc)
+    values = {
+        "knowledge_id": "knowledge-1",
+        "subject_id": "person-1",
+        "owner_id": "person-1",
+        "knowledge_type": KnowledgeType.USER_STATEMENT,
+        "content_reference": "local-ref:knowledge/knowledge-1",
+        "source_references": ("source-1",),
+        "provenance": Provenance(
+            source_type=SourceType.USER,
+            source_id="source-1",
+            source_owner="person-1",
+            source_timestamp=now - timedelta(hours=2),
+            extraction_method=ExtractionMethod.DIRECT_STATEMENT,
+            verification_method=VerificationMethod.NONE,
+        ),
+        "confidence": Confidence.UNKNOWN,
+        "validity": Validity.CURRENT,
+        "sensitivity": Sensitivity.PERSONAL,
+        "visibility": Visibility.OWNER_ONLY,
+        "created_at": now,
+        "observed_at": now - timedelta(hours=1),
+        "valid_from": now - timedelta(hours=1),
+        "valid_until": None,
+        "supersedes": (),
+        "contradicted_by": (),
+        "retention_class": RetentionClass.KEEP_UNTIL_REVOKED,
+        "verification_status": VerificationStatus.UNVERIFIED,
+        "version": 1,
+    }
+    values.update(overrides)
+    return KnowledgeItem(**values)
+
+
+def guardian_authorization():
+    return ArtifactAuthorizationEvidence(
+        artifact_id="artifact-guardian-runtime",
+        knowledge_ids=("knowledge-1",),
+        authorization=ArtifactAuthorization(
+            authorization_id="authorization-1",
+            subject_id="person-1",
+            granted_by="person-1",
+            scopes=(
+                AuthorizationScope.READ,
+                AuthorizationScope.AUTHORIZE_ACTION,
+            ),
+            purpose="Validate explicitly scoped Guardian knowledge.",
+            status=AuthorizationStatus.ACTIVE,
+            granted_at=datetime(
+                2026,
+                7,
+                26,
+                11,
+                0,
+                tzinfo=timezone.utc,
+            ),
+        ),
+    )
+
+
 def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
     agents = tmp_path / "AGENTS.md"
     agents.write_text(
@@ -97,7 +187,7 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
 
     context = PreflightService(runtime_context(tmp_path)).build().to_dict()
 
-    assert context["schema_version"] == "1.4"
+    assert context["schema_version"] == "1.5"
     assert context["governance"]["status"] == "loaded"
     assert context["governance"]["constitution"]["version"] == "2.1"
     assert context["governance"]["charter"]["version"] == "1.1"
@@ -144,6 +234,14 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
             transition.value for transition in ArtifactTransitionType
         ],
     }
+    assert context["guardian_runtime"]["status"] == "unbound"
+    assert (
+        context["guardian_runtime"]["snapshot_schema_version"]
+        == "1.0"
+    )
+    assert context["guardian_runtime"]["active_guardian_id"] is None
+    assert context["guardian_runtime"]["active_subject_id"] is None
+    assert context["guardian_runtime"]["provenance_integrity"] is True
     assert context["constitution"] == {
         "status": "loaded",
         "path": "constitution/constitution.md",
@@ -177,7 +275,7 @@ def test_workflow_context_can_only_be_derived_from_mission_context(
 
     with pytest.raises(TypeError):
         WorkflowContext(
-            schema_version="1.4",
+            schema_version="1.5",
             generated_at=mission.generated_at,
             project_root=mission.project_root,
             git_branch="feature",
@@ -234,6 +332,16 @@ def test_preflight_marks_absent_session_and_handover_as_missing(
         ("institution_context", None, "Institution"),
         ("interaction_context", None, "Interaction"),
         ("artifact_contract_context", None, "Artifact contract"),
+        (
+            "guardian_runtime_contract_context",
+            None,
+            "Guardian Runtime contract",
+        ),
+        (
+            "guardian_runtime_snapshot",
+            None,
+            "Guardian Runtime snapshot",
+        ),
         ("governance_context", None, "Governance"),
         ("constitution", "", "Constitution"),
         ("knowledge", {}, "Knowledge areas"),
@@ -258,6 +366,130 @@ def test_preflight_rejects_governance_for_another_constitution(tmp_path):
     runtime.constitution = runtime.constitution + "\nChanged.\n"
 
     with pytest.raises(PreflightError, match="does not match"):
+        PreflightService(runtime).build()
+
+
+def test_preflight_rejects_guardian_runtime_contract_version(tmp_path):
+    runtime = runtime_context(tmp_path)
+    object.__setattr__(
+        runtime.guardian_runtime_contract_context,
+        "version",
+        "2.0",
+    )
+
+    with pytest.raises(PreflightError, match="version"):
+        PreflightService(runtime).build()
+
+
+def test_preflight_rejects_guardian_runtime_snapshot_hash(tmp_path):
+    runtime = runtime_context(tmp_path)
+    object.__setattr__(
+        runtime.guardian_runtime_snapshot,
+        "runtime_context_hash",
+        "0" * 64,
+    )
+
+    with pytest.raises(PreflightError, match="hash"):
+        PreflightService(runtime).build()
+
+
+@pytest.mark.parametrize(
+    "knowledge",
+    (
+        guardian_knowledge(
+            valid_until=datetime(
+                2026,
+                7,
+                26,
+                11,
+                59,
+                tzinfo=timezone.utc,
+            ),
+        ),
+        guardian_knowledge(
+            retention_class=RetentionClass.KEEP_UNTIL_DATE,
+            retention_until=datetime(
+                2026,
+                7,
+                26,
+                11,
+                59,
+                tzinfo=timezone.utc,
+            ),
+        ),
+    ),
+)
+def test_preflight_rejects_stale_validity_or_due_retention(
+    tmp_path,
+    knowledge,
+):
+    runtime = runtime_context(tmp_path)
+    runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.create(
+        captured_at=datetime(
+            2026,
+            7,
+            26,
+            12,
+            0,
+            tzinfo=timezone.utc,
+        ),
+        active_guardian_id="guardian-1",
+        active_subject_id="person-1",
+        knowledge_snapshot_version=1,
+        applicable_memory_scope=(),
+        knowledge_items=(knowledge,),
+        memory=GuardianMemory(),
+        unresolved_conflicts=(),
+        active_authorizations=(guardian_authorization(),),
+    )
+    service = PreflightService(
+        runtime,
+        clock=lambda: datetime(
+            2026,
+            7,
+            26,
+            12,
+            0,
+            tzinfo=timezone.utc,
+        ),
+    )
+
+    with pytest.raises(PreflightError, match="stale|retention"):
+        service.build()
+
+
+def test_preflight_rejects_invalid_knowledge_type_transition(tmp_path):
+    runtime = runtime_context(tmp_path)
+    invalid = object.__new__(KnowledgeTransition)
+    for name, value in {
+        "transition_id": "transition-invalid",
+        "transition_type": TransitionType.VERIFICATION_ADDED,
+        "previous_item": None,
+        "new_item": None,
+        "trigger": "Corrupt transition fixture.",
+        "authorization_reference": "authorization-1",
+        "occurred_at": datetime(
+            2026,
+            7,
+            26,
+            12,
+            0,
+            tzinfo=timezone.utc,
+        ),
+        "reason": "Verify preflight rejects invalid transitions.",
+        "source_references": (),
+        "result": TransitionResult.PLANNED,
+    }.items():
+        object.__setattr__(invalid, name, value)
+    snapshot = runtime.guardian_runtime_snapshot
+    object.__setattr__(snapshot, "transitions", (invalid,))
+    object.__setattr__(
+        snapshot,
+        "runtime_context_hash",
+        snapshot.calculate_hash(),
+    )
+
+    with pytest.raises(PreflightError, match="type transition"):
         PreflightService(runtime).build()
 
 

@@ -1,0 +1,102 @@
+{
+  "changed_files": [
+    "PLANS.md",
+    "builder/preflight.py",
+    "builder/runtime.py",
+    "guardian_runtime/README.md",
+    "guardian_runtime/__init__.py",
+    "guardian_runtime/contract.md",
+    "guardian_runtime/loader.py",
+    "guardian_runtime/models.py",
+    "guardian_runtime/planner.py",
+    "knowledge/adr/ADR-0032-guardian-runtime.md",
+    "knowledge/handovers/2026-07-27_07-24-10-000000_Build-Guardian-Runtime-knowledge-model.json",
+    "knowledge/handovers/2026-07-27_07-24-10-000000_Build-Guardian-Runtime-knowledge-model.md",
+    "knowledge/manager.py",
+    "tests/test_goal_application_service.py",
+    "tests/test_goal_aware_orchestrator.py",
+    "tests/test_goal_cli.py",
+    "tests/test_guardian_runtime.py",
+    "tests/test_power_of_attorney_workflow.py",
+    "tests/test_preflight.py",
+    "tests/test_runtime.py"
+  ],
+  "checks": [
+    {
+      "command": "python3 -m pytest -q tests/test_guardian_runtime.py tests/test_preflight.py tests/test_runtime.py",
+      "result": "55 passed in 2.32s",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m pytest -q",
+      "result": "521 passed in 17.83s",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m builder.main doctor",
+      "result": "ZONVAA Builder CLI funktioniert.",
+      "status": "passed"
+    },
+    {
+      "command": "python3 -m builder.main preflight",
+      "result": "MissionContext 1.5 ready with Guardian Runtime contract 1.0 and an explicit unbound snapshot.",
+      "status": "passed"
+    },
+    {
+      "command": "git diff --check",
+      "result": "No whitespace errors.",
+      "status": "passed"
+    }
+  ],
+  "decisions": [
+    "RuntimeManager remains the technical single source of truth and KnowledgeManager remains the only knowledge interface.",
+    "ADR-0009 remains the overarching memory classification; ADR-0032 defines the person-bound Guardian Runtime state contract.",
+    "The Builder boots an explicit empty unbound snapshot and never invents a Guardian or subject identity.",
+    "State changes are planned but not executed; no CLI was added before an approved persistence and serialization boundary exists.",
+    "Cross-person transfer remains gated by the existing artifact and authorization contract."
+  ],
+  "ending_commit": null,
+  "functional_changes": [
+    "Guardian knowledge is represented as person-bound, source-aware, time-aware and explicitly typed immutable units.",
+    "Statements, verified facts, hypotheses, interpretations, decisions and memory scopes remain distinct.",
+    "Retention, conflicts and authorized sharing are explicit and auditable without central document storage.",
+    "Runtime and Mission Context now expose a validated Guardian Runtime contract and snapshot without knowledge content."
+  ],
+  "git_status": [
+    "Guardian Runtime work package modified and untracked files ready for the final local commit.",
+    "Branch main; starting HEAD e3cea74f62d38dac63252da3c487674ec7bef8fd."
+  ],
+  "intentionally_not_implemented": [
+    "Database, cloud storage, vector search, external AI calls and network access.",
+    "Automatic document analysis or centralized original-document storage.",
+    "Productive deletion, anonymization, migration or persistence.",
+    "Automatic semantic promotion, contradiction resolution or human decision-making.",
+    "A Guardian Runtime CLI or multi-party transfer executor."
+  ],
+  "open_risks": [
+    "No productive store, lifecycle executor, migration or real deletion and anonymization mechanism is implemented.",
+    "Authorization evidence is structurally validated; real-world identity and authorization authenticity remain outside this model.",
+    "Before execution, audit-state retention must define how deletable source references are removed or minimized in transition records.",
+    "Contradiction discovery is explicit and deterministic; semantic contradiction detection remains a human or separately approved assessment."
+  ],
+  "push_status": "not_pushed",
+  "recommended_next_step": "Approve a local persistence and lifecycle-executor contract covering authorization authenticity, audit-record minimization and deletion propagation before any productive Guardian data is stored.",
+  "relevant_adrs": [
+    "ADR-0004 Runtime as Single Source of Truth",
+    "ADR-0009 Memory Architecture",
+    "ADR-0020 Codex Context Preflight and Handover",
+    "ADR-0030 Typed Artifact and Authorization State Contract",
+    "ADR-0032 Guardian Runtime"
+  ],
+  "schema_version": "1.0",
+  "starting_commit": "e3cea74f62d38dac63252da3c487674ec7bef8fd",
+  "task": "Build Guardian Runtime knowledge model",
+  "technical_changes": [
+    "Added a versioned Guardian Runtime contract, deterministic hash loader and immutable schema.",
+    "Added pure deterministic transition planning with before and after state evidence and no persistence side effects.",
+    "Reused ArtifactAuthorization as typed purpose-bound authorization evidence instead of introducing a second rights model.",
+    "Extended RuntimeManager, KnowledgeManager and Preflight with contract, assignment, provenance, conflict, validity, retention and integrity checks.",
+    "Added focused model, planner, runtime and preflight regression tests compatible with Python 3.9."
+  ],
+  "timestamp": "2026-07-27T07:24:10+00:00"
+}
