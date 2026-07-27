@@ -3,6 +3,77 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: User-Owned Data Architecture
+
+### Ziel und Nicht-Ziele
+
+Eine providerneutrale, lokale und nutzerkontrollierte Referenzgrenze zwischen
+Originaldaten und ZONVAAs Intelligence Layer einführen. Typisierte Verträge
+modellieren Speicherreferenz, Verfügbarkeit, Integrität, Retention und
+ausdrücklich autorisierte Operationen. Keine Speicherplattform, Dateizugriffe,
+Synchronisation, Replikation, Backups, Kryptografie, Cloud oder zentrale
+Dokumentenablage implementieren.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `0efaafd` war erfolgreich.
+- Constitution, Institution, Interaction, Artefaktvertrag und Guardian Runtime
+  verlangen Nutzerhoheit, Autorisierung, Portabilität und Referenzen statt
+  zentraler Originalkopien.
+- `DocumentReference` ist bislang ein Life-Decisions-Modell; es darf nicht zur
+  allgemeinen Speicherarchitektur oder zu einem zweiten Knowledge Store
+  erweitert werden.
+- `KnowledgeItem.content_reference` schützt syntaktisch vor eingebetteten
+  Originalinhalten, besitzt aber noch keinen providerneutralen,
+  versionierten Referenzvertrag.
+- Runtime und Preflight weisen noch keine User-Owned-Data-Vertragsversion nach.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Normquellen, Runtime, Guardian Runtime, Artefaktvertrag und
+  vorhandene Referenzmodelle prüfen.
+- [x] Typisierte Storage-Reference-, Provider-, Scope-, Availability-,
+  Authorization- und Retention-Verträge implementieren.
+- [x] Versionierten Architekturvertrag in Runtime, KnowledgeManager und
+  Mission Context integrieren.
+- [x] Preflight-Invarianten und fokussierte Tests ergänzen.
+- [x] ADR und Architekturübersichten dokumentieren.
+- [x] Vollständige Tests, Doctor und Diff prüfen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Der neue Layer modelliert ausschließlich Referenzen und Grenzen; er liest,
+  kopiert, synchronisiert oder löscht keine Originaldatei.
+- Der bestehende Artefaktvertrag bleibt Ursprung der Nutzerautorisierung.
+  Speicheroperationen werden als enger, typisierter Zweckumfang daran
+  gebunden, nicht als paralleles Rechte- oder Identitätssystem.
+- KnowledgeManager bleibt einzige Wissensschnittstelle. RuntimeManager lädt
+  nur den statischen Architekturvertrag, keine User-Vault-Inhalte.
+- Life-Decisions-`DocumentReference` bleibt fachlich kompatibel und wird in
+  diesem Arbeitspaket nicht umgebaut.
+
+### Risiken und Teststrategie
+
+- Locator und Checksum dürfen weder Inhalt noch einen Zugriff auslösen.
+- Provider-Typen dürfen keine Anbieterbevorzugung oder Netzpflicht erzeugen.
+- Kopie, Synchronisation und Original-Löschung müssen ohne explizite,
+  aktive und passend begrenzte Autorisierung unmöglich sein.
+- Tests prüfen unveränderliche Modelle, stabile Enums, Eigentümerbindung,
+  Referenzvalidierung, Authorization Scope, Retention, Offlinefähigkeit,
+  Vertragsintegrität sowie Runtime- und Preflight-Integration.
+
+### Abweichungen und Abschlusszustand
+
+Es wurde bewusst kein User Vault, Adapter oder CLI ergänzt: Ohne freigegebene
+produktive Speichergrenze würde dies aus dem Referenzvertrag eine
+Speicherplattform machen. Zusätzlich zum Mindestmodell weist eine
+`StorageCapability` die Provider-Fähigkeit für eine Original-Löschung separat
+nach; sie ersetzt weder Nutzerautorisierung noch einen späteren
+Vollzugsnachweis. 552 Tests, Doctor, produktiver Preflight und
+`git diff --check` waren erfolgreich. Der lokale Handover gehört zum
+Abschlusscommit; es wurde nicht gepusht.
+
 ## Abgeschlossener Plan: Guardian Runtime Knowledge Model
 
 ### Ziel und Nicht-Ziele

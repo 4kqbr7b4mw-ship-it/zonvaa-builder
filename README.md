@@ -1,5 +1,14 @@
 # ZONVAA Builder
 
+## User-Owned Data
+
+ZONVAA ist eine Intelligence Layer, keine Dokumentenplattform. Der
+[User-Owned Data Layer](user_owned_data/README.md) definiert ausschließlich
+providerneutrale, nutzerkontrollierte Referenzen auf Originaldaten. Runtime und
+KnowledgeManager greifen in dieser Architektur weder direkt auf Dateien noch
+auf Cloudspeicher zu; Kopie, Synchronisation und Original-Löschung benötigen
+jeweils eine separate ausdrückliche Autorisierung.
+
 ## Architekturentwürfe integrieren
 
 Der [Architecture Integrator](architecture_integrator/README.md) vergleicht

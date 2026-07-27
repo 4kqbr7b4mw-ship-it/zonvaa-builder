@@ -43,6 +43,7 @@ from guardian_runtime import (
 )
 from institution.models import InstitutionContext, InstitutionGuarantee
 from interaction.models import InteractionContext, InteractionPrinciple
+from user_owned_data import UserOwnedDataContractLoader
 
 
 runner = CliRunner()
@@ -92,6 +93,7 @@ def runtime_context(tmp_path):
         guardian_runtime_snapshot=GuardianRuntimeSnapshot.unbound(
             datetime(2026, 7, 26, 11, 59, tzinfo=timezone.utc)
         ),
+        user_owned_data_context=UserOwnedDataContractLoader().load(),
         constitution=constitution,
         governance_context=GovernanceLoader().load(constitution),
         knowledge={
@@ -187,7 +189,7 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
 
     context = PreflightService(runtime_context(tmp_path)).build().to_dict()
 
-    assert context["schema_version"] == "1.5"
+    assert context["schema_version"] == "1.6"
     assert context["governance"]["status"] == "loaded"
     assert context["governance"]["constitution"]["version"] == "2.1"
     assert context["governance"]["charter"]["version"] == "1.1"
@@ -242,6 +244,12 @@ def test_preflight_builds_compact_context_from_runtime(tmp_path, monkeypatch):
     assert context["guardian_runtime"]["active_guardian_id"] is None
     assert context["guardian_runtime"]["active_subject_id"] is None
     assert context["guardian_runtime"]["provenance_integrity"] is True
+    assert context["user_owned_data"]["status"] == "loaded"
+    assert context["user_owned_data"]["version"] == "1.0"
+    assert context["user_owned_data"]["path"] == (
+        "user_owned_data/contract.md"
+    )
+    assert "locator" not in context["user_owned_data"]
     assert context["constitution"] == {
         "status": "loaded",
         "path": "constitution/constitution.md",
@@ -275,7 +283,7 @@ def test_workflow_context_can_only_be_derived_from_mission_context(
 
     with pytest.raises(TypeError):
         WorkflowContext(
-            schema_version="1.5",
+            schema_version="1.6",
             generated_at=mission.generated_at,
             project_root=mission.project_root,
             git_branch="feature",
@@ -342,6 +350,11 @@ def test_preflight_marks_absent_session_and_handover_as_missing(
             None,
             "Guardian Runtime snapshot",
         ),
+        (
+            "user_owned_data_context",
+            None,
+            "User-Owned Data contract",
+        ),
         ("governance_context", None, "Governance"),
         ("constitution", "", "Constitution"),
         ("knowledge", {}, "Knowledge areas"),
@@ -378,6 +391,30 @@ def test_preflight_rejects_guardian_runtime_contract_version(tmp_path):
     )
 
     with pytest.raises(PreflightError, match="version"):
+        PreflightService(runtime).build()
+
+
+def test_preflight_rejects_user_owned_data_contract_version(tmp_path):
+    runtime = runtime_context(tmp_path)
+    object.__setattr__(
+        runtime.user_owned_data_context,
+        "version",
+        "2.0",
+    )
+
+    with pytest.raises(PreflightError, match="User-Owned Data.*version"):
+        PreflightService(runtime).build()
+
+
+def test_preflight_rejects_user_owned_data_contract_hash(tmp_path):
+    runtime = runtime_context(tmp_path)
+    object.__setattr__(
+        runtime.user_owned_data_context,
+        "content_hash",
+        "0" * 64,
+    )
+
+    with pytest.raises(PreflightError, match="integrity"):
         PreflightService(runtime).build()
 
 

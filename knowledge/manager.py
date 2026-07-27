@@ -8,6 +8,7 @@ from guardian_runtime import (
 )
 from knowledge.memory import MemoryRecord
 from knowledge.verified_facts import VerifiedFacts
+from user_owned_data import StorageReference
 
 
 class KnowledgeManager:
@@ -75,6 +76,15 @@ class KnowledgeManager:
     ) -> GuardianRuntimeSnapshot:
         """Provide the explicit empty runtime state for no active person."""
         return GuardianRuntimeSnapshot.unbound(captured_at)
+
+    def validate_storage_reference(
+        self,
+        reference: StorageReference,
+    ) -> StorageReference:
+        """Validate a user-owned reference without accessing its locator."""
+        if not isinstance(reference, StorageReference):
+            raise TypeError("reference must be StorageReference")
+        return reference
 
     def latest_session(self):
         return self._latest_file(self.root / "sessions", ("*.md",))

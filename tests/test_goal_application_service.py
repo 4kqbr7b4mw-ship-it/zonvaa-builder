@@ -32,6 +32,7 @@ from identity.models import IdentityContext
 from identity.loader import IdentityLoader
 from institution.loader import InstitutionLoader
 from interaction.loader import InteractionLoader
+from user_owned_data import UserOwnedDataContractLoader
 from knowledge.memory import MemoryType
 
 
@@ -64,6 +65,7 @@ def create_runtime(git_clean=True):
     runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
         datetime.now(timezone.utc)
     )
+    runtime.user_owned_data_context = UserOwnedDataContractLoader().load()
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

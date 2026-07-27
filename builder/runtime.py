@@ -15,6 +15,10 @@ from identity import IdentityContext, IdentityLoader
 from institution import InstitutionContext, InstitutionLoader
 from interaction import InteractionContext, InteractionLoader
 from knowledge.manager import KnowledgeManager
+from user_owned_data import (
+    UserOwnedDataContractContext,
+    UserOwnedDataContractLoader,
+)
 from builder.project_state import ProjectState
 
 
@@ -34,6 +38,9 @@ class RuntimeManager:
         ] = None
         self.guardian_runtime_snapshot: Optional[
             GuardianRuntimeSnapshot
+        ] = None
+        self.user_owned_data_context: Optional[
+            UserOwnedDataContractContext
         ] = None
         self.constitution: Optional[str] = None
         self.governance_context: Optional[GovernanceContext] = None
@@ -62,6 +69,7 @@ class RuntimeManager:
                 datetime.now(timezone.utc)
             )
         )
+        self.user_owned_data_context = UserOwnedDataContractLoader().load()
         self.constitution = ConstitutionManager().load()
         self.governance_context = GovernanceLoader().load(
             self.constitution

@@ -25,6 +25,7 @@ from guardian_runtime import (
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
 from interaction.loader import InteractionLoader
+from user_owned_data import UserOwnedDataContractLoader
 
 
 runner = CliRunner()
@@ -90,6 +91,7 @@ def create_runtime():
     runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
         datetime.now(timezone.utc)
     )
+    runtime.user_owned_data_context = UserOwnedDataContractLoader().load()
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"

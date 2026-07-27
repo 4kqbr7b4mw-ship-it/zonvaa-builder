@@ -17,6 +17,9 @@ from guardian_runtime import (
 )
 from institution import InstitutionContext
 from interaction import InteractionContext
+from user_owned_data import (
+    UserOwnedDataContractContext,
+)
 
 
 class PreflightError(RuntimeError):
@@ -78,6 +81,7 @@ class MissionContext:
     interaction: Mapping[str, Any]
     artifact_contract: Mapping[str, Any]
     guardian_runtime: Mapping[str, Any]
+    user_owned_data: Mapping[str, Any]
     constitution: Mapping[str, Any]
     knowledge: Mapping[str, Any]
     verified_facts: Mapping[str, Any]
@@ -93,8 +97,8 @@ class MissionContext:
     )
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.5":
-            raise ValueError("MissionContext schema_version must be 1.5")
+        if self.schema_version != "1.6":
+            raise ValueError("MissionContext schema_version must be 1.6")
         if not isinstance(self.generated_at, datetime):
             raise TypeError("MissionContext generated_at must be a datetime")
         if (
@@ -119,6 +123,7 @@ class MissionContext:
             "interaction",
             "artifact_contract",
             "guardian_runtime",
+            "user_owned_data",
             "constitution",
             "knowledge",
             "verified_facts",
@@ -143,6 +148,7 @@ class MissionContext:
             "interaction": _deep_thaw(self.interaction),
             "artifact_contract": _deep_thaw(self.artifact_contract),
             "guardian_runtime": _deep_thaw(self.guardian_runtime),
+            "user_owned_data": _deep_thaw(self.user_owned_data),
             "constitution": _deep_thaw(self.constitution),
             "knowledge": _deep_thaw(self.knowledge),
             "verified_facts": _deep_thaw(self.verified_facts),
@@ -259,6 +265,19 @@ class PreflightService:
             guardian_runtime_snapshot,
             self.clock(),
         )
+        user_owned_data = getattr(
+            self.runtime,
+            "user_owned_data_context",
+            None,
+        )
+        if not isinstance(
+            user_owned_data,
+            UserOwnedDataContractContext,
+        ):
+            raise PreflightError(
+                "User-Owned Data contract is missing or invalid"
+            )
+        self._validate_user_owned_data_contract(user_owned_data)
         constitution = self.runtime.constitution
         if not isinstance(constitution, str) or not constitution.strip():
             raise PreflightError("Constitution is missing or empty")
@@ -309,7 +328,7 @@ class PreflightService:
             for key, value in self.runtime.knowledge.items()
         }
         context = MissionContext(
-            schema_version="1.5",
+            schema_version="1.6",
             generated_at=self.clock(),
             project_root=str(Path.cwd()),
             governance={
@@ -387,6 +406,9 @@ class PreflightService:
             guardian_runtime=self._guardian_runtime_summary(
                 guardian_runtime_contract,
                 guardian_runtime_snapshot,
+            ),
+            user_owned_data=self._user_owned_data_summary(
+                user_owned_data
             ),
             constitution={
                 "status": "loaded",
@@ -602,6 +624,25 @@ class PreflightService:
             expected_guardian_runtime
         ):
             raise PreflightError("MissionContext Guardian Runtime changed")
+        user_owned_data = getattr(
+            self.runtime,
+            "user_owned_data_context",
+            None,
+        )
+        if not isinstance(
+            user_owned_data,
+            UserOwnedDataContractContext,
+        ):
+            raise PreflightError(
+                "Runtime User-Owned Data contract changed"
+            )
+        self._validate_user_owned_data_contract(user_owned_data)
+        if context.user_owned_data != _deep_freeze(
+            self._user_owned_data_summary(user_owned_data)
+        ):
+            raise PreflightError(
+                "MissionContext User-Owned Data contract changed"
+            )
         if context.knowledge.get("status") != "loaded":
             raise PreflightError("MissionContext Knowledge is invalid")
         if context.git.get("branch") != self.runtime.project_state.get(
@@ -684,6 +725,45 @@ class PreflightService:
             "provenance_integrity": snapshot.provenance_integrity,
             "runtime_context_hash": snapshot.runtime_context_hash,
         }
+
+    def _user_owned_data_summary(
+        self,
+        contract: UserOwnedDataContractContext,
+    ) -> Dict[str, Any]:
+        return {
+            "status": "loaded",
+            "path": "user_owned_data/contract.md",
+            "version": contract.version,
+            "content_hash": contract.content_hash,
+            "storage_providers": [
+                item.value for item in contract.storage_providers
+            ],
+            "storage_scopes": [
+                item.value for item in contract.storage_scopes
+            ],
+            "availability_states": [
+                item.value for item in contract.availability_states
+            ],
+            "storage_operations": [
+                item.value for item in contract.storage_operations
+            ],
+        }
+
+    def _validate_user_owned_data_contract(
+        self,
+        contract: UserOwnedDataContractContext,
+    ) -> None:
+        if contract.version != "1.0":
+            raise PreflightError(
+                "User-Owned Data contract version is unsupported"
+            )
+        if (
+            hashlib.sha256(contract.content.encode("utf-8")).hexdigest()
+            != contract.content_hash
+        ):
+            raise PreflightError(
+                "User-Owned Data contract integrity failed"
+            )
 
     def _validate_guardian_runtime_contract(
         self,

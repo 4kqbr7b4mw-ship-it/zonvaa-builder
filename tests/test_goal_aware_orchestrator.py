@@ -23,6 +23,7 @@ from goal.why_assessment import (
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
 from interaction.loader import InteractionLoader
+from user_owned_data import UserOwnedDataContractLoader
 
 
 def create_goal(goal_id="goal-orchestration"):
@@ -74,6 +75,7 @@ def create_workflow_context():
         guardian_runtime_snapshot=GuardianRuntimeSnapshot.unbound(
             datetime.now(timezone.utc)
         ),
+        user_owned_data_context=UserOwnedDataContractLoader().load(),
         constitution=constitution,
         governance_context=GovernanceLoader().load(constitution),
         knowledge={

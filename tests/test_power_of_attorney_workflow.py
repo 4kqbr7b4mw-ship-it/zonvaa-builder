@@ -24,6 +24,7 @@ from goal.models import Goal
 from identity.models import IdentityContext
 from institution.loader import InstitutionLoader
 from interaction.loader import InteractionLoader
+from user_owned_data import UserOwnedDataContractLoader
 from life_decisions import (
     AuthorityArea,
     AuthorityCoverageStatus,
@@ -468,6 +469,7 @@ def test_workflow_cannot_be_constructed_without_mission_context():
     runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
         datetime.now(timezone.utc)
     )
+    runtime.user_owned_data_context = UserOwnedDataContractLoader().load()
     runtime.goal_engine = GoalEngine()
     with pytest.raises(PreflightError, match="MissionContext"):
         GoalApplicationService(runtime)
@@ -518,6 +520,7 @@ def test_existing_goal_cli_runs_power_of_attorney_workflow(
     runtime.guardian_runtime_snapshot = GuardianRuntimeSnapshot.unbound(
         datetime.now(timezone.utc)
     )
+    runtime.user_owned_data_context = UserOwnedDataContractLoader().load()
     runtime.constitution = (
         Path(__file__).resolve().parents[1]
         / "constitution"
