@@ -5,6 +5,7 @@ from commands.build import build
 from commands.architecture import (
     create_codex_prompt,
     integrate_architecture,
+    run_architecture,
     workflow_app,
 )
 from commands.doctor import doctor
@@ -32,6 +33,7 @@ role_app.command("create")(create_role)
 goal_app.command("run")(run_goal)
 architecture_app.command("integrate")(integrate_architecture)
 architecture_app.command("codex-prompt")(create_codex_prompt)
+architecture_app.command("run")(run_architecture)
 architecture_app.add_typer(workflow_app, name="workflow")
 
 app.add_typer(role_app, name="role")

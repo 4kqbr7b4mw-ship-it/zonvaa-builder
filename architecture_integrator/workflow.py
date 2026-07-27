@@ -8,7 +8,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from pathlib import Path
-from typing import Any, Dict, Iterable, Tuple
+from typing import Any, Dict, Optional, Tuple
 
 from architecture_integrator.integrator import ArchitectureIntegrator
 from architecture_integrator.io import (
@@ -39,6 +39,9 @@ class ArchitectureWorkflow:
     proposal_files: Tuple[str, ...]
     analysis_files: Tuple[str, ...]
     decision_template_files: Tuple[str, ...]
+    topic: str = ""
+    decision_template_file: str = ""
+    schema_version: str = "1.0"
 
     def __post_init__(self) -> None:
         _workflow_id(self.workflow_id)
@@ -49,6 +52,24 @@ class ArchitectureWorkflow:
         ):
             raise ValueError(
                 "ArchitectureWorkflow created_at must be timezone-aware"
+            )
+        if self.schema_version not in {"1.0", "2.0"}:
+            raise ValueError(
+                "ArchitectureWorkflow schema_version is unsupported"
+            )
+        if self.schema_version == "2.0":
+            _text(self.topic, "ArchitectureWorkflow topic")
+            if (
+                self.decision_template_file
+                != "decision_proposals/decision-proposal.md"
+            ):
+                raise ValueError(
+                    "ArchitectureWorkflow decision template path is not "
+                    "canonical"
+                )
+        elif self.topic or self.decision_template_file:
+            raise ValueError(
+                "ArchitectureWorkflow 1.0 cannot contain v2 fields"
             )
         for field_name in (
             "proposal_ids",
@@ -78,10 +99,18 @@ class ArchitectureWorkflow:
             for values in (
                 self.proposal_files,
                 self.analysis_files,
-                self.decision_template_files,
             )
         ):
             raise ValueError("ArchitectureWorkflow file lists must align")
+        if self.schema_version == "1.0":
+            if len(self.decision_template_files) != count:
+                raise ValueError(
+                    "ArchitectureWorkflow 1.0 templates must align"
+                )
+        elif self.decision_template_files:
+            raise ValueError(
+                "ArchitectureWorkflow 2.0 uses one decision template"
+            )
         expected_proposals = tuple(
             "proposals/{}.json".format(item) for item in self.proposal_ids
         )
@@ -95,15 +124,18 @@ class ArchitectureWorkflow:
         if (
             self.proposal_files != expected_proposals
             or self.analysis_files != expected_analyses
-            or self.decision_template_files != expected_templates
+            or (
+                self.schema_version == "1.0"
+                and self.decision_template_files != expected_templates
+            )
         ):
             raise ValueError(
                 "ArchitectureWorkflow file paths are not canonical"
             )
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
-            "schema_version": "1.0",
+        result = {
+            "schema_version": self.schema_version,
             "workflow_id": self.workflow_id,
             "created_at": self.created_at.isoformat(),
             "proposal_ids": list(self.proposal_ids),
@@ -113,6 +145,48 @@ class ArchitectureWorkflow:
                 self.decision_template_files
             ),
         }
+        if self.schema_version == "2.0":
+            result["topic"] = self.topic
+            result["decision_template_file"] = self.decision_template_file
+        return result
+
+
+@dataclass(frozen=True)
+class ArchitectureRunResult:
+    workflow: ArchitectureWorkflow
+    status: WorkflowStatus
+    decision_template: Optional[str] = None
+    codex_prompt: Optional[Path] = None
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.workflow, ArchitectureWorkflow):
+            raise TypeError("workflow must be ArchitectureWorkflow")
+        if not isinstance(self.status, WorkflowStatus):
+            raise TypeError("status must be WorkflowStatus")
+        if self.decision_template is not None and not isinstance(
+            self.decision_template,
+            str,
+        ):
+            raise TypeError("decision_template must be a string or None")
+        if self.codex_prompt is not None and not isinstance(
+            self.codex_prompt,
+            Path,
+        ):
+            raise TypeError("codex_prompt must be a Path or None")
+        if self.status is WorkflowStatus.WAITING_FOR_DECISION:
+            if not self.decision_template or self.codex_prompt is not None:
+                raise ValueError(
+                    "Waiting run must contain only a decision template"
+                )
+        elif self.status is WorkflowStatus.CODEX_PROMPT_GENERATED:
+            if self.decision_template is not None or self.codex_prompt is None:
+                raise ValueError(
+                    "Completed run must contain only a Codex prompt path"
+                )
+        else:
+            raise ValueError(
+                "Architecture run cannot stop at READY_FOR_CODEX"
+            )
 
 
 class ArchitectureWorkflowStore:
@@ -129,7 +203,7 @@ class ArchitectureWorkflowStore:
         workflow: ArchitectureWorkflow,
         proposals: Tuple[ArchitectureProposal, ...],
         analyses: Tuple[ArchitectureAnalysis, ...],
-        templates: Tuple[str, ...],
+        decision_template: str,
     ) -> Path:
         if not isinstance(workflow, ArchitectureWorkflow):
             raise TypeError("workflow must be ArchitectureWorkflow")
@@ -139,8 +213,10 @@ class ArchitectureWorkflowStore:
             workflow.proposal_ids
         ):
             raise ValueError("Analysis order does not match workflow")
-        if len(templates) != len(workflow.proposal_ids):
-            raise ValueError("Decision template count does not match workflow")
+        if workflow.schema_version != "2.0":
+            raise ValueError("Only workflow schema 2.0 can be created")
+        if not isinstance(decision_template, str) or not decision_template:
+            raise ValueError("Decision template must not be empty")
 
         self.root.mkdir(parents=True, exist_ok=True)
         target = self.root / workflow.workflow_id
@@ -149,7 +225,7 @@ class ArchitectureWorkflowStore:
                 workflow,
                 proposals,
                 analyses,
-                templates,
+                decision_template,
             ):
                 return target
             raise RuntimeError(
@@ -180,10 +256,10 @@ class ArchitectureWorkflowStore:
                     temporary / workflow.analysis_files[index],
                     analyses[index].to_dict(),
                 )
-                self._write_text(
-                    temporary / workflow.decision_template_files[index],
-                    templates[index] + "\n",
-                )
+            self._write_text(
+                temporary / workflow.decision_template_file,
+                decision_template + "\n",
+            )
             os.rename(temporary, target)
         except BaseException:
             if temporary.exists():
@@ -198,7 +274,7 @@ class ArchitectureWorkflowStore:
                 "workflow.json",
             ).read_text(encoding="utf-8")
         )
-        expected = {
+        base_fields = {
             "schema_version",
             "workflow_id",
             "created_at",
@@ -207,10 +283,16 @@ class ArchitectureWorkflowStore:
             "analysis_files",
             "decision_template_files",
         }
-        if not isinstance(data, dict) or set(data) != expected:
+        if not isinstance(data, dict):
             raise ValueError("Workflow manifest has invalid fields")
-        if data["schema_version"] != "1.0":
+        if data.get("schema_version") == "1.0":
+            expected = base_fields
+        elif data.get("schema_version") == "2.0":
+            expected = base_fields | {"topic", "decision_template_file"}
+        else:
             raise ValueError("Unsupported workflow schema_version")
+        if set(data) != expected:
+            raise ValueError("Workflow manifest has invalid fields")
         try:
             created_at = datetime.fromisoformat(data["created_at"])
         except (TypeError, ValueError) as exc:
@@ -224,6 +306,9 @@ class ArchitectureWorkflowStore:
             decision_template_files=self._strings(
                 data["decision_template_files"]
             ),
+            topic=data.get("topic", ""),
+            decision_template_file=data.get("decision_template_file", ""),
+            schema_version=data["schema_version"],
         )
 
     def record_decision(
@@ -274,6 +359,21 @@ class ArchitectureWorkflowStore:
             for relative in workflow.analysis_files
         )
 
+    def decision_template(self, workflow_id: str) -> str:
+        workflow = self.load(workflow_id)
+        if workflow.schema_version == "2.0":
+            path = self._safe_artifact(
+                workflow_id,
+                workflow.decision_template_file,
+            )
+            return path.read_text(encoding="utf-8").rstrip("\n")
+        return "\n\n---\n\n".join(
+            self._safe_artifact(workflow_id, relative)
+            .read_text(encoding="utf-8")
+            .rstrip("\n")
+            for relative in workflow.decision_template_files
+        )
+
     def decisions(
         self,
         workflow_id: str,
@@ -292,6 +392,17 @@ class ArchitectureWorkflowStore:
             )
         return tuple(
             load_decision(path) for path in self._decision_paths(workflow)
+        )
+
+    def decisions_if_present(
+        self,
+        workflow_id: str,
+    ) -> Tuple[ChiefArchitectDecision, ...]:
+        workflow = self.load(workflow_id)
+        return tuple(
+            load_decision(path)
+            for path in self._decision_paths(workflow)
+            if path.is_file()
         )
 
     def write_prompt(self, workflow_id: str, content: str) -> Path:
@@ -377,7 +488,7 @@ class ArchitectureWorkflowStore:
         workflow: ArchitectureWorkflow,
         proposals: Tuple[ArchitectureProposal, ...],
         analyses: Tuple[ArchitectureAnalysis, ...],
-        templates: Tuple[str, ...],
+        decision_template: str,
     ) -> bool:
         try:
             if self.load(workflow.workflow_id) != workflow:
@@ -397,11 +508,11 @@ class ArchitectureWorkflowStore:
                     ).read_text(encoding="utf-8")
                 ) != analyses[index].to_dict():
                     return False
-                if self._safe_artifact(
-                    workflow.workflow_id,
-                    workflow.decision_template_files[index],
-                ).read_text(encoding="utf-8") != templates[index] + "\n":
-                    return False
+            if self._safe_artifact(
+                workflow.workflow_id,
+                workflow.decision_template_file,
+            ).read_text(encoding="utf-8") != decision_template + "\n":
+                return False
             return True
         except (OSError, TypeError, ValueError):
             return False
@@ -436,6 +547,7 @@ class ArchitectureWorkflowOrchestrator:
     def analyze(
         self,
         proposals: Tuple[ArchitectureProposal, ...],
+        topic: Optional[str] = None,
     ) -> ArchitectureWorkflow:
         if not isinstance(proposals, tuple) or not all(
             isinstance(item, ArchitectureProposal) for item in proposals
@@ -447,14 +559,20 @@ class ArchitectureWorkflowOrchestrator:
         proposal_ids = tuple(item.proposal_id for item in ordered)
         if len(set(proposal_ids)) != len(proposal_ids):
             raise ValueError("Proposal IDs must be unique")
+        resolved_topic = (
+            topic
+            if topic is not None
+            else " / ".join(item.title for item in ordered)
+        )
+        _text(resolved_topic, "Architecture workflow topic")
         analyses = tuple(
             self.integrator.analyze(item) for item in ordered
         )
-        templates = tuple(
-            self.integrator.render_decision_template(item)
-            for item in analyses
+        workflow_id = self._workflow_id(
+            ordered,
+            analyses,
+            resolved_topic,
         )
-        workflow_id = self._workflow_id(ordered, analyses)
         workflow = ArchitectureWorkflow(
             workflow_id=workflow_id,
             created_at=max(item.submitted_at for item in ordered),
@@ -465,13 +583,87 @@ class ArchitectureWorkflowOrchestrator:
             analysis_files=tuple(
                 "analyses/{}.json".format(item) for item in proposal_ids
             ),
-            decision_template_files=tuple(
-                "decision_proposals/{}.md".format(item)
-                for item in proposal_ids
+            decision_template_files=(),
+            topic=resolved_topic,
+            decision_template_file=(
+                "decision_proposals/decision-proposal.md"
+            ),
+            schema_version="2.0",
+        )
+        decision_template = self._decision_template(workflow, analyses)
+        self.store.create(
+            workflow,
+            ordered,
+            analyses,
+            decision_template,
+        )
+        return workflow
+
+    def run(
+        self,
+        proposals: Tuple[ArchitectureProposal, ...] = (),
+        topic: Optional[str] = None,
+        workflow_id: Optional[str] = None,
+        decisions: Tuple[ChiefArchitectDecision, ...] = (),
+    ) -> ArchitectureRunResult:
+        if not isinstance(proposals, tuple) or not all(
+            isinstance(item, ArchitectureProposal) for item in proposals
+        ):
+            raise TypeError("proposals must contain ArchitectureProposal")
+        if not isinstance(decisions, tuple) or not all(
+            isinstance(item, ChiefArchitectDecision) for item in decisions
+        ):
+            raise TypeError(
+                "decisions must contain ChiefArchitectDecision"
+            )
+        if proposals and workflow_id is not None:
+            raise ValueError(
+                "New proposals and workflow_id are mutually exclusive"
+            )
+        if proposals:
+            workflow = self.analyze(proposals, topic=topic)
+        else:
+            if workflow_id is None:
+                raise ValueError(
+                    "Proposals or an existing workflow_id are required"
+                )
+            if topic is not None:
+                raise ValueError(
+                    "topic cannot change an existing workflow"
+                )
+            workflow = self.store.load(workflow_id)
+
+        status = self.store.status(workflow.workflow_id)
+        if decisions:
+            if status is WorkflowStatus.CODEX_PROMPT_GENERATED:
+                raise RuntimeError(
+                    "Workflow already generated a Codex prompt"
+                )
+            self._validate_decisions(workflow, decisions)
+            for decision in decisions:
+                self.decide(workflow.workflow_id, decision)
+            status = self.store.status(workflow.workflow_id)
+
+        if status is WorkflowStatus.READY_FOR_CODEX:
+            prompt_path = self.generate_codex(workflow.workflow_id)
+            return ArchitectureRunResult(
+                workflow=workflow,
+                status=WorkflowStatus.CODEX_PROMPT_GENERATED,
+                codex_prompt=prompt_path,
+            )
+        if status is WorkflowStatus.CODEX_PROMPT_GENERATED:
+            return ArchitectureRunResult(
+                workflow=workflow,
+                status=status,
+                codex_prompt=self.store.prompt_path(workflow.workflow_id),
+            )
+        return ArchitectureRunResult(
+            workflow=workflow,
+            status=status,
+            decision_template=self.store.decision_template(
+                workflow.workflow_id
             ),
         )
-        self.store.create(workflow, ordered, analyses, templates)
-        return workflow
 
     def decide(
         self,
@@ -527,13 +719,115 @@ class ArchitectureWorkflowOrchestrator:
             "\n".join(sections),
         )
 
+    def _decision_template(
+        self,
+        workflow: ArchitectureWorkflow,
+        analyses: Tuple[ArchitectureAnalysis, ...],
+    ) -> str:
+        recommendations = tuple(
+            item.recommendation for item in analyses
+        )
+        recommendation = (
+            recommendations[0].value
+            if len(set(recommendations)) == 1
+            else "ADOPT_WITH_CHANGES"
+        )
+        accepted = self._unique(tuple(
+            statement
+            for analysis in analyses
+            for statement in (
+                analysis.aligned_elements + analysis.additive_elements
+            )
+        ))
+        changed = self._unique(tuple(
+            conflict.suggested_resolution
+            for analysis in analyses
+            for conflict in analysis.conflicting_elements
+        ))
+        open_decisions = self._unique(tuple(
+            "{}: {} [{}; {}]".format(
+                conflict.conflict_id,
+                conflict.conflict_reason,
+                conflict.existing_source,
+                conflict.norm_level.value,
+            )
+            for analysis in analyses
+            for conflict in analysis.conflicting_elements
+        ) + tuple(
+            item
+            for analysis in analyses
+            for item in analysis.decision_required
+        ))
+        open_decisions += (
+            "Record one explicit Chief Architect decision for each proposal "
+            "in workflow {}.".format(workflow.workflow_id),
+        )
+        return "\n".join(
+            (
+                "# ENTSCHEIDUNGSVORLAGE",
+                "",
+                "## Empfehlung",
+                recommendation,
+                "",
+                "## Übernehmen",
+                self._lines(accepted),
+                "",
+                "## Ändern",
+                self._lines(changed),
+                "",
+                "## Ablehnen",
+                self._lines(()),
+                "",
+                "## Offene Entscheidungen",
+                self._lines(open_decisions),
+            )
+        )
+
+    def _validate_decisions(
+        self,
+        workflow: ArchitectureWorkflow,
+        decisions: Tuple[ChiefArchitectDecision, ...],
+    ) -> None:
+        proposal_ids = tuple(item.proposal_id for item in decisions)
+        if len(set(proposal_ids)) != len(proposal_ids):
+            raise ValueError("Decision proposal IDs must be unique")
+        unrelated = sorted(set(proposal_ids) - set(workflow.proposal_ids))
+        if unrelated:
+            raise ValueError(
+                "Decision proposal_id is not part of workflow: {}".format(
+                    ", ".join(unrelated)
+                )
+            )
+        existing = {
+            item.proposal_id for item in self.store.decisions_if_present(
+                workflow.workflow_id
+            )
+        }
+        duplicates = sorted(existing & set(proposal_ids))
+        if duplicates:
+            raise FileExistsError(
+                "Decisions already exist for: {}".format(
+                    ", ".join(duplicates)
+                )
+            )
+
+    def _lines(self, values: Tuple[str, ...]) -> str:
+        if not values:
+            return "- Keine."
+        return "\n".join("- {}".format(value) for value in values)
+
+    def _unique(self, values: Tuple[str, ...]) -> Tuple[str, ...]:
+        return tuple(dict.fromkeys(values))
+
     def _workflow_id(
         self,
         proposals: Tuple[ArchitectureProposal, ...],
         analyses: Tuple[ArchitectureAnalysis, ...],
+        topic: str,
     ) -> str:
         canonical = json.dumps(
             {
+                "topic": topic,
                 "proposals": [item.to_dict() for item in proposals],
                 "analyses": [item.to_dict() for item in analyses],
             },
@@ -551,4 +845,12 @@ def _workflow_id(value: object) -> str:
         raise TypeError("workflow_id must be a string")
     if re.fullmatch(r"workflow-[0-9a-f]{16}", value) is None:
         raise ValueError("workflow_id has an invalid format")
+    return value
+
+
+def _text(value: object, field_name: str) -> str:
+    if not isinstance(value, str):
+        raise TypeError("{} must be a string".format(field_name))
+    if not value or value.strip() != value:
+        raise ValueError("{} must be non-empty and trimmed".format(field_name))
     return value

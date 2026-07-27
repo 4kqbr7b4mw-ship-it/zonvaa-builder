@@ -17,27 +17,32 @@ und verändert während der Analyse keine Architekturdateien.
 
 ## Standard-Workflow
 
-Der Architecture Workflow Orchestrator macht die Integrator-Kette
-wiederaufnehmbar und unterstützt mehrere Proposals:
+Architecture Workflow v2 macht die Integrator-Kette über einen einzigen
+zustandsbasierten Einstieg wiederaufnehmbar und unterstützt mehrere Proposals:
 
 ```bash
-python3 -m builder.main architecture workflow analyze \
-  --input proposal-a.json \
-  --input proposal-b.json
+python3 -m builder.main architecture run \
+  --topic "Artifact authorization" \
+  --proposal proposal-a.json \
+  --proposal proposal-b.json
 
-python3 -m builder.main architecture workflow decide \
+python3 -m builder.main architecture run \
   --workflow-id workflow-0123456789abcdef \
-  --decision decision-a.json
-
-python3 -m builder.main architecture workflow generate-codex \
-  --workflow-id workflow-0123456789abcdef
+  --decision decision-a.json \
+  --decision decision-b.json
 ```
 
-`analyze` speichert Proposal, Analyse und Entscheidungsvorlage getrennt unter
-`knowledge/architecture_workflows/`. `decide` speichert genau eine explizite
-Chief-Architect-Entscheidung. `generate-codex` bleibt gesperrt, bis für jedes
-Proposal eine passende Entscheidung vorhanden ist. Der Workflow startet
-weder Codex noch Tests oder Commit.
+Der erste Aufruf speichert Proposals, Analysen und eine gemeinsame kompakte
+Entscheidungsvorlage unter `knowledge/architecture_workflows/`. Ohne
+bestätigte Entscheidung bleibt er in `WAITING_FOR_DECISION`. Der zweite
+Aufruf speichert ausschließlich explizite Chief-Architect-Entscheidungen und
+erzeugt den Codex-Prompt automatisch, sobald für jedes Proposal eine passende
+Entscheidung vorliegt. Der Workflow startet weder Codex noch Tests oder
+Commit.
+
+Die bisherigen `architecture workflow analyze`, `decide` und
+`generate-codex`-Befehle bleiben für vorhandene Abläufe kompatibel, sind aber
+nicht mehr der Standardpfad.
 
 ## Kontextreihenfolge
 

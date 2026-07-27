@@ -3,6 +3,68 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Architecture Workflow v2
+
+### Ziel und Nicht-Ziele
+
+Den bestehenden Architecture Workflow hinter einem zustandsbasierten
+`architecture run`-Einstieg zusammenführen. Derselbe Befehl analysiert neue
+Proposals oder nimmt bestätigte Chief-Architect-Entscheidungen für einen
+wartenden Workflow entgegen und erzeugt bei vollständiger Entscheidung
+automatisch den Codex-Prompt. Keine automatische Architekturentscheidung,
+Implementierung, Testausführung oder Commit-Erzeugung durch den Workflow.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `77f10fd` war erfolgreich.
+- ADR-0028 und ADR-0029 trennen Integrator, Chief Architect und Codex bereits
+  verbindlich.
+- Der Workflow persistiert Proposals, Analysen, Entscheidungsvorlagen,
+  Entscheidungen und Prompt reproduzierbar, verlangt aber drei einzelne
+  Unterbefehle.
+- Mehrere Proposals werden bereits deterministisch geordnet; der bestehende
+  Workflow trifft keine Entscheidung.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Workflow, Integrator, CLI, ADRs und Tests prüfen.
+- [x] Versionierten Workflow-v2-Vertrag und kompakte gemeinsame Vorlage
+  implementieren.
+- [x] Zustandsbasierten `architecture run`-Befehl ergänzen.
+- [x] Rückwärtskompatibilität und vollständigen Integrationsfluss testen.
+- [x] ADR und CLI-Dokumentation aktualisieren.
+- [x] Vollständige Tests, Doctor und Diff prüfen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Workflow v2 erweitert den vorhandenen Orchestrator; Integrator, Store und
+  Chief-Decision-Modell bleiben die einzigen fachlichen Komponenten.
+- Der erste `run` persistiert Analyse und eine gemeinsame kompakte Vorlage.
+  Ein späterer `run` mit bestätigten Decision Records führt Entscheidung und
+  Prompt-Erzeugung atomar aus Sicht des CLI-Aufrufs zusammen.
+- Mehrere Proposals behalten je ein explizites Decision Record, damit keine
+  bestehende Entscheidungszuordnung verloren geht.
+
+### Risiken und Teststrategie
+
+- Ohne bestätigtes Decision-Objekt muss der Workflow sichtbar warten.
+- Teilentscheidungen dürfen keinen Prompt erzeugen.
+- Alte Workflow-1.0-Ablagen müssen weiterhin lesbar bleiben.
+- Tests prüfen Neuanlage, Fortsetzung, vollständige und unvollständige
+  Entscheidungen, kompakte Ausgabe, Determinismus und Legacy-Kompatibilität.
+
+### Abweichungen und Abschlusszustand
+
+Die bestehende Zuordnung eines Decision Records zu genau einem Proposal
+bleibt erhalten; Workflow v2 konsolidiert die Bedienung, nicht die
+Entscheidungsidentität. Ein erster `architecture run` erzeugt Schema 2.0 und
+die gemeinsame kompakte Vorlage. Ein weiterer Aufruf desselben Befehls nimmt
+die menschlich bestätigten Entscheidungen entgegen und erzeugt bei
+Vollständigkeit unmittelbar den Codex-Prompt. Workflow-1.0-Ablagen und die
+alten Unterbefehle bleiben lesbar beziehungsweise ausführbar. 486 Tests
+bestehen; Doctor und `git diff --check` sind erfolgreich.
+
 ## Abgeschlossener Plan: Typisierter Artefakt- und Autorisierungszustandsvertrag
 
 ### Ziel und Nicht-Ziele

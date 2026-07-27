@@ -213,6 +213,69 @@ def generate_workflow_codex(
     )
 
 
+def run_architecture(
+    proposal_files: List[Path] = typer.Option(
+        [],
+        "--proposal",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True,
+        help="One or more new architecture proposal JSON files.",
+    ),
+    topic: Optional[str] = typer.Option(
+        None,
+        "--topic",
+        help="Topic for a newly created architecture workflow.",
+    ),
+    workflow_id: Optional[str] = typer.Option(
+        None,
+        "--workflow-id",
+        help="Existing waiting workflow to continue.",
+    ),
+    decision_files: List[Path] = typer.Option(
+        [],
+        "--decision",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True,
+        help="Confirmed Chief Architect decision JSON files.",
+    ),
+) -> None:
+    """Run the next valid architecture stage through one entry point."""
+    try:
+        orchestrator = _workflow_orchestrator()
+        result = orchestrator.run(
+            proposals=tuple(
+                load_proposal(path) for path in proposal_files
+            ),
+            topic=topic,
+            workflow_id=workflow_id,
+            decisions=tuple(
+                load_decision(path) for path in decision_files
+            ),
+        )
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("run", error)
+    if result.status.value == "WAITING_FOR_DECISION":
+        typer.echo(result.decision_template)
+        return
+    typer.echo(
+        json.dumps(
+            {
+                "workflow_id": result.workflow.workflow_id,
+                "status": result.status.value,
+                "codex_prompt": str(result.codex_prompt),
+            },
+            indent=2,
+            sort_keys=True,
+        )
+    )
+
+
 def _workflow_orchestrator() -> ArchitectureWorkflowOrchestrator:
     integrator = ArchitectureIntegrator(
         ArchitectureContextLoader(get_runtime())

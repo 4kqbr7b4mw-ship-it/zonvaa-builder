@@ -15,6 +15,7 @@ from architecture_integrator.models import (
 )
 from architecture_integrator.prompt import CodexPromptBuilder
 from architecture_integrator.workflow import (
+    ArchitectureRunResult,
     ArchitectureWorkflow,
     ArchitectureWorkflowOrchestrator,
     ArchitectureWorkflowStore,
@@ -27,6 +28,7 @@ __all__ = [
     "ArchitectureIntegrator",
     "ArchitectureLayer",
     "ArchitectureProposal",
+    "ArchitectureRunResult",
     "ArchitectureWorkflow",
     "ArchitectureWorkflowOrchestrator",
     "ArchitectureWorkflowStore",

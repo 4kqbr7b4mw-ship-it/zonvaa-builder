@@ -90,8 +90,10 @@ def test_complete_workflow_persists_separate_reproducible_stages(
     assert (folder / "proposals" / "proposal-a.json").is_file()
     assert (folder / "analyses" / "proposal-a.json").is_file()
     assert (
-        folder / "decision_proposals" / "proposal-a.md"
+        folder / "decision_proposals" / "decision-proposal.md"
     ).is_file()
+    assert workflow.schema_version == "2.0"
+    assert workflow.topic == "Proposal proposal-a / Proposal proposal-b"
     assert not (folder / "decisions" / "proposal-a.json").exists()
     assert not flow.store.prompt_path(workflow.workflow_id).exists()
 
@@ -266,6 +268,217 @@ def test_cli_workflow_runs_all_gated_stages(
     assert generated.exit_code == 0, generated.output
     assert json.loads(generated.output)["status"] == (
         "CODEX_PROMPT_GENERATED"
+    )
+
+
+def test_architecture_run_emits_only_compact_decision_template(
+    runtime,
+    tmp_path,
+    monkeypatch,
+):
+    flow = orchestrator(runtime, tmp_path / "workflows")
+    monkeypatch.setattr(
+        architecture_commands,
+        "_workflow_orchestrator",
+        lambda: flow,
+    )
+    proposal_path = tmp_path / "proposal.json"
+    proposal_path.write_text(
+        json.dumps(
+            proposal(
+                "proposal-a",
+                "New architecture statement.",
+            ).to_dict()
+        ),
+        encoding="utf-8",
+    )
+
+    result = CliRunner().invoke(
+        app,
+        [
+            "architecture",
+            "run",
+            "--topic",
+            "Architecture Workflow v2",
+            "--proposal",
+            str(proposal_path),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    assert result.output.startswith("# ENTSCHEIDUNGSVORLAGE\n")
+    assert tuple(
+        line for line in result.output.splitlines() if line.startswith("## ")
+    ) == (
+        "## Empfehlung",
+        "## Übernehmen",
+        "## Ändern",
+        "## Ablehnen",
+        "## Offene Entscheidungen",
+    )
+    assert "MACHINE-READABLE" not in result.output
+    assert "Kernaussage" not in result.output
+    assert "Betroffene Architektur" not in result.output
+    workflow = next(
+        path for path in flow.store.root.iterdir() if path.is_dir()
+    )
+    assert flow.store.status(workflow.name) is (
+        WorkflowStatus.WAITING_FOR_DECISION
+    )
+
+
+def test_architecture_run_records_decisions_and_generates_prompt_automatically(
+    runtime,
+    tmp_path,
+    monkeypatch,
+):
+    flow = orchestrator(runtime, tmp_path / "workflows")
+    monkeypatch.setattr(
+        architecture_commands,
+        "_workflow_orchestrator",
+        lambda: flow,
+    )
+    first = proposal("proposal-a", "First architecture statement.")
+    second = proposal("proposal-b", "Second architecture statement.")
+    workflow = flow.run(
+        proposals=(first, second),
+        topic="Architecture Workflow v2",
+    ).workflow
+    first_decision = tmp_path / "decision-a.json"
+    second_decision = tmp_path / "decision-b.json"
+    first_decision.write_text(
+        json.dumps(decision("proposal-a").to_dict()),
+        encoding="utf-8",
+    )
+    second_decision.write_text(
+        json.dumps(decision("proposal-b").to_dict()),
+        encoding="utf-8",
+    )
+
+    result = CliRunner().invoke(
+        app,
+        [
+            "architecture",
+            "run",
+            "--workflow-id",
+            workflow.workflow_id,
+            "--decision",
+            str(first_decision),
+            "--decision",
+            str(second_decision),
+        ],
+    )
+
+    assert result.exit_code == 0, result.output
+    payload = json.loads(result.output)
+    assert payload == {
+        "codex_prompt": str(
+            flow.store.prompt_path(workflow.workflow_id)
+        ),
+        "status": "CODEX_PROMPT_GENERATED",
+        "workflow_id": workflow.workflow_id,
+    }
+    assert flow.store.status(workflow.workflow_id) is (
+        WorkflowStatus.CODEX_PROMPT_GENERATED
+    )
+    assert len(flow.store.decisions(workflow.workflow_id)) == 2
+    assert flow.store.prompt_path(workflow.workflow_id).is_file()
+
+
+def test_architecture_run_waits_when_only_some_decisions_exist(
+    runtime,
+    tmp_path,
+):
+    flow = orchestrator(runtime, tmp_path / "workflows")
+    waiting = flow.run(
+        proposals=(
+            proposal("proposal-a", "First architecture statement."),
+            proposal("proposal-b", "Second architecture statement."),
+        ),
+        topic="Architecture Workflow v2",
+        decisions=(decision("proposal-a"),),
+    )
+
+    assert waiting.status is WorkflowStatus.WAITING_FOR_DECISION
+    assert waiting.decision_template.startswith("# ENTSCHEIDUNGSVORLAGE")
+    assert waiting.codex_prompt is None
+    assert not flow.store.prompt_path(
+        waiting.workflow.workflow_id
+    ).exists()
+
+
+def test_architecture_run_rejects_missing_input(runtime, tmp_path):
+    flow = orchestrator(runtime, tmp_path / "workflows")
+
+    with pytest.raises(ValueError, match="Proposals or"):
+        flow.run()
+
+
+def test_workflow_v2_topic_changes_deterministic_identity(runtime, tmp_path):
+    first = orchestrator(runtime, tmp_path / "first").analyze(
+        (proposal("proposal-a", "Architecture statement."),),
+        topic="First topic",
+    )
+    second = orchestrator(runtime, tmp_path / "second").analyze(
+        (proposal("proposal-a", "Architecture statement."),),
+        topic="Second topic",
+    )
+
+    assert first.workflow_id != second.workflow_id
+
+
+def test_architecture_run_result_is_immutable(runtime, tmp_path):
+    flow = orchestrator(runtime, tmp_path / "workflows")
+    result = flow.run(
+        proposals=(
+            proposal("proposal-a", "Architecture statement."),
+        ),
+        topic="Architecture Workflow v2",
+    )
+
+    with pytest.raises(FrozenInstanceError):
+        result.status = WorkflowStatus.READY_FOR_CODEX
+
+
+def test_store_reads_existing_workflow_schema_1(runtime, tmp_path):
+    root = tmp_path / "workflows"
+    folder = root / "workflow-0123456789abcdef"
+    for name in (
+        "proposals",
+        "analyses",
+        "decision_proposals",
+        "decisions",
+        "prompts",
+    ):
+        (folder / name).mkdir(parents=True, exist_ok=True)
+    manifest = {
+        "schema_version": "1.0",
+        "workflow_id": folder.name,
+        "created_at": "2026-07-26T18:00:00+00:00",
+        "proposal_ids": ["proposal-a"],
+        "proposal_files": ["proposals/proposal-a.json"],
+        "analysis_files": ["analyses/proposal-a.json"],
+        "decision_template_files": [
+            "decision_proposals/proposal-a.md"
+        ],
+    }
+    (folder / "workflow.json").write_text(
+        json.dumps(manifest),
+        encoding="utf-8",
+    )
+    (folder / "decision_proposals" / "proposal-a.md").write_text(
+        "# ENTSCHEIDUNGSVORLAGE\n",
+        encoding="utf-8",
+    )
+    store = ArchitectureWorkflowStore(root)
+
+    workflow = store.load(folder.name)
+
+    assert workflow.schema_version == "1.0"
+    assert workflow.topic == ""
+    assert store.status(folder.name) is WorkflowStatus.WAITING_FOR_DECISION
+    assert store.decision_template(folder.name) == (
+        "# ENTSCHEIDUNGSVORLAGE"
     )
 
 
