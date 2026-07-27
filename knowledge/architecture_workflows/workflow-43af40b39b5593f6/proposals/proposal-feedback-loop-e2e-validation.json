@@ -1,0 +1,22 @@
+{
+  "content": "- Create exactly one isolated documentation fixture at tests/fixtures/architecture-feedback-loop-e2e.md.\n- The fixture must state that it is an anonymized operational validation artifact, not a normative architecture source.\n- Do not modify product logic, existing architecture decisions, dependencies, remotes, or authorization rules.\n- Run python3 -m pytest -q tests/test_architecture_feedback_loop.py as the focused test.\n- Run python3 -m builder.main doctor and the complete required verification from the generated Codex order.\n- Create exactly one result commit and complete JSON and Markdown handovers.\n- Do not push.",
+  "known_constraints": [
+    "Chief Architect remains the only architecture decision authority.",
+    "No product logic or normative architecture document may change.",
+    "No push, dependency installation, remote change, or sensitive data.",
+    "The result commit is explicitly authorized and expected."
+  ],
+  "proposal_id": "proposal-feedback-loop-e2e-validation",
+  "related_layers": [
+    "CROSS_LAYER"
+  ],
+  "requested_scope": "Controlled real end-to-end validation of ADR-0035 transport and feedback behavior",
+  "source": "Chief Architect controlled validation",
+  "source_references": [
+    "knowledge/adr/ADR-0035-architecture-codex-feedback-loop.md",
+    "knowledge/adr/ADR-0034-automated-codex-execution-bridge.md"
+  ],
+  "source_role": "CHIEF_ARCHITECT",
+  "submitted_at": "2026-07-27T12:22:00+02:00",
+  "title": "Validate architecture feedback loop end to end"
+}

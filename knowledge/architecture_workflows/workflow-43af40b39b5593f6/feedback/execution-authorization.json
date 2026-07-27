@@ -1,0 +1,32 @@
+{
+  "allowed_actions": [
+    "modify_authorized_repository",
+    "run_tests",
+    "run_doctor",
+    "run_diff_check",
+    "create_commit",
+    "create_handover"
+  ],
+  "approval_status": "CONFIRMED",
+  "architecture_run_id": "architecture-run-45c6441621949702",
+  "authorization_id": "authorization-a68bd98fb941027a",
+  "authorized_at": "2026-07-27T12:23:00+02:00",
+  "codex_prompt": "prompts/codex-prompt.md",
+  "decision_artifacts": [
+    "decisions/proposal-feedback-loop-e2e-validation.json"
+  ],
+  "expected_base_commit": "e651aff4267c3e76ab9a812094ae49c56235e773",
+  "expected_completion_artifacts": [
+    "result_commit",
+    "json_handover",
+    "markdown_handover",
+    "test_result",
+    "doctor_result",
+    "git_status"
+  ],
+  "expected_execution_id": "execution-2c75dbf8721fa034",
+  "prompt_hash": "66d0253ac0ff2045f227e40acf04ec088877aaa2458f4e297fc5226bcd13cdf1",
+  "repository": "/Users/michaelgiese/zonvaa-builder",
+  "schema_version": "1.0",
+  "workflow_id": "workflow-43af40b39b5593f6"
+}

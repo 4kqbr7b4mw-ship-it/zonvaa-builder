@@ -1,0 +1,17 @@
+{
+  "analysis_files": [
+    "analyses/proposal-feedback-loop-e2e-validation.json"
+  ],
+  "created_at": "2026-07-27T12:22:00+02:00",
+  "decision_template_file": "decision_proposals/decision-proposal.md",
+  "decision_template_files": [],
+  "proposal_files": [
+    "proposals/proposal-feedback-loop-e2e-validation.json"
+  ],
+  "proposal_ids": [
+    "proposal-feedback-loop-e2e-validation"
+  ],
+  "schema_version": "2.0",
+  "topic": "Controlled Architecture Feedback Loop E2E Validation",
+  "workflow_id": "workflow-43af40b39b5593f6"
+}
