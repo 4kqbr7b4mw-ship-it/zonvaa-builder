@@ -104,11 +104,12 @@ def failure_from_exception(
     argv = redact_arguments(arguments[1:], sensitive_values)
     if kind is None:
         if isinstance(error, FileNotFoundError):
-            kind = (
-                ExecutionFailureKind.WORKING_DIRECTORY_NOT_FOUND
-                if not cwd.is_dir()
-                else ExecutionFailureKind.EXECUTABLE_NOT_FOUND
-            )
+            if program is None:
+                kind = ExecutionFailureKind.INPUT_NOT_FOUND
+            elif not cwd.is_dir():
+                kind = ExecutionFailureKind.WORKING_DIRECTORY_NOT_FOUND
+            else:
+                kind = ExecutionFailureKind.EXECUTABLE_NOT_FOUND
         elif isinstance(error, (TimeoutError, subprocess.TimeoutExpired)):
             kind = ExecutionFailureKind.TIMEOUT
         elif isinstance(error, OSError):

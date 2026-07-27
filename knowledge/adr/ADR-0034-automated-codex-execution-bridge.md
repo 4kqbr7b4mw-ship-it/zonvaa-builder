@@ -82,8 +82,8 @@ Die installierte CLI wurde gegen `codex --help`, `codex exec --help` und
 Shell:
 
 ```text
-codex exec --cd /Users/michaelgiese/zonvaa-builder \
-  --sandbox workspace-write --ask-for-approval never -
+codex --ask-for-approval never exec \
+  --cd /Users/michaelgiese/zonvaa-builder --sandbox workspace-write -
 ```
 
 Der geprüfte Prompt wird über stdin übergeben. Vorher werden Installation,

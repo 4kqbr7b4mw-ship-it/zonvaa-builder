@@ -76,7 +76,7 @@ class FakeRunner:
             return CommandResult(0, " M retained.txt\n" if dirty else "", "")
         if len(args) >= 3 and args[1:3] == ("login", "status"):
             return CommandResult(0, "Logged in\n", "")
-        if len(args) >= 2 and args[1] == "exec":
+        if "exec" in args:
             self.codex_called = True
             return CommandResult(
                 self.codex_exit,
@@ -235,6 +235,15 @@ def test_confirmed_workflow_executes_canonical_prompt_and_verifies_result(
     assert record.doctor_status is CheckStatus.PASSED
     assert len(record.handover_paths) == 2
     assert runner.prompts == [prompt_path.read_text(encoding="utf-8")]
+    codex_command = next(
+        command for command in runner.commands if "exec" in command
+    )
+    assert codex_command[:4] == (
+        "/usr/local/bin/codex",
+        "--ask-for-approval",
+        "never",
+        "exec",
+    )
     assert not any(command[:2] == ("git", "push") for command in runner.commands)
     assert executions.load(
         WORKFLOW_ID,
@@ -368,6 +377,34 @@ def test_failed_tests_prevent_result_approval_and_further_commit(tmp_path):
     assert not any(
         command[:2] == ("git", "commit") for command in runner.commands
     )
+
+
+def test_result_verification_failure_retains_redacted_codex_output(tmp_path):
+    class NoCommitRunner(FakeRunner):
+        def run(self, arguments, cwd, input_text=None, **kwargs):
+            args = tuple(arguments)
+            if args[:3] == ("git", "rev-parse", "HEAD"):
+                self.commands.append(args)
+                return CommandResult(0, START + "\n", "")
+            return super().run(arguments, cwd, input_text, **kwargs)
+
+    secret = "validation-secret"
+    repository = tmp_path / "no-commit"
+    runner = NoCommitRunner(
+        repository,
+        codex_output="read-only complete token={}".format(secret),
+        codex_stderr="diagnostic api_key={}".format(secret),
+    )
+    bridge, _, _, _, _ = service(repository, runner=runner)
+
+    record = bridge.execute(WORKFLOW_ID)
+
+    assert record.status is ExecutionStatus.FAILED
+    assert record.failure is not None
+    assert record.failure.step is ExecutionStep.RESULT_VERIFICATION
+    assert "read-only complete" in record.failure.stdout
+    assert "diagnostic" in record.failure.stderr
+    assert secret not in json.dumps(record.failure.to_dict())
 
 
 def test_watcher_is_idempotent_and_retries_capacity_after_delay(tmp_path):
@@ -594,3 +631,20 @@ def test_watcher_never_reduces_unexpected_error_to_naked_class_name(tmp_path):
     assert failure["exception_type"] == "LookupError"
     assert failure["exception_message"] == "watcher detail"
     assert "technical_cause" in failure
+
+
+def test_missing_watcher_input_is_not_classified_as_missing_executable(
+    tmp_path,
+):
+    bridge, _, _, _, _ = service(tmp_path)
+
+    def missing_input(workflow_id):
+        raise FileNotFoundError("missing prompt proof")
+
+    bridge.status = missing_input
+    result = ArchitectureExecutionWatcher(bridge, clock=lambda: NOW).run_once()
+
+    prefix = "{}:ERROR:".format(WORKFLOW_ID)
+    failure = json.loads(result[0][len(prefix):])
+    assert failure["program"] is None
+    assert failure["kind"] == "INPUT_NOT_FOUND"

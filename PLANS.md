@@ -3,6 +3,75 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Automated Codex Execution Bridge E2E Validation
+
+### Ziel und Nicht-Ziele
+
+Die bestehende Bridge mit einem realen, bestätigten und read-only begrenzten
+Codex-Auftrag über Watcher, lokale CLI, Execution Store und Fehlervertrag
+validieren. Nur reproduzierte Defekte beheben; keine Produktlogik, Queue,
+Retries oder Autorisierung verändern.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `0245f77` war erfolgreich; der Arbeitsbaum
+  war sauber und die lokale Codex CLI 0.145.0 authentifiziert.
+- Ein isolierter Workflow mit Chief-Architect-Decision und Prompt-Proof wurde
+  lokal erzeugt; sein Auftrag erlaubt ausschließlich Git-Status, fokussierte
+  Tests und Doctor.
+- Der Watcher nahm den Auftrag auf und persistierte Execution-ID
+  `execution-c8204d2cc7035fce`.
+- Der reale Start scheiterte reproduzierbar mit Exit 2, weil
+  `--ask-for-approval` hinter `exec` für CLI 0.145.0 ungültig ist.
+- Eine fehlende Prompt-Proof-Datei eines historischen Workflows wurde ohne
+  Programmkontext fälschlich als `EXECUTABLE_NOT_FOUND` klassifiziert.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Git, Codex-Authentifizierung und CLI prüfen.
+- [x] Autorisierten read-only Workflow und Prompt-Proof erzeugen.
+- [x] Einmaligen Watcher-Lauf und ersten Execution Report prüfen.
+- [x] Belegte Argumentreihenfolge und Input-Fehlerklassifikation korrigieren.
+- [x] Fokussierte Regressionstests und realen Retry ausführen.
+- [x] Vollständige Tests, Doctor, Diff, Handover und Commit abschließen.
+
+### Entscheidungen und Begründungen
+
+- Der Approval-Modus bleibt `never`; nur seine von der aktuellen CLI belegte
+  Position vor dem `exec`-Unterbefehl wird korrigiert.
+- Ein `FileNotFoundError` ohne gestartetes Programm ist ein fehlendes
+  Eingabe-/Auftragsartefakt, kein fehlendes Executable.
+- Der read-only Auftrag erzeugt absichtlich keinen Result-Commit. Nach
+  erfolgreicher Codex-Ausführung muss die Bridge dies erwartungsgemäß als
+  strukturierten `RESULT_VERIFICATION`-Fehler melden.
+
+### Risiken und Teststrategie
+
+- Der reale Codex-Lauf nutzt die bereits eingerichtete externe CLI-
+  Kommunikation; alle Repositoryaktionen bleiben durch Prompt und Sandbox
+  read-only begrenzt.
+- Vor und nach dem Lauf werden HEAD, Git-Status und Diff-Hash verglichen.
+- Tests prüfen die exakte aktuelle Argumentreihenfolge und die Klassifikation
+  fehlender Workflow-Eingaben ohne reale Codex-, Netzwerk- oder launchd-
+  Abhängigkeit.
+
+### Abweichungen und Abschlusszustand
+
+Der erste reale Watcher-Lauf endete reproduzierbar vor Codex mit Exit 2 und
+vollständigem stderr, weil die aktuelle CLI den Approval-Parameter nur vor
+`exec` akzeptiert. Nach der Korrektur startete Codex zweimal mit Exit 0; der
+letzte Lauf bewies denselben HEAD und identischen Arbeitsbaum vor und nach dem
+Agenten, 24 fokussierte Tests sowie die read-only Ausführung. Die Bridge führte
+danach 576 vollständige Tests, Doctor und Diff-Check erfolgreich aus. Der
+Gesamtstatus ist erwartungsgemäß `FAILED` bei `RESULT_VERIFICATION`, weil der
+Testauftrag ausdrücklich keinen Result-Commit erlaubt. Der Record enthält nun
+auch die redigierten stdout-/stderr-Ausgaben des zuvor erfolgreichen
+Codex-Prozesses. Die innerhalb des Codex-Agenten gestartete Doctor-Prüfung
+scheiterte, weil dessen Login-Shell den venv-PATH nicht übernahm; die unabhängige
+Bridge-Doctor-Prüfung mit validierter Umgebung bestand. Dieser lokale
+Umgebungsunterschied bleibt dokumentiert und wurde ohne spezifizierten,
+geheimnisarmen Environment-Vertrag nicht spekulativ verändert.
+
 ## Abgeschlossener Plan: Execution Bridge Error Reporting
 
 ### Ziel und Nicht-Ziele

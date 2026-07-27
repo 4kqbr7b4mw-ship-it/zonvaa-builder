@@ -19,6 +19,7 @@ from codex_execution.errors import (
     ExecutionBridgeError,
     failure_from_exception,
     process_failure,
+    redact,
 )
 from codex_execution.runner import CommandResult, SubprocessCommandRunner
 from codex_execution.store import ExecutionStore
@@ -269,13 +270,13 @@ class CodexExecutionService:
             self.executions.write(running)
             codex_arguments = (
                 codex,
+                "--ask-for-approval",
+                "never",
                 "exec",
                 "--cd",
                 str(self.repository),
                 "--sandbox",
                 "workspace-write",
-                "--ask-for-approval",
-                "never",
                 "-",
             )
             codex_result = self._run(
@@ -404,6 +405,9 @@ class CodexExecutionService:
                         "ResultCommitMissingError",
                         "Codex produced no result commit.",
                         execution_id,
+                        stdout=codex_result.stdout,
+                        stderr=codex_result.stderr,
+                        sensitive_values=(prompt,),
                     ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
@@ -422,6 +426,9 @@ class CodexExecutionService:
                         "HandoverMissingError",
                         "Result commit has no complete JSON and Markdown handover.",
                         execution_id,
+                        stdout=codex_result.stdout,
+                        stderr=codex_result.stderr,
+                        sensitive_values=(prompt,),
                     ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
@@ -446,6 +453,9 @@ class CodexExecutionService:
                         "WorkingTreeDirtyError",
                         "Working tree is not clean after the result commit.",
                         execution_id,
+                        stdout=codex_result.stdout,
+                        stderr=codex_result.stderr,
+                        sensitive_values=(prompt,),
                     ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
@@ -653,6 +663,9 @@ class CodexExecutionService:
         exception_type: str,
         message: str,
         execution_id: Optional[str],
+        stdout: str = "",
+        stderr: str = "",
+        sensitive_values: Tuple[str, ...] = (),
     ) -> ExecutionFailure:
         return ExecutionFailure(
             kind=ExecutionFailureKind.INTERNAL_ERROR,
@@ -661,8 +674,8 @@ class CodexExecutionService:
             arguments=(),
             working_directory=str(self.repository),
             exit_code=None,
-            stdout="",
-            stderr="",
+            stdout=redact(stdout, sensitive_values),
+            stderr=redact(stderr, sensitive_values),
             exception_type=exception_type,
             exception_message=message,
             technical_cause=message,
