@@ -1,8 +1,11 @@
 from datetime import datetime, timezone
+import json
 from typing import Callable, Tuple
 
 from architecture_integrator import WorkflowStatus
 from codex_execution.models import ExecutionStatus
+from codex_execution.errors import ExecutionBridgeError, failure_from_exception
+from codex_execution.models import ExecutionStep
 from codex_execution.service import CodexExecutionService
 
 
@@ -55,11 +58,32 @@ class ArchitectureExecutionWatcher:
                 results.append(
                     "{}:{}".format(workflow_id, record.status.value)
                 )
-            except (OSError, RuntimeError, TypeError, ValueError) as error:
+            except ExecutionBridgeError as error:
                 results.append(
                     "{}:ERROR:{}".format(
                         workflow_id,
-                        type(error).__name__,
+                        json.dumps(
+                            error.failure.to_dict(),
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ),
+                    )
+                )
+            except Exception as error:
+                failure = failure_from_exception(
+                    error,
+                    step=ExecutionStep.WATCHER_SCAN,
+                    occurred_at=self.clock(),
+                    cwd=self.service.repository,
+                )
+                results.append(
+                    "{}:ERROR:{}".format(
+                        workflow_id,
+                        json.dumps(
+                            failure.to_dict(),
+                            sort_keys=True,
+                            separators=(",", ":"),
+                        ),
                     )
                 )
         return tuple(results)

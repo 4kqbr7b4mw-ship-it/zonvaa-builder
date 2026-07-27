@@ -8,9 +8,17 @@ from typing import Callable, Optional, Tuple
 from architecture_integrator import ArchitectureWorkflowStore, WorkflowStatus
 from codex_execution.models import (
     CheckStatus,
+    ExecutionFailure,
+    ExecutionFailureKind,
     ExecutionPolicy,
     ExecutionRecord,
+    ExecutionStep,
     ExecutionStatus,
+)
+from codex_execution.errors import (
+    ExecutionBridgeError,
+    failure_from_exception,
+    process_failure,
 )
 from codex_execution.runner import CommandResult, SubprocessCommandRunner
 from codex_execution.store import ExecutionStore
@@ -64,6 +72,54 @@ class CodexExecutionService:
         workflow_id: str,
         retry: bool = False,
     ) -> ExecutionRecord:
+        try:
+            return self._execute(workflow_id, retry)
+        except ExecutionBridgeError as error:
+            failure = error.failure
+            if failure.execution_id is not None:
+                existing = self.executions.existing(
+                    workflow_id,
+                    failure.execution_id,
+                )
+                if existing is not None and existing.status in (
+                    ExecutionStatus.PENDING,
+                    ExecutionStatus.RUNNING,
+                ):
+                    return self._finish(
+                        existing,
+                        ExecutionStatus.FAILED,
+                        failure,
+                        codex_exit_code=(
+                            failure.exit_code
+                            if failure.step is ExecutionStep.CODEX_EXECUTION
+                            else existing.codex_exit_code
+                        ),
+                    )
+            raise
+        except Exception as error:
+            kind = (
+                ExecutionFailureKind.INPUT_NOT_FOUND
+                if (
+                    isinstance(error, FileNotFoundError)
+                    or "confirmed Codex prompt" in str(error)
+                )
+                else ExecutionFailureKind.INTERNAL_ERROR
+            )
+            raise ExecutionBridgeError(
+                failure_from_exception(
+                    error,
+                    step=ExecutionStep.PROMPT_VALIDATION,
+                    occurred_at=self.clock(),
+                    cwd=self.repository,
+                    kind=kind,
+                )
+            ) from error
+
+    def _execute(
+        self,
+        workflow_id: str,
+        retry: bool = False,
+    ) -> ExecutionRecord:
         prompt, prompt_hash = self._approved_prompt(workflow_id)
         execution_id = self.execution_id(workflow_id, prompt_hash)
         with self.executions.lock(workflow_id):
@@ -84,13 +140,29 @@ class CodexExecutionService:
                     raise RuntimeError("Execution is already running")
                 if existing.status is ExecutionStatus.CANCELLED:
                     raise RuntimeError("Cancelled execution cannot be retried")
-            branch = self._required("git", "branch", "--show-current")
-            commit = self._required("git", "rev-parse", "HEAD")
+            branch = self._required(
+                ExecutionStep.REPOSITORY_INSPECTION,
+                "git", "branch", "--show-current",
+                execution_id=execution_id,
+            )
+            commit = self._required(
+                ExecutionStep.REPOSITORY_INSPECTION,
+                "git", "rev-parse", "HEAD",
+                execution_id=execution_id,
+            )
             git_status = self._lines(
-                self._required("git", "status", "--porcelain")
+                self._required(
+                    ExecutionStep.REPOSITORY_INSPECTION,
+                    "git", "status", "--porcelain",
+                    execution_id=execution_id,
+                )
             )
             root = Path(
-                self._required("git", "rev-parse", "--show-toplevel")
+                self._required(
+                    ExecutionStep.REPOSITORY_INSPECTION,
+                    "git", "rev-parse", "--show-toplevel",
+                    execution_id=execution_id,
+                )
             ).resolve()
             if root != self.repository:
                 raise RuntimeError("Git repository root changed")
@@ -137,45 +209,81 @@ class CodexExecutionService:
                 diff_check_status=CheckStatus.NOT_RUN,
                 resulting_commit=None,
                 handover_paths=(),
-                failure_reason=None,
+                failure=None,
                 retry_count=retry_count,
             )
             self.executions.write(record)
 
-            codex = self.codex_resolver()
+            try:
+                codex = self.codex_resolver()
+            except Exception as error:
+                raise ExecutionBridgeError(
+                    failure_from_exception(
+                        error,
+                        step=ExecutionStep.CODEX_RESOLUTION,
+                        occurred_at=self.clock(),
+                        cwd=self.repository,
+                        execution_id=execution_id,
+                    )
+                ) from error
             if codex is None:
                 return self._finish(
                     record,
                     ExecutionStatus.BLOCKED,
-                    "Codex CLI is not installed.",
+                    ExecutionFailure(
+                        kind=ExecutionFailureKind.EXECUTABLE_NOT_FOUND,
+                        step=ExecutionStep.CODEX_RESOLUTION,
+                        program="codex",
+                        arguments=(),
+                        working_directory=str(self.repository),
+                        exit_code=None,
+                        stdout="",
+                        stderr="",
+                        exception_type="ExecutableNotFoundError",
+                        exception_message="Codex CLI executable was not found.",
+                        technical_cause=(
+                            "The executable resolver returned no program path."
+                        ),
+                        occurred_at=self.clock(),
+                        execution_id=execution_id,
+                    ),
                 )
-            auth = self.runner.run(
+            auth = self._run(
                 (codex, "login", "status"),
-                cwd=self.repository,
+                ExecutionStep.AUTHENTICATION_CHECK,
+                execution_id,
             )
             if auth.exit_code != 0:
                 return self._finish(
                     record,
                     ExecutionStatus.BLOCKED,
-                    "Codex authentication is unavailable.",
+                    self._process_failure(
+                        ExecutionStep.AUTHENTICATION_CHECK,
+                        (codex, "login", "status"),
+                        auth,
+                        execution_id,
+                    ),
                 )
 
             running = record.evolve(status=ExecutionStatus.RUNNING)
             self.executions.write(running)
-            codex_result = self.runner.run(
-                (
-                    codex,
-                    "exec",
-                    "--cd",
-                    str(self.repository),
-                    "--sandbox",
-                    "workspace-write",
-                    "--ask-for-approval",
-                    "never",
-                    "-",
-                ),
-                cwd=self.repository,
+            codex_arguments = (
+                codex,
+                "exec",
+                "--cd",
+                str(self.repository),
+                "--sandbox",
+                "workspace-write",
+                "--ask-for-approval",
+                "never",
+                "-",
+            )
+            codex_result = self._run(
+                codex_arguments,
+                ExecutionStep.CODEX_EXECUTION,
+                execution_id,
                 input_text=prompt,
+                sensitive_values=(prompt,),
             )
             if codex_result.exit_code != 0:
                 status = (
@@ -186,57 +294,100 @@ class CodexExecutionService:
                 return self._finish(
                     running,
                     status,
-                    self._summary(codex_result, "Codex execution failed."),
+                    self._process_failure(
+                        ExecutionStep.CODEX_EXECUTION,
+                        codex_arguments,
+                        codex_result,
+                        execution_id,
+                        sensitive_values=(prompt,),
+                    ),
                     codex_exit_code=codex_result.exit_code,
                 )
 
-            test = self.runner.run(
-                (sys.executable, "-m", "pytest", "-q"),
-                cwd=self.repository,
+            test_arguments = (sys.executable, "-m", "pytest", "-q")
+            test = self._run(
+                test_arguments,
+                ExecutionStep.TEST_EXECUTION,
+                execution_id,
             )
             if test.exit_code != 0:
                 return self._finish(
                     running,
                     ExecutionStatus.FAILED,
-                    "Full tests failed; no result is approved.",
+                    self._process_failure(
+                        ExecutionStep.TEST_EXECUTION,
+                        test_arguments,
+                        test,
+                        execution_id,
+                    ),
                     codex_exit_code=0,
                     test_status=CheckStatus.FAILED,
                     test_result=self._summary(test, "Tests failed."),
                 )
-            doctor = self.runner.run(
-                (sys.executable, "-m", "builder.main", "doctor"),
-                cwd=self.repository,
+            doctor_arguments = (
+                sys.executable, "-m", "builder.main", "doctor"
+            )
+            doctor = self._run(
+                doctor_arguments,
+                ExecutionStep.DOCTOR_EXECUTION,
+                execution_id,
             )
             if doctor.exit_code != 0:
                 return self._finish(
                     running,
                     ExecutionStatus.FAILED,
-                    "Doctor failed; no result is approved.",
+                    self._process_failure(
+                        ExecutionStep.DOCTOR_EXECUTION,
+                        doctor_arguments,
+                        doctor,
+                        execution_id,
+                    ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
                     test_result=self._summary(test, "Tests passed."),
                     doctor_status=CheckStatus.FAILED,
                     doctor_result=self._summary(doctor, "Doctor failed."),
                 )
-            diff_worktree = self.runner.run(
-                ("git", "diff", "--check"),
-                cwd=self.repository,
+            diff_worktree_arguments = ("git", "diff", "--check")
+            diff_worktree = self._run(
+                diff_worktree_arguments,
+                ExecutionStep.DIFF_CHECK,
+                execution_id,
             )
-            result_commit = self._required("git", "rev-parse", "HEAD")
-            diff_commit = self.runner.run(
-                (
+            result_commit = self._required(
+                ExecutionStep.RESULT_VERIFICATION,
+                "git", "rev-parse", "HEAD",
+                execution_id=execution_id,
+            )
+            diff_commit_arguments = (
                     "git",
                     "diff",
                     "--check",
                     "{}..{}".format(commit, result_commit),
-                ),
-                cwd=self.repository,
+            )
+            diff_commit = self._run(
+                diff_commit_arguments,
+                ExecutionStep.DIFF_CHECK,
+                execution_id,
             )
             if diff_worktree.exit_code != 0 or diff_commit.exit_code != 0:
                 return self._finish(
                     running,
                     ExecutionStatus.FAILED,
-                    "git diff --check failed; no result is approved.",
+                    self._process_failure(
+                        ExecutionStep.DIFF_CHECK,
+                        (
+                            diff_worktree_arguments
+                            if diff_worktree.exit_code != 0
+                            else diff_commit_arguments
+                        ),
+                        (
+                            diff_worktree
+                            if diff_worktree.exit_code != 0
+                            else diff_commit
+                        ),
+                        execution_id,
+                    ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
                     test_result=self._summary(test, "Tests passed."),
@@ -248,7 +399,12 @@ class CodexExecutionService:
                 return self._finish(
                     running,
                     ExecutionStatus.FAILED,
-                    "Codex produced no result commit.",
+                    self._internal_failure(
+                        ExecutionStep.RESULT_VERIFICATION,
+                        "ResultCommitMissingError",
+                        "Codex produced no result commit.",
+                        execution_id,
+                    ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
                     test_result=self._summary(test, "Tests passed."),
@@ -261,7 +417,12 @@ class CodexExecutionService:
                 return self._finish(
                     running,
                     ExecutionStatus.FAILED,
-                    "Result commit has no complete JSON and Markdown handover.",
+                    self._internal_failure(
+                        ExecutionStep.RESULT_VERIFICATION,
+                        "HandoverMissingError",
+                        "Result commit has no complete JSON and Markdown handover.",
+                        execution_id,
+                    ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
                     test_result=self._summary(test, "Tests passed."),
@@ -270,13 +431,22 @@ class CodexExecutionService:
                     diff_check_status=CheckStatus.PASSED,
                 )
             final_status = self._lines(
-                self._required("git", "status", "--porcelain")
+                self._required(
+                    ExecutionStep.RESULT_VERIFICATION,
+                    "git", "status", "--porcelain",
+                    execution_id=execution_id,
+                )
             )
             if final_status:
                 return self._finish(
                     running,
                     ExecutionStatus.FAILED,
-                    "Working tree is not clean after the result commit.",
+                    self._internal_failure(
+                        ExecutionStep.RESULT_VERIFICATION,
+                        "WorkingTreeDirtyError",
+                        "Working tree is not clean after the result commit.",
+                        execution_id,
+                    ),
                     codex_exit_code=0,
                     test_status=CheckStatus.PASSED,
                     test_result=self._summary(test, "Tests passed."),
@@ -312,7 +482,7 @@ class CodexExecutionService:
         cancelled = record.evolve(
             status=ExecutionStatus.CANCELLED,
             completed_at=self.clock(),
-            failure_reason="Cancelled by explicit user request.",
+            failure=None,
         )
         self.executions.write(cancelled)
         return cancelled
@@ -342,11 +512,50 @@ class CodexExecutionService:
             raise ValueError("Codex prompt hash changed")
         return content, calculated
 
-    def _required(self, *arguments: str) -> str:
-        result = self.runner.run(arguments, cwd=self.repository)
+    def _run(
+        self,
+        arguments: Tuple[str, ...],
+        step: ExecutionStep,
+        execution_id: Optional[str],
+        input_text: Optional[str] = None,
+        sensitive_values: Tuple[str, ...] = (),
+    ) -> CommandResult:
+        try:
+            return self.runner.run(
+                arguments,
+                cwd=self.repository,
+                input_text=input_text,
+                step=step,
+                execution_id=execution_id,
+                sensitive_values=sensitive_values,
+            )
+        except ExecutionBridgeError:
+            raise
+        except Exception as error:
+            raise ExecutionBridgeError(
+                failure_from_exception(
+                    error,
+                    step=step,
+                    occurred_at=self.clock(),
+                    cwd=self.repository,
+                    execution_id=execution_id,
+                    arguments=arguments,
+                    sensitive_values=sensitive_values,
+                )
+            ) from error
+
+    def _required(
+        self,
+        step: ExecutionStep,
+        *arguments: str,
+        execution_id: Optional[str] = None
+    ) -> str:
+        result = self._run(tuple(arguments), step, execution_id)
         if result.exit_code != 0:
-            raise RuntimeError(
-                self._summary(result, "{} failed.".format(arguments[0]))
+            raise ExecutionBridgeError(
+                self._process_failure(
+                    step, tuple(arguments), result, execution_id
+                )
             )
         return result.stdout.strip()
 
@@ -354,13 +563,13 @@ class CodexExecutionService:
         self,
         record: ExecutionRecord,
         status: ExecutionStatus,
-        reason: str,
+        failure: ExecutionFailure,
         **changes: object
     ) -> ExecutionRecord:
         completed = record.evolve(
             status=status,
             completed_at=self.clock(),
-            failure_reason=reason,
+            failure=failure,
             **changes
         )
         self.executions.write(completed)
@@ -372,6 +581,7 @@ class CodexExecutionService:
         resulting_commit: str,
     ) -> Tuple[str, ...]:
         output = self._required(
+            ExecutionStep.RESULT_VERIFICATION,
             "git",
             "diff-tree",
             "--no-commit-id",
@@ -416,6 +626,49 @@ class CodexExecutionService:
         lines = self._lines(result.output)
         value = lines[-1] if lines else fallback
         return value[:1000]
+
+    def _process_failure(
+        self,
+        step: ExecutionStep,
+        arguments: Tuple[str, ...],
+        result: CommandResult,
+        execution_id: Optional[str],
+        sensitive_values: Tuple[str, ...] = (),
+    ) -> ExecutionFailure:
+        return process_failure(
+            step=step,
+            occurred_at=self.clock(),
+            cwd=self.repository,
+            arguments=arguments,
+            exit_code=result.exit_code,
+            stdout=result.stdout,
+            stderr=result.stderr,
+            execution_id=execution_id,
+            sensitive_values=sensitive_values,
+        )
+
+    def _internal_failure(
+        self,
+        step: ExecutionStep,
+        exception_type: str,
+        message: str,
+        execution_id: Optional[str],
+    ) -> ExecutionFailure:
+        return ExecutionFailure(
+            kind=ExecutionFailureKind.INTERNAL_ERROR,
+            step=step,
+            program=None,
+            arguments=(),
+            working_directory=str(self.repository),
+            exit_code=None,
+            stdout="",
+            stderr="",
+            exception_type=exception_type,
+            exception_message=message,
+            technical_cause=message,
+            occurred_at=self.clock(),
+            execution_id=execution_id,
+        )
 
     def _lines(self, value: str) -> Tuple[str, ...]:
         return tuple(line for line in value.splitlines() if line.strip())

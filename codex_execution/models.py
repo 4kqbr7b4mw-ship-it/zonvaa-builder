@@ -49,6 +49,120 @@ class CheckStatus(str, Enum):
     FAILED = "FAILED"
 
 
+class ExecutionFailureKind(str, Enum):
+    EXECUTABLE_NOT_FOUND = "EXECUTABLE_NOT_FOUND"
+    WORKING_DIRECTORY_NOT_FOUND = "WORKING_DIRECTORY_NOT_FOUND"
+    INPUT_NOT_FOUND = "INPUT_NOT_FOUND"
+    PROCESS_START_FAILED = "PROCESS_START_FAILED"
+    PROCESS_EXIT_NONZERO = "PROCESS_EXIT_NONZERO"
+    TIMEOUT = "TIMEOUT"
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+
+
+class ExecutionStep(str, Enum):
+    PROMPT_VALIDATION = "PROMPT_VALIDATION"
+    REPOSITORY_INSPECTION = "REPOSITORY_INSPECTION"
+    CODEX_RESOLUTION = "CODEX_RESOLUTION"
+    AUTHENTICATION_CHECK = "AUTHENTICATION_CHECK"
+    CODEX_EXECUTION = "CODEX_EXECUTION"
+    TEST_EXECUTION = "TEST_EXECUTION"
+    DOCTOR_EXECUTION = "DOCTOR_EXECUTION"
+    DIFF_CHECK = "DIFF_CHECK"
+    RESULT_VERIFICATION = "RESULT_VERIFICATION"
+    WATCHER_SCAN = "WATCHER_SCAN"
+
+
+@dataclass(frozen=True)
+class ExecutionFailure:
+    kind: ExecutionFailureKind
+    step: ExecutionStep
+    program: Optional[str]
+    arguments: Tuple[str, ...]
+    working_directory: str
+    exit_code: Optional[int]
+    stdout: str
+    stderr: str
+    exception_type: str
+    exception_message: str
+    technical_cause: str
+    occurred_at: datetime
+    execution_id: Optional[str]
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.kind, ExecutionFailureKind):
+            raise TypeError("kind must be ExecutionFailureKind")
+        if not isinstance(self.step, ExecutionStep):
+            raise TypeError("step must be ExecutionStep")
+        _optional_text(self.program, "program")
+        if not isinstance(self.arguments, tuple) or not all(
+            isinstance(item, str) and item for item in self.arguments
+        ):
+            raise TypeError("arguments must contain strings")
+        for item in self.arguments:
+            _text(item, "argument")
+        _text(self.working_directory, "working_directory")
+        if self.exit_code is not None and (
+            isinstance(self.exit_code, bool)
+            or not isinstance(self.exit_code, int)
+        ):
+            raise TypeError("exit_code must be an integer or None")
+        for value, name in (
+            (self.stdout, "stdout"),
+            (self.stderr, "stderr"),
+            (self.exception_type, "exception_type"),
+            (self.exception_message, "exception_message"),
+            (self.technical_cause, "technical_cause"),
+        ):
+            if not isinstance(value, str):
+                raise TypeError("{} must be a string".format(name))
+        _text(self.exception_type, "exception_type")
+        if not self.exception_message:
+            raise ValueError("exception_message must not be empty")
+        if not self.technical_cause:
+            raise ValueError("technical_cause must not be empty")
+        _aware(self.occurred_at, "occurred_at")
+        _optional_text(self.execution_id, "execution_id")
+        if self.execution_id is not None and re.fullmatch(
+            r"execution-[0-9a-f]{16}", self.execution_id
+        ) is None:
+            raise ValueError("execution_id is invalid")
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "kind": self.kind.value,
+            "step": self.step.value,
+            "program": self.program,
+            "arguments": list(self.arguments),
+            "working_directory": self.working_directory,
+            "exit_code": self.exit_code,
+            "stdout": self.stdout,
+            "stderr": self.stderr,
+            "exception_type": self.exception_type,
+            "exception_message": self.exception_message,
+            "technical_cause": self.technical_cause,
+            "occurred_at": self.occurred_at.isoformat(),
+            "execution_id": self.execution_id,
+        }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "ExecutionFailure":
+        return cls(
+            kind=ExecutionFailureKind(data["kind"]),
+            step=ExecutionStep(data["step"]),
+            program=data["program"],
+            arguments=tuple(data["arguments"]),
+            working_directory=data["working_directory"],
+            exit_code=data["exit_code"],
+            stdout=data["stdout"],
+            stderr=data["stderr"],
+            exception_type=data["exception_type"],
+            exception_message=data["exception_message"],
+            technical_cause=data["technical_cause"],
+            occurred_at=datetime.fromisoformat(data["occurred_at"]),
+            execution_id=data["execution_id"],
+        )
+
+
 @dataclass(frozen=True)
 class ExecutionPolicy:
     schema_version: str = "1.0"
@@ -89,13 +203,13 @@ class ExecutionRecord:
     diff_check_status: CheckStatus
     resulting_commit: Optional[str]
     handover_paths: Tuple[str, ...]
-    failure_reason: Optional[str]
+    failure: Optional[ExecutionFailure]
     retry_count: int
     push_status: str = "not_pushed"
-    schema_version: str = "1.0"
+    schema_version: str = "1.1"
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.0":
+        if self.schema_version != "1.1":
             raise ValueError("Unsupported execution record schema")
         for value, name in (
             (self.execution_id, "execution_id"),
@@ -142,9 +256,12 @@ class ExecutionRecord:
             (self.test_result, "test_result"),
             (self.doctor_result, "doctor_result"),
             (self.resulting_commit, "resulting_commit"),
-            (self.failure_reason, "failure_reason"),
         ):
             _optional_text(value, name)
+        if self.failure is not None and not isinstance(
+            self.failure, ExecutionFailure
+        ):
+            raise TypeError("failure must be ExecutionFailure or None")
         if self.resulting_commit is not None and re.fullmatch(
             r"[0-9a-f]{7,64}",
             self.resulting_commit,
@@ -181,7 +298,7 @@ class ExecutionRecord:
                 or self.diff_check_status is not CheckStatus.PASSED
                 or self.resulting_commit is None
                 or len(self.handover_paths) < 2
-                or self.failure_reason is not None
+                or self.failure is not None
             ):
                 raise ValueError("Successful execution is incomplete")
 
@@ -214,7 +331,7 @@ class ExecutionRecord:
             "diff_check_status": self.diff_check_status.value,
             "resulting_commit": self.resulting_commit,
             "handover_paths": list(self.handover_paths),
-            "failure_reason": self.failure_reason,
+            "failure": self.failure.to_dict() if self.failure else None,
             "retry_count": self.retry_count,
             "push_status": self.push_status,
         }

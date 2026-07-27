@@ -22,6 +22,7 @@ from builder.runtime import get_runtime
 from codex_execution import (
     ArchitectureExecutionWatcher,
     CodexExecutionService,
+    ExecutionBridgeError,
     ExecutionStore,
 )
 
@@ -374,6 +375,16 @@ def _execution_service() -> CodexExecutionService:
 
 
 def _workflow_error(stage: str, error: BaseException) -> None:
+    if isinstance(error, ExecutionBridgeError):
+        typer.echo(
+            json.dumps(
+                {"error": error.failure.to_dict()},
+                indent=2,
+                sort_keys=True,
+            ),
+            err=True,
+        )
+        raise typer.Exit(code=1)
     typer.echo(
         "Architecture workflow {} failed: {}: {}".format(
             stage,

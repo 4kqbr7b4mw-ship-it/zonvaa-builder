@@ -3,6 +3,64 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Execution Bridge Error Reporting
+
+### Ziel und Nicht-Ziele
+
+Die bestehende lokale Execution Bridge um einen typisierten, redigierten und
+maschinenlesbaren Fehlervertrag erweitern. Prozessstart, Exit-Code, Timeout,
+Eingabeprüfung und interne Fehler bleiben technisch rekonstruierbar. Keine
+Retry-, Queue-, Autorisierungs- oder Erfolgslogik ändern.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `e5bbb6b` war erfolgreich; der Arbeitsbaum
+  war sauber.
+- `SubprocessCommandRunner` erfasst erfolgreiche Prozessresultate, lässt
+  Startfehler und Timeouts aber als rohe Exceptions entweichen.
+- `CodexExecutionService` reduziert fehlgeschlagene Prozesse auf eine einzelne
+  letzte Ausgabezeile im freien Feld `failure_reason`.
+- `ArchitectureExecutionWatcher` ersetzt verbleibende Exceptions durch nackte
+  Klassennamen wie `FileNotFoundError`.
+- Execution JSON und Markdown sind bereits die geeignete lokale, atomar
+  geschriebene Laufzeitablage.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Bridge, Store, CLI, Watcher, ADR und Tests prüfen.
+- [x] Typisierten Fehlervertrag und begrenzte Redaktion implementieren.
+- [x] Runner-, Service-, Store-, Watcher- und CLI-Fehlerpfade integrieren.
+- [x] Fokussierte Fehler- und Rückwärtskompatibilitätstests ergänzen.
+- [x] Dokumentation, vollständige Tests, Doctor und Diff prüfen.
+- [x] Handover und geprüften Commit erzeugen.
+
+### Entscheidungen und Begründungen
+
+- Der strukturierte Fehler ist Teil des bestehenden Execution Records; es
+  entsteht keine parallele Fehlerpersistenz.
+- Befehle bleiben Argumentlisten ohne Shell. stdin und Umgebungsvariablen
+  werden grundsätzlich nicht in Fehlerberichte aufgenommen.
+- Fehlermeldungen, stdout, stderr, Argumente und technische Ursache werden vor
+  Ausgabe und Persistenz begrenzt sowie auf bekannte Geheimnismuster redigiert.
+
+### Risiken und Teststrategie
+
+- Freitextausgaben können unbekannte sensible Inhalte enthalten; die Bridge
+  kann nur eng definierte Geheimnismuster und explizit bekannte Werte sicher
+  redigieren und dokumentiert diese Grenze.
+- Tests induzieren Startfehler, Exit-Code, Timeout und interne Exceptions lokal
+  ohne Codex-Login, Netzwerk oder launchd.
+
+### Abweichungen und Abschlusszustand
+
+Der bestehende Execution Store bleibt die einzige Fehlerpersistenz. Alte
+Schema-1.0-Records bleiben lesbar und werden beim Laden in den typisierten
+1.1-Vertrag überführt; eine Migration vorhandener Dateien ist nicht nötig.
+Die Redaktion erfasst bekannte Geheimnismuster und explizit bekannte Werte,
+ist aber bewusst keine semantische Erkennung beliebiger sensibler Freitexte.
+22 fokussierte und 574 vollständige Tests bestehen; Doctor und
+`git diff --check` sind erfolgreich. Es wurde nicht gepusht.
+
 ## Abgeschlossener Plan: Automated Codex Execution Bridge
 
 ### Ziel und Nicht-Ziele

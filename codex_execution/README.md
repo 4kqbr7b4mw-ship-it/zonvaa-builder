@@ -19,6 +19,14 @@ Execution JSON and Markdown reports are local runtime state below
 `knowledge/architecture_workflows/<workflow-id>/executions/`. They are ignored
 by Git so final status cannot contaminate the Codex result commit.
 
+Execution-Record-Schema 1.1 speichert Fehler maschinenlesbar. `failure`
+unterscheidet fehlende Ressourcen, Prozessstart, Non-Zero-Exit, Timeout und
+interne Bridge-Fehler. Es enthält den konkreten Schritt, getrennte Programm-
+und Argumentdaten, Exit-Code, redigiertes stdout/stderr und eine technische
+Ursache. stdin und Umgebungsvariablen werden nicht protokolliert; bekannte
+Token-, API-Key-, Passwort-, Credential-, Secret- und Authorization-Muster
+werden durch `[REDACTED]` ersetzt.
+
 ## Manual commands
 
 ```text

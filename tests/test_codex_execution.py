@@ -7,6 +7,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
+import subprocess
 
 from architecture_integrator import ArchitectureWorkflowStore
 from codex_execution import (
@@ -16,8 +17,12 @@ from codex_execution import (
     CommandResult,
     ExecutionPolicy,
     ExecutionRecord,
+    ExecutionBridgeError,
+    ExecutionFailureKind,
+    ExecutionStep,
     ExecutionStatus,
     ExecutionStore,
+    SubprocessCommandRunner,
 )
 
 
@@ -33,6 +38,7 @@ class FakeRunner:
         repository,
         codex_exit=0,
         codex_output="Codex completed.",
+        codex_stderr="",
         tests_exit=0,
         doctor_exit=0,
         final_dirty=False,
@@ -40,6 +46,7 @@ class FakeRunner:
         self.repository = repository
         self.codex_exit = codex_exit
         self.codex_output = codex_output
+        self.codex_stderr = codex_stderr
         self.tests_exit = tests_exit
         self.doctor_exit = doctor_exit
         self.final_dirty = final_dirty
@@ -47,7 +54,7 @@ class FakeRunner:
         self.commands = []
         self.prompts = []
 
-    def run(self, arguments, cwd, input_text=None):
+    def run(self, arguments, cwd, input_text=None, **kwargs):
         args = tuple(arguments)
         self.commands.append(args)
         assert cwd == self.repository
@@ -74,7 +81,7 @@ class FakeRunner:
             return CommandResult(
                 self.codex_exit,
                 self.codex_output,
-                "",
+                self.codex_stderr,
             )
         if args[1:4] == ("-m", "pytest", "-q"):
             return CommandResult(
@@ -220,6 +227,8 @@ def test_confirmed_workflow_executes_canonical_prompt_and_verifies_result(
     record = bridge.execute(WORKFLOW_ID)
 
     assert record.status is ExecutionStatus.SUCCEEDED
+    assert record.schema_version == "1.1"
+    assert record.failure is None
     assert record.prompt_hash == prompt_hash
     assert record.resulting_commit == RESULT
     assert record.test_status is CheckStatus.PASSED
@@ -254,7 +263,7 @@ def test_unconfirmed_workflow_and_missing_decision_do_not_execute(tmp_path):
 def test_wrong_prompt_hash_and_symlink_escape_are_blocked(tmp_path):
     bridge, runner, _, prompt_path, _ = service(tmp_path / "hash")
     prompt_path.write_text("changed", encoding="utf-8")
-    with pytest.raises(ValueError, match="hash"):
+    with pytest.raises(ExecutionBridgeError, match="hash"):
         bridge.execute(WORKFLOW_ID)
     assert not runner.codex_called
 
@@ -264,7 +273,7 @@ def test_wrong_prompt_hash_and_symlink_escape_are_blocked(tmp_path):
     outside.write_text(content, encoding="utf-8")
     prompt_path.unlink()
     prompt_path.symlink_to(outside)
-    with pytest.raises((ValueError, RuntimeError), match="symlink|escapes"):
+    with pytest.raises(ExecutionBridgeError, match="symlink|escapes"):
         bridge.execute(WORKFLOW_ID)
     assert not runner.codex_called
 
@@ -316,11 +325,11 @@ def test_missing_cli_or_authentication_is_blocked_before_codex(tmp_path):
     assert not runner.codex_called
 
     class AuthFailureRunner(FakeRunner):
-        def run(self, arguments, cwd, input_text=None):
+        def run(self, arguments, cwd, input_text=None, **kwargs):
             if tuple(arguments)[1:3] == ("login", "status"):
                 self.commands.append(tuple(arguments))
                 return CommandResult(1, "", "Not logged in")
-            return super().run(arguments, cwd, input_text)
+            return super().run(arguments, cwd, input_text, **kwargs)
 
     repository = tmp_path / "auth"
     auth_runner = AuthFailureRunner(repository)
@@ -431,3 +440,157 @@ def test_service_rejects_every_other_repository(tmp_path):
             repository=tmp_path,
             allowed_repository=tmp_path / "other",
         )
+
+
+def test_runner_classifies_missing_executable_and_working_directory(tmp_path):
+    runner = SubprocessCommandRunner()
+    with pytest.raises(ExecutionBridgeError) as missing_program:
+        runner.run(
+            ("zonvaa-command-that-does-not-exist", "--check"),
+            cwd=tmp_path,
+            step=ExecutionStep.CODEX_EXECUTION,
+        )
+    assert missing_program.value.failure.kind is (
+        ExecutionFailureKind.EXECUTABLE_NOT_FOUND
+    )
+    assert missing_program.value.failure.program == (
+        "zonvaa-command-that-does-not-exist"
+    )
+    assert missing_program.value.failure.arguments == ("--check",)
+
+    missing_cwd = tmp_path / "missing"
+    with pytest.raises(ExecutionBridgeError) as working_directory:
+        runner.run(
+            ("git", "status"),
+            cwd=missing_cwd,
+            step=ExecutionStep.REPOSITORY_INSPECTION,
+        )
+    assert working_directory.value.failure.kind is (
+        ExecutionFailureKind.WORKING_DIRECTORY_NOT_FOUND
+    )
+    assert working_directory.value.failure.working_directory == str(missing_cwd)
+
+
+def test_runner_classifies_timeout_with_partial_output(tmp_path, monkeypatch):
+    def timeout(*args, **kwargs):
+        raise subprocess.TimeoutExpired(
+            cmd=args[0], timeout=3, output="partial out", stderr="partial err"
+        )
+
+    monkeypatch.setattr(subprocess, "run", timeout)
+    with pytest.raises(ExecutionBridgeError) as captured:
+        SubprocessCommandRunner().run(
+            ("codex", "exec"),
+            cwd=tmp_path,
+            timeout_seconds=3,
+            step=ExecutionStep.CODEX_EXECUTION,
+        )
+    failure = captured.value.failure
+    assert failure.kind is ExecutionFailureKind.TIMEOUT
+    assert failure.stdout == "partial out"
+    assert failure.stderr == "partial err"
+    assert failure.exit_code is None
+    assert "TimeoutExpired" in failure.technical_cause
+
+
+def test_nonzero_process_preserves_output_exit_code_and_redacts_secrets(tmp_path):
+    secret = "super-secret-token"
+    fake = FakeRunner(
+        tmp_path,
+        codex_exit=7,
+        codex_output="progress\napi_key={}".format(secret),
+        codex_stderr="failed\nAuthorization: Bearer {}".format(secret),
+    )
+    bridge, _, executions, _, _ = service(tmp_path, runner=fake)
+
+    record = bridge.execute(WORKFLOW_ID)
+
+    assert record.status is ExecutionStatus.FAILED
+    assert record.failure is not None
+    assert record.failure.kind is ExecutionFailureKind.PROCESS_EXIT_NONZERO
+    assert record.failure.step is ExecutionStep.CODEX_EXECUTION
+    assert record.failure.exit_code == 7
+    assert "progress" in record.failure.stdout
+    assert "failed" in record.failure.stderr
+    assert secret not in json.dumps(record.to_dict())
+    assert "[REDACTED]" in record.failure.stdout
+    assert "[REDACTED]" in record.failure.stderr
+    assert record.failure.to_dict() == record.failure.to_dict()
+    assert executions.load(WORKFLOW_ID, record.execution_id) == record
+
+
+def test_secret_command_arguments_are_redacted(tmp_path):
+    from codex_execution.errors import process_failure
+
+    failure = process_failure(
+        step=ExecutionStep.AUTHENTICATION_CHECK,
+        occurred_at=NOW,
+        cwd=tmp_path,
+        arguments=("tool", "--api-key", "clear-secret", "--verbose"),
+        exit_code=1,
+        stdout="",
+        stderr="token=clear-secret",
+        execution_id=None,
+    )
+
+    serialized = json.dumps(failure.to_dict())
+    assert "clear-secret" not in serialized
+    assert failure.arguments == ("--api-key", "[REDACTED]", "--verbose")
+
+
+def test_unexpected_runner_exception_is_structured_and_persisted(tmp_path):
+    class ExplodingRunner(FakeRunner):
+        def run(self, arguments, cwd, input_text=None, **kwargs):
+            if len(arguments) >= 3 and tuple(arguments)[1:3] == (
+                "login", "status"
+            ):
+                raise LookupError("bridge state vanished")
+            return super().run(arguments, cwd, input_text, **kwargs)
+
+    repository = tmp_path / "unexpected"
+    bridge, _, executions, _, _ = service(
+        repository,
+        runner=ExplodingRunner(repository),
+    )
+
+    record = bridge.execute(WORKFLOW_ID)
+
+    assert record.status is ExecutionStatus.FAILED
+    assert record.failure is not None
+    assert record.failure.kind is ExecutionFailureKind.INTERNAL_ERROR
+    assert record.failure.exception_type == "LookupError"
+    assert record.failure.exception_message == "bridge state vanished"
+    assert "LookupError" in record.failure.technical_cause
+    assert record.failure.execution_id == record.execution_id
+    assert executions.load(WORKFLOW_ID, record.execution_id) == record
+
+
+def test_missing_prompt_is_structured_as_input_failure(tmp_path):
+    bridge, _, _, prompt_path, _ = service(tmp_path)
+    prompt_path.unlink()
+
+    with pytest.raises(ExecutionBridgeError) as captured:
+        bridge.execute(WORKFLOW_ID)
+
+    assert captured.value.failure.kind is ExecutionFailureKind.INPUT_NOT_FOUND
+    assert captured.value.failure.step is ExecutionStep.PROMPT_VALIDATION
+    assert captured.value.failure.exception_type == "RuntimeError"
+
+
+def test_watcher_never_reduces_unexpected_error_to_naked_class_name(tmp_path):
+    bridge, _, _, _, _ = service(tmp_path)
+
+    def explode(workflow_id):
+        raise LookupError("watcher detail")
+
+    bridge.status = explode
+    result = ArchitectureExecutionWatcher(bridge, clock=lambda: NOW).run_once()
+
+    prefix = "{}:ERROR:".format(WORKFLOW_ID)
+    assert len(result) == 1 and result[0].startswith(prefix)
+    failure = json.loads(result[0][len(prefix):])
+    assert failure["kind"] == "INTERNAL_ERROR"
+    assert failure["step"] == "WATCHER_SCAN"
+    assert failure["exception_type"] == "LookupError"
+    assert failure["exception_message"] == "watcher detail"
+    assert "technical_cause" in failure

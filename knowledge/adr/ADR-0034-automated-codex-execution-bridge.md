@@ -53,6 +53,23 @@ Fehler, Retry-Zähler und Push-Status.
 Status sind ausschließlich `PENDING`, `RUNNING`, `SUCCEEDED`, `FAILED`,
 `BLOCKED`, `WAITING_FOR_CAPACITY` und `CANCELLED`.
 
+Fehler sind keine freien Statusmeldungen. Schema 1.1 enthält einen typisierten
+Fehlervertrag mit Ausführungsschritt, Fehlerklasse, Programm und separater
+Argumentliste, Arbeitsverzeichnis, Exit-Code, stdout, stderr, Exception-Typ
+und -Nachricht, technischer Ursache, timezone-aware Zeitstempel und
+Execution-ID. Unterschieden werden fehlendes Programm, fehlendes
+Arbeitsverzeichnis, fehlender Auftrag, Startfehler, Prozess-Exit ungleich null,
+Timeout und unerwarteter interner Fehler. Ein gestarteter Prozess behält seine
+redigierten Ausgaben auch im Fehlerfall; ein Fehler vor dem Prozessstart hat
+keinen erfundenen Exit-Code.
+
+Fehlerausgaben, technische Ursachen und Argumente werden begrenzt und vor
+Persistenz redigiert. stdin und Umgebungsvariablen werden nie in den Record
+übernommen. Bekannte Token-, API-Key-, Passwort-, Credential-, Secret- und
+Authorization-Muster sowie explizit bekannte sensible Werte werden ersetzt.
+Diese deterministische Redaktion ist keine allgemeine Inhaltsklassifikation;
+unbekannte sensible Freitextformen bleiben eine dokumentierte Grenze.
+
 Execution JSON und Markdown liegen im `executions`-Unterordner des Workflows.
 Dieser lokale Laufzeitbereich wird nicht committed. Dadurch kann die Bridge den
 finalen Status nach dem von Codex erzeugten Result-Commit dokumentieren, ohne
@@ -111,6 +128,8 @@ Der bestehende Architecture-CLI-Baum erhält `architecture execute` sowie
 
 - Produktions-CLI ist fest auf `/Users/michaelgiese/zonvaa-builder` begrenzt.
 - Metadaten werden nie als Shell-Befehl interpretiert.
+- Fehlerberichte enthalten strukturierte Argumentlisten und niemals einen
+  nachträglich zusammengesetzten Shell-Befehl.
 - Prompt-Pfad, Symlinks, Proof, Decisions, Git-Root und Lock werden geprüft.
 - Keine automatische Entscheidung, Änderung von Decisions, Rücksetzung,
   Commit-Erzeugung, Push- oder PR-Erzeugung.

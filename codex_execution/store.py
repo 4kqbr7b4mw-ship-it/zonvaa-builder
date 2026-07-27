@@ -9,7 +9,10 @@ from typing import Iterator, Optional
 from architecture_integrator import ArchitectureWorkflowStore
 from codex_execution.models import (
     CheckStatus,
+    ExecutionFailure,
+    ExecutionFailureKind,
     ExecutionRecord,
+    ExecutionStep,
     ExecutionStatus,
 )
 
@@ -60,6 +63,30 @@ class ExecutionStore:
         data = json.loads(
             self.path(workflow_id, execution_id).read_text(encoding="utf-8")
         )
+        failure_data = data.get("failure")
+        failure = (
+            ExecutionFailure.from_dict(failure_data)
+            if failure_data is not None
+            else None
+        )
+        if failure is None and data.get("failure_reason"):
+            failure = ExecutionFailure(
+                kind=ExecutionFailureKind.INTERNAL_ERROR,
+                step=ExecutionStep.RESULT_VERIFICATION,
+                program=None,
+                arguments=(),
+                working_directory=data["repository_path"],
+                exit_code=data["codex_exit_code"],
+                stdout="",
+                stderr="",
+                exception_type="LegacyExecutionError",
+                exception_message=data["failure_reason"],
+                technical_cause=data["failure_reason"],
+                occurred_at=datetime.fromisoformat(
+                    data["completed_at"] or data["started_at"]
+                ),
+                execution_id=data["execution_id"],
+            )
         return ExecutionRecord(
             execution_id=data["execution_id"],
             workflow_id=data["workflow_id"],
@@ -84,10 +111,10 @@ class ExecutionStore:
             diff_check_status=CheckStatus(data["diff_check_status"]),
             resulting_commit=data["resulting_commit"],
             handover_paths=tuple(data["handover_paths"]),
-            failure_reason=data["failure_reason"],
+            failure=failure,
             retry_count=data["retry_count"],
             push_status=data["push_status"],
-            schema_version=data["schema_version"],
+            schema_version="1.1",
         )
 
     def existing(
@@ -182,7 +209,15 @@ class ExecutionStore:
                 duration if duration is not None else "running"
             ),
             "- Failure or blocker: {}".format(
-                record.failure_reason or "none"
+                (
+                    "{} / {} / {}".format(
+                        record.failure.kind.value,
+                        record.failure.step.value,
+                        record.failure.exception_message,
+                    )
+                    if record.failure
+                    else "none"
+                )
             ),
             "- Push status: `not_pushed`",
             "",
