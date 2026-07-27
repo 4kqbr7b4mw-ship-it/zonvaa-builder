@@ -70,6 +70,20 @@ Authorization-Muster sowie explizit bekannte sensible Werte werden ersetzt.
 Diese deterministische Redaktion ist keine allgemeine Inhaltsklassifikation;
 unbekannte sensible Freitextformen bleiben eine dokumentierte Grenze.
 
+Schema 1.2 erhält zusätzlich jeden Ausführungsversuch als typisierten Attempt
+innerhalb desselben Execution Records. Attempt-ID und fortlaufende Nummer sind
+deterministisch. Der jeweils aktive Attempt darf von `PENDING` über `RUNNING`
+in einen terminalen Zustand überführt werden; danach ist sein fachlicher Inhalt
+append-only geschützt. Ein Retry ergänzt einen neuen Attempt und überschreibt
+keinen früheren. Der übergeordnete Record bleibt weiterhin der aktuelle
+Gesamtzustand. JSON persistiert die vollständige History, Markdown fasst jeden
+Attempt mit Status, Zeiten und Ergebnis zusammen.
+
+Schema-1.0/1.1-Records bleiben ohne Migration lesbar. Ihre Attempt-History ist
+leer: Aus dem früheren Gesamtstatus lassen sich weder einzelne Versuche noch
+deren Zeiten und Ausgaben belegbar rekonstruieren, daher wird kein
+Legacy-Attempt erfunden.
+
 Execution JSON und Markdown liegen im `executions`-Unterordner des Workflows.
 Dieser lokale Laufzeitbereich wird nicht committed. Dadurch kann die Bridge den
 finalen Status nach dem von Codex erzeugten Result-Commit dokumentieren, ohne

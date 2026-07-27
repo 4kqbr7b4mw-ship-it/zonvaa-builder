@@ -3,6 +3,65 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Abgeschlossener Plan: Immutable Execution Attempt History
+
+### Ziel und Nicht-Ziele
+
+Jeden Start derselben Execution als eigenen, geordneten und nach Abschluss
+unveränderlichen Attempt im bestehenden Execution Record erhalten. Der Record
+bleibt letzter Gesamtzustand. Keine Änderung an Autorisierung, Retry-
+Entscheidung, Queue, Scheduling, Prompt, Login-Shell, PATH oder Result-Commit-
+Prüfung.
+
+### Geprüfter Ausgangszustand
+
+- Preflight auf `main` und Commit `4f66a12` war erfolgreich; der Arbeitsbaum
+  war sauber.
+- Schema 1.1 persistiert nur den jeweils letzten Gesamtstatus und einen
+  `retry_count`; jeder Retry überschreibt Fehler, Zeitpunkte und Ausgaben des
+  vorherigen Versuchs.
+- Execution JSON und Markdown sowie der atomare `ExecutionStore` sind die
+  geeignete bestehende Persistenzgrenze.
+- Fehlervertrag und Redaktion sind bereits typisiert und werden für Attempts
+  wiederverwendet.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight, Modelle, Store, Service, Watcher, CLI, ADR und Tests prüfen.
+- [x] Unveränderliches Attempt-Modell und Schema 1.2 implementieren.
+- [x] Store-Invarianten und Legacy-Lesen ergänzen.
+- [x] Service-Start, Retry, Abschluss und Reports integrieren.
+- [x] Fokussierte Attempt- und Kompatibilitätstests ergänzen.
+- [x] Vollständige Tests, Doctor, Diff, Handover und Commit abschließen.
+
+### Entscheidungen und Begründungen
+
+- Attempts werden als geordnete Tuple im bestehenden Record gespeichert; es
+  entsteht keine parallele Audit-Ablage.
+- Attempt-IDs werden deterministisch aus Execution-ID und fortlaufender Nummer
+  abgeleitet.
+- Schema-1.0/1.1-Records werden mit leerer Attempt-History gelesen. Ein
+  Legacy-Attempt wäre mangels belegbarer Einzelversuchsdaten erfunden.
+- Ein laufender Attempt darf nur entlang definierter Statusübergänge verändert
+  werden; der Store lehnt jede Änderung eines terminalen Attempts ab.
+
+### Risiken und Teststrategie
+
+- Der Record wird während eines Attempts weiterhin atomar fortgeschrieben;
+  Prozessabbruch zwischen zwei Writes kann den letzten persistierten
+  nichtterminalen Zustand hinterlassen.
+- Tests prüfen Nummerierung, Retry-Erhalt, Terminalschutz, Fehlerdaten,
+  Redaktion, JSON/Markdown, CLI und Legacy-Kompatibilität ohne Netzwerk,
+  Codex-Login oder launchd.
+
+### Abweichungen und Abschlusszustand
+
+Keine fachliche Abweichung vom Auftrag. Die bestehende Record-Persistenz wurde
+auf Schema 1.2 erweitert; Legacy-Records bleiben ohne erfundene Attempts
+lesbar. 30 fokussierte und 582 vollständige Tests, Doctor sowie
+`git diff --check` waren erfolgreich. Der lokale Handover gehört zum
+Abschlusscommit; es wurde nicht gepusht.
+
 ## Abgeschlossener Plan: Automated Codex Execution Bridge E2E Validation
 
 ### Ziel und Nicht-Ziele

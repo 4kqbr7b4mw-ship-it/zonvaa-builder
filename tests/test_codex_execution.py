@@ -2,26 +2,31 @@ import hashlib
 import json
 import os
 import plistlib
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
 import subprocess
+from typer.testing import CliRunner
 
+import commands.architecture as architecture_commands
 from architecture_integrator import ArchitectureWorkflowStore
 from codex_execution import (
     ArchitectureExecutionWatcher,
+    AttemptTrigger,
     CheckStatus,
     CodexExecutionService,
     CommandResult,
     ExecutionPolicy,
     ExecutionRecord,
     ExecutionBridgeError,
+    ExecutionAttempt,
     ExecutionFailureKind,
     ExecutionStep,
     ExecutionStatus,
     ExecutionStore,
+    RedactionStatus,
     SubprocessCommandRunner,
 )
 
@@ -227,8 +232,18 @@ def test_confirmed_workflow_executes_canonical_prompt_and_verifies_result(
     record = bridge.execute(WORKFLOW_ID)
 
     assert record.status is ExecutionStatus.SUCCEEDED
-    assert record.schema_version == "1.1"
+    assert record.schema_version == "1.2"
     assert record.failure is None
+    assert len(record.attempts) == 1
+    attempt = record.attempts[0]
+    assert attempt.attempt_number == 1
+    assert attempt.attempt_id == bridge.attempt_id(record.execution_id, 1)
+    assert attempt.status is ExecutionStatus.SUCCEEDED
+    assert attempt.trigger is AttemptTrigger.INITIAL
+    assert attempt.completed_at is not None
+    assert attempt.verification_status is CheckStatus.PASSED
+    assert attempt.redaction_status is RedactionStatus.APPLIED
+    assert attempt.authorization_reference.endswith(prompt_hash)
     assert record.prompt_hash == prompt_hash
     assert record.resulting_commit == RESULT
     assert record.test_status is CheckStatus.PASSED
@@ -357,12 +372,20 @@ def test_retry_keeps_execution_identity_and_increments_counter(tmp_path):
     )
     bridge, _, _, _, _ = service(tmp_path, runner=fake)
     first = bridge.execute(WORKFLOW_ID)
+    first_attempt = first.attempts[0]
 
     second = bridge.execute(WORKFLOW_ID, retry=True)
 
     assert second.execution_id == first.execution_id
     assert second.retry_count == 1
     assert second.status is ExecutionStatus.WAITING_FOR_CAPACITY
+    assert len(second.attempts) == 2
+    assert second.attempts[0] == first_attempt
+    assert second.attempts[1].attempt_number == 2
+    assert second.attempts[1].trigger is AttemptTrigger.RETRY
+    assert second.attempts[1].attempt_id == bridge.attempt_id(
+        second.execution_id, 2
+    )
 
 
 def test_failed_tests_prevent_result_approval_and_further_commit(tmp_path):
@@ -405,6 +428,20 @@ def test_result_verification_failure_retains_redacted_codex_output(tmp_path):
     assert "read-only complete" in record.failure.stdout
     assert "diagnostic" in record.failure.stderr
     assert secret not in json.dumps(record.failure.to_dict())
+    assert record.attempts[-1].step is ExecutionStep.RESULT_VERIFICATION
+    assert record.attempts[-1].failure_kind is (
+        ExecutionFailureKind.INTERNAL_ERROR
+    )
+    assert record.attempts[-1].program == "/usr/local/bin/codex"
+    assert record.attempts[-1].arguments[0:3] == (
+        "--ask-for-approval",
+        "never",
+        "exec",
+    )
+    assert record.attempts[-1].exit_code == 0
+    assert "read-only complete" in record.attempts[-1].stdout
+    assert "diagnostic" in record.attempts[-1].stderr
+    assert secret not in json.dumps(record.attempts[-1].to_dict())
 
 
 def test_watcher_is_idempotent_and_retries_capacity_after_delay(tmp_path):
@@ -434,7 +471,11 @@ def test_watcher_is_idempotent_and_retries_capacity_after_delay(tmp_path):
     assert delayed.run_once() == (
         "{}:WAITING_FOR_CAPACITY".format(WORKFLOW_ID),
     )
-    assert bridge.status(WORKFLOW_ID).retry_count == 1
+    watched = bridge.status(WORKFLOW_ID)
+    assert watched.retry_count == 1
+    assert [attempt.attempt_number for attempt in watched.attempts] == [1, 2]
+    assert watched.attempts[0].trigger is AttemptTrigger.INITIAL
+    assert watched.attempts[1].trigger is AttemptTrigger.RETRY
 
 
 def test_launchd_template_is_restart_capable_and_runs_finite_scan():
@@ -553,6 +594,12 @@ def test_nonzero_process_preserves_output_exit_code_and_redacts_secrets(tmp_path
     assert "[REDACTED]" in record.failure.stdout
     assert "[REDACTED]" in record.failure.stderr
     assert record.failure.to_dict() == record.failure.to_dict()
+    assert record.attempts[0].stdout == record.failure.stdout
+    assert record.attempts[0].stderr == record.failure.stderr
+    assert record.attempts[0].exception_type == "ProcessExitError"
+    assert record.attempts[0].failure_kind is (
+        ExecutionFailureKind.PROCESS_EXIT_NONZERO
+    )
     assert executions.load(WORKFLOW_ID, record.execution_id) == record
 
 
@@ -648,3 +695,100 @@ def test_missing_watcher_input_is_not_classified_as_missing_executable(
     failure = json.loads(result[0][len(prefix):])
     assert failure["program"] is None
     assert failure["kind"] == "INPUT_NOT_FOUND"
+
+
+def test_attempt_serialization_order_and_markdown_report(tmp_path):
+    fake = FakeRunner(
+        tmp_path,
+        codex_exit=1,
+        codex_output="Capacity unavailable.",
+    )
+    bridge, _, executions, _, _ = service(tmp_path, runner=fake)
+    bridge.execute(WORKFLOW_ID)
+    record = bridge.execute(WORKFLOW_ID, retry=True)
+
+    payload = record.to_dict()
+    assert [item["attempt_number"] for item in payload["attempts"]] == [1, 2]
+    assert [item["status"] for item in payload["attempts"]] == [
+        "WAITING_FOR_CAPACITY",
+        "WAITING_FOR_CAPACITY",
+    ]
+    markdown = executions.path(
+        WORKFLOW_ID, record.execution_id
+    ).with_suffix(".md").read_text(encoding="utf-8")
+    assert "- Attempts: `2`" in markdown
+    assert markdown.index("### Attempt 1") < markdown.index("### Attempt 2")
+
+
+def test_terminal_attempt_cannot_be_replaced_in_store(tmp_path):
+    bridge, _, executions, _, _ = service(tmp_path)
+    record = bridge.execute(WORKFLOW_ID)
+    terminal = record.attempts[0]
+
+    with pytest.raises(ValueError, match="Terminal attempt"):
+        terminal.transition(stdout="changed")
+
+    tampered = replace(terminal, stdout="changed")
+    with pytest.raises(ValueError, match="Terminal attempt"):
+        executions.write(record.evolve(attempts=(tampered,)))
+
+
+@pytest.mark.parametrize("legacy_schema", ("1.0", "1.1"))
+def test_legacy_execution_record_loads_without_invented_attempts(
+    tmp_path,
+    legacy_schema,
+):
+    bridge, _, executions, _, _ = service(tmp_path)
+    record = bridge.execute(WORKFLOW_ID)
+    path = executions.path(WORKFLOW_ID, record.execution_id)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload.pop("attempts")
+    payload["schema_version"] = legacy_schema
+    if legacy_schema == "1.0":
+        payload["failure_reason"] = None
+        payload.pop("failure")
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    legacy = executions.load(WORKFLOW_ID, record.execution_id)
+
+    assert legacy.schema_version == "1.2"
+    assert legacy.status is ExecutionStatus.SUCCEEDED
+    assert legacy.attempts == ()
+
+
+def test_execution_status_cli_contains_complete_attempt_history(
+    tmp_path,
+    monkeypatch,
+):
+    bridge, _, _, _, _ = service(tmp_path)
+    record = bridge.execute(WORKFLOW_ID)
+    monkeypatch.setattr(
+        architecture_commands,
+        "_execution_service",
+        lambda: bridge,
+    )
+
+    result = CliRunner().invoke(
+        architecture_commands.execution_app,
+        ["status", "--workflow-id", WORKFLOW_ID],
+    )
+
+    assert result.exit_code == 0
+    payload = json.loads(result.stdout)
+    assert payload["execution_id"] == record.execution_id
+    assert len(payload["attempts"]) == 1
+    assert payload["attempts"][0]["attempt_id"] == (
+        record.attempts[0].attempt_id
+    )
+
+
+def test_execution_attempt_model_is_frozen_and_rejects_wrong_identity(tmp_path):
+    bridge, _, _, _, _ = service(tmp_path)
+    record = bridge.execute(WORKFLOW_ID)
+    attempt = record.attempts[0]
+    assert isinstance(attempt, ExecutionAttempt)
+    with pytest.raises(FrozenInstanceError):
+        attempt.status = ExecutionStatus.FAILED
+    wrong = replace(attempt, execution_id="execution-0000000000000000")
+    with pytest.raises(ValueError, match="another execution"):
+        record.evolve(attempts=(wrong,))

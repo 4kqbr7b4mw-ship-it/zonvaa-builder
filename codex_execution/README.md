@@ -27,6 +27,15 @@ Ursache. stdin und Umgebungsvariablen werden nicht protokolliert; bekannte
 Token-, API-Key-, Passwort-, Credential-, Secret- und Authorization-Muster
 werden durch `[REDACTED]` ersetzt.
 
+Schema 1.2 ergänzt eine geordnete `attempts`-History im selben Execution
+Record. Jeder Start besitzt eine deterministische Attempt-ID und Nummer; ein
+Retry hängt einen neuen Attempt an. Nur der aktive Attempt darf von `PENDING`
+über `RUNNING` in einen terminalen Status wechseln. Der Store lehnt Änderungen
+bereits terminaler Attempts ab. JSON enthält die vollständige History;
+Markdown zeigt Anzahl, Status, Zeiten und Ergebnis jedes Attempts. Historische
+Schema-1.0/1.1-Records bleiben lesbar und erhalten eine leere History, weil
+Einzelversuchsdaten nicht nachträglich erfunden werden.
+
 ## Manual commands
 
 ```text

@@ -9,6 +9,7 @@ from typing import Iterator, Optional
 from architecture_integrator import ArchitectureWorkflowStore
 from codex_execution.models import (
     CheckStatus,
+    ExecutionAttempt,
     ExecutionFailure,
     ExecutionFailureKind,
     ExecutionRecord,
@@ -40,6 +41,11 @@ class ExecutionStore:
 
     def write(self, record: ExecutionRecord) -> None:
         path = self.path(record.workflow_id, record.execution_id)
+        if path.is_file():
+            self._validate_attempt_history(self.load(
+                record.workflow_id,
+                record.execution_id,
+            ), record)
         self._replace(
             path,
             json.dumps(
@@ -87,6 +93,10 @@ class ExecutionStore:
                 ),
                 execution_id=data["execution_id"],
             )
+        attempts = tuple(
+            ExecutionAttempt.from_dict(item)
+            for item in data.get("attempts", [])
+        )
         return ExecutionRecord(
             execution_id=data["execution_id"],
             workflow_id=data["workflow_id"],
@@ -112,9 +122,10 @@ class ExecutionStore:
             resulting_commit=data["resulting_commit"],
             handover_paths=tuple(data["handover_paths"]),
             failure=failure,
+            attempts=attempts,
             retry_count=data["retry_count"],
             push_status=data["push_status"],
-            schema_version="1.1",
+            schema_version="1.2",
         )
 
     def existing(
@@ -172,6 +183,59 @@ class ExecutionStore:
                 pass
             raise
 
+    def _validate_attempt_history(
+        self,
+        previous: ExecutionRecord,
+        current: ExecutionRecord,
+    ) -> None:
+        old = previous.attempts
+        new = current.attempts
+        if len(new) < len(old) or len(new) > len(old) + 1:
+            raise ValueError("Attempt history must be append-only")
+        terminal = {
+            ExecutionStatus.SUCCEEDED,
+            ExecutionStatus.FAILED,
+            ExecutionStatus.BLOCKED,
+            ExecutionStatus.WAITING_FOR_CAPACITY,
+            ExecutionStatus.CANCELLED,
+        }
+        for index, old_attempt in enumerate(old):
+            new_attempt = new[index]
+            if old_attempt == new_attempt:
+                continue
+            if old_attempt.status in terminal:
+                raise ValueError("Terminal attempt cannot be overwritten")
+            if index != len(old) - 1:
+                raise ValueError("Only the active attempt may change")
+            allowed_statuses = (
+                {
+                    ExecutionStatus.RUNNING,
+                    ExecutionStatus.SUCCEEDED,
+                    ExecutionStatus.FAILED,
+                    ExecutionStatus.BLOCKED,
+                    ExecutionStatus.WAITING_FOR_CAPACITY,
+                    ExecutionStatus.CANCELLED,
+                }
+                if old_attempt.status is ExecutionStatus.PENDING
+                else terminal
+            )
+            if new_attempt.status not in allowed_statuses:
+                raise ValueError("Attempt status transition is invalid")
+            for field_name in (
+                "attempt_id",
+                "execution_id",
+                "attempt_number",
+                "started_at",
+                "trigger",
+                "authorization_reference",
+            ):
+                if getattr(old_attempt, field_name) != getattr(
+                    new_attempt, field_name
+                ):
+                    raise ValueError("Attempt identity cannot change")
+        if len(new) == len(old) + 1 and old and old[-1].status not in terminal:
+            raise ValueError("Cannot append while an attempt is active")
+
     def _markdown(self, record: ExecutionRecord) -> str:
         duration = (
             (record.completed_at - record.started_at).total_seconds()
@@ -220,6 +284,35 @@ class ExecutionStore:
                 )
             ),
             "- Push status: `not_pushed`",
+            "- Attempts: `{}`".format(len(record.attempts)),
             "",
         ]
+        if record.attempts:
+            lines.extend(("## Attempts", ""))
+            for attempt in record.attempts:
+                result = (
+                    attempt.failure_kind.value
+                    if attempt.failure_kind
+                    else attempt.verification_status.value
+                )
+                lines.extend(
+                    (
+                        "### Attempt {}".format(attempt.attempt_number),
+                        "",
+                        "- ID: `{}`".format(attempt.attempt_id),
+                        "- Status: `{}`".format(attempt.status.value),
+                        "- Trigger: `{}`".format(attempt.trigger.value),
+                        "- Step: `{}`".format(attempt.step.value),
+                        "- Started: `{}`".format(
+                            attempt.started_at.isoformat()
+                        ),
+                        "- Completed: `{}`".format(
+                            attempt.completed_at.isoformat()
+                            if attempt.completed_at
+                            else "running"
+                        ),
+                        "- Result: `{}`".format(result),
+                        "",
+                    )
+                )
         return "\n".join(lines)

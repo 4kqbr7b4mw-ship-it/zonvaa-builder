@@ -7,13 +7,17 @@ from typing import Callable, Optional, Tuple
 
 from architecture_integrator import ArchitectureWorkflowStore, WorkflowStatus
 from codex_execution.models import (
+    AttemptTrigger,
     CheckStatus,
+    ExecutionAttempt,
     ExecutionFailure,
     ExecutionFailureKind,
     ExecutionPolicy,
     ExecutionRecord,
     ExecutionStep,
     ExecutionStatus,
+    RedactionStatus,
+    execution_attempt_id,
 )
 from codex_execution.errors import (
     ExecutionBridgeError,
@@ -190,6 +194,38 @@ class CodexExecutionService:
                 retry_count = 0
                 started_at = self.clock()
 
+            attempt_number = len(existing.attempts) + 1 if existing else 1
+            attempt_started_at = self.clock()
+            attempt = ExecutionAttempt(
+                attempt_id=self.attempt_id(execution_id, attempt_number),
+                execution_id=execution_id,
+                attempt_number=attempt_number,
+                started_at=attempt_started_at,
+                completed_at=None,
+                status=ExecutionStatus.PENDING,
+                trigger=(
+                    AttemptTrigger.RETRY if retry else AttemptTrigger.INITIAL
+                ),
+                step=ExecutionStep.REPOSITORY_INSPECTION,
+                program=None,
+                arguments=(),
+                working_directory=str(self.repository),
+                exit_code=None,
+                stdout="",
+                stderr="",
+                failure_kind=None,
+                exception_type=None,
+                exception_message=None,
+                technical_cause=None,
+                verification_status=CheckStatus.NOT_RUN,
+                verification_result=None,
+                redaction_status=RedactionStatus.PENDING,
+                authorization_reference=self._authorization_reference(
+                    workflow_id,
+                    prompt_hash,
+                ),
+            )
+
             record = ExecutionRecord(
                 execution_id=execution_id,
                 workflow_id=workflow_id,
@@ -211,6 +247,7 @@ class CodexExecutionService:
                 resulting_commit=None,
                 handover_paths=(),
                 failure=None,
+                attempts=(existing.attempts if existing else ()) + (attempt,),
                 retry_count=retry_count,
             )
             self.executions.write(record)
@@ -266,8 +303,6 @@ class CodexExecutionService:
                     ),
                 )
 
-            running = record.evolve(status=ExecutionStatus.RUNNING)
-            self.executions.write(running)
             codex_arguments = (
                 codex,
                 "--ask-for-approval",
@@ -279,6 +314,17 @@ class CodexExecutionService:
                 "workspace-write",
                 "-",
             )
+            running_attempt = record.attempts[-1].transition(
+                status=ExecutionStatus.RUNNING,
+                step=ExecutionStep.CODEX_EXECUTION,
+                program=codex,
+                arguments=codex_arguments[1:],
+            )
+            running = record.evolve(
+                status=ExecutionStatus.RUNNING,
+                attempts=record.attempts[:-1] + (running_attempt,),
+            )
+            self.executions.write(running)
             codex_result = self._run(
                 codex_arguments,
                 ExecutionStep.CODEX_EXECUTION,
@@ -405,6 +451,9 @@ class CodexExecutionService:
                         "ResultCommitMissingError",
                         "Codex produced no result commit.",
                         execution_id,
+                        program=codex,
+                        arguments=codex_arguments[1:],
+                        exit_code=codex_result.exit_code,
                         stdout=codex_result.stdout,
                         stderr=codex_result.stderr,
                         sensitive_values=(prompt,),
@@ -426,6 +475,9 @@ class CodexExecutionService:
                         "HandoverMissingError",
                         "Result commit has no complete JSON and Markdown handover.",
                         execution_id,
+                        program=codex,
+                        arguments=codex_arguments[1:],
+                        exit_code=codex_result.exit_code,
                         stdout=codex_result.stdout,
                         stderr=codex_result.stderr,
                         sensitive_values=(prompt,),
@@ -453,6 +505,9 @@ class CodexExecutionService:
                         "WorkingTreeDirtyError",
                         "Working tree is not clean after the result commit.",
                         execution_id,
+                        program=codex,
+                        arguments=codex_arguments[1:],
+                        exit_code=codex_result.exit_code,
                         stdout=codex_result.stdout,
                         stderr=codex_result.stderr,
                         sensitive_values=(prompt,),
@@ -464,9 +519,27 @@ class CodexExecutionService:
                     doctor_result=self._summary(doctor, "Doctor passed."),
                     diff_check_status=CheckStatus.PASSED,
                 )
+            completed_at = self.clock()
+            succeeded_attempt = running.attempts[-1].transition(
+                status=ExecutionStatus.SUCCEEDED,
+                completed_at=completed_at,
+                step=ExecutionStep.RESULT_VERIFICATION,
+                program=codex,
+                arguments=codex_arguments[1:],
+                exit_code=0,
+                stdout=redact(codex_result.stdout, (prompt,)),
+                stderr=redact(codex_result.stderr, (prompt,)),
+                failure_kind=None,
+                exception_type=None,
+                exception_message=None,
+                technical_cause=None,
+                verification_status=CheckStatus.PASSED,
+                verification_result="All result verification checks passed.",
+                redaction_status=RedactionStatus.APPLIED,
+            )
             succeeded = running.evolve(
                 status=ExecutionStatus.SUCCEEDED,
-                completed_at=self.clock(),
+                completed_at=completed_at,
                 codex_exit_code=0,
                 test_status=CheckStatus.PASSED,
                 test_result=self._summary(test, "Tests passed."),
@@ -475,6 +548,7 @@ class CodexExecutionService:
                 diff_check_status=CheckStatus.PASSED,
                 resulting_commit=result_commit,
                 handover_paths=handovers,
+                attempts=running.attempts[:-1] + (succeeded_attempt,),
             )
             self.executions.write(succeeded)
             return succeeded
@@ -576,10 +650,30 @@ class CodexExecutionService:
         failure: ExecutionFailure,
         **changes: object
     ) -> ExecutionRecord:
+        completed_at = self.clock()
+        current_attempt = record.attempts[-1]
+        completed_attempt = current_attempt.transition(
+            status=status,
+            completed_at=completed_at,
+            step=failure.step,
+            program=failure.program,
+            arguments=failure.arguments,
+            exit_code=failure.exit_code,
+            stdout=failure.stdout,
+            stderr=failure.stderr,
+            failure_kind=failure.kind,
+            exception_type=failure.exception_type,
+            exception_message=failure.exception_message,
+            technical_cause=failure.technical_cause,
+            verification_status=CheckStatus.FAILED,
+            verification_result=failure.exception_message,
+            redaction_status=RedactionStatus.APPLIED,
+        )
         completed = record.evolve(
             status=status,
-            completed_at=self.clock(),
+            completed_at=completed_at,
             failure=failure,
+            attempts=record.attempts[:-1] + (completed_attempt,),
             **changes
         )
         self.executions.write(completed)
@@ -663,6 +757,9 @@ class CodexExecutionService:
         exception_type: str,
         message: str,
         execution_id: Optional[str],
+        program: Optional[str] = None,
+        arguments: Tuple[str, ...] = (),
+        exit_code: Optional[int] = None,
         stdout: str = "",
         stderr: str = "",
         sensitive_values: Tuple[str, ...] = (),
@@ -670,10 +767,10 @@ class CodexExecutionService:
         return ExecutionFailure(
             kind=ExecutionFailureKind.INTERNAL_ERROR,
             step=step,
-            program=None,
-            arguments=(),
+            program=program,
+            arguments=arguments,
             working_directory=str(self.repository),
-            exit_code=None,
+            exit_code=exit_code,
             stdout=redact(stdout, sensitive_values),
             stderr=redact(stderr, sensitive_values),
             exception_type=exception_type,
@@ -685,3 +782,16 @@ class CodexExecutionService:
 
     def _lines(self, value: str) -> Tuple[str, ...]:
         return tuple(line for line in value.splitlines() if line.strip())
+
+    def attempt_id(self, execution_id: str, attempt_number: int) -> str:
+        return execution_attempt_id(execution_id, attempt_number)
+
+    def _authorization_reference(
+        self,
+        workflow_id: str,
+        prompt_hash: str,
+    ) -> str:
+        return "{}:prompts/codex-prompt.md#sha256={}".format(
+            workflow_id,
+            prompt_hash,
+        )
