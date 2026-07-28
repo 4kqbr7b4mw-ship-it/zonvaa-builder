@@ -72,6 +72,35 @@ python3 -m builder.main architecture workflow feedback-status \
   --workflow-id workflow-0123456789abcdef
 ```
 
+## Architecture Operations
+
+Der read-only Architecture Operations Agent leitet den aktuellen Stand bei
+jedem Aufruf neu aus den bestehenden Workflow-, Feedback-, Execution- und
+Handover-Artefakten ab. Er persistiert keinen eigenen Zustand, startet keine
+Ausführung und trifft keine Entscheidung.
+
+```bash
+python3 -m builder.main architecture status \
+  --topic "Guardian Succession"
+python3 -m builder.main architecture next \
+  --workflow-id workflow-0123456789abcdef
+python3 -m builder.main architecture artifacts \
+  --execution-id reconstructed-execution-0123456789abcdef
+python3 -m builder.main architecture reviews --json
+```
+
+`status`, `next` und `artifacts` akzeptieren außerdem Architecture-Run-,
+Review-, Commit-, Handover-, Proposal- und Decision-Referenzen. Mehrdeutige
+Suchen werden mit `AMBIGUOUS_QUERY` abgebrochen. Fehlende erwartete Artefakte
+werden ausdrücklich als `MISSING` ausgewiesen; ihre Pfade werden nicht
+erfunden. `reviews` zeigt ausschließlich persistierte Integrator-Reviews im
+Zustand `CHIEF_ARCHITECT_DECISION_REQUIRED`.
+
+Historische Workflows ohne Prompt-Proof bleiben sichtbar, werden als Legacy
+gekennzeichnet und durch diese Leseschicht nicht ausführbar gemacht. Ein
+Review oder eine Empfehlung ersetzt niemals die Entscheidung des Chief
+Architect.
+
 ## Kontextreihenfolge
 
 `C1 → MDR → C2 → Institution/Interaction → ADR → C3 → historische ADRs`

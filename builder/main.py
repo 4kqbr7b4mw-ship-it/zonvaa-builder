@@ -3,6 +3,10 @@ import typer
 from builder.runtime import get_runtime
 from commands.build import build
 from commands.architecture import (
+    architecture_artifacts,
+    architecture_next,
+    architecture_reviews,
+    architecture_status,
     create_codex_prompt,
     execute_architecture,
     execution_app,
@@ -37,6 +41,10 @@ architecture_app.command("integrate")(integrate_architecture)
 architecture_app.command("codex-prompt")(create_codex_prompt)
 architecture_app.command("run")(run_architecture)
 architecture_app.command("execute")(execute_architecture)
+architecture_app.command("status")(architecture_status)
+architecture_app.command("next")(architecture_next)
+architecture_app.command("artifacts")(architecture_artifacts)
+architecture_app.command("reviews")(architecture_reviews)
 architecture_app.add_typer(workflow_app, name="workflow")
 architecture_app.add_typer(execution_app, name="execution")
 

@@ -12,7 +12,12 @@ from architecture_integrator import (
     ArchitectureIntegrator,
     ArchitectureWorkflowOrchestrator,
     ArchitectureWorkflowStore,
+    ArchitectureOperationQuery,
+    ArchitectureOperationQueryError,
+    ArchitectureOperationsAgent,
+    ArchitectureQueryFailureCode,
     CodexPromptBuilder,
+    render_operation,
 )
 from architecture_integrator.io import (
     load_analysis,
@@ -43,6 +48,284 @@ workflow_app = typer.Typer(
 execution_app = typer.Typer(
     help="Lokale Codex-Ausführungen sicher verwalten"
 )
+
+
+def architecture_status(
+    topic: Optional[str] = typer.Option(None, "--topic"),
+    workflow_id: Optional[str] = typer.Option(None, "--workflow-id"),
+    architecture_run_id: Optional[str] = typer.Option(
+        None,
+        "--architecture-run-id",
+    ),
+    execution_id: Optional[str] = typer.Option(None, "--execution-id"),
+    review_id: Optional[str] = typer.Option(None, "--review-id"),
+    commit: Optional[str] = typer.Option(None, "--commit"),
+    handover_path: Optional[str] = typer.Option(None, "--handover-path"),
+    proposal_id: Optional[str] = typer.Option(None, "--proposal-id"),
+    decision_id: Optional[str] = typer.Option(None, "--decision-id"),
+    json_output: bool = typer.Option(False, "--json"),
+) -> None:
+    """Show deterministic read-only architecture operation status."""
+    _show_operations(
+        _operation_query(
+            topic,
+            workflow_id,
+            architecture_run_id,
+            execution_id,
+            review_id,
+            commit,
+            handover_path,
+            proposal_id,
+            decision_id,
+        ),
+        json_output,
+    )
+
+
+def architecture_next(
+    topic: Optional[str] = typer.Option(None, "--topic"),
+    workflow_id: Optional[str] = typer.Option(None, "--workflow-id"),
+    architecture_run_id: Optional[str] = typer.Option(
+        None,
+        "--architecture-run-id",
+    ),
+    execution_id: Optional[str] = typer.Option(None, "--execution-id"),
+    review_id: Optional[str] = typer.Option(None, "--review-id"),
+    commit: Optional[str] = typer.Option(None, "--commit"),
+    handover_path: Optional[str] = typer.Option(None, "--handover-path"),
+    proposal_id: Optional[str] = typer.Option(None, "--proposal-id"),
+    decision_id: Optional[str] = typer.Option(None, "--decision-id"),
+    json_output: bool = typer.Option(False, "--json"),
+) -> None:
+    """Show exactly one next permissible architecture step."""
+    query = _operation_query(
+        topic,
+        workflow_id,
+        architecture_run_id,
+        execution_id,
+        review_id,
+        commit,
+        handover_path,
+        proposal_id,
+        decision_id,
+    )
+    try:
+        matches = _operations_agent().find(query)
+        if len(matches) != 1:
+            raise ArchitectureOperationQueryError(
+                _ambiguous_failure(matches)
+            )
+    except (OSError, TypeError, ValueError, ArchitectureOperationQueryError) as error:
+        _operations_error(error, json_output)
+    status = matches[0]
+    if json_output:
+        typer.echo(json.dumps(
+            {
+                "schema_version": "1.0",
+                "workflow_id": status.workflow_id,
+                "next_step": status.next_step.value,
+                "issues": [item.to_dict() for item in status.issues],
+            },
+            indent=2,
+            sort_keys=True,
+        ))
+    else:
+        typer.echo(status.next_step.value)
+
+
+def architecture_artifacts(
+    topic: Optional[str] = typer.Option(None, "--topic"),
+    workflow_id: Optional[str] = typer.Option(None, "--workflow-id"),
+    architecture_run_id: Optional[str] = typer.Option(
+        None,
+        "--architecture-run-id",
+    ),
+    execution_id: Optional[str] = typer.Option(None, "--execution-id"),
+    review_id: Optional[str] = typer.Option(None, "--review-id"),
+    commit: Optional[str] = typer.Option(None, "--commit"),
+    handover_path: Optional[str] = typer.Option(None, "--handover-path"),
+    proposal_id: Optional[str] = typer.Option(None, "--proposal-id"),
+    decision_id: Optional[str] = typer.Option(None, "--decision-id"),
+    json_output: bool = typer.Option(False, "--json"),
+) -> None:
+    """List persisted artifacts and explicitly missing expectations."""
+    query = _operation_query(
+        topic,
+        workflow_id,
+        architecture_run_id,
+        execution_id,
+        review_id,
+        commit,
+        handover_path,
+        proposal_id,
+        decision_id,
+    )
+    try:
+        matches = _operations_agent().find(query)
+        if len(matches) != 1:
+            raise ArchitectureOperationQueryError(
+                _ambiguous_failure(matches)
+            )
+    except (OSError, TypeError, ValueError, ArchitectureOperationQueryError) as error:
+        _operations_error(error, json_output)
+    status = matches[0]
+    if json_output:
+        typer.echo(json.dumps(
+            {
+                "schema_version": "1.0",
+                "workflow_id": status.workflow_id,
+                "artifacts": [
+                    item.to_dict() for item in status.artifacts
+                ],
+            },
+            indent=2,
+            sort_keys=True,
+        ))
+    else:
+        typer.echo("\n".join(
+            "{}: {} [{}]".format(
+                item.kind,
+                item.path or "missing",
+                item.availability.value,
+            )
+            for item in status.artifacts
+        ))
+
+
+def architecture_reviews(
+    topic: Optional[str] = typer.Option(None, "--topic"),
+    workflow_id: Optional[str] = typer.Option(None, "--workflow-id"),
+    architecture_run_id: Optional[str] = typer.Option(
+        None,
+        "--architecture-run-id",
+    ),
+    execution_id: Optional[str] = typer.Option(None, "--execution-id"),
+    review_id: Optional[str] = typer.Option(None, "--review-id"),
+    commit: Optional[str] = typer.Option(None, "--commit"),
+    json_output: bool = typer.Option(False, "--json"),
+) -> None:
+    """List reviews awaiting an explicit Chief Architect decision."""
+    query = _operation_query(
+        topic,
+        workflow_id,
+        architecture_run_id,
+        execution_id,
+        review_id,
+        commit,
+        None,
+        None,
+        None,
+    )
+    try:
+        agent = _operations_agent()
+        reviews = agent.reviews()
+        if not query.empty:
+            selected = agent.find(query)
+            selected_ids = {item.workflow_id for item in selected}
+            reviews = tuple(
+                item for item in reviews
+                if item.workflow_id in selected_ids
+            )
+    except (OSError, TypeError, ValueError, ArchitectureOperationQueryError) as error:
+        _operations_error(error, json_output)
+    if json_output:
+        typer.echo(json.dumps(
+            {
+                "schema_version": "1.0",
+                "reviews": [item.to_dict() for item in reviews],
+            },
+            indent=2,
+            sort_keys=True,
+        ))
+    else:
+        typer.echo(
+            "\n\n---\n\n".join(render_operation(item) for item in reviews)
+            or "Keine entscheidungsreifen Reviews."
+        )
+
+
+def _operation_query(
+    topic: Optional[str],
+    workflow_id: Optional[str],
+    architecture_run_id: Optional[str],
+    execution_id: Optional[str],
+    review_id: Optional[str],
+    commit: Optional[str],
+    handover_path: Optional[str],
+    proposal_id: Optional[str],
+    decision_id: Optional[str],
+) -> ArchitectureOperationQuery:
+    return ArchitectureOperationQuery(
+        topic=topic,
+        workflow_id=workflow_id,
+        architecture_run_id=architecture_run_id,
+        execution_id=execution_id,
+        review_id=review_id,
+        commit=commit,
+        handover_path=handover_path,
+        proposal_id=proposal_id,
+        decision_id=decision_id,
+    )
+
+
+def _operations_agent() -> ArchitectureOperationsAgent:
+    return ArchitectureOperationsAgent(
+        repository=Path.cwd(),
+        workflows=ArchitectureWorkflowStore(),
+    )
+
+
+def _show_operations(
+    query: ArchitectureOperationQuery,
+    json_output: bool,
+) -> None:
+    try:
+        statuses = _operations_agent().find(query)
+    except (OSError, TypeError, ValueError, ArchitectureOperationQueryError) as error:
+        _operations_error(error, json_output)
+    if json_output:
+        typer.echo(json.dumps(
+            {
+                "schema_version": "1.0",
+                "operations": [item.to_dict() for item in statuses],
+            },
+            indent=2,
+            sort_keys=True,
+        ))
+    else:
+        typer.echo("\n\n---\n\n".join(
+            render_operation(item) for item in statuses
+        ))
+
+
+def _ambiguous_failure(matches):
+    from architecture_integrator.operations import (
+        ArchitectureOperationQueryFailure,
+    )
+    return ArchitectureOperationQueryFailure(
+        ArchitectureQueryFailureCode.AMBIGUOUS_QUERY,
+        "The architecture query is ambiguous.",
+        tuple(item.workflow_id for item in matches),
+    )
+
+
+def _operations_error(error: BaseException, json_output: bool) -> None:
+    if isinstance(error, ArchitectureOperationQueryError):
+        payload = error.failure.to_dict()
+    else:
+        payload = {
+            "code": ArchitectureQueryFailureCode.INVALID_QUERY.value,
+            "message": "{}: {}".format(type(error).__name__, error),
+            "candidates": [],
+        }
+    if json_output:
+        typer.echo(json.dumps({"error": payload}, indent=2, sort_keys=True))
+    else:
+        typer.echo(
+            "{}: {}".format(payload["code"], payload["message"]),
+            err=True,
+        )
+    raise typer.Exit(code=1)
 
 
 def integrate_architecture(

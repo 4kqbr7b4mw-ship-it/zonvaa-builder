@@ -4,7 +4,7 @@ import tempfile
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Iterator, Optional
+from typing import Iterator, Optional, Tuple
 
 from architecture_integrator import ArchitectureWorkflowStore
 from codex_execution.models import (
@@ -35,12 +35,38 @@ class ExecutionStore:
         folder.resolve().relative_to(self.workflows.folder(workflow_id).resolve())
         return folder
 
-    def path(self, workflow_id: str, execution_id: str) -> Path:
+    def existing_folder(self, workflow_id: str) -> Optional[Path]:
+        """Return the safe execution folder without creating it."""
+        folder = self.workflows.folder(workflow_id) / "executions"
+        if not folder.exists():
+            return None
+        if not folder.is_dir() or folder.is_symlink():
+            raise ValueError("Execution folder is unavailable or unsafe")
+        folder.resolve().relative_to(
+            self.workflows.folder(workflow_id).resolve()
+        )
+        return folder
+
+    def path(
+        self,
+        workflow_id: str,
+        execution_id: str,
+        create: bool = True,
+    ) -> Path:
         if not execution_id.startswith(
             ("execution-", "reconstructed-execution-")
         ):
             raise ValueError("execution_id is invalid")
-        return self.folder(workflow_id) / "{}.json".format(execution_id)
+        folder = (
+            self.folder(workflow_id)
+            if create
+            else self.existing_folder(workflow_id)
+        )
+        if folder is None:
+            return self.workflows.folder(workflow_id) / "executions" / (
+                "{}.json".format(execution_id)
+            )
+        return folder / "{}.json".format(execution_id)
 
     def write(self, record: ExecutionRecord) -> None:
         path = self.path(record.workflow_id, record.execution_id)
@@ -70,7 +96,11 @@ class ExecutionStore:
         execution_id: str,
     ) -> ExecutionRecord:
         data = json.loads(
-            self.path(workflow_id, execution_id).read_text(encoding="utf-8")
+            self.path(
+                workflow_id,
+                execution_id,
+                create=False,
+            ).read_text(encoding="utf-8")
         )
         failure_data = data.get("failure")
         failure = (
@@ -154,9 +184,28 @@ class ExecutionStore:
         workflow_id: str,
         execution_id: str,
     ) -> Optional[ExecutionRecord]:
-        if not self.path(workflow_id, execution_id).is_file():
+        if not self.path(
+            workflow_id,
+            execution_id,
+            create=False,
+        ).is_file():
             return None
         return self.load(workflow_id, execution_id)
+
+    def records(self, workflow_id: str) -> Tuple[ExecutionRecord, ...]:
+        """Load all top-level execution records in stable order."""
+        folder = self.existing_folder(workflow_id)
+        if folder is None:
+            return ()
+        paths = tuple(sorted(
+            path
+            for path in folder.glob("*.json")
+            if path.is_file() and not path.is_symlink()
+        ))
+        return tuple(
+            self.load(workflow_id, path.stem)
+            for path in paths
+        )
 
     @contextmanager
     def lock(self, workflow_id: str) -> Iterator[None]:

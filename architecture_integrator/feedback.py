@@ -344,6 +344,33 @@ class CodexHandoverIntake:
             "deviations": [item.to_dict() for item in self.deviations],
         }
 
+    @classmethod
+    def from_dict(cls, data: Dict[str, Any]) -> "CodexHandoverIntake":
+        if data.get("schema_version") != "1.0":
+            raise ValueError("Unsupported handover intake schema")
+        return cls(
+            architecture_run_id=data["architecture_run_id"],
+            workflow_id=data["workflow_id"],
+            execution_id=data["execution_id"],
+            authorization_id=data["authorization_id"],
+            decision_ids=tuple(data["decision_ids"]),
+            attempt_ids=tuple(data["attempt_ids"]),
+            starting_commit=data["starting_commit"],
+            result_commit=data["result_commit"],
+            handover_path=data["handover_path"],
+            changed_files=tuple(data["changed_files"]),
+            checks=tuple(data["checks"]),
+            git_status=tuple(data["git_status"]),
+            open_risks=tuple(data["open_risks"]),
+            deviations=tuple(
+                HandoverDeviation(
+                    code=item["code"],
+                    message=item["message"],
+                )
+                for item in data["deviations"]
+            ),
+        )
+
 
 @dataclass(frozen=True)
 class ArchitectureImplementationReview:
@@ -422,6 +449,39 @@ class ArchitectureImplementationReview:
             "conflicts": list(self.conflicts),
             "decision_required": list(self.decision_required),
         }
+
+    @classmethod
+    def from_dict(
+        cls,
+        data: Dict[str, Any],
+    ) -> "ArchitectureImplementationReview":
+        if data.get("schema_version") != "1.0":
+            raise ValueError("Unsupported implementation review schema")
+        return cls(
+            review_id=data["review_id"],
+            architecture_run_id=data["architecture_run_id"],
+            workflow_id=data["workflow_id"],
+            execution_id=data["execution_id"],
+            attempt_ids=tuple(data["attempt_ids"]),
+            recommendation=data["recommendation"],
+            original_decision_ids=tuple(data["original_decision_ids"]),
+            codex_prompt=data["codex_prompt"],
+            implementation_result=data["implementation_result"],
+            changed_files=tuple(data["changed_files"]),
+            checks=tuple(data["checks"]),
+            commit=data["commit"],
+            git_status=tuple(data["git_status"]),
+            deviations=tuple(
+                HandoverDeviation(
+                    code=item["code"],
+                    message=item["message"],
+                )
+                for item in data["deviations"]
+            ),
+            open_risks=tuple(data["open_risks"]),
+            conflicts=tuple(data["conflicts"]),
+            decision_required=tuple(data["decision_required"]),
+        )
 
     def render(self) -> str:
         return "\n".join(
@@ -548,6 +608,17 @@ class ArchitectureFeedbackStore:
         )
         return self._write_once(path, intake.to_dict())
 
+    def intake(self, workflow_id: str) -> Optional[CodexHandoverIntake]:
+        path = self.runtime_folder(
+            workflow_id,
+            create=False,
+        ) / "handover-intake.json"
+        if not path.is_file():
+            return None
+        return CodexHandoverIntake.from_dict(
+            json.loads(path.read_text(encoding="utf-8"))
+        )
+
     def write_review(
         self,
         review: ArchitectureImplementationReview,
@@ -567,6 +638,20 @@ class ArchitectureFeedbackStore:
         else:
             write_text_atomic(markdown_path, content)
         return json_path, markdown_path
+
+    def review(
+        self,
+        workflow_id: str,
+    ) -> Optional[ArchitectureImplementationReview]:
+        path = self.runtime_folder(
+            workflow_id,
+            create=False,
+        ) / "integrator-review.json"
+        if not path.is_file():
+            return None
+        return ArchitectureImplementationReview.from_dict(
+            json.loads(path.read_text(encoding="utf-8"))
+        )
 
     def _write_once(self, path: Path, data: Dict[str, Any]) -> Path:
         if path.exists():

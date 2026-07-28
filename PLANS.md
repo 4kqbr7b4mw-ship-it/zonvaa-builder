@@ -3,7 +3,73 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Execution Reconstruction Architecture v1
+## Aktiver Plan: Architecture Operations Agent v1
+
+### Ziel und Nicht-Ziele
+
+Eine rein lesende, deterministische Operations-Sicht soll vorhandene
+Architecture-Workflow-, Execution-, Handover- und Feedback-Artefakte über
+Thema, IDs und Commit auffindbar machen, den nächsten zulässigen Schritt
+anzeigen und entscheidungsreife Reviews bündeln. Sie trifft keine
+Architekturentscheidung, startet keine Execution und persistiert keinen
+eigenen Status.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `83be093c3d34feb1999b83231f190185cc206e96`;
+  `origin/main` durfte vertragsgemäß zurückliegen. Preflight war erfolgreich.
+- Workflow-, Feedback- und Execution-Stores besitzen sichere Einzelzugriffe,
+  aber keine gemeinsame read-only Discovery- oder Operations-Sicht.
+- Der rekonstruierte Guardian-Succession-Vorgang liegt im bestehenden lokalen
+  Execution-/Feedback-Bereich und endet nachweislich bei
+  `CHIEF_ARCHITECT_DECISION_REQUIRED`.
+- `workflow-81d7ba505f25f885` ist ein historischer Workflow mit Prompt, aber ohne
+  Prompt-Proof; der Watcher überspringt genau diesen Legacy-Vertrag bewusst.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Git-Vorbedingungen, Preflight, Stores, CLI und Statusverträge prüfen.
+- [x] Unveränderliches Operations-, Artefakt-, Query- und Fehlermodell bauen.
+- [x] Read-only Discovery, Zuordnung, Inkonsistenzen und Next-Step Engine bauen.
+- [x] Status-, Next-, Artifacts- und Reviews-CLI integrieren.
+- [x] ADR-0038, fokussierte Tests und reale CLI-Validierung ergänzen.
+- [x] Gesamttests, Doctor und Diff abschließen.
+- [x] JSON-/Markdown-Handover und genau einen Commit abschließen.
+
+### Entscheidungen und Begründungen
+
+- Bestehende Workflow-, Feedback- und Execution-Stores bleiben Source of
+  Truth; ergänzt werden ausschließlich sichere read-only Aufzähl- und
+  Lademethoden.
+- Operations-Zustand wird bei jedem Aufruf neu aus persistierten Artefakten
+  abgeleitet und niemals gespeichert.
+- Mehrdeutige Queries blockieren strukturiert; Topic-Suche verwendet nur
+  deterministische, case-insensitive Teilzeichenfolgen und keine Ähnlichkeit.
+
+### Risiken und Teststrategie
+
+- Rekonstruierte Laufzeitartefakte sind git-ignoriert und daher nur dort
+  sichtbar, wo die Rekonstruktion tatsächlich stattgefunden hat.
+- Historische Schemaunterschiede müssen ohne Migration lesbar bleiben.
+- Tests verwenden isolierte Stores und prüfen Query-Mehrdeutigkeit,
+  Statusstufen, Inkonsistenzen, Symlink-Abwehr, stabile Ausgaben und
+  unveränderte Repository-Bytes.
+
+### Abweichungen und Abschlusszustand
+
+Es war weder eine zweite Statuspersistenz noch eine schreibende
+Operations-Capability erforderlich. Sichere read-only Lademethoden ergänzen
+die vorhandenen Stores; die Operations-Projektion bleibt zustandslos.
+Guardian Succession wurde über Review-ID, vollständigen Result-Commit und
+Topic eindeutig gefunden. Der rekonstruierte Vorgang zeigte
+`CHIEF_ARCHITECT_DECISION_REQUIRED`, Empfehlung `ADOPT`, null Attempts und
+die persistierte Entscheidungsvorlage. Der historische Workflow
+`workflow-81d7ba505f25f885` blieb als nicht ausführbarer Legacy-Vorgang ohne
+kritischen Fehler sichtbar. 79 fokussierte und 664 vollständige Tests
+bestanden. Doctor und `git diff --check` waren erfolgreich. Der
+Abschlusscommit wird nicht gepusht.
+
+## Abgeschlossener Plan: Execution Reconstruction Architecture v1
 
 ### Ziel und Nicht-Ziele
 

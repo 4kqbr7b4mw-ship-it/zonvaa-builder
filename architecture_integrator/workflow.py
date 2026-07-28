@@ -311,6 +311,26 @@ class ArchitectureWorkflowStore:
             schema_version=data["schema_version"],
         )
 
+    def workflow_ids(self) -> Tuple[str, ...]:
+        """Return safe persisted workflow directories without creating state."""
+        if not self.root.is_dir():
+            return ()
+        result = []
+        for path in self.root.iterdir():
+            if not path.name.startswith("workflow-"):
+                continue
+            _workflow_id(path.name)
+            if path.is_symlink():
+                continue
+            if path.is_dir():
+                path.resolve().relative_to(self.root.resolve())
+                result.append(path.name)
+        return tuple(sorted(result))
+
+    def manifest_path(self, workflow_id: str) -> Path:
+        """Return the canonical manifest path without requiring it to exist."""
+        return self.folder(workflow_id) / "workflow.json"
+
     def record_decision(
         self,
         workflow_id: str,
