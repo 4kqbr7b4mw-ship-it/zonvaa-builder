@@ -3,6 +3,31 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Builder v2.1 – One Command Development
+
+### Ziel und Nicht-Ziele
+
+`builder.main develop --goal` bildet eine kompakte Benutzeroberfläche über dem
+unveränderten Builder-Reset-v2-Kern. Task, Guard, Vetoprüfung, genau ein
+Codex-Lauf, Receipt und Git Gate bleiben dessen alleinige Verantwortung.
+Commit und Push sind weiterhin getrennte menschliche Befehle. Eine zweite
+Execution-Logik oder Umgehung des Git Gates entsteht nicht.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Reset-v2-Task-, Guard-, Receipt-, Gate- und Approval-Verträge prüfen.
+- [x] Develop-Fassade und `develop`, `develop commit`, `develop push` ergänzen.
+- [x] Kompakten Ergebnisbericht ohne interne Zustände implementieren.
+- [x] Erfolgs-, Veto-, Guard-, Qualitäts-, Commit- und Push-Pfade testen.
+- [x] Vollständige Tests, Doctor und Git-Prüfungen abschließen.
+
+### Sicherheitsgrenzen
+
+- `develop` selbst führt weder Commit noch Push aus.
+- `--no-tests` umgeht das starke Git Gate nicht, sondern blockiert
+  Commit-Bereitschaft.
+- Veto- oder unklare Einordnungen starten keinen Codex-Prozess.
+
 ## Aktiver Plan: Guardian Understanding Core v1
 
 ### Ziel und Nicht-Ziele

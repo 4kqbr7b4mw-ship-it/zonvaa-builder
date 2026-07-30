@@ -18,11 +18,14 @@ from builder_task.models import (
 )
 from builder_task.service import BuilderTaskService, TaskRunError
 from builder_task.store import BuilderTaskStore
+from builder_task.develop import DevelopmentReport, DevelopmentService
 
 __all__ = [
     "ApprovalAction",
     "BuilderTaskService",
     "BuilderTaskStore",
+    "DevelopmentReport",
+    "DevelopmentService",
     "CheckResult",
     "CommitApproval",
     "ExecutionResult",

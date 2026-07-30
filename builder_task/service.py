@@ -316,7 +316,12 @@ class BuilderTaskService:
 
     @staticmethod
     def _allowed(path: str, allowed: Sequence[str]) -> bool:
-        return any(path == item or path.startswith(item.rstrip("/") + "/") for item in allowed)
+        return any(
+            item == "."
+            or path == item
+            or path.startswith(item.rstrip("/") + "/")
+            for item in allowed
+        )
 
     @staticmethod
     def _lines(value: str) -> Tuple[str, ...]:
