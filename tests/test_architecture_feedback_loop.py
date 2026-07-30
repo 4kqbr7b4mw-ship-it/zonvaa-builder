@@ -96,9 +96,9 @@ def _decision():
     )
 
 
-def _setup(runtime, tmp_path):
+def _setup(runtime, tmp_path, create_commit=False):
     repository = tmp_path / "repository"
-    repository.mkdir()
+    repository.mkdir(parents=True)
     workflows = ArchitectureWorkflowStore(
         repository / "knowledge" / "architecture_workflows"
     )
@@ -119,6 +119,7 @@ def _setup(runtime, tmp_path):
     authorization = loop.authorize(
         workflow.workflow_id,
         expected_base_commit=BASE,
+        create_commit=create_commit,
     )
     return repository, workflow, workflows, service, loop, authorization
 
@@ -204,10 +205,30 @@ def test_confirmed_decision_creates_authorized_execution_artifact(
     assert authorization.workflow_id == workflow.workflow_id
     assert authorization.approval_status.value == "CONFIRMED"
     assert authorization.expected_base_commit == BASE
-    assert authorization.schema_version == "1.1"
+    assert authorization.schema_version == "1.2"
     assert authorization.authorized_branch == "main"
+    assert authorization.create_commit is False
+    assert "create_commit" not in authorization.allowed_actions
     assert "create_handover" in authorization.allowed_actions
     assert "push" not in authorization.allowed_actions
+
+
+def test_commit_authority_is_explicit_and_changes_authorization_identity(
+    runtime,
+    tmp_path,
+):
+    false_authorization = _setup(
+        runtime, tmp_path / "false", create_commit=False
+    )[-1]
+    true_authorization = _setup(
+        runtime, tmp_path / "true", create_commit=True
+    )[-1]
+    assert false_authorization.create_commit is False
+    assert true_authorization.create_commit is True
+    assert false_authorization.authorization_id != (
+        true_authorization.authorization_id
+    )
+    assert "create_commit" not in true_authorization.allowed_actions
 
 
 def test_unconfirmed_workflow_cannot_authorize_or_start(runtime, tmp_path):

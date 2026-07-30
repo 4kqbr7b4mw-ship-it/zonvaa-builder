@@ -29,6 +29,7 @@ python3 -m builder.main architecture run \
 python3 -m builder.main architecture run \
   --workflow-id workflow-0123456789abcdef \
   --decision decision-a.json \
+  --no-create-commit \
   --decision decision-b.json
 ```
 
@@ -38,12 +39,19 @@ bestätigte Entscheidung bleibt er in `WAITING_FOR_DECISION`. Der zweite
 Aufruf speichert ausschließlich explizite Chief-Architect-Entscheidungen,
 erzeugt den Codex-Prompt und startet die autorisierte lokale Feedback-Kette,
 sobald für jedes Proposal eine passende Entscheidung vorliegt. Codex darf
-dabei Tests, Doctor, Commit und Handover ausführen, aber niemals die
-nachgelagerte Chief-Architect-Entscheidung ersetzen.
+dabei Tests, Doctor und Handover ausführen. Ein Commit ist nur mit
+`create_commit: true` zulässig; Codex darf niemals die nachgelagerte
+Chief-Architect-Entscheidung ersetzen.
 
 Der erzeugte Prompt besitzt einen Hash- und Decision-Proof. Die
 [lokale Execution Bridge](../codex_execution/README.md) kann ausschließlich
 diesen bestätigten kanonischen Auftrag an `codex exec` übergeben.
+
+Die Commit-Berechtigung ist ein eigenständiges boolesches Feld der Execution
+Authorization. Ohne `--create-commit` gilt `create_commit: false`; allgemeine
+Allowed Actions erteilen keine Commit-Berechtigung. `--create-commit`
+autorisiert höchstens einen Commit nach erfolgreicher Orchestrator-Validierung,
+niemals einen Push.
 
 Die bisherigen `architecture workflow analyze`, `decide` und
 `generate-codex`-Befehle bleiben für vorhandene Abläufe kompatibel, sind aber

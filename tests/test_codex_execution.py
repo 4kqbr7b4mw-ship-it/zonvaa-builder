@@ -230,10 +230,11 @@ def feedback_authorization(bridge, prompt_hash, base_commit=START):
         prompt_hash=prompt_hash,
         repository=str(bridge.repository),
         expected_base_commit=base_commit,
-        allowed_actions=("create_commit", "create_handover"),
+        allowed_actions=("create_handover",),
         expected_completion_artifacts=("result_commit", "json_handover"),
         authorized_at=NOW,
         authorized_branch="main",
+        create_commit=True,
     )
 
 

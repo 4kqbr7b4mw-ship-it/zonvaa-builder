@@ -188,16 +188,23 @@ class ExecutionAuthorization:
     expected_completion_artifacts: Tuple[str, ...]
     authorized_at: datetime
     authorized_branch: Optional[str] = None
-    schema_version: str = "1.1"
+    create_commit: bool = False
+    schema_version: str = "1.2"
 
     def __post_init__(self) -> None:
-        if self.schema_version not in {"1.0", "1.1"}:
+        if self.schema_version not in {"1.0", "1.1", "1.2"}:
             raise ValueError("Unsupported execution authorization schema")
-        if self.schema_version == "1.1":
+        if self.schema_version in {"1.1", "1.2"}:
             validate_local_branch_name(self.authorized_branch)
         elif self.authorized_branch is not None:
             raise ValueError(
                 "Schema 1.0 authorization cannot contain authorized_branch"
+            )
+        if not isinstance(self.create_commit, bool):
+            raise TypeError("create_commit must be bool")
+        if self.schema_version in {"1.0", "1.1"} and self.create_commit:
+            raise ValueError(
+                "Legacy authorization cannot grant create_commit"
             )
         _identifier(self.authorization_id, "authorization_id", "authorization")
         _identifier(
@@ -227,6 +234,13 @@ class ExecutionAuthorization:
             _hex(value, name)
         _strings(self.decision_artifacts, "decision_artifacts", required=True)
         _strings(self.allowed_actions, "allowed_actions", required=True)
+        if (
+            self.schema_version == "1.2"
+            and "create_commit" in self.allowed_actions
+        ):
+            raise ValueError(
+                "create_commit must not be derived from allowed_actions"
+            )
         _strings(
             self.expected_completion_artifacts,
             "expected_completion_artifacts",
@@ -253,13 +267,15 @@ class ExecutionAuthorization:
             ),
             "authorized_at": self.authorized_at.isoformat(),
         }
-        if self.schema_version == "1.1":
+        if self.schema_version in {"1.1", "1.2"}:
             result["authorized_branch"] = self.authorized_branch
+        if self.schema_version == "1.2":
+            result["create_commit"] = self.create_commit
         return result
 
     @property
     def legacy(self) -> bool:
-        return self.schema_version == "1.0"
+        return self.schema_version in {"1.0", "1.1"}
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ExecutionAuthorization":
@@ -281,6 +297,7 @@ class ExecutionAuthorization:
             ),
             authorized_at=datetime.fromisoformat(data["authorized_at"]),
             authorized_branch=data.get("authorized_branch"),
+            create_commit=data.get("create_commit", False),
         )
 
 

@@ -33,7 +33,6 @@ class ArchitectureFeedbackLoop:
         "run_tests",
         "run_doctor",
         "run_diff_check",
-        "create_commit",
         "create_handover",
     )
     EXPECTED_ARTIFACTS = (
@@ -65,7 +64,10 @@ class ArchitectureFeedbackLoop:
         self,
         workflow_id: str,
         expected_base_commit: Optional[str] = None,
+        create_commit: bool = False,
     ) -> ExecutionAuthorization:
+        if not isinstance(create_commit, bool):
+            raise TypeError("create_commit must be bool")
         if self.workflows.status(workflow_id) is not (
             WorkflowStatus.CODEX_PROMPT_GENERATED
         ):
@@ -74,6 +76,10 @@ class ArchitectureFeedbackLoop:
             )
         existing = self.store.authorization(workflow_id)
         if existing is not None:
+            if existing.create_commit is not create_commit:
+                raise RuntimeError(
+                    "Existing authorization has different create_commit"
+                )
             return existing
         decisions = self.workflows.decisions(workflow_id)
         proof = self.workflows.prompt_proof(workflow_id)
@@ -97,6 +103,7 @@ class ArchitectureFeedbackLoop:
                 execution_id,
                 base_commit,
                 authorized_branch,
+                str(create_commit).lower(),
             ),
             architecture_run_id=run_id,
             workflow_id=workflow_id,
@@ -111,9 +118,13 @@ class ArchitectureFeedbackLoop:
             repository=str(self.repository),
             expected_base_commit=base_commit,
             allowed_actions=self.ALLOWED_ACTIONS,
-            expected_completion_artifacts=self.EXPECTED_ARTIFACTS,
+            expected_completion_artifacts=tuple(
+                item for item in self.EXPECTED_ARTIFACTS
+                if create_commit or item != "result_commit"
+            ),
             authorized_at=max(item.decided_at for item in decisions),
             authorized_branch=authorized_branch,
+            create_commit=create_commit,
         )
         self.store.write_authorization(authorization)
         if self.store.record(workflow_id) is None:
@@ -140,8 +151,15 @@ class ArchitectureFeedbackLoop:
             )
         return authorization
 
-    def advance(self, workflow_id: str) -> FeedbackLoopRecord:
-        authorization = self.authorize(workflow_id)
+    def advance(
+        self,
+        workflow_id: str,
+        create_commit: bool = False,
+    ) -> FeedbackLoopRecord:
+        authorization = self.authorize(
+            workflow_id,
+            create_commit=create_commit,
+        )
         record = self.store.record(workflow_id)
         if record is None:
             raise RuntimeError("Feedback record was not created")

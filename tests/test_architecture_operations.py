@@ -158,7 +158,7 @@ def authorization(workflows, workflow_id, execution_id):
         prompt_hash="b" * 64,
         repository=str(workflows.root.parents[2]),
         expected_base_commit="c" * 40,
-        allowed_actions=("create_commit", "create_handover"),
+        allowed_actions=("create_handover",),
         expected_completion_artifacts=(
             "result_commit",
             "json_handover",
@@ -166,6 +166,7 @@ def authorization(workflows, workflow_id, execution_id):
         ),
         authorized_at=NOW,
         authorized_branch="main",
+        create_commit=True,
     )
     ArchitectureFeedbackStore(workflows).write_authorization(item)
     return item

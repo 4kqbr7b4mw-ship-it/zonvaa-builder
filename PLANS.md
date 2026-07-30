@@ -3,7 +3,64 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Branch-bound Execution Authorization v1
+## Aktiver Plan: Explicit Commit Authorization v1
+
+### Ziel und Nicht-Ziele
+
+Execution Authorization bindet die Commit-Erlaubnis als eigenständiges
+boolesches Feld. Ohne ausdrückliche Freigabe endet erfolgreiche Orchestration
+bei `COMMIT_READY`; Push bleibt verboten. Nicht eingeführt werden produktive
+Codex-Ausführung, neue Zustände, Migration historischer Authorizations oder
+Änderungen an Retry, Queue und Bridge.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `9799e22b2e7636916e0559b796b2b998c3fa8137`,
+  `0 behind / 2 ahead` gegenüber `origin/main`.
+- Preflight war erfolgreich.
+- 727 Tests bestanden unter Python 3.9.6; Doctor war erfolgreich.
+- `create_commit` war pauschal in `ALLOWED_ACTIONS` enthalten und wurde vom
+  Orchestrator daraus abgeleitet.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Vorbedingungen, Preflight und bestehende Verträge prüfen.
+- [x] ADR-0043 und Authorization Schema 1.2 ergänzen.
+- [x] Workflow- und CLI-Erzeugungspfad explizit boolesch erweitern.
+- [x] Orchestrator und Operations auf das eigenständige Feld umstellen.
+- [x] Legacy-, False-, True-, Idempotenz- und read-only Tests ergänzen.
+- [x] Fokussierte und vollständige Tests, Doctor, Diff und Handover vorbereiten.
+- [x] Geprüften Einzelcommit ohne Push vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- Schema 1.2 führt `create_commit` verpflichtend; der Standard am offiziellen
+  Erzeugungspfad ist `false`.
+- Schema 1.0 und 1.1 bleiben unverändert lesbar und werden sicher als nicht
+  commitfähig behandelt.
+- Allgemeine Aktionen beschreiben Tätigkeiten, nicht Commit-Autorität.
+
+### Risiken und Teststrategie
+
+- Historische Authorizations erhalten keine nachträgliche Commit-Freigabe.
+- Ein bereits während Codex entstandener Commit ist kein nachgelagerter,
+  autorisierter Orchestrator-Commit und muss die Validierung blockieren.
+- Tests verwenden ausschließlich Fake-Codex und temporäre Repositories.
+
+### Abweichungen und Abschlusszustand
+
+- Ein bereits im Codex-Prozess entstandener Commit wird auch bei
+  `create_commit: true` als verfrüht blockiert; die ausdrückliche Freigabe
+  gilt ausschließlich für den nachgelagerten Orchestrator-Commit.
+- Die Validierung persistiert zusätzlich eine deterministische
+  `git diff --stat`-Zusammenfassung und den nächsten manuellen Schritt.
+- 162 fokussierte Tests und die vollständige Suite mit 730 Tests bestanden.
+- Doctor und `git diff --check` waren erfolgreich; historische
+  Authorization-Artefakte blieben unverändert.
+- Keine reale Codex-Ausführung, produktive Orchestration oder Push-Ausführung
+  fand statt.
+
+## Abgeschlossener Plan: Branch-bound Execution Authorization v1
 
 ### Ziel und Nicht-Ziele
 

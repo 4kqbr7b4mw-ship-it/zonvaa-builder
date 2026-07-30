@@ -128,6 +128,7 @@ class CodexExecutionValidationResult:
     branch_unchanged: bool
     head_changed: bool
     push_detected: bool
+    diff_summary: str = ""
 
     def __post_init__(self) -> None:
         for value in (
@@ -144,6 +145,8 @@ class CodexExecutionValidationResult:
             raise TypeError("tests_summary must be a string")
         if not isinstance(self.doctor_summary, str):
             raise TypeError("doctor_summary must be a string")
+        if not isinstance(self.diff_summary, str):
+            raise TypeError("diff_summary must be a string")
         _status_lines(self.git_status, "git_status")
         _strings(self.changed_files, "changed_files", required=False)
         _strings(self.forbidden_changes, "forbidden_changes", required=False)
@@ -172,6 +175,7 @@ class CodexExecutionValidationResult:
             "branch_unchanged": self.branch_unchanged,
             "head_changed": self.head_changed,
             "push_detected": self.push_detected,
+            "diff_summary": self.diff_summary,
             "passed": self.passed,
         }
 
@@ -189,6 +193,7 @@ class CodexExecutionValidationResult:
             branch_unchanged=data["branch_unchanged"],
             head_changed=data["head_changed"],
             push_detected=data["push_detected"],
+            diff_summary=data.get("diff_summary", ""),
         )
 
 
@@ -265,6 +270,7 @@ class CodexExecutionOrchestration:
     failure: Optional[CodexExecutionOrchestrationError]
     commit_allowed: bool
     proposed_commit_message: Optional[str]
+    commit_attempted: bool = False
     schema_version: str = "1.0"
 
     def __post_init__(self) -> None:
@@ -316,6 +322,8 @@ class CodexExecutionOrchestration:
             raise TypeError("failure is invalid")
         if not isinstance(self.commit_allowed, bool):
             raise TypeError("commit_allowed must be bool")
+        if not isinstance(self.commit_attempted, bool):
+            raise TypeError("commit_attempted must be bool")
         _optional_text(self.proposed_commit_message, "proposed_commit_message")
 
     @property
@@ -378,7 +386,19 @@ class CodexExecutionOrchestration:
             ),
             "failure": self.failure.to_dict() if self.failure else None,
             "commit_allowed": self.commit_allowed,
+            "create_commit_authorized": self.commit_allowed,
+            "commit_attempted": self.commit_attempted,
             "proposed_commit_message": self.proposed_commit_message,
+            "next_step": (
+                "MANUAL_COMMIT_APPROVAL"
+                if self.status is CodexExecutionStatus.COMMIT_READY
+                and not self.commit_allowed
+                else "COMPLETE"
+                if self.status is CodexExecutionStatus.COMPLETED
+                else "NONE"
+                if self.terminal
+                else self.current_step.value
+            ),
         }
 
     @classmethod
@@ -420,6 +440,7 @@ class CodexExecutionOrchestration:
             ),
             commit_allowed=data["commit_allowed"],
             proposed_commit_message=data["proposed_commit_message"],
+            commit_attempted=data.get("commit_attempted", False),
         )
 
 
@@ -601,7 +622,7 @@ class CodexExecutionOrchestrator:
             result_commit=None,
             validation_summary=None,
             failure=None,
-            commit_allowed="create_commit" in authorization.allowed_actions,
+            commit_allowed=authorization.create_commit,
             proposed_commit_message=self._commit_message(prompt),
         )
         blocker = self._preflight_blocker(record, authorization)
@@ -760,6 +781,7 @@ class CodexExecutionOrchestrator:
         tests = self._run(("python3", "-m", "pytest", "-q"))
         doctor = self._run(("python3", "-m", "builder.main", "doctor"))
         diff = self._run(("git", "diff", "--check"))
+        diff_summary = self._required(("git", "diff", "--stat"))
         branch = self._required(("git", "branch", "--show-current"))
         head = self._required(("git", "rev-parse", "HEAD"))
         status_lines = self._lines(
@@ -781,15 +803,15 @@ class CodexExecutionOrchestrator:
             forbidden_changes=(
                 forbidden
                 + (
-                    ("unauthorized_result_commit",)
+                    ("premature_result_commit",)
                     if head != record.base_commit
-                    and not record.commit_allowed
                     else ()
                 )
             ),
             branch_unchanged=branch == record.branch,
             head_changed=head != record.base_commit,
             push_detected=remote_after != record.starting_origin_commit,
+            diff_summary=diff_summary,
         )
         if not validation.passed:
             return self._fail(
@@ -816,49 +838,51 @@ class CodexExecutionOrchestrator:
         self.store.write(ready)
         if not record.commit_allowed:
             return ready
-        if head != record.base_commit:
-            result_commit = head
-        else:
-            if validation.changed_files:
-                staged = self._run(
-                    ("git", "add", "--") + validation.changed_files
-                )
-                if staged.exit_code != 0:
-                    return self._fail(
-                        ready,
-                        CodexExecutionStatus.COMMIT_FAILED,
-                        CodexExecutionStep.COMMIT,
-                        "Authorized staging failed: {}".format(
-                            self._summary(staged)
-                        ),
-                    )
-            commit = self._run((
-                "git",
-                "commit",
-                "-m",
-                record.proposed_commit_message or "Codex result",
-            ))
-            if commit.exit_code != 0:
+        if validation.changed_files:
+            staged = self._run(
+                ("git", "add", "--") + validation.changed_files
+            )
+            if staged.exit_code != 0:
                 return self._fail(
                     ready,
                     CodexExecutionStatus.COMMIT_FAILED,
                     CodexExecutionStep.COMMIT,
-                    "Authorized commit failed: {}".format(
-                        self._summary(commit)
+                    "Authorized staging failed: {}".format(
+                        self._summary(staged)
                     ),
                 )
-            result_commit = self._required(("git", "rev-parse", "HEAD"))
+        attempting = ready.evolve(
+            commit_attempted=True,
+            updated_at=self.clock(),
+        )
+        self.store.write(attempting)
+        commit = self._run((
+            "git",
+            "commit",
+            "-m",
+            record.proposed_commit_message or "Codex result",
+        ))
+        if commit.exit_code != 0:
+            return self._fail(
+                attempting,
+                CodexExecutionStatus.COMMIT_FAILED,
+                CodexExecutionStep.COMMIT,
+                "Authorized commit failed: {}".format(
+                    self._summary(commit)
+                ),
+            )
+        result_commit = self._required(("git", "rev-parse", "HEAD"))
         final_status = self._lines(
             self._required(("git", "status", "--porcelain"))
         )
         if final_status:
             return self._fail(
-                ready,
+                attempting,
                 CodexExecutionStatus.COMMIT_FAILED,
                 CodexExecutionStep.COMMIT,
                 "Working tree is not clean after commit.",
             )
-        completed = ready.evolve(
+        completed = attempting.evolve(
             status=CodexExecutionStatus.COMPLETED,
             current_step=CodexExecutionStep.COMPLETE,
             updated_at=self.clock(),

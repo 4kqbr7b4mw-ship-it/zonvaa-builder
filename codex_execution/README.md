@@ -76,9 +76,10 @@ python3 -m builder.main architecture execution list \
 ```
 
 Runtime JSON plus separate redacted stdout/stderr files are stored below the
-workflow's ignored `executions/orchestrations/` directory. Without the
-explicit `create_commit` action, a validated run ends at `COMMIT_READY`.
-`create_commit` permits a validated commit but never a push. A persisted
+workflow's ignored `executions/orchestrations/` directory. With
+`create_commit: false` (the default), a validated run ends at `COMMIT_READY`.
+General allowed actions never grant commit authority.
+`create_commit: true` permits one validated commit but never a push. A persisted
 nonterminal run whose process can no longer be proved is marked
 `RECOVERY_REQUIRED` and is not restarted automatically.
 

@@ -661,6 +661,11 @@ def decide_workflow(
 
 def generate_workflow_codex(
     workflow_id: str = typer.Option(..., "--workflow-id"),
+    create_commit: bool = typer.Option(
+        False,
+        "--create-commit/--no-create-commit",
+        help="Explicitly authorize one validated commit; default: disabled.",
+    ),
 ) -> None:
     """Generate a Codex order only after every required decision."""
     try:
@@ -670,7 +675,7 @@ def generate_workflow_codex(
         authorization = _feedback_loop(
             workflows=orchestrator.store,
             integrator=orchestrator.integrator,
-        ).authorize(workflow_id)
+        ).authorize(workflow_id, create_commit=create_commit)
     except (OSError, RuntimeError, TypeError, ValueError) as error:
         _workflow_error("Codex prompt generation", error)
     typer.echo(
@@ -718,6 +723,11 @@ def run_architecture(
         resolve_path=True,
         help="Confirmed Chief Architect decision JSON files.",
     ),
+    create_commit: bool = typer.Option(
+        False,
+        "--create-commit/--no-create-commit",
+        help="Explicitly authorize one validated commit; default: disabled.",
+    ),
 ) -> None:
     """Run the next valid architecture stage through one entry point."""
     try:
@@ -740,7 +750,10 @@ def run_architecture(
     feedback = _feedback_loop(
         workflows=orchestrator.store,
         integrator=orchestrator.integrator,
-    ).advance(result.workflow.workflow_id)
+    ).advance(
+        result.workflow.workflow_id,
+        create_commit=create_commit,
+    )
     typer.echo(
         json.dumps(
             {

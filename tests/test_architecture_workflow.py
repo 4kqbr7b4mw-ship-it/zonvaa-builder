@@ -76,15 +76,16 @@ def orchestrator(
 
 
 class FakeFeedbackLoop:
-    def authorize(self, workflow_id):
+    def authorize(self, workflow_id, create_commit=False):
         return SimpleNamespace(
             to_dict=lambda: {
                 "workflow_id": workflow_id,
                 "approval_status": "CONFIRMED",
+                "create_commit": create_commit,
             }
         )
 
-    def advance(self, workflow_id):
+    def advance(self, workflow_id, create_commit=False):
         return SimpleNamespace(
             status=SimpleNamespace(
                 value="CHIEF_ARCHITECT_DECISION_REQUIRED"
@@ -92,6 +93,7 @@ class FakeFeedbackLoop:
             to_dict=lambda: {
                 "workflow_id": workflow_id,
                 "status": "CHIEF_ARCHITECT_DECISION_REQUIRED",
+                "create_commit": create_commit,
             }
         )
 
@@ -297,6 +299,9 @@ def test_cli_workflow_runs_all_gated_stages(
     assert json.loads(generated.output)["status"] == (
         "CODEX_PROMPT_GENERATED"
     )
+    assert json.loads(generated.output)["authorization"][
+        "create_commit"
+    ] is False
 
 
 def test_architecture_run_emits_only_compact_decision_template(
@@ -399,6 +404,7 @@ def test_architecture_run_records_decisions_and_generates_prompt_automatically(
             str(first_decision),
             "--decision",
             str(second_decision),
+            "--create-commit",
         ],
     )
 
@@ -413,6 +419,7 @@ def test_architecture_run_records_decisions_and_generates_prompt_automatically(
         "feedback": {
             "status": "CHIEF_ARCHITECT_DECISION_REQUIRED",
             "workflow_id": workflow.workflow_id,
+            "create_commit": True,
         },
     }
     assert flow.store.status(workflow.workflow_id) is (

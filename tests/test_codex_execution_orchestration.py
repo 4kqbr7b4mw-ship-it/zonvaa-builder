@@ -129,6 +129,12 @@ class OrchestrationRunner:
             )
         if args == ("git", "diff", "--check"):
             return CommandResult(self.diff_exit, "", "diff error\n")
+        if args == ("git", "diff", "--stat"):
+            return CommandResult(
+                0,
+                " commands/architecture.py | 2 ++\n",
+                "",
+            )
         if args[:3] == ("git", "add", "--"):
             return CommandResult(0, "", "")
         if args[:2] == ("git", "commit"):
@@ -150,7 +156,8 @@ def workflow_fixture(
     proof=True,
     allowed_actions=("modify_authorized_repository",),
     authorized_branch="main",
-    authorization_schema="1.1",
+    authorization_schema="1.2",
+    create_commit=False,
 ):
     root = repository / "knowledge" / "architecture_workflows"
     folder = root / WORKFLOW
@@ -217,6 +224,7 @@ def workflow_fixture(
                 ),
                 authorized_at=NOW,
                 authorized_branch=authorized_branch,
+                create_commit=create_commit,
             )
         )
     return workflows
@@ -236,8 +244,17 @@ def orchestrator(tmp_path, runner=None, **fixture_options):
 
 
 def test_models_are_immutable_and_status_values_are_stable(tmp_path):
-    service, _ = orchestrator(tmp_path)
+    service, runner = orchestrator(tmp_path)
     record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+    assert record.status is CodexExecutionStatus.COMMIT_READY
+    assert record.commit_allowed is False
+    assert record.commit_attempted is False
+    assert record.result_commit is None
+    assert runner.commit_called == 0
+    assert "commands/architecture.py" in (
+        record.validation_summary.diff_summary
+    )
+    assert record.to_dict()["next_step"] == "MANUAL_COMMIT_APPROVAL"
     with pytest.raises(FrozenInstanceError):
         record.status = CodexExecutionStatus.RUNNING
     assert tuple(item.value for item in CodexExecutionStatus) == (
@@ -275,6 +292,22 @@ def test_authorized_branch_accepts_normalized_local_name():
     assert validate_local_branch_name("feature/branch-bound-auth") == (
         "feature/branch-bound-auth"
     )
+
+
+def test_new_authorization_rejects_commit_in_general_allowed_actions(
+    tmp_path,
+):
+    with pytest.raises(
+        ValueError,
+        match="must not be derived from allowed_actions",
+    ):
+        workflow_fixture(
+            tmp_path,
+            allowed_actions=(
+                "modify_authorized_repository",
+                "create_commit",
+            ),
+        )
 
 
 def test_tracked_runner_reports_process_id_and_separate_output(tmp_path):
@@ -370,12 +403,17 @@ def test_legacy_authorization_is_readable_but_not_executable_or_mutated(
         tmp_path,
         authorized_branch=None,
         authorization_schema="1.0",
+        allowed_actions=(
+            "modify_authorized_repository",
+            "create_commit",
+        ),
     )
     path = service.feedback.authorization_path(WORKFLOW)
     before = path.read_bytes()
     authorization = service.feedback.authorization(WORKFLOW)
     assert authorization.legacy
     assert authorization.authorized_branch is None
+    assert authorization.create_commit is False
     record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
     assert record.failure.code == "AUTHORIZED_BRANCH_MISSING"
     assert path.read_bytes() == before
@@ -486,12 +524,15 @@ def test_commit_is_created_only_when_explicitly_allowed(tmp_path):
     service, _ = orchestrator(
         tmp_path,
         runner,
-        allowed_actions=("modify_authorized_repository", "create_commit"),
+        create_commit=True,
     )
     record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
     assert record.status is CodexExecutionStatus.COMPLETED
     assert record.result_commit == RESULT
+    assert record.commit_allowed is True
+    assert record.commit_attempted is True
     assert runner.commit_called == 1
+    assert not any(command[:2] == ("git", "push") for command in runner.commands)
 
 
 def test_commit_failure_is_structured(tmp_path):
@@ -499,10 +540,25 @@ def test_commit_failure_is_structured(tmp_path):
     service, _ = orchestrator(
         tmp_path,
         runner,
-        allowed_actions=("modify_authorized_repository", "create_commit"),
+        create_commit=True,
     )
     record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
     assert record.status is CodexExecutionStatus.COMMIT_FAILED
+    assert record.commit_attempted is True
+
+
+def test_explicit_commit_is_not_attempted_after_failed_validation(tmp_path):
+    runner = OrchestrationRunner(tmp_path, tests_exit=1)
+    service, _ = orchestrator(
+        tmp_path,
+        runner,
+        create_commit=True,
+    )
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+    assert record.status is CodexExecutionStatus.VALIDATION_FAILED
+    assert record.commit_allowed is True
+    assert record.commit_attempted is False
+    assert runner.commit_called == 0
 
 
 def test_codex_created_commit_requires_commit_authority(tmp_path):
@@ -514,7 +570,7 @@ def test_codex_created_commit_requires_commit_authority(tmp_path):
     assert record.status is CodexExecutionStatus.VALIDATION_FAILED
 
 
-def test_authorized_codex_created_commit_is_accepted_without_second_commit(
+def test_codex_created_commit_is_rejected_before_authorized_commit_stage(
     tmp_path,
 ):
     runner = OrchestrationRunner(
@@ -523,11 +579,12 @@ def test_authorized_codex_created_commit_is_accepted_without_second_commit(
     service, _ = orchestrator(
         tmp_path,
         runner,
-        allowed_actions=("modify_authorized_repository", "create_commit"),
+        create_commit=True,
     )
     record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
-    assert record.status is CodexExecutionStatus.COMPLETED
-    assert record.result_commit == RESULT
+    assert record.status is CodexExecutionStatus.VALIDATION_FAILED
+    assert record.result_commit is None
+    assert record.commit_attempted is False
     assert runner.commit_called == 0
 
 
@@ -612,6 +669,10 @@ def test_cli_help_and_machine_readable_status(tmp_path, monkeypatch):
     )
     runner = CliRunner()
     help_result = runner.invoke(app, ["architecture", "execution", "run", "--help"])
+    workflow_help = runner.invoke(app, ["architecture", "run", "--help"])
+    generate_help = runner.invoke(
+        app, ["architecture", "workflow", "generate-codex", "--help"]
+    )
     status = runner.invoke(app, [
         "architecture", "execution", "status",
         "--orchestration-id", record.orchestration_id,
@@ -621,11 +682,18 @@ def test_cli_help_and_machine_readable_status(tmp_path, monkeypatch):
         "--authorization-id", AUTHORIZATION,
     ])
     assert help_result.exit_code == 0
+    assert workflow_help.exit_code == 0
+    assert generate_help.exit_code == 0
+    assert "--create-commit" in workflow_help.stdout
+    assert "--no-create-commit" in workflow_help.stdout
+    assert "--create-commit" in generate_help.stdout
     assert "--workflow-id" in help_result.stdout
     assert json.loads(status.stdout)["orchestration_id"] == record.orchestration_id
     assert json.loads(status.stdout)["authorized_branch"] == "main"
     assert json.loads(status.stdout)["current_branch"] == "main"
     assert json.loads(status.stdout)["branch_match"] is True
+    assert json.loads(status.stdout)["create_commit_authorized"] is False
+    assert json.loads(status.stdout)["commit_attempted"] is False
     assert len(json.loads(listing.stdout)["orchestrations"]) == 1
 
 
@@ -633,6 +701,7 @@ def test_operations_agent_exposes_orchestration_read_only(tmp_path):
     from architecture_integrator.operations import (
         ArchitectureOperationQuery,
         ArchitectureOperationsAgent,
+        render_operation,
     )
     service, fake = orchestrator(tmp_path)
     record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
@@ -651,6 +720,11 @@ def test_operations_agent_exposes_orchestration_read_only(tmp_path):
     assert status.authorized_branch == "main"
     assert status.current_branch == "main"
     assert status.branch_match is True
+    assert status.create_commit_authorized is False
+    assert status.commit_attempted is False
+    rendered = render_operation(status)
+    assert "Create Commit Authorized: no" in rendered
+    assert "Commit Attempted: no" in rendered
     assert service.store.path(
         WORKFLOW, record.orchestration_id
     ).read_bytes() == before

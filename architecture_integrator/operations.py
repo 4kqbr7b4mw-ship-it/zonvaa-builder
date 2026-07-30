@@ -138,6 +138,8 @@ class ArchitectureOperationStatus:
     authorized_branch: Optional[str]
     current_branch: Optional[str]
     branch_match: Optional[bool]
+    create_commit_authorized: Optional[bool]
+    commit_attempted: Optional[bool]
     execution_id: Optional[str]
     execution_origin: Optional[ExecutionOrigin]
     execution_status: Optional[ExecutionStatus]
@@ -217,6 +219,12 @@ class ArchitectureOperationStatus:
             self.branch_match, bool
         ):
             raise TypeError("branch_match must be bool or None")
+        for value, name in (
+            (self.create_commit_authorized, "create_commit_authorized"),
+            (self.commit_attempted, "commit_attempted"),
+        ):
+            if value is not None and not isinstance(value, bool):
+                raise TypeError("{} must be bool or None".format(name))
         if self.feedback_status is not None and not isinstance(
             self.feedback_status,
             FeedbackStatus,
@@ -296,6 +304,8 @@ class ArchitectureOperationStatus:
             "authorized_branch": self.authorized_branch,
             "current_branch": self.current_branch,
             "branch_match": self.branch_match,
+            "create_commit_authorized": self.create_commit_authorized,
+            "commit_attempted": self.commit_attempted,
             "execution_id": self.execution_id,
             "execution_origin": (
                 self.execution_origin.value
@@ -653,6 +663,14 @@ class ArchitectureOperationsAgent:
                 and orchestration.branch == orchestration.authorized_branch
                 if orchestration is not None else None
             ),
+            create_commit_authorized=(
+                authorization.create_commit
+                if authorization is not None else None
+            ),
+            commit_attempted=(
+                orchestration.commit_attempted
+                if orchestration is not None else None
+            ),
             execution_id=execution.execution_id if execution else None,
             execution_origin=execution.origin if execution else None,
             execution_status=execution.status if execution else None,
@@ -686,7 +704,12 @@ class ArchitectureOperationsAgent:
                 if orchestration and orchestration.failure else None
             ),
             attempt_count=len(execution.attempts) if execution else 0,
-            result_commit=execution.resulting_commit if execution else None,
+            result_commit=(
+                orchestration.result_commit
+                if orchestration is not None
+                and orchestration.result_commit is not None
+                else execution.resulting_commit if execution else None
+            ),
             handover_paths=execution.handover_paths if execution else (),
             intake_path=(
                 self._relative(
@@ -770,6 +793,8 @@ class ArchitectureOperationsAgent:
             authorized_branch=None,
             current_branch=None,
             branch_match=None,
+            create_commit_authorized=None,
+            commit_attempted=None,
             execution_id=decision.execution_id,
             execution_origin=decision.execution_origin,
             execution_status=None,
@@ -1522,6 +1547,16 @@ def render_operation(status: ArchitectureOperationStatus) -> str:
         "Branch Match: {}".format(
             status.branch_match
             if status.branch_match is not None else "missing"
+        ),
+        "Create Commit Authorized: {}".format(
+            "yes" if status.create_commit_authorized is True
+            else "no" if status.create_commit_authorized is False
+            else "missing"
+        ),
+        "Commit Attempted: {}".format(
+            "yes" if status.commit_attempted is True
+            else "no" if status.commit_attempted is False
+            else "missing"
         ),
         "Orchestration: {}".format(status.orchestration_id or "missing"),
         "Orchestration Status: {}".format(
