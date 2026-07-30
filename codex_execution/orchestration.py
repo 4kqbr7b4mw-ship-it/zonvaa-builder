@@ -671,6 +671,11 @@ class CodexExecutionOrchestrator:
         return "orchestration-{}".format(digest[:16])
 
     def run(self, request: CodexExecutionRequest) -> CodexExecutionResult:
+        if type(self.runner) is SubprocessCommandRunner:
+            raise RuntimeError(
+                "LEGACY_ORCHESTRATOR_DISABLED: use 'builder.main task run'; "
+                "historical orchestration records remain read-only"
+            )
         with self.executions.lock(request.workflow_id):
             return self._run_request(request)
 

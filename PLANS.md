@@ -3,6 +3,33 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Builder Reset v2
+
+### Ziel und Nicht-Ziele
+
+Die aktive Ausführung wird auf einen unveränderlichen Auftrag, einen Guard,
+eine Vetoweiche, einen atomaren Repository-Lock, genau einen Execution Owner,
+einen Run Receipt und getrennte menschliche Commit-/Push-Freigaben reduziert.
+Der bestehende abgebrochene Incident bleibt unverändert. Es gibt weder
+automatische Recovery noch Commit oder Push.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Incident und Ausgangszustand read-only inventarisieren.
+- [x] Typisierten Task-, Guard-, Lock-, Receipt-, Gate- und Approval-Kern anlegen.
+- [x] Neue `task run/status/commit/push`-CLI integrieren.
+- [x] Produktive Legacy-Startpunkte stilllegen.
+- [x] Fokussierte Tests, Doctor und Diff-Prüfung abschließen.
+- [ ] Vollständige Suite: geschützter Incident-Test bleibt mit seinem bereits
+  vorhandenen `NameError` blockiert; 755 übrige Tests bestehen.
+
+### Sicherheitsgrenzen
+
+- Die vorhandenen Incident-Dateien werden per Vorher-/Nachher-Hash geschützt.
+- Der Runner startet Codex höchstens einmal und führt weder Staging noch Commit
+  noch Push aus.
+- Mutmaßlich verwaiste Locks werden nicht automatisch entfernt.
+
 ## Aktiver Plan: Authorized Workflow Preparation Baseline v1
 
 ### Ziel und Nicht-Ziele

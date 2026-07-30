@@ -6,6 +6,8 @@ __pycache__/
 .env
 # Runtime state
 knowledge/runtime/current_state.json
+knowledge/runtime/tasks/
+knowledge/runtime/builder-task.lock
 
 # Local Architecture Workflow execution state and locks
 knowledge/architecture_workflows/*/executions/

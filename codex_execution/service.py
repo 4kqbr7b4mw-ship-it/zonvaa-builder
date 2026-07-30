@@ -85,6 +85,11 @@ class CodexExecutionService:
         workflow_id: str,
         retry: bool = False,
     ) -> ExecutionRecord:
+        if type(self.runner) is SubprocessCommandRunner:
+            raise RuntimeError(
+                "LEGACY_EXECUTION_DISABLED: use 'builder.main task run'; "
+                "the legacy bridge is read-only under Builder Reset v2"
+            )
         try:
             return self._execute(workflow_id, retry)
         except ExecutionBridgeError as error:

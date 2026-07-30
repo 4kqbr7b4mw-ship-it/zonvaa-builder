@@ -25,6 +25,7 @@ from commands.init import init
 from commands.preflight import preflight
 from commands.role import create_role
 from commands.release import release
+from commands.task import task_app
 
 app = typer.Typer(help="ZONVAA Builder CLI")
 
@@ -59,12 +60,13 @@ architecture_app.add_typer(review_app, name="review")
 app.add_typer(role_app, name="role")
 app.add_typer(goal_app, name="goal")
 app.add_typer(architecture_app, name="architecture")
+app.add_typer(task_app, name="task")
 
 
 @app.callback()
 def main(ctx: typer.Context) -> None:
     """Initialisiert die Builder-Runtime."""
-    if ctx.invoked_subcommand not in {"goal", "preflight"}:
+    if ctx.invoked_subcommand not in {"goal", "preflight", "task"}:
         get_runtime()
 
 
