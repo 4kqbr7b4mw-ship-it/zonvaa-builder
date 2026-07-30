@@ -17,7 +17,12 @@ from architecture_integrator.feedback import (
     ArchitectureFeedbackStore,
     ExecutionAuthorization,
 )
-from architecture_integrator.workflow import ArchitectureWorkflowStore
+from architecture_integrator.workflow import (
+    ArchitectureWorkflowStore,
+    CodexPromptSemantics,
+    PromptCommitInstruction,
+    analyze_codex_prompt,
+)
 from codex_execution.errors import (
     ExecutionBridgeError,
     process_failure,
@@ -271,6 +276,9 @@ class CodexExecutionOrchestration:
     commit_allowed: bool
     proposed_commit_message: Optional[str]
     commit_attempted: bool = False
+    prompt_commit_instruction: Optional[str] = None
+    prompt_authorization_match: Optional[bool] = None
+    push_forbidden: Optional[bool] = None
     schema_version: str = "1.0"
 
     def __post_init__(self) -> None:
@@ -324,6 +332,16 @@ class CodexExecutionOrchestration:
             raise TypeError("commit_allowed must be bool")
         if not isinstance(self.commit_attempted, bool):
             raise TypeError("commit_attempted must be bool")
+        _optional_text(
+            self.prompt_commit_instruction,
+            "prompt_commit_instruction",
+        )
+        for value, name in (
+            (self.prompt_authorization_match, "prompt_authorization_match"),
+            (self.push_forbidden, "push_forbidden"),
+        ):
+            if value is not None and not isinstance(value, bool):
+                raise TypeError("{} must be bool or None".format(name))
         _optional_text(self.proposed_commit_message, "proposed_commit_message")
 
     @property
@@ -388,6 +406,9 @@ class CodexExecutionOrchestration:
             "commit_allowed": self.commit_allowed,
             "create_commit_authorized": self.commit_allowed,
             "commit_attempted": self.commit_attempted,
+            "prompt_commit_instruction": self.prompt_commit_instruction,
+            "prompt_authorization_match": self.prompt_authorization_match,
+            "push_forbidden": self.push_forbidden,
             "proposed_commit_message": self.proposed_commit_message,
             "next_step": (
                 "MANUAL_COMMIT_APPROVAL"
@@ -441,6 +462,13 @@ class CodexExecutionOrchestration:
             commit_allowed=data["commit_allowed"],
             proposed_commit_message=data["proposed_commit_message"],
             commit_attempted=data.get("commit_attempted", False),
+            prompt_commit_instruction=data.get(
+                "prompt_commit_instruction"
+            ),
+            prompt_authorization_match=data.get(
+                "prompt_authorization_match"
+            ),
+            push_forbidden=data.get("push_forbidden"),
         )
 
 
@@ -567,7 +595,7 @@ class CodexExecutionOrchestrator:
     def _run_request(
         self, request: CodexExecutionRequest
     ) -> CodexExecutionResult:
-        authorization, proof, prompt = self._authorized_input(
+        authorization, proof, prompt, semantics = self._authorized_input(
             request.workflow_id
         )
         orchestration_id = self.orchestration_id(
@@ -624,8 +652,20 @@ class CodexExecutionOrchestrator:
             failure=None,
             commit_allowed=authorization.create_commit,
             proposed_commit_message=self._commit_message(prompt),
+            prompt_commit_instruction=semantics.commit_instruction.value,
+            prompt_authorization_match=self._prompt_authorization_match(
+                authorization,
+                proof,
+                semantics,
+            ),
+            push_forbidden=semantics.push_forbidden,
         )
-        blocker = self._preflight_blocker(record, authorization)
+        blocker = self._preflight_blocker(
+            record,
+            authorization,
+            proof,
+            semantics,
+        )
         if blocker:
             blocked = record.evolve(
                 status=CodexExecutionStatus.BLOCKED,
@@ -894,13 +934,21 @@ class CodexExecutionOrchestrator:
 
     def _authorized_input(
         self, workflow_id: str
-    ) -> Tuple[ExecutionAuthorization, Dict[str, Any], str]:
+    ) -> Tuple[
+        ExecutionAuthorization,
+        Dict[str, Any],
+        str,
+        CodexPromptSemantics,
+    ]:
         authorization = self.feedback.authorization(workflow_id)
         if authorization is None:
             raise ValueError("Explicit execution authorization is required")
         if authorization.approval_status is not ApprovalStatus.CONFIRMED:
             raise ValueError("Execution authorization is not confirmed")
-        proof = self.workflows.prompt_proof(workflow_id)
+        proof = self.workflows.prompt_proof(
+            workflow_id,
+            validate_semantics=False,
+        )
         prompt_path = self.workflows.prompt_path(workflow_id)
         if prompt_path.is_symlink():
             raise ValueError("Codex prompt cannot be a symlink")
@@ -912,12 +960,14 @@ class CodexExecutionOrchestrator:
             or Path(authorization.repository).resolve() != self.repository
         ):
             raise ValueError("Authorization, proof and repository differ")
-        return authorization, proof, prompt
+        return authorization, proof, prompt, analyze_codex_prompt(prompt)
 
     def _preflight_blocker(
         self,
         record: CodexExecutionOrchestration,
         authorization: ExecutionAuthorization,
+        proof: Dict[str, Any],
+        semantics: CodexPromptSemantics,
     ) -> Optional[Tuple[str, str]]:
         if authorization.authorized_branch is None:
             return (
@@ -941,6 +991,24 @@ class CodexExecutionOrchestrator:
                     record.workflow_id,
                     record.authorization_id,
                     record.repository_path,
+                ),
+            )
+        if not self._prompt_authorization_match(
+            authorization,
+            proof,
+            semantics,
+        ):
+            return (
+                "PROMPT_AUTHORIZATION_MISMATCH",
+                (
+                    "Prompt commit instruction '{}' or push policy conflicts "
+                    "with create_commit={} for workflow={} and "
+                    "authorization={}."
+                ).format(
+                    semantics.commit_instruction.value,
+                    authorization.create_commit,
+                    record.workflow_id,
+                    record.authorization_id,
                 ),
             )
         if record.base_commit != authorization.expected_base_commit:
@@ -967,6 +1035,32 @@ class CodexExecutionOrchestrator:
                 "Reconstructed historical execution cannot be started.",
             )
         return None
+
+    def _prompt_authorization_match(
+        self,
+        authorization: ExecutionAuthorization,
+        proof: Dict[str, Any],
+        semantics: CodexPromptSemantics,
+    ) -> bool:
+        expected = (
+            PromptCommitInstruction.CREATE_EXACTLY_ONE_AFTER_VALIDATION
+            if authorization.create_commit
+            else PromptCommitInstruction.DO_NOT_COMMIT
+        )
+        if (
+            not semantics.valid
+            or semantics.commit_instruction is not expected
+            or not semantics.push_forbidden
+        ):
+            return False
+        if proof.get("schema_version") == "1.0":
+            return True
+        return (
+            proof.get("create_commit_authorized")
+            is authorization.create_commit
+            and proof.get("commit_instruction") == expected.value
+            and proof.get("push_forbidden") is True
+        )
 
     def _has_other_active(self, record: CodexExecutionOrchestration) -> bool:
         for item in self.store.records():

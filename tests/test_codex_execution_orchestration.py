@@ -17,6 +17,10 @@ from architecture_integrator import (
     ExecutionAuthorization,
     validate_local_branch_name,
 )
+from architecture_integrator.workflow import (
+    PromptCommitInstruction,
+    analyze_codex_prompt,
+)
 from builder.main import app
 from codex_execution import (
     CodexExecutionOrchestration,
@@ -158,6 +162,10 @@ def workflow_fixture(
     authorized_branch="main",
     authorization_schema="1.2",
     create_commit=False,
+    prompt_text=None,
+    proof_create_commit=None,
+    proof_push_forbidden=True,
+    proof_schema="1.1",
 ):
     root = repository / "knowledge" / "architecture_workflows"
     folder = root / WORKFLOW
@@ -190,18 +198,49 @@ def workflow_fixture(
     (folder / "decisions" / "proposal-a.json").write_text(
         json.dumps(decision)
     )
-    prompt = "# Task\n\nDo not push.\n"
+    prompt = prompt_text or (
+        "# Task\n\n"
+        + (
+            "Create exactly one commit only after all required validations "
+            "pass.\n"
+            if create_commit
+            else (
+                "Do not create a commit.\n"
+                "Do not stage files.\n"
+                "Leave validated changes in the working tree.\n"
+            )
+        )
+        + "Do not push.\n"
+    )
     prompt_hash = hashlib.sha256(prompt.encode()).hexdigest()
     (folder / "prompts" / "codex-prompt.md").write_text(prompt)
     if proof:
+        proof_commit = (
+            create_commit
+            if proof_create_commit is None else proof_create_commit
+        )
+        proof_data = {
+            "schema_version": proof_schema,
+            "workflow_id": WORKFLOW,
+            "prompt_path": "prompts/codex-prompt.md",
+            "prompt_hash": prompt_hash,
+            "decision_ids": ["decision-a"],
+        }
+        if proof_schema == "1.1":
+            proof_data.update(
+                {
+                    "create_commit_authorized": proof_commit,
+                    "commit_instruction": (
+                        PromptCommitInstruction
+                        .CREATE_EXACTLY_ONE_AFTER_VALIDATION.value
+                        if proof_commit
+                        else PromptCommitInstruction.DO_NOT_COMMIT.value
+                    ),
+                    "push_forbidden": proof_push_forbidden,
+                }
+            )
         (folder / "prompts" / "codex-prompt-proof.json").write_text(
-            json.dumps({
-                "schema_version": "1.0",
-                "workflow_id": WORKFLOW,
-                "prompt_path": "prompts/codex-prompt.md",
-                "prompt_hash": prompt_hash,
-                "decision_ids": ["decision-a"],
-            })
+            json.dumps(proof_data)
         )
     workflows = ArchitectureWorkflowStore(root)
     if authorization:
@@ -255,6 +294,9 @@ def test_models_are_immutable_and_status_values_are_stable(tmp_path):
         record.validation_summary.diff_summary
     )
     assert record.to_dict()["next_step"] == "MANUAL_COMMIT_APPROVAL"
+    assert record.prompt_commit_instruction == "DO_NOT_COMMIT"
+    assert record.prompt_authorization_match is True
+    assert record.push_forbidden is True
     with pytest.raises(FrozenInstanceError):
         record.status = CodexExecutionStatus.RUNNING
     assert tuple(item.value for item in CodexExecutionStatus) == (
@@ -396,6 +438,106 @@ def test_detached_head_is_blocked_even_when_base_commit_matches(tmp_path):
     assert runner.codex_called == 0
 
 
+@pytest.mark.parametrize(
+    "create_commit,prompt_text,proof_create_commit,proof_push_forbidden",
+    (
+        (
+            False,
+            (
+                "# Task\n"
+                "Create exactly one commit only after all required "
+                "validations pass.\n"
+                "Do not push.\n"
+            ),
+            True,
+            True,
+        ),
+        (
+            True,
+            (
+                "# Task\n"
+                "Do not create a commit.\n"
+                "Do not stage files.\n"
+                "Leave validated changes in the working tree.\n"
+                "Do not push.\n"
+            ),
+            False,
+            True,
+        ),
+        (
+            False,
+            (
+                "# Task\n"
+                "Do not create a commit.\n"
+                "Do not stage files.\n"
+                "Leave validated changes in the working tree.\n"
+                "Do not push.\n"
+                "Push the changes.\n"
+            ),
+            False,
+            False,
+        ),
+        (
+            False,
+            (
+                "# Task\n"
+                "Do not create a commit.\n"
+                "Do not stage files.\n"
+                "Leave validated changes in the working tree.\n"
+                "Create exactly one commit only after all required "
+                "validations pass.\n"
+                "Do not push.\n"
+            ),
+            False,
+            True,
+        ),
+    ),
+)
+def test_prompt_authorization_mismatch_blocks_before_process_or_attempt(
+    tmp_path,
+    create_commit,
+    prompt_text,
+    proof_create_commit,
+    proof_push_forbidden,
+):
+    service, runner = orchestrator(
+        tmp_path,
+        create_commit=create_commit,
+        prompt_text=prompt_text,
+        proof_create_commit=proof_create_commit,
+        proof_push_forbidden=proof_push_forbidden,
+    )
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+    assert record.status is CodexExecutionStatus.BLOCKED
+    assert record.failure.code == "PROMPT_AUTHORIZATION_MISMATCH"
+    assert record.process.process_id is None
+    assert service.executions.records(WORKFLOW) == ()
+    assert runner.codex_called == 0
+
+
+def test_historical_inconsistent_prompt_is_blocked_without_mutation(
+    tmp_path,
+):
+    prompt = (
+        "# Legacy task\n"
+        "Create one commit only after all checks pass.\n"
+        "Do not push.\n"
+    )
+    service, runner = orchestrator(
+        tmp_path,
+        create_commit=False,
+        prompt_text=prompt,
+        proof_schema="1.0",
+    )
+    prompt_path = service.workflows.prompt_path(WORKFLOW)
+    proof_path = service.workflows.prompt_proof_path(WORKFLOW)
+    before = (prompt_path.read_bytes(), proof_path.read_bytes())
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+    assert record.failure.code == "PROMPT_AUTHORIZATION_MISMATCH"
+    assert (prompt_path.read_bytes(), proof_path.read_bytes()) == before
+    assert runner.codex_called == 0
+
+
 def test_legacy_authorization_is_readable_but_not_executable_or_mutated(
     tmp_path,
 ):
@@ -531,6 +673,11 @@ def test_commit_is_created_only_when_explicitly_allowed(tmp_path):
     assert record.result_commit == RESULT
     assert record.commit_allowed is True
     assert record.commit_attempted is True
+    assert record.prompt_commit_instruction == (
+        "CREATE_EXACTLY_ONE_AFTER_VALIDATION"
+    )
+    assert record.prompt_authorization_match is True
+    assert record.push_forbidden is True
     assert runner.commit_called == 1
     assert not any(command[:2] == ("git", "push") for command in runner.commands)
 
@@ -722,9 +869,15 @@ def test_operations_agent_exposes_orchestration_read_only(tmp_path):
     assert status.branch_match is True
     assert status.create_commit_authorized is False
     assert status.commit_attempted is False
+    assert status.prompt_commit_instruction == "DO_NOT_COMMIT"
+    assert status.prompt_authorization_match is True
+    assert status.push_forbidden is True
     rendered = render_operation(status)
     assert "Create Commit Authorized: no" in rendered
     assert "Commit Attempted: no" in rendered
+    assert "Prompt Commit Instruction: DO_NOT_COMMIT" in rendered
+    assert "Prompt/Authorization Match: yes" in rendered
+    assert "Push Forbidden: yes" in rendered
     assert service.store.path(
         WORKFLOW, record.orchestration_id
     ).read_bytes() == before

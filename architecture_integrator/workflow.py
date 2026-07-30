@@ -31,6 +31,83 @@ class WorkflowStatus(str, Enum):
     CODEX_PROMPT_GENERATED = "CODEX_PROMPT_GENERATED"
 
 
+class PromptCommitInstruction(str, Enum):
+    DO_NOT_COMMIT = "DO_NOT_COMMIT"
+    CREATE_EXACTLY_ONE_AFTER_VALIDATION = (
+        "CREATE_EXACTLY_ONE_AFTER_VALIDATION"
+    )
+    CONTRADICTORY = "CONTRADICTORY"
+    UNSPECIFIED = "UNSPECIFIED"
+
+
+@dataclass(frozen=True)
+class CodexPromptSemantics:
+    commit_instruction: PromptCommitInstruction
+    push_forbidden: bool
+
+    def __post_init__(self) -> None:
+        if not isinstance(
+            self.commit_instruction,
+            PromptCommitInstruction,
+        ):
+            raise TypeError(
+                "commit_instruction must be PromptCommitInstruction"
+            )
+        if not isinstance(self.push_forbidden, bool):
+            raise TypeError("push_forbidden must be bool")
+
+    @property
+    def valid(self) -> bool:
+        return (
+            self.commit_instruction
+            not in {
+                PromptCommitInstruction.CONTRADICTORY,
+                PromptCommitInstruction.UNSPECIFIED,
+            }
+            and self.push_forbidden
+        )
+
+
+def analyze_codex_prompt(content: str) -> CodexPromptSemantics:
+    if not isinstance(content, str):
+        raise TypeError("Codex prompt content must be a string")
+    lines = {line.strip() for line in content.splitlines()}
+    denies_commit = {
+        "Do not create a commit.",
+        "Do not stage files.",
+        "Leave validated changes in the working tree.",
+    }.issubset(lines)
+    permits_commit = (
+        "Create exactly one commit only after all required validations pass."
+        in lines
+        or "Create one commit only after all checks pass." in lines
+    )
+    if denies_commit and permits_commit:
+        instruction = PromptCommitInstruction.CONTRADICTORY
+    elif denies_commit:
+        instruction = PromptCommitInstruction.DO_NOT_COMMIT
+    elif permits_commit:
+        instruction = (
+            PromptCommitInstruction.CREATE_EXACTLY_ONE_AFTER_VALIDATION
+        )
+    else:
+        instruction = PromptCommitInstruction.UNSPECIFIED
+    forbidden_push = "Do not push." in lines
+    permits_push = bool(
+        lines
+        & {
+            "Push the changes.",
+            "Run git push.",
+            "You may push.",
+            "Push to origin.",
+        }
+    )
+    return CodexPromptSemantics(
+        commit_instruction=instruction,
+        push_forbidden=forbidden_push and not permits_push,
+    )
+
+
 @dataclass(frozen=True)
 class ArchitectureWorkflow:
     workflow_id: str
@@ -425,20 +502,40 @@ class ArchitectureWorkflowStore:
             if path.is_file()
         )
 
-    def write_prompt(self, workflow_id: str, content: str) -> Path:
+    def write_prompt(
+        self,
+        workflow_id: str,
+        content: str,
+        create_commit: bool,
+    ) -> Path:
+        if not isinstance(create_commit, bool):
+            raise TypeError("create_commit must be bool")
         if self.status(workflow_id) is not WorkflowStatus.READY_FOR_CODEX:
             raise RuntimeError(
                 "Workflow is not ready for Codex prompt generation"
             )
         path = self.prompt_path(workflow_id)
         serialized = content + "\n"
+        semantics = analyze_codex_prompt(serialized)
+        expected_instruction = (
+            PromptCommitInstruction.CREATE_EXACTLY_ONE_AFTER_VALIDATION
+            if create_commit
+            else PromptCommitInstruction.DO_NOT_COMMIT
+        )
+        if (
+            semantics.commit_instruction is not expected_instruction
+            or not semantics.push_forbidden
+        ):
+            raise ValueError(
+                "Codex prompt contradicts requested authorization"
+            )
         decisions = self.decisions(workflow_id)
         write_text_atomic(path, serialized)
         try:
             write_json(
                 self.prompt_proof_path(workflow_id),
                 {
-                    "schema_version": "1.0",
+                    "schema_version": "1.1",
                     "workflow_id": workflow_id,
                     "prompt_path": "prompts/codex-prompt.md",
                     "prompt_hash": hashlib.sha256(
@@ -447,6 +544,11 @@ class ArchitectureWorkflowStore:
                     "decision_ids": [
                         decision.decision_id for decision in decisions
                     ],
+                    "create_commit_authorized": create_commit,
+                    "commit_instruction": (
+                        semantics.commit_instruction.value
+                    ),
+                    "push_forbidden": semantics.push_forbidden,
                 },
             )
         except BaseException:
@@ -479,21 +581,37 @@ class ArchitectureWorkflowStore:
             "prompts",
         ) / "codex-prompt-proof.json"
 
-    def prompt_proof(self, workflow_id: str) -> Dict[str, Any]:
+    def prompt_proof(
+        self,
+        workflow_id: str,
+        validate_semantics: bool = True,
+    ) -> Dict[str, Any]:
         path = self.prompt_proof_path(workflow_id)
         data = json.loads(path.read_text(encoding="utf-8"))
-        expected = {
+        legacy_fields = {
             "schema_version",
             "workflow_id",
             "prompt_path",
             "prompt_hash",
             "decision_ids",
         }
-        if not isinstance(data, dict) or set(data) != expected:
+        versioned_fields = legacy_fields | {
+            "create_commit_authorized",
+            "commit_instruction",
+            "push_forbidden",
+        }
+        if (
+            not isinstance(data, dict)
+            or data.get("schema_version") not in {"1.0", "1.1"}
+            or set(data) != (
+                legacy_fields
+                if data.get("schema_version") == "1.0"
+                else versioned_fields
+            )
+        ):
             raise ValueError("Codex prompt proof has invalid fields")
         if (
-            data["schema_version"] != "1.0"
-            or data["workflow_id"] != workflow_id
+            data["workflow_id"] != workflow_id
             or data["prompt_path"] != "prompts/codex-prompt.md"
         ):
             raise ValueError("Codex prompt proof is invalid")
@@ -507,6 +625,44 @@ class ArchitectureWorkflowStore:
         ).hexdigest()
         if data["prompt_hash"] != prompt_hash:
             raise ValueError("Codex prompt hash changed")
+        if data["schema_version"] == "1.1":
+            if not isinstance(data["create_commit_authorized"], bool):
+                raise TypeError(
+                    "Prompt proof create_commit_authorized must be bool"
+                )
+            if not isinstance(data["push_forbidden"], bool):
+                raise TypeError(
+                    "Prompt proof push_forbidden must be bool"
+                )
+            try:
+                instruction = PromptCommitInstruction(
+                    data["commit_instruction"]
+                )
+            except ValueError as exc:
+                raise ValueError(
+                    "Prompt proof commit_instruction is invalid"
+                ) from exc
+            if validate_semantics:
+                semantics = analyze_codex_prompt(
+                    self.prompt_path(workflow_id).read_text(
+                        encoding="utf-8"
+                    )
+                )
+                expected = (
+                    PromptCommitInstruction
+                    .CREATE_EXACTLY_ONE_AFTER_VALIDATION
+                    if data["create_commit_authorized"]
+                    else PromptCommitInstruction.DO_NOT_COMMIT
+                )
+                if (
+                    instruction is not expected
+                    or semantics.commit_instruction is not instruction
+                    or data["push_forbidden"] is not True
+                    or semantics.push_forbidden is not True
+                ):
+                    raise ValueError(
+                        "Codex prompt proof contradicts prompt semantics"
+                    )
         return data
 
     def _decision_paths(
@@ -682,6 +838,7 @@ class ArchitectureWorkflowOrchestrator:
         topic: Optional[str] = None,
         workflow_id: Optional[str] = None,
         decisions: Tuple[ChiefArchitectDecision, ...] = (),
+        create_commit: bool = False,
     ) -> ArchitectureRunResult:
         if not isinstance(proposals, tuple) or not all(
             isinstance(item, ArchitectureProposal) for item in proposals
@@ -693,6 +850,8 @@ class ArchitectureWorkflowOrchestrator:
             raise TypeError(
                 "decisions must contain ChiefArchitectDecision"
             )
+        if not isinstance(create_commit, bool):
+            raise TypeError("create_commit must be bool")
         if proposals and workflow_id is not None:
             raise ValueError(
                 "New proposals and workflow_id are mutually exclusive"
@@ -722,7 +881,10 @@ class ArchitectureWorkflowOrchestrator:
             status = self.store.status(workflow.workflow_id)
 
         if status is WorkflowStatus.READY_FOR_CODEX:
-            prompt_path = self.generate_codex(workflow.workflow_id)
+            prompt_path = self.generate_codex(
+                workflow.workflow_id,
+                create_commit=create_commit,
+            )
             return ArchitectureRunResult(
                 workflow=workflow,
                 status=WorkflowStatus.CODEX_PROMPT_GENERATED,
@@ -750,7 +912,13 @@ class ArchitectureWorkflowOrchestrator:
         self.store.record_decision(workflow_id, decision)
         return self.store.status(workflow_id)
 
-    def generate_codex(self, workflow_id: str) -> Path:
+    def generate_codex(
+        self,
+        workflow_id: str,
+        create_commit: bool = False,
+    ) -> Path:
+        if not isinstance(create_commit, bool):
+            raise TypeError("create_commit must be bool")
         analyses = self.store.analyses(workflow_id)
         decisions = self.store.decisions(workflow_id)
         sections = [
@@ -778,15 +946,27 @@ class ArchitectureWorkflowOrchestrator:
         sections.extend(
             (
                 "",
-                "## Workflow commit",
+                "## Workflow completion",
                 "",
                 "Implement all confirmed sections as one coherent work "
                 "package.",
                 "Run the required complete tests and Doctor checks once after "
                 "the integrated change.",
-                "Create one commit only after all checks pass.",
-                "Suggested message: `Integrate confirmed architecture "
-                "workflow`",
+                *(
+                    (
+                        "Create exactly one commit only after all required "
+                        "validations pass.",
+                        "Do not amend or create multiple commits.",
+                        "Suggested message: `Integrate confirmed architecture "
+                        "workflow`",
+                    )
+                    if create_commit
+                    else (
+                        "Do not create a commit.",
+                        "Do not stage files.",
+                        "Leave validated changes in the working tree.",
+                    )
+                ),
                 "",
                 "Do not push.",
             )
@@ -794,6 +974,7 @@ class ArchitectureWorkflowOrchestrator:
         return self.store.write_prompt(
             workflow_id,
             "\n".join(sections),
+            create_commit=create_commit,
         )
 
     def _decision_template(

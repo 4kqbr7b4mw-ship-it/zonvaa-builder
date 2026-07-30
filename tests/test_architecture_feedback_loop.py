@@ -106,7 +106,10 @@ def _setup(runtime, tmp_path, create_commit=False):
     orchestrator = ArchitectureWorkflowOrchestrator(integrator, workflows)
     workflow = orchestrator.analyze((_proposal(),), topic="Feedback loop")
     orchestrator.decide(workflow.workflow_id, _decision())
-    orchestrator.generate_codex(workflow.workflow_id)
+    orchestrator.generate_codex(
+        workflow.workflow_id,
+        create_commit=create_commit,
+    )
     service = FakeExecutionService()
     loop = ArchitectureFeedbackLoop(
         workflows,

@@ -19,7 +19,10 @@ from architecture_integrator.workflow import (
     ArchitectureWorkflow,
     ArchitectureWorkflowOrchestrator,
     ArchitectureWorkflowStore,
+    CodexPromptSemantics,
+    PromptCommitInstruction,
     WorkflowStatus,
+    analyze_codex_prompt,
 )
 from architecture_integrator.feedback import (
     ApprovalStatus,
@@ -100,6 +103,7 @@ __all__ = [
     "ArtifactAvailability",
     "ChiefArchitectDecision",
     "CodexPromptBuilder",
+    "CodexPromptSemantics",
     "CodexHandoverIntake",
     "Conflict",
     "ContextSource",
@@ -111,6 +115,7 @@ __all__ = [
     "FeedbackTransition",
     "HandoverDeviation",
     "NormLevel",
+    "PromptCommitInstruction",
     "Recommendation",
     "ReviewDecisionErrorCode",
     "SourceRole",
@@ -118,6 +123,7 @@ __all__ = [
     "WorkflowStatus",
     "ApprovalStatus",
     "render_operation",
+    "analyze_codex_prompt",
     "load_review_decision_input",
     "normalize_topic",
 ]

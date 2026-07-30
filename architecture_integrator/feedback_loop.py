@@ -83,6 +83,14 @@ class ArchitectureFeedbackLoop:
             return existing
         decisions = self.workflows.decisions(workflow_id)
         proof = self.workflows.prompt_proof(workflow_id)
+        if (
+            proof.get("schema_version") != "1.1"
+            or proof.get("create_commit_authorized") is not create_commit
+            or proof.get("push_forbidden") is not True
+        ):
+            raise RuntimeError(
+                "Prompt proof and commit authorization differ"
+            )
         base_commit = expected_base_commit or self._git_head()
         authorized_branch = self.branch_resolver()
         execution_id = self.execution.execution_id(

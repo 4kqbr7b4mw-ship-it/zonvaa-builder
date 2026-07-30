@@ -83,6 +83,12 @@ General allowed actions never grant commit authority.
 nonterminal run whose process can no longer be proved is marked
 `RECOVERY_REQUIRED` and is not restarted automatically.
 
+Before process start, the orchestrator compares the prompt's typed commit
+instruction and push prohibition with the Prompt Proof and Execution
+Authorization. A mismatch becomes `PROMPT_AUTHORIZATION_MISMATCH`; no PID,
+Attempt or Codex process is created. Historical prompts remain unchanged and
+must pass the same check before a new execution.
+
 `execute` only accepts `CODEX_PROMPT_GENERATED`. Failed or blocked records need
 an explicit retry. Capacity retries follow `policy.md`.
 

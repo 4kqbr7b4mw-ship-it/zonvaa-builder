@@ -3,7 +3,62 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Explicit Commit Authorization v1
+## Aktiver Plan: Authorization-Aware Codex Prompt Generation v1
+
+### Ziel und Nicht-Ziele
+
+Codex Prompt, Prompt Proof und Execution Authorization tragen dieselbe
+explizite Commit-Semantik. Widersprüche blockieren vor Prozessstart.
+Nicht eingeführt werden produktive Workflows, reale Codex-Ausführung,
+Orchestration, Migration historischer Artefakte oder Push.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `a8e917c17fb6ac3bc5d8ef3c05173fa44c84da21`,
+  `0 behind / 3 ahead` gegenüber `origin/main`.
+- Preflight war erfolgreich.
+- 730 Tests bestanden unter Python 3.9.6; Doctor war erfolgreich.
+- Der Prompt-Generator forderte unabhängig von `create_commit` immer einen
+  Commit und Proof Schema 1.0 beschrieb keine Aktionssemantik.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Vorbedingungen, Preflight, Generator, Proof und Preflight prüfen.
+- [x] ADR-0044 und typisierten Prompt-Semantikvertrag ergänzen.
+- [x] Commit-Autorisierung durch Workflow und Generator führen.
+- [x] Prompt Proof versionieren und semantisch validieren.
+- [x] Orchestrator vor Prozessstart auf Konsistenz härten.
+- [x] Status, Operations, Dokumentation und fokussierte Tests ergänzen.
+- [x] Gesamttests, Doctor, Diff, Handover und Einzelcommit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- Prompt Proof Schema 1.1 bindet Commit-Anweisung und Push-Verbot an den
+  gehashten Prompt.
+- Commitlose und commitfähige Prompts verwenden feste, maschinenprüfbare
+  normative Sätze; es gibt keine Ableitung aus `ALLOWED_ACTIONS`.
+- Historische Proofs bleiben lesbar, werden aber vor neuer Ausführung gegen
+  den tatsächlichen Prompt und die Authorization geprüft.
+
+### Risiken und Teststrategie
+
+- Freie Promptformulierungen außerhalb der definierten normativen Sätze
+  erteilen keine Berechtigung und werden bei Widerspruch blockiert.
+- Tests verwenden ausschließlich Fake-Codex und temporäre Workflows.
+
+### Abweichungen und Abschlusszustand
+
+- Historische Proofs Schema 1.0 erhalten keine erfundenen Semantikfelder; der
+  tatsächliche Prompt wird vor neuer Ausführung direkt geprüft.
+- Status und Operations persistieren beziehungsweise projizieren
+  Commit-Anweisung, Authorization-Match und Push-Verbot getrennt.
+- 132 fokussierte Tests und die vollständige Suite mit 737 Tests bestanden.
+- Doctor und `git diff --check` waren erfolgreich; historische Prompts,
+  Proofs und Authorizations blieben unverändert.
+- Keine reale Codex-Ausführung, produktive Orchestration oder Push-Ausführung
+  fand statt.
+
+## Abgeschlossener Plan: Explicit Commit Authorization v1
 
 ### Ziel und Nicht-Ziele
 

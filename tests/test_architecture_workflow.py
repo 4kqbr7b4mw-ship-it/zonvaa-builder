@@ -141,8 +141,20 @@ def test_complete_workflow_persists_separate_reproducible_stages(
     assert "proposal-b" in prompt
     assert "The workflow made no decision." in prompt
     assert "Do not push." in prompt
-    assert prompt.count("## Workflow commit") == 1
+    assert prompt.count("## Workflow completion") == 1
     assert prompt.count("## Commit") == 0
+    assert "Do not create a commit." in prompt
+    assert "Do not stage files." in prompt
+    assert "Leave validated changes in the working tree." in prompt
+    assert "Create exactly one commit" not in prompt
+    assert "git add" not in prompt
+    assert "git commit" not in prompt
+    assert "Push the changes." not in prompt
+    proof = flow.store.prompt_proof(workflow.workflow_id)
+    assert proof["schema_version"] == "1.1"
+    assert proof["create_commit_authorized"] is False
+    assert proof["commit_instruction"] == "DO_NOT_COMMIT"
+    assert proof["push_forbidden"] is True
 
 
 def test_multiple_proposals_are_canonicalized_by_stable_id(runtime, tmp_path):
@@ -188,6 +200,63 @@ def test_missing_decision_blocks_codex_prompt(runtime, tmp_path):
         flow.generate_codex(workflow.workflow_id)
 
     assert not flow.store.prompt_path(workflow.workflow_id).exists()
+
+
+def test_prompt_proof_rejects_commit_semantic_contradiction(
+    runtime,
+    tmp_path,
+):
+    flow = orchestrator(runtime, tmp_path / "workflows")
+    workflow = flow.analyze(
+        (proposal("proposal-a", "New architecture statement."),)
+    )
+    flow.decide(workflow.workflow_id, decision("proposal-a"))
+    prompt_path = flow.generate_codex(
+        workflow.workflow_id,
+        create_commit=False,
+    )
+    proof_path = flow.store.prompt_proof_path(workflow.workflow_id)
+    prompt = (
+        prompt_path.read_text(encoding="utf-8")
+        + "\nCreate exactly one commit only after all required "
+        "validations pass.\n"
+    )
+    prompt_path.write_text(prompt, encoding="utf-8")
+    proof = json.loads(proof_path.read_text(encoding="utf-8"))
+    proof["prompt_hash"] = hashlib.sha256(
+        prompt_path.read_bytes()
+    ).hexdigest()
+    proof_path.write_text(json.dumps(proof), encoding="utf-8")
+    with pytest.raises(
+        ValueError,
+        match="contradicts prompt semantics",
+    ):
+        flow.store.prompt_proof(workflow.workflow_id)
+
+
+def test_legacy_prompt_proof_remains_read_only(runtime, tmp_path):
+    flow = orchestrator(runtime, tmp_path / "workflows")
+    workflow = flow.analyze(
+        (proposal("proposal-a", "New architecture statement."),)
+    )
+    flow.decide(workflow.workflow_id, decision("proposal-a"))
+    flow.generate_codex(workflow.workflow_id, create_commit=False)
+    proof_path = flow.store.prompt_proof_path(workflow.workflow_id)
+    proof = json.loads(proof_path.read_text(encoding="utf-8"))
+    legacy = {
+        key: value
+        for key, value in proof.items()
+        if key not in {
+            "create_commit_authorized",
+            "commit_instruction",
+            "push_forbidden",
+        }
+    }
+    legacy["schema_version"] = "1.0"
+    proof_path.write_text(json.dumps(legacy), encoding="utf-8")
+    before = proof_path.read_bytes()
+    assert flow.store.prompt_proof(workflow.workflow_id) == legacy
+    assert proof_path.read_bytes() == before
 
 
 def test_decision_for_unrelated_proposal_is_rejected(runtime, tmp_path):
@@ -436,6 +505,18 @@ def test_architecture_run_records_decisions_and_generates_prompt_automatically(
     assert proof["prompt_hash"] == hashlib.sha256(
         flow.store.prompt_path(workflow.workflow_id).read_bytes()
     ).hexdigest()
+    assert proof["create_commit_authorized"] is True
+    assert proof["commit_instruction"] == (
+        "CREATE_EXACTLY_ONE_AFTER_VALIDATION"
+    )
+    prompt = flow.store.prompt_path(
+        workflow.workflow_id
+    ).read_text(encoding="utf-8")
+    assert prompt.count(
+        "Create exactly one commit only after all required validations pass."
+    ) == 1
+    assert "Do not create a commit." not in prompt
+    assert "Do not push." in prompt
 
 
 def test_architecture_run_waits_when_only_some_decisions_exist(

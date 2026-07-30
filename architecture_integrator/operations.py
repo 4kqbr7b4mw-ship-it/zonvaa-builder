@@ -140,6 +140,9 @@ class ArchitectureOperationStatus:
     branch_match: Optional[bool]
     create_commit_authorized: Optional[bool]
     commit_attempted: Optional[bool]
+    prompt_commit_instruction: Optional[str]
+    prompt_authorization_match: Optional[bool]
+    push_forbidden: Optional[bool]
     execution_id: Optional[str]
     execution_origin: Optional[ExecutionOrigin]
     execution_status: Optional[ExecutionStatus]
@@ -222,6 +225,11 @@ class ArchitectureOperationStatus:
         for value, name in (
             (self.create_commit_authorized, "create_commit_authorized"),
             (self.commit_attempted, "commit_attempted"),
+            (
+                self.prompt_authorization_match,
+                "prompt_authorization_match",
+            ),
+            (self.push_forbidden, "push_forbidden"),
         ):
             if value is not None and not isinstance(value, bool):
                 raise TypeError("{} must be bool or None".format(name))
@@ -242,6 +250,10 @@ class ArchitectureOperationStatus:
             (self.authorization_id, "authorization_id"),
             (self.authorized_branch, "authorized_branch"),
             (self.current_branch, "current_branch"),
+            (
+                self.prompt_commit_instruction,
+                "prompt_commit_instruction",
+            ),
             (self.execution_id, "execution_id"),
             (self.orchestration_id, "orchestration_id"),
             (self.orchestration_step, "orchestration_step"),
@@ -306,6 +318,9 @@ class ArchitectureOperationStatus:
             "branch_match": self.branch_match,
             "create_commit_authorized": self.create_commit_authorized,
             "commit_attempted": self.commit_attempted,
+            "prompt_commit_instruction": self.prompt_commit_instruction,
+            "prompt_authorization_match": self.prompt_authorization_match,
+            "push_forbidden": self.push_forbidden,
             "execution_id": self.execution_id,
             "execution_origin": (
                 self.execution_origin.value
@@ -671,6 +686,18 @@ class ArchitectureOperationsAgent:
                 orchestration.commit_attempted
                 if orchestration is not None else None
             ),
+            prompt_commit_instruction=(
+                orchestration.prompt_commit_instruction
+                if orchestration is not None else None
+            ),
+            prompt_authorization_match=(
+                orchestration.prompt_authorization_match
+                if orchestration is not None else None
+            ),
+            push_forbidden=(
+                orchestration.push_forbidden
+                if orchestration is not None else None
+            ),
             execution_id=execution.execution_id if execution else None,
             execution_origin=execution.origin if execution else None,
             execution_status=execution.status if execution else None,
@@ -795,6 +822,9 @@ class ArchitectureOperationsAgent:
             branch_match=None,
             create_commit_authorized=None,
             commit_attempted=None,
+            prompt_commit_instruction=None,
+            prompt_authorization_match=None,
+            push_forbidden=None,
             execution_id=decision.execution_id,
             execution_origin=decision.execution_origin,
             execution_status=None,
@@ -1556,6 +1586,19 @@ def render_operation(status: ArchitectureOperationStatus) -> str:
         "Commit Attempted: {}".format(
             "yes" if status.commit_attempted is True
             else "no" if status.commit_attempted is False
+            else "missing"
+        ),
+        "Prompt Commit Instruction: {}".format(
+            status.prompt_commit_instruction or "missing"
+        ),
+        "Prompt/Authorization Match: {}".format(
+            "yes" if status.prompt_authorization_match is True
+            else "no" if status.prompt_authorization_match is False
+            else "missing"
+        ),
+        "Push Forbidden: {}".format(
+            "yes" if status.push_forbidden is True
+            else "no" if status.push_forbidden is False
             else "missing"
         ),
         "Orchestration: {}".format(status.orchestration_id or "missing"),

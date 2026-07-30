@@ -53,6 +53,13 @@ Allowed Actions erteilen keine Commit-Berechtigung. `--create-commit`
 autorisiert höchstens einen Commit nach erfolgreicher Orchestrator-Validierung,
 niemals einen Push.
 
+Prompt Proof Schema 1.1 bindet dieselbe Semantik an den gehashten Prompt:
+`create_commit_authorized`, `commit_instruction` und `push_forbidden`.
+Commitlose Prompts verbieten Commit und Staging ausdrücklich; commitfähige
+Prompts erlauben genau einen Commit nach den erforderlichen Validierungen.
+Prompt, Proof und Authorization werden vor jedem Prozessstart verglichen.
+Widersprüche blockieren mit `PROMPT_AUTHORIZATION_MISMATCH`.
+
 Die bisherigen `architecture workflow analyze`, `decide` und
 `generate-codex`-Befehle bleiben für vorhandene Abläufe kompatibel, sind aber
 nicht mehr der Standardpfad.

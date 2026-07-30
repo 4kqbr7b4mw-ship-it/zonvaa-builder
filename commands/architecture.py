@@ -670,7 +670,10 @@ def generate_workflow_codex(
     """Generate a Codex order only after every required decision."""
     try:
         orchestrator = _workflow_orchestrator()
-        path = orchestrator.generate_codex(workflow_id)
+        path = orchestrator.generate_codex(
+            workflow_id,
+            create_commit=create_commit,
+        )
         status = orchestrator.store.status(workflow_id)
         authorization = _feedback_loop(
             workflows=orchestrator.store,
@@ -741,6 +744,7 @@ def run_architecture(
             decisions=tuple(
                 load_decision(path) for path in decision_files
             ),
+            create_commit=create_commit,
         )
     except (OSError, RuntimeError, TypeError, ValueError) as error:
         _workflow_error("run", error)
