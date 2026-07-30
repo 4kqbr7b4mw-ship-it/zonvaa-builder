@@ -47,6 +47,15 @@ from architecture_integrator.operations import (
     ArtifactAvailability,
     render_operation,
 )
+from architecture_integrator.review_decision import (
+    ArchitectureImplementationReviewDecision,
+    ArchitectureReviewDecisionError,
+    ArchitectureReviewDecisionInput,
+    ArchitectureReviewDecisionService,
+    ArchitectureReviewDecisionStore,
+    ReviewDecisionErrorCode,
+    load_review_decision_input,
+)
 
 __all__ = [
     "ArchitectureAnalysis",
@@ -55,6 +64,7 @@ __all__ = [
     "ArchitectureFeedbackLoop",
     "ArchitectureFeedbackStore",
     "ArchitectureImplementationReview",
+    "ArchitectureImplementationReviewDecision",
     "ArchitectureIntegrator",
     "ArchitectureLayer",
     "ArchitectureNextStep",
@@ -71,6 +81,10 @@ __all__ = [
     "ArchitectureWorkflowOrchestrator",
     "ArchitectureWorkflowStore",
     "ArchitectureQueryFailureCode",
+    "ArchitectureReviewDecisionError",
+    "ArchitectureReviewDecisionInput",
+    "ArchitectureReviewDecisionService",
+    "ArchitectureReviewDecisionStore",
     "ArtifactAvailability",
     "ChiefArchitectDecision",
     "CodexPromptBuilder",
@@ -85,9 +99,11 @@ __all__ = [
     "HandoverDeviation",
     "NormLevel",
     "Recommendation",
+    "ReviewDecisionErrorCode",
     "SourceRole",
     "SourceStatus",
     "WorkflowStatus",
     "ApprovalStatus",
     "render_operation",
+    "load_review_decision_input",
 ]

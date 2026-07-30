@@ -16,8 +16,11 @@ from architecture_integrator import (
     ArchitectureOperationQueryError,
     ArchitectureOperationsAgent,
     ArchitectureQueryFailureCode,
+    ArchitectureReviewDecisionError,
+    ArchitectureReviewDecisionService,
     CodexPromptBuilder,
     render_operation,
+    load_review_decision_input,
 )
 from architecture_integrator.io import (
     load_analysis,
@@ -48,6 +51,61 @@ workflow_app = typer.Typer(
 execution_app = typer.Typer(
     help="Lokale Codex-Ausführungen sicher verwalten"
 )
+review_app = typer.Typer(
+    help="Chief-Architect-Entscheidungen zu Implementierungsreviews"
+)
+
+
+def decide_architecture_review(
+    review_id: str = typer.Option(..., "--review-id"),
+    decision_file: Path = typer.Option(
+        ...,
+        "--decision",
+        exists=True,
+        file_okay=True,
+        dir_okay=False,
+        readable=True,
+        resolve_path=True,
+    ),
+) -> None:
+    """Persist one explicit Chief Architect implementation-review decision."""
+    try:
+        request = load_review_decision_input(decision_file)
+        decision = ArchitectureReviewDecisionService(
+            repository=Path.cwd(),
+            workflows=ArchitectureWorkflowStore(),
+        ).decide(
+            review_id=review_id,
+            request=request,
+            decided_at=datetime.now().astimezone(),
+        )
+    except (
+        ArchitectureReviewDecisionError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as error:
+        payload = (
+            error.to_dict()
+            if isinstance(error, ArchitectureReviewDecisionError)
+            else {
+                "code": "REVIEW_DECISION_FAILED",
+                "message": "{}: {}".format(type(error).__name__, error),
+            }
+        )
+        typer.echo(json.dumps(
+            {"error": payload},
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        ))
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps(
+        decision.to_dict(),
+        ensure_ascii=False,
+        indent=2,
+        sort_keys=True,
+    ))
 
 
 def architecture_status(

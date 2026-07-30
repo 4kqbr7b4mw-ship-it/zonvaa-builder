@@ -18,6 +18,11 @@ from architecture_integrator.workflow import (
     ArchitectureWorkflowStore,
     WorkflowStatus,
 )
+from architecture_integrator.review_decision import (
+    ArchitectureImplementationReviewDecision,
+    ArchitectureReviewDecisionError,
+    ArchitectureReviewDecisionStore,
+)
 from codex_execution.models import ExecutionOrigin, ExecutionRecord, ExecutionStatus
 from codex_execution.store import ExecutionStore
 
@@ -62,6 +67,9 @@ class ArchitectureOperationIssueCode(str, Enum):
     INVALID_FEEDBACK_TRANSITION = "INVALID_FEEDBACK_TRANSITION"
     MISSING_ARTIFACT = "MISSING_ARTIFACT"
     UNSAFE_SYMLINK = "UNSAFE_SYMLINK"
+    REVIEW_DECISION_WITHOUT_REVIEW = "REVIEW_DECISION_WITHOUT_REVIEW"
+    REVIEW_DECISION_MISMATCH = "REVIEW_DECISION_MISMATCH"
+    DECISION_STATUS_WITHOUT_ARTIFACT = "DECISION_STATUS_WITHOUT_ARTIFACT"
 
 
 class ArchitectureQueryFailureCode(str, Enum):
@@ -127,6 +135,10 @@ class ArchitectureOperationStatus:
     intake_path: Optional[str]
     review_id: Optional[str]
     review_recommendation: Optional[str]
+    review_decision_id: Optional[str]
+    review_decision: Optional[str]
+    review_decision_reason: Optional[str]
+    review_decided_at: Optional[str]
     feedback_status: Optional[FeedbackStatus]
     conflicts: Tuple[str, ...]
     deviations: Tuple[str, ...]
@@ -182,6 +194,10 @@ class ArchitectureOperationStatus:
             (self.intake_path, "intake_path"),
             (self.review_id, "review_id"),
             (self.review_recommendation, "review_recommendation"),
+            (self.review_decision_id, "review_decision_id"),
+            (self.review_decision, "review_decision"),
+            (self.review_decision_reason, "review_decision_reason"),
+            (self.review_decided_at, "review_decided_at"),
         ):
             if value is not None:
                 _text(value, name)
@@ -240,6 +256,10 @@ class ArchitectureOperationStatus:
             "intake_path": self.intake_path,
             "review_id": self.review_id,
             "review_recommendation": self.review_recommendation,
+            "review_decision_id": self.review_decision_id,
+            "review_decision": self.review_decision,
+            "review_decision_reason": self.review_decision_reason,
+            "review_decided_at": self.review_decided_at,
             "feedback_status": (
                 self.feedback_status.value
                 if self.feedback_status is not None
@@ -332,6 +352,7 @@ class ArchitectureOperationsAgent:
         self.workflows = workflows
         self.feedback = ArchitectureFeedbackStore(workflows)
         self.executions = ExecutionStore(workflows)
+        self.review_decisions = ArchitectureReviewDecisionStore(self.feedback)
 
     def statuses(self) -> Tuple[ArchitectureOperationStatus, ...]:
         return tuple(
@@ -407,6 +428,7 @@ class ArchitectureOperationsAgent:
         execution = self._select_execution(executions, feedback)
         intake = self._intake(workflow_id, issues)
         review = self._review(workflow_id, issues)
+        review_decision = self._review_decision(workflow_id, issues)
         self._runtime_artifacts(
             workflow_id,
             authorization,
@@ -415,6 +437,7 @@ class ArchitectureOperationsAgent:
             feedback,
             intake,
             review,
+            review_decision,
             artifacts,
         )
         self._ensure_artifact_kinds(artifacts)
@@ -446,6 +469,7 @@ class ArchitectureOperationsAgent:
             feedback,
             intake,
             review,
+            review_decision,
             legacy,
             issues,
         )
@@ -463,6 +487,7 @@ class ArchitectureOperationsAgent:
             feedback,
             intake,
             review,
+            review_decision,
             legacy,
             tuple(issues),
         )
@@ -504,6 +529,19 @@ class ArchitectureOperationsAgent:
             review_id=review.review_id if review else None,
             review_recommendation=(
                 review.recommendation if review else None
+            ),
+            review_decision_id=(
+                review_decision.decision_id if review_decision else None
+            ),
+            review_decision=(
+                review_decision.decision.value if review_decision else None
+            ),
+            review_decision_reason=(
+                review_decision.reason if review_decision else None
+            ),
+            review_decided_at=(
+                review_decision.decided_at.isoformat()
+                if review_decision else None
             ),
             feedback_status=feedback.status if feedback else None,
             conflicts=review.conflicts if review else (),
@@ -642,6 +680,22 @@ class ArchitectureOperationsAgent:
             ))
             return None
 
+    def _review_decision(
+        self,
+        workflow_id: str,
+        issues: list,
+    ) -> Optional[ArchitectureImplementationReviewDecision]:
+        try:
+            return self.review_decisions.load(workflow_id)
+        except ArchitectureReviewDecisionError as error:
+            issues.append(self._issue(
+                ArchitectureOperationIssueCode.MISSING_ARTIFACT,
+                "Chief Architect review decision is invalid: {}".format(
+                    error
+                ),
+            ))
+            return None
+
     def _select_execution(
         self,
         executions: Tuple[ExecutionRecord, ...],
@@ -737,6 +791,7 @@ class ArchitectureOperationsAgent:
         feedback: Optional[FeedbackLoopRecord],
         intake: Optional[CodexHandoverIntake],
         review: Optional[ArchitectureImplementationReview],
+        review_decision: Optional[ArchitectureImplementationReviewDecision],
         artifacts: list,
     ) -> None:
         folder = self.workflows.folder(workflow_id)
@@ -791,6 +846,15 @@ class ArchitectureOperationsAgent:
                 "decision_proposal",
                 runtime / "decision-proposal.md",
             ))
+        decision_path = (
+            runtime
+            / ArchitectureReviewDecisionStore.FILE_NAME
+        )
+        if review_decision is not None or decision_path.exists():
+            artifacts.append(self._artifact(
+                "chief_architect_review_decision",
+                decision_path,
+            ))
 
     def _inconsistencies(
         self,
@@ -802,6 +866,7 @@ class ArchitectureOperationsAgent:
         feedback: Optional[FeedbackLoopRecord],
         intake: Optional[CodexHandoverIntake],
         review: Optional[ArchitectureImplementationReview],
+        review_decision: Optional[ArchitectureImplementationReviewDecision],
         legacy: bool,
         issues: list,
     ) -> None:
@@ -883,6 +948,35 @@ class ArchitectureOperationsAgent:
                 ArchitectureOperationIssueCode.RESULT_COMMIT_MISMATCH,
                 "Execution and review result commits differ.",
             ))
+        if review_decision is not None and review is None:
+            issues.append(self._issue(
+                ArchitectureOperationIssueCode.REVIEW_DECISION_WITHOUT_REVIEW,
+                "Chief Architect decision exists without Integrator review.",
+            ))
+        if review_decision is not None and review is not None and (
+            review_decision.review_id != review.review_id
+            or review_decision.workflow_id != review.workflow_id
+            or review_decision.architecture_run_id
+            != review.architecture_run_id
+            or review_decision.execution_id != review.execution_id
+            or review_decision.reviewed_commit != review.commit
+            or review_decision.integrator_recommendation
+            != review.recommendation
+        ):
+            issues.append(self._issue(
+                ArchitectureOperationIssueCode.REVIEW_DECISION_MISMATCH,
+                "Chief Architect decision references disagree with review.",
+            ))
+        if (
+            feedback is not None
+            and feedback.status
+            is FeedbackStatus.CHIEF_ARCHITECT_DECISION_RECORDED
+            and review_decision is None
+        ):
+            issues.append(self._issue(
+                ArchitectureOperationIssueCode.DECISION_STATUS_WITHOUT_ARTIFACT,
+                "Feedback records a decision without decision artifact.",
+            ))
 
     def _next_step(
         self,
@@ -895,6 +989,7 @@ class ArchitectureOperationsAgent:
         feedback: Optional[FeedbackLoopRecord],
         intake: Optional[CodexHandoverIntake],
         review: Optional[ArchitectureImplementationReview],
+        review_decision: Optional[ArchitectureImplementationReviewDecision],
         legacy: bool,
         issues: Tuple[ArchitectureOperationIssue, ...],
     ) -> ArchitectureNextStep:
@@ -913,9 +1008,19 @@ class ArchitectureOperationsAgent:
             ArchitectureOperationIssueCode.DUPLICATE_REVIEW,
             ArchitectureOperationIssueCode.INVALID_FEEDBACK_TRANSITION,
             ArchitectureOperationIssueCode.UNSAFE_SYMLINK,
+            ArchitectureOperationIssueCode.REVIEW_DECISION_WITHOUT_REVIEW,
+            ArchitectureOperationIssueCode.REVIEW_DECISION_MISMATCH,
+            ArchitectureOperationIssueCode.DECISION_STATUS_WITHOUT_ARTIFACT,
         }
         if any(item.code in blocking for item in issues):
             return ArchitectureNextStep.BLOCKED
+        if (
+            review_decision is not None
+            and feedback is not None
+            and feedback.status
+            is FeedbackStatus.CHIEF_ARCHITECT_DECISION_RECORDED
+        ):
+            return ArchitectureNextStep.COMPLETE
         if (
             review is not None
             and feedback is not None
@@ -989,6 +1094,7 @@ class ArchitectureOperationsAgent:
             return False
         if values["decision_id"] is not None and (
             values["decision_id"] not in item.decision_ids
+            and values["decision_id"] != item.review_decision_id
         ):
             return False
         return True
@@ -1025,6 +1131,7 @@ class ArchitectureOperationsAgent:
             "handover_intake",
             "integrator_review",
             "decision_proposal",
+            "chief_architect_review_decision",
             "feedback_record",
         )
         present = {item.kind for item in artifacts}
@@ -1119,6 +1226,18 @@ def render_operation(status: ArchitectureOperationStatus) -> str:
         ),
         "Empfehlung: {}".format(
             status.review_recommendation or "missing"
+        ),
+        "Chief-Architect-Entscheidung: {}".format(
+            status.review_decision or "missing"
+        ),
+        "Entscheidungs-ID: {}".format(
+            status.review_decision_id or "missing"
+        ),
+        "Entscheidungsbegründung: {}".format(
+            status.review_decision_reason or "missing"
+        ),
+        "Entscheidungszeitpunkt: {}".format(
+            status.review_decided_at or "missing"
         ),
         "Konflikte: {}".format(
             "; ".join(status.conflicts) or "none"

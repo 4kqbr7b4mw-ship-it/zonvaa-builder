@@ -13,11 +13,16 @@ from architecture_integrator import (
     ApprovalStatus,
     ArchitectureFeedbackStore,
     ArchitectureImplementationReview,
+    ArchitectureImplementationReviewDecision,
     ArchitectureNextStep,
     ArchitectureOperationIssueCode,
     ArchitectureOperationQuery,
     ArchitectureOperationQueryError,
     ArchitectureOperationsAgent,
+    ArchitectureReviewDecisionError,
+    ArchitectureReviewDecisionInput,
+    ArchitectureReviewDecisionService,
+    ArchitectureReviewDecisionStore,
     ArchitectureWorkflowStore,
     ChiefArchitectDecision,
     CodexHandoverIntake,
@@ -27,6 +32,7 @@ from architecture_integrator import (
     FeedbackStatus,
     FeedbackTransition,
     HandoverDeviation,
+    ReviewDecisionErrorCode,
 )
 from codex_execution import (
     CheckStatus,
@@ -905,3 +911,395 @@ def test_duplicate_execution_and_review_are_blocked(tmp_path):
     assert ArchitectureOperationIssueCode.DUPLICATE_EXECUTION in codes
     assert ArchitectureOperationIssueCode.DUPLICATE_REVIEW in codes
     assert status.next_step is ArchitectureNextStep.BLOCKED
+
+
+def review_decision_service(repository, workflows):
+    return ArchitectureReviewDecisionService(repository, workflows)
+
+
+def review_decision_request(
+    decision=DecisionChoice.ADOPT,
+    reason="Explicit Chief Architect approval.",
+):
+    return ArchitectureReviewDecisionInput(decision, reason)
+
+
+def make_reconstructed_review(repository, workflows, workflow_id):
+    review = complete_review(repository, workflows, workflow_id)
+    folder = workflows.folder(workflow_id)
+    old_execution = (
+        folder / "executions" / "execution-0123456789abcdef.json"
+    )
+    execution_data = json.loads(old_execution.read_text(encoding="utf-8"))
+    reconstructed_id = "reconstructed-execution-0123456789abcdef"
+    execution_data.update({
+        "execution_id": reconstructed_id,
+        "origin": "RECONSTRUCTED",
+        "prompt_hash": None,
+        "starting_branch": None,
+        "starting_git_status": None,
+        "started_at": None,
+        "completed_at": None,
+        "codex_exit_code": None,
+        "reconstructed_at": NOW.isoformat(),
+        "authorization_reference": "reconstruction-authorization",
+        "reconstruction_source": "DIRECT_AUTHORIZATION",
+    })
+    write_json(
+        folder / "executions" / "{}.json".format(reconstructed_id),
+        execution_data,
+    )
+    old_execution.unlink()
+    runtime = folder / "executions" / "feedback"
+    review_path = runtime / "integrator-review.json"
+    review_data = json.loads(review_path.read_text(encoding="utf-8"))
+    review_data["execution_id"] = reconstructed_id
+    write_json(review_path, review_data)
+    intake_path = runtime / "handover-intake.json"
+    intake_data = json.loads(intake_path.read_text(encoding="utf-8"))
+    intake_data["execution_id"] = reconstructed_id
+    write_json(intake_path, intake_data)
+    feedback_path = runtime / "feedback-loop.json"
+    feedback_data = json.loads(feedback_path.read_text(encoding="utf-8"))
+    feedback_data["expected_execution_id"] = reconstructed_id
+    feedback_data["execution_id"] = reconstructed_id
+    write_json(feedback_path, feedback_data)
+    return review.review_id, reconstructed_id
+
+
+def test_review_decision_is_bound_to_valid_bridge_review(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Bridge review",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    review_path = (
+        workflows.folder(workflow_id)
+        / "executions"
+        / "feedback"
+        / "integrator-review.json"
+    )
+    execution_path = ExecutionStore(workflows).path(
+        workflow_id,
+        "execution-0123456789abcdef",
+        create=False,
+    )
+    before_review = review_path.read_bytes()
+    before_execution = execution_path.read_bytes()
+
+    decision = review_decision_service(
+        repository,
+        workflows,
+    ).decide(review.review_id, review_decision_request(), NOW)
+
+    assert isinstance(decision, ArchitectureImplementationReviewDecision)
+    assert decision.review_id == review.review_id
+    assert decision.execution_origin is ExecutionOrigin.EXECUTION_BRIDGE
+    assert decision.integrator_recommendation == "ADOPT"
+    assert decision.decision is DecisionChoice.ADOPT
+    assert decision.reviewed_commit == RESULT
+    assert review_path.read_bytes() == before_review
+    assert execution_path.read_bytes() == before_execution
+    assert ArchitectureFeedbackStore(workflows).record(
+        workflow_id
+    ).status is FeedbackStatus.CHIEF_ARCHITECT_DECISION_RECORDED
+
+
+def test_review_decision_supports_reconstructed_review_without_manifest(
+    tmp_path,
+):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Reconstructed review",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review_id, execution_id = make_reconstructed_review(
+        repository,
+        workflows,
+        workflow_id,
+    )
+    workflows.manifest_path(workflow_id).unlink()
+
+    decision = review_decision_service(
+        repository,
+        workflows,
+    ).decide(review_id, review_decision_request(), NOW)
+
+    assert decision.execution_id == execution_id
+    assert decision.execution_origin is ExecutionOrigin.RECONSTRUCTED
+    assert decision.review_topic == "Completed operation"
+
+
+@pytest.mark.parametrize(
+    ("mutation", "code"),
+    (
+        ("unknown", ReviewDecisionErrorCode.REVIEW_NOT_FOUND),
+        ("invalid_review", ReviewDecisionErrorCode.REVIEW_INVALID),
+        ("blocked", ReviewDecisionErrorCode.REVIEW_BLOCKED),
+        ("reference", ReviewDecisionErrorCode.REFERENCE_MISMATCH),
+    ),
+)
+def test_review_decision_rejects_invalid_or_blocked_review(
+    tmp_path,
+    mutation,
+    code,
+):
+    repository = tmp_path / mutation
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Invalid review",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    runtime = (
+        workflows.folder(workflow_id) / "executions" / "feedback"
+    )
+    review_id = review.review_id
+    if mutation == "unknown":
+        review_id = "review-fedcba9876543210"
+    elif mutation == "invalid_review":
+        (runtime / "integrator-review.json").write_text(
+            "{broken",
+            encoding="utf-8",
+        )
+    elif mutation == "blocked":
+        payload = review.to_dict()
+        payload["conflicts"] = ["Unresolved architecture conflict."]
+        write_json(runtime / "integrator-review.json", payload)
+    elif mutation == "reference":
+        payload = review.to_dict()
+        payload["commit"] = "d" * 40
+        write_json(runtime / "integrator-review.json", payload)
+
+    with pytest.raises(ArchitectureReviewDecisionError) as error:
+        review_decision_service(repository, workflows).decide(
+            review_id,
+            review_decision_request(),
+            NOW,
+        )
+
+    assert error.value.code is code
+    assert not ArchitectureReviewDecisionStore(
+        ArchitectureFeedbackStore(workflows)
+    ).path(workflow_id).exists()
+
+
+def test_review_decision_is_idempotent_and_conflicts_are_rejected(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Idempotent review",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    service = review_decision_service(repository, workflows)
+    request = review_decision_request()
+    first = service.decide(review.review_id, request, NOW)
+    path = ArchitectureReviewDecisionStore(service.feedback).path(workflow_id)
+    before = path.read_bytes()
+
+    repeated = service.decide(
+        review.review_id,
+        request,
+        NOW.replace(hour=10),
+    )
+
+    assert repeated == first
+    assert path.read_bytes() == before
+    with pytest.raises(ArchitectureReviewDecisionError) as error:
+        service.decide(
+            review.review_id,
+            review_decision_request(DecisionChoice.REJECT, "Rejected."),
+            NOW,
+        )
+    assert error.value.code is ReviewDecisionErrorCode.DECISION_CONFLICT
+
+
+def test_corrupt_existing_review_decision_is_never_overwritten(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Corrupt decision",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    store = ArchitectureReviewDecisionStore(
+        ArchitectureFeedbackStore(workflows)
+    )
+    path = store.path(workflow_id)
+    path.write_text("{broken", encoding="utf-8")
+    before = path.read_bytes()
+
+    with pytest.raises(ArchitectureReviewDecisionError) as error:
+        review_decision_service(repository, workflows).decide(
+            review.review_id,
+            review_decision_request(),
+            NOW,
+        )
+
+    assert error.value.code is (
+        ReviewDecisionErrorCode.DECISION_ARTIFACT_INVALID
+    )
+    assert path.read_bytes() == before
+
+
+def test_review_decision_updates_operations_without_starting_execution(
+    tmp_path,
+):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Operations decision",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    execution_path = ExecutionStore(workflows).path(
+        workflow_id,
+        "execution-0123456789abcdef",
+        create=False,
+    )
+    execution_before = execution_path.read_bytes()
+    decision = review_decision_service(
+        repository,
+        workflows,
+    ).decide(review.review_id, review_decision_request(), NOW)
+
+    status = agent(repository, workflows).statuses()[0]
+
+    assert status.review_recommendation == "ADOPT"
+    assert status.review_decision == "ADOPT"
+    assert status.review_decision_id == decision.decision_id
+    assert status.review_decision_reason == decision.reason
+    assert status.next_step is ArchitectureNextStep.COMPLETE
+    assert agent(repository, workflows).find(
+        ArchitectureOperationQuery(decision_id=decision.decision_id)
+    )[0].workflow_id == workflow_id
+    assert agent(repository, workflows).reviews() == ()
+    assert execution_path.read_bytes() == execution_before
+    assert status.attempt_count == 0
+    assert any(
+        item.kind == "chief_architect_review_decision"
+        and item.availability.value == "PRESENT"
+        for item in status.artifacts
+    )
+
+
+def test_review_decision_input_rejects_unknown_values_and_injected_fields():
+    with pytest.raises(ArchitectureReviewDecisionError):
+        ArchitectureReviewDecisionInput.from_dict({
+            "decision": "APPROVE",
+            "reason": "Invalid.",
+        })
+
+
+def test_review_decision_model_is_immutable():
+    decision = ArchitectureImplementationReviewDecision(
+        decision_id="review-decision-0123456789abcdef",
+        review_id="review-0123456789abcdef",
+        decision=DecisionChoice.ADOPT,
+        reason="Explicit decision.",
+        decided_at=NOW,
+        review_topic="Topic",
+        workflow_id="workflow-0123456789abcdef",
+        architecture_run_id="architecture-run-0123456789abcdef",
+        execution_id="execution-0123456789abcdef",
+        execution_origin=ExecutionOrigin.EXECUTION_BRIDGE,
+        reviewed_commit=RESULT,
+        integrator_recommendation="ADOPT",
+    )
+
+    with pytest.raises(FrozenInstanceError):
+        decision.reason = "Changed."
+    with pytest.raises(ArchitectureReviewDecisionError):
+        ArchitectureReviewDecisionInput.from_dict({
+            "decision": "ADOPT",
+            "reason": "Valid.",
+            "workflow_id": "workflow-attacker",
+        })
+
+
+def test_review_decision_cli_uses_real_service_and_help(tmp_path, monkeypatch):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "CLI review",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    decision_file = repository / "decision-input.json"
+    write_json(decision_file, {
+        "decision": "ADOPT",
+        "reason": "Explicit CLI decision.",
+    })
+    monkeypatch.chdir(repository)
+    runner = CliRunner()
+
+    help_result = runner.invoke(
+        architecture_app,
+        ["review", "decide", "--help"],
+    )
+    result = runner.invoke(
+        architecture_app,
+        [
+            "review",
+            "decide",
+            "--review-id",
+            review.review_id,
+            "--decision",
+            str(decision_file),
+        ],
+    )
+
+    assert help_result.exit_code == 0
+    assert "--review-id" in help_result.stdout
+    assert "--decision" in help_result.stdout
+    assert result.exit_code == 0, result.stdout
+    payload = json.loads(result.stdout)
+    assert payload["review_id"] == review.review_id
+    assert payload["decision"] == "ADOPT"
+    assert payload["workflow_id"] == workflow_id
+
+    invalid_file = repository / "invalid-decision.json"
+    write_json(invalid_file, {
+        "decision": "APPROVE",
+        "reason": "Invalid.",
+    })
+    invalid = runner.invoke(
+        architecture_app,
+        [
+            "review",
+            "decide",
+            "--review-id",
+            review.review_id,
+            "--decision",
+            str(invalid_file),
+        ],
+    )
+    assert invalid.exit_code == 1
+    assert json.loads(invalid.stdout)["error"]["code"] == (
+        "DECISION_INPUT_INVALID"
+    )

@@ -101,6 +101,37 @@ gekennzeichnet und durch diese Leseschicht nicht ausführbar gemacht. Ein
 Review oder eine Empfehlung ersetzt niemals die Entscheidung des Chief
 Architect.
 
+## Chief Architect Review Decisions
+
+Eine ausdrückliche Entscheidung über ein validiertes Implementierungsreview
+verwendet einen eigenen Vertrag:
+
+```bash
+python3 -m builder.main architecture review decide \
+  --review-id review-0123456789abcdef \
+  --decision /tmp/review-decision.json
+```
+
+Die Eingabedatei enthält ausschließlich:
+
+```json
+{
+  "decision": "ADOPT",
+  "reason": "Explicit Chief Architect decision."
+}
+```
+
+Workflow, Architecture Run, Execution-Herkunft, Commit und
+Integrator-Empfehlung werden aus den validierten Review-Artefakten abgeleitet.
+Sie können nicht über die Eingabe gesetzt werden. Pro Review ist genau ein
+Decision-Artefakt unter `executions/feedback/` zulässig. Eine identische
+Wiederholung ist idempotent; eine abweichende Entscheidung oder Begründung
+wird nicht überschrieben.
+
+Der Befehl startet weder Execution noch Attempt. Die read-only
+Operations-Befehle zeigen Entscheidung, Begründung und Zeitpunkt anschließend
+separat von der Integrator-Empfehlung an.
+
 ## Kontextreihenfolge
 
 `C1 → MDR → C2 → Institution/Interaction → ADR → C3 → historische ADRs`

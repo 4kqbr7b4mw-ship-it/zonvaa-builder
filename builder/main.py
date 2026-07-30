@@ -7,12 +7,14 @@ from commands.architecture import (
     architecture_next,
     architecture_reviews,
     architecture_status,
+    decide_architecture_review,
     create_codex_prompt,
     execute_architecture,
     execution_app,
     integrate_architecture,
     run_architecture,
     workflow_app,
+    review_app,
 )
 from commands.doctor import doctor
 from commands.handover import handover
@@ -45,8 +47,10 @@ architecture_app.command("status")(architecture_status)
 architecture_app.command("next")(architecture_next)
 architecture_app.command("artifacts")(architecture_artifacts)
 architecture_app.command("reviews")(architecture_reviews)
+review_app.command("decide")(decide_architecture_review)
 architecture_app.add_typer(workflow_app, name="workflow")
 architecture_app.add_typer(execution_app, name="execution")
+architecture_app.add_typer(review_app, name="review")
 
 app.add_typer(role_app, name="role")
 app.add_typer(goal_app, name="goal")

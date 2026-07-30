@@ -3,7 +3,66 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Architecture Operations Agent v1
+## Aktiver Plan: Chief Architect Review Decision Architecture v1
+
+### Ziel und Nicht-Ziele
+
+Ein eigener typisierter Vertrag persistiert genau eine ausdrückliche
+Chief-Architect-Entscheidung zu einem validierten Implementierungsreview.
+Proposal-Entscheidungen bleiben unverändert. Nicht gestartet werden
+Execution, Attempt, Autorisierung oder eine automatische Übernahme der
+Integrator-Empfehlung.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `f0629bf4055ef3135122e2297893d93640d1da6f`
+  und war `0 behind / 4 ahead`; Preflight war erfolgreich.
+- Beide realen Reviews stehen auf `CHIEF_ARCHITECT_DECISION_REQUIRED`.
+- Der bestehende `workflow decide`-Vertrag bindet Entscheidungen an
+  Proposals und kann Implementierungsreviews nicht korrekt entscheiden.
+- Feedback Store, Execution Store und Architecture Operations Agent liefern
+  bereits die kanonischen Review-, Run-, Execution- und Commit-Referenzen.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Vorbedingungen, Preflight, Review-, Feedback-, Execution- und CLI-Verträge prüfen.
+- [x] Unveränderliches Review-Decision-Modell und Application Service ergänzen.
+- [x] Append-only Persistenz und Feedback-Statusübergang integrieren.
+- [x] `architecture review decide` und Operations-Anzeigen ergänzen.
+- [x] ADR-0039 und fokussierte Sicherheits-/Idempotenztests erstellen.
+- [x] Gesamttests, Doctor und Diff abschließen.
+- [x] Handover und genau einen Commit abschließen.
+
+### Entscheidungen und Begründungen
+
+- Das Implementierungsreview ist der Entscheidungsanker; ein historisch
+  fehlendes Workflow-Manifest blockiert rekonstruierte Vorgänge nicht.
+- Die CLI-Eingabe enthält ausschließlich `decision` und `reason`.
+  Sämtliche Zuordnungsfelder werden aus validierten Artefakten abgeleitet.
+- Pro Review wird genau ein kanonisches Decision-Artefakt im bestehenden
+  Feedback-Bereich abgelegt; identische Wiederholung bleibt idempotent.
+
+### Risiken und Teststrategie
+
+- Feedback-Status und Decision-Artefakt sind zwei lokale Dateien; vollständige
+  Vorvalidierung und idempotente Wiederaufnahme begrenzen Teilfehler.
+- Tests verwenden isolierte Workflow-Stores und prüfen Bridge- sowie
+  Reconstruction-Herkunft, fehlende Manifestdaten, Manipulation,
+  Konflikte, beschädigte Artefakte und ausbleibende Execution-Seiteneffekte.
+
+### Abweichungen und Abschlusszustand
+
+Der Proposal-Entscheidungsvertrag blieb unverändert. Der neue Service bindet
+Entscheidungen ausschließlich an validierte Implementierungsreviews und
+unterstützt sowohl `EXECUTION_BRIDGE` als auch `RECONSTRUCTED` ohne
+historische Daten zu erfinden. Temporäre Fixtures bestätigten CLI,
+Idempotenz, Konflikte und Operations-Anzeigen; die beiden realen Reviews
+blieben auf `CHIEF_ARCHITECT_DECISION_REQUIRED` und erhielten kein
+Decision-Artefakt. 76 fokussierte und 676 vollständige Tests bestanden.
+Doctor und `git diff --check` waren erfolgreich. Der Abschlusscommit wird
+nicht gepusht.
+
+## Abgeschlossener Plan: Architecture Operations Agent v1
 
 ### Ziel und Nicht-Ziele
 
