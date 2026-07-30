@@ -1,0 +1,15 @@
+{
+  "architecture_run_id": "architecture-run-45c6441621949702",
+  "decided_at": "2026-07-30T14:24:40.309829+02:00",
+  "decision": "ADOPT",
+  "decision_id": "review-decision-ae1a430c915484da",
+  "execution_id": "execution-2c75dbf8721fa034",
+  "execution_origin": "EXECUTION_BRIDGE",
+  "integrator_recommendation": "ADOPT",
+  "reason": "Die reale End-to-End-Validierung bestätigt den kontrollierten Architecture-Feedback-Loop von der Execution Bridge bis zur entscheidungsreifen Chief-Architect-Vorlage. Execution-Herkunft, Attempt, Review und Commit sind eindeutig zugeordnet. Der Integrator meldet keine Konflikte und keine Abweichungen. Die Empfehlung ADOPT wurde nicht automatisch übernommen, sondern wird hiermit ausdrücklich durch den Chief Architect bestätigt.",
+  "review_id": "review-223f811d69329e77",
+  "review_topic": "Controlled Architecture Feedback Loop E2E Validation",
+  "reviewed_commit": "8471f8bd41d9335ac14b7bef23a09cf7db1d4d90",
+  "schema_version": "1.0",
+  "workflow_id": "workflow-43af40b39b5593f6"
+}

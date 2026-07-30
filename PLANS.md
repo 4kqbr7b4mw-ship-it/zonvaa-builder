@@ -3,7 +3,72 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Chief Architect Review Decision Architecture v1
+## Aktiver Plan: Versioned Review Decisions and Workflow Supersession v1
+
+### Ziel und Nicht-Ziele
+
+Chief-Architect-Review-Entscheidungen werden aus dem ignorierten Runtime-Baum
+in eine reviewzentrierte, normal versionierbare Ablage überführt. Ein
+expliziter, unveränderlicher Supersession-Vertrag löst mehrere Workflows mit
+demselben Topic nur aufgrund einer bestätigten Zuordnung auf. Nicht geändert
+werden bestehende Decision-IDs oder Zeitpunkte; nicht gestartet werden
+Execution, Attempt oder automatische Supersession.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `d8b4c3d40f8cb9dc2f8c3b59e4935cf469c0dbe7`
+  und war `0 behind / 5 ahead`; Preflight war erfolgreich.
+- Beide realen Reviews stehen auf
+  `CHIEF_ARCHITECT_DECISION_RECORDED`, Entscheidung und Empfehlung sind
+  getrennt, und ihr nächster Schritt ist `COMPLETE`.
+- Die beiden Decision-Artefakte liegen untracked unter dem durch
+  `.gitignore` ausgeschlossenen `executions/`-Baum.
+- Zwei eigenständige Feedback-Loop-Workflows besitzen exakt dasselbe Topic;
+  der bestehende case-insensitive Teilstring-Resolver blockiert deshalb
+  sowohl exakte als auch partielle Topic-Abfragen als mehrdeutig.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Vorbedingungen, Preflight, ADR-0039, Store, Resolver, CLI und Tests prüfen.
+- [x] Versionierten Decision-Store mit kontrolliertem Legacy-Vertrag ergänzen.
+- [x] Unveränderlichen Supersession-Vertrag, Store und CLI ergänzen.
+- [x] Exakt-vor-partiell-Auflösung mit expliziter Supersession integrieren.
+- [x] Reale Decisions ohne Identitätsänderung migrieren und eine Supersession persistieren.
+- [x] ADR-0040, fokussierte Git-/Sicherheits-/Resolver-Tests ergänzen.
+- [x] Gesamttests, Doctor, Diff und Handover abschließen; genau einen Commit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- ADR-0039 bleibt fachlich gültig; ADR-0040 korrigiert den physischen
+  kanonischen Ablageort.
+- Read-only Operations-Aufrufe dürfen weder Legacy-Decisions migrieren noch
+  Supersession erzeugen.
+- Topic-Auflösung verwendet keine Zeit-, Commit-, Status- oder
+  Dateialter-Heuristik.
+
+### Risiken und Teststrategie
+
+- Alte lokale Decision-Dateien können neben neuen kanonischen Dateien liegen;
+  Identität wird geprüft und Abweichung blockiert strukturiert.
+- Git-Sichtbarkeit wird in einem echten temporären Git-Repository geprüft,
+  ohne `git add -f`.
+- Resolver-Tests decken exakte und partielle Treffer, Zyklen,
+  widersprüchliche Zuordnungen, Direktzugriff und unveränderte historische
+  Artefakte ab.
+
+### Abweichungen und Abschlusszustand
+
+Der versionierte Decision-Index kann einen entschiedenen Review-Zustand auch
+ohne lokale Runtime-Verzeichnisse nach einem Checkout rekonstruieren; dabei
+werden keine fehlenden Execution- oder Attempt-Daten erfunden. Die zwei
+realen Decisions behielten ihre IDs, Zeitpunkte und Inhalte. Die bestätigte
+Supersession löst das Feedback-Loop-Topic eindeutig auf, während der
+historische Workflow direkt auffindbar bleibt. 80 fokussierte und 685
+vollständige Tests bestanden; Doctor war erfolgreich. Handover, finaler Diff
+und Qualitätsprüfung sind abgeschlossen. Der Abschlusscommit wird nicht
+gepusht.
+
+## Abgeschlossener Plan: Chief Architect Review Decision Architecture v1
 
 ### Ziel und Nicht-Ziele
 

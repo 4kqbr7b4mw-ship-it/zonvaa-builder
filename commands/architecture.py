@@ -18,6 +18,8 @@ from architecture_integrator import (
     ArchitectureQueryFailureCode,
     ArchitectureReviewDecisionError,
     ArchitectureReviewDecisionService,
+    ArchitectureWorkflowSupersessionError,
+    ArchitectureWorkflowSupersessionStore,
     CodexPromptBuilder,
     render_operation,
     load_review_decision_input,
@@ -54,6 +56,94 @@ execution_app = typer.Typer(
 review_app = typer.Typer(
     help="Chief-Architect-Entscheidungen zu Implementierungsreviews"
 )
+
+
+def migrate_architecture_review_decision(
+    review_id: str = typer.Option(..., "--review-id"),
+) -> None:
+    """Migrate one legacy review decision to its versioned canonical path."""
+    try:
+        decision = ArchitectureReviewDecisionService(
+            repository=Path.cwd(),
+            workflows=ArchitectureWorkflowStore(),
+        ).migrate(review_id)
+    except (
+        ArchitectureReviewDecisionError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as error:
+        payload = (
+            error.to_dict()
+            if isinstance(error, ArchitectureReviewDecisionError)
+            else {
+                "code": "REVIEW_DECISION_MIGRATION_FAILED",
+                "message": "{}: {}".format(type(error).__name__, error),
+            }
+        )
+        typer.echo(json.dumps(
+            {"error": payload},
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        ))
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps(
+        decision.to_dict(),
+        ensure_ascii=False,
+        indent=2,
+        sort_keys=True,
+    ))
+
+
+def supersede_architecture_workflow(
+    superseded_workflow_id: str = typer.Option(
+        ...,
+        "--superseded-workflow-id",
+    ),
+    canonical_workflow_id: str = typer.Option(
+        ...,
+        "--canonical-workflow-id",
+    ),
+    reason: str = typer.Option(..., "--reason"),
+) -> None:
+    """Persist one explicit immutable workflow supersession."""
+    try:
+        record = ArchitectureWorkflowSupersessionStore(
+            ArchitectureWorkflowStore()
+        ).record(
+            superseded_workflow_id=superseded_workflow_id,
+            canonical_workflow_id=canonical_workflow_id,
+            reason=reason,
+            recorded_at=datetime.now().astimezone(),
+        )
+    except (
+        ArchitectureWorkflowSupersessionError,
+        OSError,
+        TypeError,
+        ValueError,
+    ) as error:
+        typer.echo(json.dumps(
+            {
+                "error": {
+                    "code": "WORKFLOW_SUPERSESSION_FAILED",
+                    "message": "{}: {}".format(
+                        type(error).__name__,
+                        error,
+                    ),
+                }
+            },
+            ensure_ascii=False,
+            indent=2,
+            sort_keys=True,
+        ))
+        raise typer.Exit(code=1)
+    typer.echo(json.dumps(
+        record.to_dict(),
+        ensure_ascii=False,
+        indent=2,
+        sort_keys=True,
+    ))
 
 
 def decide_architecture_review(

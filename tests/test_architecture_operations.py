@@ -1,5 +1,7 @@
 import hashlib
 import json
+import shutil
+import subprocess
 from dataclasses import FrozenInstanceError, replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -24,6 +26,9 @@ from architecture_integrator import (
     ArchitectureReviewDecisionService,
     ArchitectureReviewDecisionStore,
     ArchitectureWorkflowStore,
+    ArchitectureWorkflowSupersession,
+    ArchitectureWorkflowSupersessionError,
+    ArchitectureWorkflowSupersessionStore,
     ChiefArchitectDecision,
     CodexHandoverIntake,
     DecisionChoice,
@@ -1093,7 +1098,7 @@ def test_review_decision_rejects_invalid_or_blocked_review(
     assert error.value.code is code
     assert not ArchitectureReviewDecisionStore(
         ArchitectureFeedbackStore(workflows)
-    ).path(workflow_id).exists()
+    ).path(review.review_id).exists()
 
 
 def test_review_decision_is_idempotent_and_conflicts_are_rejected(tmp_path):
@@ -1110,7 +1115,9 @@ def test_review_decision_is_idempotent_and_conflicts_are_rejected(tmp_path):
     service = review_decision_service(repository, workflows)
     request = review_decision_request()
     first = service.decide(review.review_id, request, NOW)
-    path = ArchitectureReviewDecisionStore(service.feedback).path(workflow_id)
+    path = ArchitectureReviewDecisionStore(service.feedback).path(
+        review.review_id
+    )
     before = path.read_bytes()
 
     repeated = service.decide(
@@ -1144,7 +1151,8 @@ def test_corrupt_existing_review_decision_is_never_overwritten(tmp_path):
     store = ArchitectureReviewDecisionStore(
         ArchitectureFeedbackStore(workflows)
     )
-    path = store.path(workflow_id)
+    path = store.path(review.review_id)
+    path.parent.mkdir(parents=True)
     path.write_text("{broken", encoding="utf-8")
     before = path.read_bytes()
 
@@ -1303,3 +1311,414 @@ def test_review_decision_cli_uses_real_service_and_help(tmp_path, monkeypatch):
     assert json.loads(invalid.stdout)["error"]["code"] == (
         "DECISION_INPUT_INVALID"
     )
+
+
+def test_versioned_review_decision_is_git_visible_and_reconstructs_status(
+    tmp_path,
+):
+    repository = tmp_path / "repo"
+    repository.mkdir()
+    subprocess.run(
+        ["git", "init", "-q"],
+        cwd=str(repository),
+        check=True,
+    )
+    (repository / ".gitignore").write_text(
+        "knowledge/architecture_workflows/*/executions/\n",
+        encoding="utf-8",
+    )
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Versioned decision",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    decision = review_decision_service(
+        repository,
+        workflows,
+    ).decide(review.review_id, review_decision_request(), NOW)
+    path = ArchitectureReviewDecisionStore(
+        ArchitectureFeedbackStore(workflows)
+    ).path(review.review_id)
+
+    ignored = subprocess.run(
+        ["git", "check-ignore", str(path.relative_to(repository))],
+        cwd=str(repository),
+        capture_output=True,
+        text=True,
+    )
+    status = subprocess.run(
+        [
+            "git",
+            "status",
+            "--short",
+            "--untracked-files=all",
+            "--",
+            str(path.relative_to(repository)),
+        ],
+        cwd=str(repository),
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    runtime = ExecutionStore(workflows).path(
+        workflow_id,
+        review.execution_id,
+        create=False,
+    )
+    runtime_ignored = subprocess.run(
+        ["git", "check-ignore", str(runtime.relative_to(repository))],
+        cwd=str(repository),
+        capture_output=True,
+        text=True,
+    )
+
+    assert decision.review_id == review.review_id
+    assert ignored.returncode == 1
+    assert status.stdout.strip() == "?? {}".format(
+        path.relative_to(repository)
+    )
+    assert runtime_ignored.returncode == 0
+    reloaded = agent(repository, workflows).find(
+        ArchitectureOperationQuery(review_id=review.review_id)
+    )[0]
+    assert reloaded.review_decision_id == decision.decision_id
+    assert reloaded.next_step is ArchitectureNextStep.COMPLETE
+
+    shutil.rmtree(workflows.folder(workflow_id))
+    checkout_status = agent(
+        repository,
+        ArchitectureWorkflowStore(workflows.root),
+    ).find(ArchitectureOperationQuery(review_id=review.review_id))[0]
+    assert checkout_status.workflow_id == workflow_id
+    assert checkout_status.review_decision_id == decision.decision_id
+    assert checkout_status.feedback_status is (
+        FeedbackStatus.CHIEF_ARCHITECT_DECISION_RECORDED
+    )
+    assert checkout_status.next_step is ArchitectureNextStep.COMPLETE
+
+
+def test_legacy_review_decision_requires_explicit_migration(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Legacy decision",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    service = review_decision_service(repository, workflows)
+    decision = ArchitectureImplementationReviewDecision(
+        decision_id="review-decision-0123456789abcdef",
+        review_id=review.review_id,
+        decision=DecisionChoice.ADOPT,
+        reason="Explicit decision.",
+        decided_at=NOW,
+        review_topic="Legacy decision",
+        workflow_id=workflow_id,
+        architecture_run_id=review.architecture_run_id,
+        execution_id=review.execution_id,
+        execution_origin=ExecutionOrigin.EXECUTION_BRIDGE,
+        reviewed_commit=review.commit,
+        integrator_recommendation=review.recommendation,
+    )
+    store = service.decisions
+    write_json(store.legacy_path(workflow_id), decision.to_dict())
+
+    before = agent(repository, workflows).find(
+        ArchitectureOperationQuery(review_id=review.review_id)
+    )[0]
+    assert before.review_decision_id == decision.decision_id
+    assert not store.path(review.review_id).exists()
+
+    migrated = service.migrate(review.review_id)
+
+    assert migrated == decision
+    assert store.path(review.review_id).is_file()
+    assert store.load(workflow_id) == decision
+
+
+def test_different_legacy_and_canonical_decisions_are_blocked(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, workflow_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Conflicting decisions",
+        decided=True,
+        prompt=True,
+        proof=True,
+    )
+    review = complete_review(repository, workflows, workflow_id)
+    service = review_decision_service(repository, workflows)
+    first = ArchitectureImplementationReviewDecision(
+        decision_id="review-decision-0123456789abcdef",
+        review_id=review.review_id,
+        decision=DecisionChoice.ADOPT,
+        reason="First.",
+        decided_at=NOW,
+        review_topic="Conflicting decisions",
+        workflow_id=workflow_id,
+        architecture_run_id=review.architecture_run_id,
+        execution_id=review.execution_id,
+        execution_origin=ExecutionOrigin.EXECUTION_BRIDGE,
+        reviewed_commit=review.commit,
+        integrator_recommendation=review.recommendation,
+    )
+    second = replace(first, reason="Second.")
+    write_json(service.decisions.legacy_path(workflow_id), first.to_dict())
+    canonical = service.decisions.path(review.review_id)
+    write_json(canonical, second.to_dict())
+
+    with pytest.raises(ArchitectureReviewDecisionError) as error:
+        service.decisions.load(workflow_id)
+
+    assert error.value.code is ReviewDecisionErrorCode.DECISION_CONFLICT
+
+
+def test_exact_topic_precedes_partial_and_is_case_insensitive(tmp_path):
+    repository = tmp_path / "repo"
+    first, first_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Shared Topic",
+    )
+    second = ArchitectureWorkflowStore(first.root)
+    make_workflow(
+        repository,
+        "2222222222222222",
+        "Shared Topic Extended",
+    )
+    operations = agent(repository, second)
+
+    match = operations.find(
+        ArchitectureOperationQuery(topic="SHARED TOPIC")
+    )[0]
+
+    assert match.workflow_id == first_id
+
+
+def test_equal_topics_remain_ambiguous_until_explicit_supersession(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, first_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Shared Topic",
+    )
+    _, second_id, _ = make_workflow(
+        repository,
+        "2222222222222222",
+        "Shared Topic",
+    )
+    operations = agent(repository, workflows)
+    with pytest.raises(ArchitectureOperationQueryError) as error:
+        operations.find(ArchitectureOperationQuery(topic="Shared Topic"))
+    assert error.value.failure.candidates == tuple(sorted(
+        (first_id, second_id)
+    ))
+    assert len(error.value.failure.candidate_details) == 2
+
+    store = ArchitectureWorkflowSupersessionStore(workflows)
+    record = store.record(
+        superseded_workflow_id=first_id,
+        canonical_workflow_id=second_id,
+        reason="The second workflow is explicitly canonical.",
+        recorded_at=NOW,
+    )
+    resolved = agent(repository, workflows).find(
+        ArchitectureOperationQuery(topic="Shared Topic")
+    )[0]
+    historical = agent(repository, workflows).find(
+        ArchitectureOperationQuery(workflow_id=first_id)
+    )[0]
+
+    assert resolved.workflow_id == second_id
+    assert historical.superseded is True
+    assert historical.canonical_workflow_id == second_id
+    assert historical.supersession_id == record.supersession_id
+
+
+def test_supersession_validates_references_topics_and_conflicts(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, first_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Shared Topic",
+    )
+    _, second_id, _ = make_workflow(
+        repository,
+        "2222222222222222",
+        "Shared Topic",
+    )
+    _, other_id, _ = make_workflow(
+        repository,
+        "3333333333333333",
+        "Other Topic",
+    )
+    store = ArchitectureWorkflowSupersessionStore(workflows)
+    with pytest.raises(ArchitectureWorkflowSupersessionError):
+        store.record(first_id, first_id, "Invalid self reference.", NOW)
+    with pytest.raises(ArchitectureWorkflowSupersessionError):
+        store.record(
+            "workflow-ffffffffffffffff",
+            second_id,
+            "Unknown workflow.",
+            NOW,
+        )
+    with pytest.raises(ArchitectureWorkflowSupersessionError):
+        store.record(first_id, other_id, "Different topics.", NOW)
+
+    first = store.record(first_id, second_id, "Canonical successor.", NOW)
+    repeated = store.record(
+        first_id,
+        second_id,
+        "Canonical successor.",
+        NOW.replace(hour=10),
+    )
+    assert repeated == first
+    with pytest.raises(ArchitectureWorkflowSupersessionError):
+        store.record(first_id, second_id, "Different reason.", NOW)
+
+
+def test_supersession_cycles_are_rejected(tmp_path):
+    repository = tmp_path / "repo"
+    workflows, first_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Shared Topic",
+    )
+    _, second_id, _ = make_workflow(
+        repository,
+        "2222222222222222",
+        "Shared Topic",
+    )
+    store = ArchitectureWorkflowSupersessionStore(workflows)
+    store.root.mkdir(parents=True)
+    first = ArchitectureWorkflowSupersession(
+        supersession_id="supersession-1111111111111111",
+        topic="Shared Topic",
+        superseded_workflow_id=first_id,
+        canonical_workflow_id=second_id,
+        reason="First edge.",
+        recorded_at=NOW,
+        recorded_by="Chief Architect",
+    )
+    second = ArchitectureWorkflowSupersession(
+        supersession_id="supersession-2222222222222222",
+        topic="Shared Topic",
+        superseded_workflow_id=second_id,
+        canonical_workflow_id=first_id,
+        reason="Second edge.",
+        recorded_at=NOW,
+        recorded_by="Chief Architect",
+    )
+    write_json(store.path(first_id), first.to_dict())
+    write_json(store.path(second_id), second.to_dict())
+
+    with pytest.raises(
+        ArchitectureWorkflowSupersessionError,
+        match="cycle",
+    ):
+        store.records()
+
+
+def test_supersession_cli_help_and_no_execution_side_effect(
+    tmp_path,
+    monkeypatch,
+):
+    repository = tmp_path / "repo"
+    workflows, first_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Shared Topic",
+    )
+    _, second_id, _ = make_workflow(
+        repository,
+        "2222222222222222",
+        "Shared Topic",
+    )
+    before = tuple(
+        path.read_bytes()
+        for path in sorted(
+            workflows.root.rglob("*")
+        )
+        if path.is_file()
+    )
+    monkeypatch.chdir(repository)
+    runner = CliRunner()
+
+    help_result = runner.invoke(
+        architecture_app,
+        ["workflow", "supersede", "--help"],
+    )
+    result = runner.invoke(
+        architecture_app,
+        [
+            "workflow",
+            "supersede",
+            "--superseded-workflow-id",
+            first_id,
+            "--canonical-workflow-id",
+            second_id,
+            "--reason",
+            "The second workflow is explicitly canonical.",
+        ],
+    )
+
+    assert help_result.exit_code == 0
+    assert "--superseded-workflow-id" in help_result.stdout
+    assert result.exit_code == 0, result.stdout
+    after_non_supersession = tuple(
+        path.read_bytes()
+        for path in sorted(workflows.root.rglob("*"))
+        if path.is_file()
+        and "architecture_workflow_supersessions" not in str(path)
+    )
+    assert after_non_supersession == before
+    assert not tuple(workflows.root.rglob("attempt*.json"))
+
+
+def test_status_and_next_share_partial_supersession_resolution(
+    tmp_path,
+    monkeypatch,
+):
+    repository = tmp_path / "repo"
+    workflows, first_id, _ = make_workflow(
+        repository,
+        "1111111111111111",
+        "Controlled Shared Topic",
+    )
+    _, second_id, _ = make_workflow(
+        repository,
+        "2222222222222222",
+        "Controlled Shared Topic",
+    )
+    ArchitectureWorkflowSupersessionStore(workflows).record(
+        first_id,
+        second_id,
+        "The second workflow is explicitly canonical.",
+        NOW,
+    )
+    monkeypatch.chdir(repository)
+    runner = CliRunner()
+
+    status = runner.invoke(
+        architecture_app,
+        ["status", "--topic", "shared topic", "--json"],
+    )
+    next_step = runner.invoke(
+        architecture_app,
+        ["next", "--topic", "shared topic", "--json"],
+    )
+
+    assert status.exit_code == 0, status.stdout
+    assert next_step.exit_code == 0, next_step.stdout
+    status_payload = json.loads(status.stdout)["operations"][0]
+    next_payload = json.loads(next_step.stdout)
+    assert status_payload["workflow_id"] == second_id
+    assert next_payload["workflow_id"] == second_id
+    assert next_payload["next_step"] == status_payload["next_step"]

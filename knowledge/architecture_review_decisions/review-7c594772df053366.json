@@ -1,0 +1,15 @@
+{
+  "architecture_run_id": "architecture-run-0f27ec8e4006bd1a",
+  "decided_at": "2026-07-30T14:24:06.432364+02:00",
+  "decision": "ADOPT",
+  "decision_id": "review-decision-6243a816f8147f84",
+  "execution_id": "reconstructed-execution-65acb84722b55b94",
+  "execution_origin": "RECONSTRUCTED",
+  "integrator_recommendation": "ADOPT",
+  "reason": "Die Architektur erfüllt die verbindlichen Anforderungen an einen generischen, granularen und widerrufbaren Succession-Domänenkern. Der Default-Deny-Grundsatz bleibt erhalten. Es findet weder eine technische Freigabe noch eine autonome Entscheidung durch den Guardian statt. Die rekonstruierte Herkunft ist transparent als RECONSTRUCTED gekennzeichnet. Es wurden keine Attempts oder Ausführungsdaten erfunden. Der Integrator meldet keine Konflikte und keine Abweichungen. Die Architecture-Operations-Validierung bestätigte eindeutige Zuordnungen, korrekte Artefaktpfade und unverändertes read-only Verhalten.",
+  "review_id": "review-7c594772df053366",
+  "review_topic": "Guardian Succession Architecture v1",
+  "reviewed_commit": "6772c54af823b34bea3ac234a85adefbcd5f2b2b",
+  "schema_version": "1.0",
+  "workflow_id": "workflow-0f27ec8e4006bd1a"
+}

@@ -39,6 +39,7 @@ from architecture_integrator.operations import (
     ArchitectureOperationIssue,
     ArchitectureOperationIssueCode,
     ArchitectureOperationQuery,
+    ArchitectureOperationQueryCandidate,
     ArchitectureOperationQueryError,
     ArchitectureOperationQueryFailure,
     ArchitectureOperationStatus,
@@ -56,6 +57,12 @@ from architecture_integrator.review_decision import (
     ReviewDecisionErrorCode,
     load_review_decision_input,
 )
+from architecture_integrator.supersession import (
+    ArchitectureWorkflowSupersession,
+    ArchitectureWorkflowSupersessionError,
+    ArchitectureWorkflowSupersessionStore,
+    normalize_topic,
+)
 
 __all__ = [
     "ArchitectureAnalysis",
@@ -71,6 +78,7 @@ __all__ = [
     "ArchitectureOperationIssue",
     "ArchitectureOperationIssueCode",
     "ArchitectureOperationQuery",
+    "ArchitectureOperationQueryCandidate",
     "ArchitectureOperationQueryError",
     "ArchitectureOperationQueryFailure",
     "ArchitectureOperationStatus",
@@ -80,6 +88,9 @@ __all__ = [
     "ArchitectureWorkflow",
     "ArchitectureWorkflowOrchestrator",
     "ArchitectureWorkflowStore",
+    "ArchitectureWorkflowSupersession",
+    "ArchitectureWorkflowSupersessionError",
+    "ArchitectureWorkflowSupersessionStore",
     "ArchitectureQueryFailureCode",
     "ArchitectureReviewDecisionError",
     "ArchitectureReviewDecisionInput",
@@ -106,4 +117,5 @@ __all__ = [
     "ApprovalStatus",
     "render_operation",
     "load_review_decision_input",
+    "normalize_topic",
 ]

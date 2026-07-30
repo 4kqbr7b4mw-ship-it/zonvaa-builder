@@ -1,0 +1,10 @@
+{
+  "canonical_workflow_id": "workflow-43af40b39b5593f6",
+  "reason": "Der Workflow workflow-43af40b39b5593f6 ist der kontrollierte, vollständig validierte End-to-End-Nachfolger mit Execution-Bridge-Herkunft, Implementation Review und aufgezeichneter Chief-Architect-Entscheidung. workflow-cc69d796a87b2cad bleibt als historischer Vorgang erhalten, ist jedoch für aktuelle topicbasierte Operations-Abfragen supersediert.",
+  "recorded_at": "2026-07-30T15:04:29.134842+02:00",
+  "recorded_by": "Chief Architect",
+  "schema_version": "1.0",
+  "superseded_workflow_id": "workflow-cc69d796a87b2cad",
+  "supersession_id": "supersession-87d2ad5d6e712151",
+  "topic": "Controlled Architecture Feedback Loop E2E Validation"
+}

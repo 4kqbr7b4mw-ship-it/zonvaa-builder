@@ -193,20 +193,169 @@ class ArchitectureImplementationReviewDecision:
 class ArchitectureReviewDecisionStore:
     FILE_NAME = "chief-architect-review-decision.json"
 
-    def __init__(self, feedback: ArchitectureFeedbackStore) -> None:
+    def __init__(
+        self,
+        feedback: ArchitectureFeedbackStore,
+        root: Optional[Path] = None,
+    ) -> None:
         self.feedback = feedback
+        self.root = (
+            root
+            if root is not None
+            else (
+                feedback.workflows.root.parent
+                / "architecture_review_decisions"
+            )
+        )
 
-    def path(self, workflow_id: str) -> Path:
+    def path(self, identifier: str) -> Path:
+        review_id = (
+            identifier
+            if identifier.startswith("review-")
+            else self._review_id(identifier)
+        )
+        _identifier(review_id, "review_id", "review")
+        return self.root / "{}.json".format(review_id)
+
+    def legacy_path(self, workflow_id: str) -> Path:
         return (
             self.feedback.runtime_folder(workflow_id, create=False)
             / self.FILE_NAME
         )
 
+    def records(
+        self,
+    ) -> Tuple[ArchitectureImplementationReviewDecision, ...]:
+        if not self.root.exists():
+            return ()
+        self._ensure_root(create=False)
+        records = []
+        for path in sorted(self.root.glob("review-*.json")):
+            decision = self._load_path(path)
+            if decision is None or path != self.path(decision.review_id):
+                raise ArchitectureReviewDecisionError(
+                    ReviewDecisionErrorCode.DECISION_ARTIFACT_INVALID,
+                    "Review decision path is not canonical.",
+                )
+            records.append(decision)
+        return tuple(records)
+
+    def for_workflow(
+        self,
+        workflow_id: str,
+    ) -> Optional[ArchitectureImplementationReviewDecision]:
+        matches = tuple(
+            item
+            for item in self.records()
+            if item.workflow_id == workflow_id
+        )
+        if len(matches) > 1:
+            raise ArchitectureReviewDecisionError(
+                ReviewDecisionErrorCode.DECISION_CONFLICT,
+                "Multiple review decisions reference one workflow.",
+            )
+        return matches[0] if matches else None
+
     def load(
         self,
         workflow_id: str,
     ) -> Optional[ArchitectureImplementationReviewDecision]:
-        path = self.path(workflow_id)
+        versioned = self.for_workflow(workflow_id)
+        if not (
+            self.feedback.workflows.root / workflow_id
+        ).is_dir():
+            return versioned
+        legacy = self.legacy_path(workflow_id)
+        legacy_decision = self._load_path(legacy)
+        review = self.feedback.review(workflow_id)
+        if review is None:
+            if (
+                versioned is not None
+                and legacy_decision is not None
+                and versioned != legacy_decision
+            ):
+                raise ArchitectureReviewDecisionError(
+                    ReviewDecisionErrorCode.DECISION_CONFLICT,
+                    "Canonical and legacy review decisions differ.",
+                )
+            return versioned or legacy_decision
+        canonical = self.path(review.review_id)
+        canonical_decision = self._load_path(canonical)
+        if canonical_decision is not None and legacy_decision is not None:
+            if canonical_decision != legacy_decision:
+                raise ArchitectureReviewDecisionError(
+                    ReviewDecisionErrorCode.DECISION_CONFLICT,
+                    "Canonical and legacy review decisions differ.",
+                )
+            return canonical_decision
+        return canonical_decision or legacy_decision
+
+    def write(
+        self,
+        decision: ArchitectureImplementationReviewDecision,
+    ) -> Path:
+        existing = self.load(decision.workflow_id)
+        path = self.path(decision.review_id)
+        if existing is not None:
+            if existing == decision and path.is_file():
+                return path
+            raise ArchitectureReviewDecisionError(
+                ReviewDecisionErrorCode.DECISION_CONFLICT,
+                "A different review decision already exists.",
+            )
+        self._ensure_root(create=True)
+        write_json(path, decision.to_dict())
+        return path
+
+    def migrate(
+        self,
+        workflow_id: str,
+    ) -> ArchitectureImplementationReviewDecision:
+        canonical = self.path(workflow_id)
+        legacy = self.legacy_path(workflow_id)
+        canonical_decision = self._load_path(canonical)
+        legacy_decision = self._load_path(legacy)
+        if canonical_decision is None and legacy_decision is None:
+            raise ArchitectureReviewDecisionError(
+                ReviewDecisionErrorCode.REVIEW_NOT_FOUND,
+                "No review decision is available for migration.",
+            )
+        if canonical_decision is not None:
+            if (
+                legacy_decision is not None
+                and legacy_decision != canonical_decision
+            ):
+                raise ArchitectureReviewDecisionError(
+                    ReviewDecisionErrorCode.DECISION_CONFLICT,
+                    "Canonical and legacy review decisions differ.",
+                )
+            return canonical_decision
+        self._ensure_root(create=True)
+        write_json(canonical, legacy_decision.to_dict())
+        return legacy_decision
+
+    def _ensure_root(self, create: bool) -> None:
+        if create:
+            self.root.mkdir(parents=True, exist_ok=True)
+        if not self.root.is_dir() or self.root.is_symlink():
+            raise ArchitectureReviewDecisionError(
+                ReviewDecisionErrorCode.DECISION_ARTIFACT_INVALID,
+                "Review decision root is unavailable or unsafe.",
+            )
+
+    def _review_id(self, workflow_id: str) -> str:
+        review = self.feedback.review(workflow_id)
+        if review is None:
+            raise ArchitectureReviewDecisionError(
+                ReviewDecisionErrorCode.REVIEW_NOT_FOUND,
+                "Review decision cannot be located without a review.",
+            )
+        return review.review_id
+
+    def _load_path(
+        self,
+        path: Path,
+    ) -> Optional[ArchitectureImplementationReviewDecision]:
         if not path.exists():
             return None
         if not path.is_file() or path.is_symlink():
@@ -223,23 +372,6 @@ class ArchitectureReviewDecisionStore:
                 ReviewDecisionErrorCode.DECISION_ARTIFACT_INVALID,
                 "Review decision artifact is invalid: {}".format(error),
             )
-
-    def write(
-        self,
-        decision: ArchitectureImplementationReviewDecision,
-    ) -> Path:
-        existing = self.load(decision.workflow_id)
-        path = self.path(decision.workflow_id)
-        if existing is not None:
-            if existing == decision:
-                return path
-            raise ArchitectureReviewDecisionError(
-                ReviewDecisionErrorCode.DECISION_CONFLICT,
-                "A different review decision already exists.",
-            )
-        self.feedback.runtime_folder(decision.workflow_id)
-        write_json(path, decision.to_dict())
-        return path
 
 
 class ArchitectureReviewDecisionService:
@@ -318,6 +450,21 @@ class ArchitectureReviewDecisionService:
         )
         self.decisions.write(decision)
         self._record_status(decision, decided_at)
+        return decision
+
+    def migrate(
+        self,
+        review_id: str,
+    ) -> ArchitectureImplementationReviewDecision:
+        _identifier(review_id, "review_id", "review")
+        workflow_id, review = self._find_review(review_id)
+        existing = self.decisions.load(workflow_id)
+        if existing is None or existing.review_id != review.review_id:
+            raise ArchitectureReviewDecisionError(
+                ReviewDecisionErrorCode.REFERENCE_MISMATCH,
+                "Legacy decision does not match the review.",
+            )
+        decision = self.decisions.migrate(workflow_id)
         return decision
 
     def _find_review(

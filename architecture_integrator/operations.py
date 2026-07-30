@@ -23,6 +23,11 @@ from architecture_integrator.review_decision import (
     ArchitectureReviewDecisionError,
     ArchitectureReviewDecisionStore,
 )
+from architecture_integrator.supersession import (
+    ArchitectureWorkflowSupersession,
+    ArchitectureWorkflowSupersessionStore,
+    normalize_topic,
+)
 from codex_execution.models import ExecutionOrigin, ExecutionRecord, ExecutionStatus
 from codex_execution.store import ExecutionStore
 
@@ -152,6 +157,9 @@ class ArchitectureOperationStatus:
     decision_ids: Tuple[str, ...]
     artifacts: Tuple[ArchitectureArtifact, ...]
     issues: Tuple[ArchitectureOperationIssue, ...]
+    superseded: bool
+    canonical_workflow_id: Optional[str]
+    supersession_id: Optional[str]
     schema_version: str = "1.0"
 
     def __post_init__(self) -> None:
@@ -198,6 +206,8 @@ class ArchitectureOperationStatus:
             (self.review_decision, "review_decision"),
             (self.review_decision_reason, "review_decision_reason"),
             (self.review_decided_at, "review_decided_at"),
+            (self.canonical_workflow_id, "canonical_workflow_id"),
+            (self.supersession_id, "supersession_id"),
         ):
             if value is not None:
                 _text(value, name)
@@ -225,6 +235,8 @@ class ArchitectureOperationStatus:
             bool,
         ):
             raise TypeError("legacy and executable must be bool")
+        if not isinstance(self.superseded, bool):
+            raise TypeError("superseded must be bool")
         _text(self.push_status, "push_status")
 
     def to_dict(self) -> Dict[str, Any]:
@@ -277,6 +289,9 @@ class ArchitectureOperationStatus:
             "decision_ids": list(self.decision_ids),
             "artifacts": [item.to_dict() for item in self.artifacts],
             "issues": [item.to_dict() for item in self.issues],
+            "superseded": self.superseded,
+            "canonical_workflow_id": self.canonical_workflow_id,
+            "supersession_id": self.supersession_id,
         }
 
 
@@ -321,16 +336,46 @@ class ArchitectureOperationQuery:
 
 
 @dataclass(frozen=True)
+class ArchitectureOperationQueryCandidate:
+    topic: str
+    workflow_id: str
+    architecture_run_id: Optional[str]
+    execution_id: Optional[str]
+    review_id: Optional[str]
+    feedback_status: Optional[str]
+    next_step: ArchitectureNextStep
+    superseded: bool
+    canonical_workflow_id: Optional[str]
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "topic": self.topic,
+            "workflow_id": self.workflow_id,
+            "architecture_run_id": self.architecture_run_id,
+            "execution_id": self.execution_id,
+            "review_id": self.review_id,
+            "feedback_status": self.feedback_status,
+            "next_step": self.next_step.value,
+            "superseded": self.superseded,
+            "canonical_workflow_id": self.canonical_workflow_id,
+        }
+
+
+@dataclass(frozen=True)
 class ArchitectureOperationQueryFailure:
     code: ArchitectureQueryFailureCode
     message: str
     candidates: Tuple[str, ...] = ()
+    candidate_details: Tuple[ArchitectureOperationQueryCandidate, ...] = ()
 
     def to_dict(self) -> Dict[str, Any]:
         return {
             "code": self.code.value,
             "message": self.message,
             "candidates": list(self.candidates),
+            "candidate_details": [
+                item.to_dict() for item in self.candidate_details
+            ],
         }
 
 
@@ -353,11 +398,16 @@ class ArchitectureOperationsAgent:
         self.feedback = ArchitectureFeedbackStore(workflows)
         self.executions = ExecutionStore(workflows)
         self.review_decisions = ArchitectureReviewDecisionStore(self.feedback)
+        self.supersessions = ArchitectureWorkflowSupersessionStore(workflows)
 
     def statuses(self) -> Tuple[ArchitectureOperationStatus, ...]:
+        workflow_ids = set(self.workflows.workflow_ids())
+        workflow_ids.update(
+            item.workflow_id for item in self.review_decisions.records()
+        )
         return tuple(
             self._status(workflow_id)
-            for workflow_id in self.workflows.workflow_ids()
+            for workflow_id in sorted(workflow_ids)
         )
 
     def find(
@@ -369,9 +419,7 @@ class ArchitectureOperationsAgent:
         statuses = self.statuses()
         if query.empty:
             return statuses
-        matches = tuple(
-            item for item in statuses if self._matches(item, query)
-        )
+        matches = self._query_matches(statuses, query)
         if not matches:
             raise ArchitectureOperationQueryError(
                 ArchitectureOperationQueryFailure(
@@ -385,6 +433,7 @@ class ArchitectureOperationsAgent:
                     ArchitectureQueryFailureCode.AMBIGUOUS_QUERY,
                     "The architecture query is ambiguous.",
                     tuple(item.workflow_id for item in matches),
+                    tuple(self._candidate(item) for item in matches),
                 )
             )
         return matches
@@ -398,6 +447,11 @@ class ArchitectureOperationsAgent:
         )
 
     def _status(self, workflow_id: str) -> ArchitectureOperationStatus:
+        decision = self.review_decisions.for_workflow(workflow_id)
+        if not (self.workflows.root / workflow_id).is_dir():
+            if decision is None:
+                raise FileNotFoundError(workflow_id)
+            return self._decision_only_status(decision)
         folder = self.workflows.folder(workflow_id)
         issues = []
         artifacts = []
@@ -429,6 +483,8 @@ class ArchitectureOperationsAgent:
         intake = self._intake(workflow_id, issues)
         review = self._review(workflow_id, issues)
         review_decision = self._review_decision(workflow_id, issues)
+        supersession = self.supersessions.for_workflow(workflow_id)
+        related_supersessions = self.supersessions.related(workflow_id)
         self._runtime_artifacts(
             workflow_id,
             authorization,
@@ -438,6 +494,7 @@ class ArchitectureOperationsAgent:
             intake,
             review,
             review_decision,
+            related_supersessions,
             artifacts,
         )
         self._ensure_artifact_kinds(artifacts)
@@ -568,6 +625,64 @@ class ArchitectureOperationsAgent:
                 key=lambda item: (item.kind, item.path or ""),
             )),
             issues=tuple(issues),
+            superseded=supersession is not None,
+            canonical_workflow_id=(
+                supersession.canonical_workflow_id
+                if supersession is not None
+                else None
+            ),
+            supersession_id=(
+                supersession.supersession_id
+                if supersession is not None
+                else None
+            ),
+        )
+
+    def _decision_only_status(
+        self,
+        decision: ArchitectureImplementationReviewDecision,
+    ) -> ArchitectureOperationStatus:
+        artifact = self._artifact(
+            "chief_architect_review_decision",
+            self.review_decisions.path(decision.review_id),
+        )
+        return ArchitectureOperationStatus(
+            topic=decision.review_topic,
+            workflow_id=decision.workflow_id,
+            workflow_status=None,
+            architecture_run_id=decision.architecture_run_id,
+            authorization_id=None,
+            execution_id=decision.execution_id,
+            execution_origin=decision.execution_origin,
+            execution_status=None,
+            attempt_count=0,
+            result_commit=decision.reviewed_commit,
+            handover_paths=(),
+            intake_path=None,
+            review_id=decision.review_id,
+            review_recommendation=decision.integrator_recommendation,
+            review_decision_id=decision.decision_id,
+            review_decision=decision.decision.value,
+            review_decision_reason=decision.reason,
+            review_decided_at=decision.decided_at.isoformat(),
+            feedback_status=(
+                FeedbackStatus.CHIEF_ARCHITECT_DECISION_RECORDED
+            ),
+            conflicts=(),
+            deviations=(),
+            open_risks=(),
+            missing_artifacts=(),
+            next_step=ArchitectureNextStep.COMPLETE,
+            push_status="unknown",
+            legacy=False,
+            executable=False,
+            proposal_ids=(),
+            decision_ids=(),
+            artifacts=(artifact,),
+            issues=(),
+            superseded=False,
+            canonical_workflow_id=None,
+            supersession_id=None,
         )
 
     def _workflow(
@@ -792,6 +907,7 @@ class ArchitectureOperationsAgent:
         intake: Optional[CodexHandoverIntake],
         review: Optional[ArchitectureImplementationReview],
         review_decision: Optional[ArchitectureImplementationReviewDecision],
+        supersessions: Tuple[ArchitectureWorkflowSupersession, ...],
         artifacts: list,
     ) -> None:
         folder = self.workflows.folder(workflow_id)
@@ -847,13 +963,21 @@ class ArchitectureOperationsAgent:
                 runtime / "decision-proposal.md",
             ))
         decision_path = (
-            runtime
-            / ArchitectureReviewDecisionStore.FILE_NAME
+            self.review_decisions.path(review_decision.review_id)
+            if review_decision is not None
+            else None
         )
-        if review_decision is not None or decision_path.exists():
+        if review_decision is not None:
             artifacts.append(self._artifact(
                 "chief_architect_review_decision",
                 decision_path,
+            ))
+        for supersession in supersessions:
+            artifacts.append(self._artifact(
+                "workflow_supersession",
+                self.supersessions.path(
+                    supersession.superseded_workflow_id
+                ),
             ))
 
     def _inconsistencies(
@@ -1066,10 +1190,6 @@ class ArchitectureOperationsAgent:
         query: ArchitectureOperationQuery,
     ) -> bool:
         values = query.to_dict()
-        if values["topic"] is not None and (
-            values["topic"].casefold() not in item.topic.casefold()
-        ):
-            return False
         for name in (
             "workflow_id",
             "architecture_run_id",
@@ -1098,6 +1218,59 @@ class ArchitectureOperationsAgent:
         ):
             return False
         return True
+
+    def _query_matches(
+        self,
+        statuses: Tuple[ArchitectureOperationStatus, ...],
+        query: ArchitectureOperationQuery,
+    ) -> Tuple[ArchitectureOperationStatus, ...]:
+        matches = tuple(
+            item for item in statuses if self._matches(item, query)
+        )
+        if query.topic is None:
+            return matches
+        expected = normalize_topic(query.topic)
+        exact = tuple(
+            item for item in matches
+            if normalize_topic(item.topic) == expected
+        )
+        selected = exact or tuple(
+            item for item in matches
+            if expected in normalize_topic(item.topic)
+        )
+        if len(selected) <= 1:
+            return selected
+        superseded_ids = {
+            item.superseded_workflow_id
+            for item in self.supersessions.records()
+            if item.canonical_workflow_id in {
+                candidate.workflow_id for candidate in selected
+            }
+        }
+        return tuple(
+            item for item in selected
+            if item.workflow_id not in superseded_ids
+        )
+
+    def _candidate(
+        self,
+        item: ArchitectureOperationStatus,
+    ) -> ArchitectureOperationQueryCandidate:
+        return ArchitectureOperationQueryCandidate(
+            topic=item.topic,
+            workflow_id=item.workflow_id,
+            architecture_run_id=item.architecture_run_id,
+            execution_id=item.execution_id,
+            review_id=item.review_id,
+            feedback_status=(
+                item.feedback_status.value
+                if item.feedback_status is not None
+                else None
+            ),
+            next_step=item.next_step,
+            superseded=item.superseded,
+            canonical_workflow_id=item.canonical_workflow_id,
+        )
 
     def _artifact(self, kind: str, path: Path) -> ArchitectureArtifact:
         availability = ArtifactAvailability.MISSING
@@ -1252,6 +1425,15 @@ def render_operation(status: ArchitectureOperationStatus) -> str:
             decision_proposal or "missing"
         ),
         "Nächster Schritt: {}".format(status.next_step.value),
+        "Superseded: {}".format(
+            "yes" if status.superseded else "no"
+        ),
+        "Canonical Workflow: {}".format(
+            status.canonical_workflow_id or "none"
+        ),
+        "Supersession-ID: {}".format(
+            status.supersession_id or "none"
+        ),
         "Legacy: {}".format("yes" if status.legacy else "no"),
         "Blocker: {}".format(
             "; ".join(item.message for item in status.issues) or "none"

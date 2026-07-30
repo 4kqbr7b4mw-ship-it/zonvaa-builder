@@ -8,6 +8,8 @@ from commands.architecture import (
     architecture_reviews,
     architecture_status,
     decide_architecture_review,
+    migrate_architecture_review_decision,
+    supersede_architecture_workflow,
     create_codex_prompt,
     execute_architecture,
     execution_app,
@@ -48,6 +50,8 @@ architecture_app.command("next")(architecture_next)
 architecture_app.command("artifacts")(architecture_artifacts)
 architecture_app.command("reviews")(architecture_reviews)
 review_app.command("decide")(decide_architecture_review)
+review_app.command("migrate")(migrate_architecture_review_decision)
+workflow_app.command("supersede")(supersede_architecture_workflow)
 architecture_app.add_typer(workflow_app, name="workflow")
 architecture_app.add_typer(execution_app, name="execution")
 architecture_app.add_typer(review_app, name="review")
