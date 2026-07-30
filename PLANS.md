@@ -3,7 +3,75 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Versioned Review Decisions and Workflow Supersession v1
+## Aktiver Plan: Automated Codex Execution Orchestration v1
+
+### Ziel und Nicht-Ziele
+
+Ein ausdrücklich autorisierter Architecture-Workflow wird über einen
+typisierten Orchestration-Vertrag kontrolliert an die bestehende lokale
+Codex-Prozessbrücke übergeben, anschließend validiert und optional – nur bei
+expliziter Freigabe – committed. Nicht eingeführt werden Architektur-
+entscheidungen, Autorisierungen, Prompt-Proofs, Pushes, Branchwechsel oder
+eine zweite allgemeine Subprozessinfrastruktur.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber und synchron zu `origin/main` auf
+  `649658fb3c27d413114d7807803a0da170ad68cf`.
+- Preflight war mit Mission Context Schema 1.6 erfolgreich.
+- 685 Tests bestanden unter Python 3.9.6; Doctor war erfolgreich.
+- ADR-0034 stellt bereits sichere argv-basierte Prozessausführung,
+  Redaction, Fehlervertrag, Attempt History und Runtime-Persistenz bereit.
+- ADR-0035 stellt bestätigte Execution Authorization, Prompt Proof und
+  Architecture-Run-Zuordnung bereit; ADR-0038 stellt die read-only
+  Operations-Projektion bereit.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Vorbedingungen, Preflight, bestehende Bridge, Authorization, Stores,
+  Operations CLI und Tests prüfen.
+- [x] ADR-0041 und typisierte Orchestration-Verträge ergänzen.
+- [x] Orchestration-Store und Service auf bestehender Runner-/Fehlerbasis bauen.
+- [x] CLI `architecture execution run/status/list` integrieren.
+- [x] Read-only Operations-Suche und Anzeige um Orchestrationsdaten ergänzen.
+- [x] Sicherheits-, Recovery-, Idempotenz- und Fake-Codex-Tests ergänzen.
+- [x] Fokussierte und vollständige Tests, Doctor, Diff, Handover und Commit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- Die Orchestration verwendet `SubprocessCommandRunner`, den bestehenden
+  Fehlervertrag und die bestehende Redaction; sie erzeugt keine parallele
+  Prozessprimitive.
+- Laufzeitdaten bleiben im ignorierten `executions/orchestrations`-Bereich.
+  Verbindliche Authorization und Prompt Proof bleiben ihre bestehenden,
+  versionierten Quellen.
+- `create_commit` in `allowed_actions` ist die einzige ausdrückliche
+  Commit-Freigabe; ohne sie endet erfolgreiche Validierung bei
+  `COMMIT_READY`.
+
+### Risiken und Teststrategie
+
+- Der aktuelle Authorization-Vertrag enthält keinen separaten Branchwert;
+  v1 bindet den beim Start eindeutig ermittelten Branch zusammen mit dem
+  autorisierten Basis-Commit in den unveränderlichen Orchestration Record.
+- Prozess-Recovery kann nach einem Hostabbruch den Exit-Code eines nicht mehr
+  vorhandenen Kindes nicht beweisen und muss deshalb `RECOVERY_REQUIRED`
+  statt eines automatischen Retries liefern.
+- Tests verwenden ausschließlich temporäre Git-Repositories und Fake-Runner;
+  kein produktiver Codex-Auftrag wird gestartet.
+
+### Abweichungen und Abschlusszustand
+
+Die bestehende synchrone Runner-Schnittstelle wurde kompatibel um
+PID-Publikation ergänzt, damit ein gestarteter Prozess vor dem Warten
+persistiert werden kann. Es war keine zweite Prozessarchitektur erforderlich.
+31 neue Orchestration-Testfälle sowie 106 fokussierte Bridge-/Operations-Tests
+bestanden; die vollständige Suite bestand mit 716 Tests. Doctor, CLI-Hilfe und
+`git diff --check` waren erfolgreich. JSON- und Markdown-Handover liegen unter
+`knowledge/handovers/2026-07-30_14-40-00-000000_Automated-Codex-Execution-Orchestration-v1.*`.
+Keine reale Codex-Ausführung, Execution oder Push-Aktion fand statt.
+
+## Abgeschlossener Plan: Versioned Review Decisions and Workflow Supersession v1
 
 ### Ziel und Nicht-Ziele
 

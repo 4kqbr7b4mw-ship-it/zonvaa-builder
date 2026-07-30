@@ -58,6 +58,30 @@ python3 -m builder.main architecture execution reconstruct \
   --reconstructed-at 2026-07-27T17:00:00+00:00
 ```
 
+## Controlled orchestration
+
+ADR-0041 adds an explicit orchestration above the existing Bridge primitives.
+It requires the existing confirmed Execution Authorization and Prompt Proof;
+it never creates either artifact and never pushes.
+
+```bash
+python3 -m builder.main architecture execution run \
+  --workflow-id workflow-0123456789abcdef
+
+python3 -m builder.main architecture execution status \
+  --orchestration-id orchestration-0123456789abcdef
+
+python3 -m builder.main architecture execution list \
+  --workflow-id workflow-0123456789abcdef
+```
+
+Runtime JSON plus separate redacted stdout/stderr files are stored below the
+workflow's ignored `executions/orchestrations/` directory. Without the
+explicit `create_commit` action, a validated run ends at `COMMIT_READY`.
+`create_commit` permits a validated commit but never a push. A persisted
+nonterminal run whose process can no longer be proved is marked
+`RECOVERY_REQUIRED` and is not restarted automatically.
+
 `execute` only accepts `CODEX_PROMPT_GENERATED`. Failed or blocked records need
 an explicit retry. Capacity retries follow `policy.md`.
 

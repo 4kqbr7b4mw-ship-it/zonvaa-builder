@@ -19,12 +19,34 @@ from codex_execution.runner import CommandResult, SubprocessCommandRunner
 from codex_execution.service import CodexExecutionService
 from codex_execution.store import ExecutionStore
 from codex_execution.watcher import ArchitectureExecutionWatcher
+from codex_execution.orchestration import (
+    CodexExecutionOrchestration,
+    CodexExecutionOrchestrationError,
+    CodexExecutionOrchestrationStore,
+    CodexExecutionOrchestrator,
+    CodexExecutionProcessMetadata,
+    CodexExecutionRequest,
+    CodexExecutionResult,
+    CodexExecutionStatus,
+    CodexExecutionStep,
+    CodexExecutionValidationResult,
+)
 
 __all__ = [
     "ArchitectureExecutionWatcher",
     "AttemptTrigger",
     "CheckStatus",
     "CodexExecutionService",
+    "CodexExecutionOrchestration",
+    "CodexExecutionOrchestrationError",
+    "CodexExecutionOrchestrationStore",
+    "CodexExecutionOrchestrator",
+    "CodexExecutionProcessMetadata",
+    "CodexExecutionRequest",
+    "CodexExecutionResult",
+    "CodexExecutionStatus",
+    "CodexExecutionStep",
+    "CodexExecutionValidationResult",
     "CommandResult",
     "ExecutionBridgeError",
     "ExecutionAttempt",

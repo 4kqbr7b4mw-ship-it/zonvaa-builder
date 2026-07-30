@@ -34,6 +34,9 @@ from architecture_integrator.io import (
 from builder.runtime import get_runtime
 from codex_execution import (
     ArchitectureExecutionWatcher,
+    CodexExecutionOrchestrator,
+    CodexExecutionRequest,
+    CodexExecutionStatus,
     CodexExecutionService,
     ExecutionBridgeError,
     ExecutionStore,
@@ -211,6 +214,15 @@ def architecture_status(
     handover_path: Optional[str] = typer.Option(None, "--handover-path"),
     proposal_id: Optional[str] = typer.Option(None, "--proposal-id"),
     decision_id: Optional[str] = typer.Option(None, "--decision-id"),
+    orchestration_id: Optional[str] = typer.Option(
+        None, "--orchestration-id"
+    ),
+    authorization_id: Optional[str] = typer.Option(
+        None, "--authorization-id"
+    ),
+    orchestration_status: Optional[str] = typer.Option(
+        None, "--orchestration-status"
+    ),
     json_output: bool = typer.Option(False, "--json"),
 ) -> None:
     """Show deterministic read-only architecture operation status."""
@@ -225,6 +237,9 @@ def architecture_status(
             handover_path,
             proposal_id,
             decision_id,
+            orchestration_id,
+            authorization_id,
+            orchestration_status,
         ),
         json_output,
     )
@@ -402,6 +417,9 @@ def _operation_query(
     handover_path: Optional[str],
     proposal_id: Optional[str],
     decision_id: Optional[str],
+    orchestration_id: Optional[str] = None,
+    authorization_id: Optional[str] = None,
+    orchestration_status: Optional[str] = None,
 ) -> ArchitectureOperationQuery:
     return ArchitectureOperationQuery(
         topic=topic,
@@ -413,6 +431,9 @@ def _operation_query(
         handover_path=handover_path,
         proposal_id=proposal_id,
         decision_id=decision_id,
+        orchestration_id=orchestration_id,
+        authorization_id=authorization_id,
+        orchestration_status=orchestration_status,
     )
 
 
@@ -752,10 +773,28 @@ def execute_architecture(
 
 
 def execution_status(
-    workflow_id: str = typer.Option(..., "--workflow-id"),
+    workflow_id: Optional[str] = typer.Option(None, "--workflow-id"),
+    orchestration_id: Optional[str] = typer.Option(
+        None, "--orchestration-id"
+    ),
 ) -> None:
-    """Show the local execution record for one workflow."""
+    """Show one orchestration or legacy Bridge execution record."""
     try:
+        if orchestration_id is not None:
+            records = tuple(
+                item for item in _orchestration_service().store.records()
+                if item.orchestration_id == orchestration_id
+            )
+            if len(records) != 1:
+                raise RuntimeError("No unique orchestration exists")
+            typer.echo(json.dumps(
+                records[0].to_dict(), indent=2, sort_keys=True
+            ))
+            return
+        if workflow_id is None:
+            raise ValueError(
+                "--orchestration-id or --workflow-id is required"
+            )
         record = _execution_service().status(workflow_id)
         if record is None:
             raise RuntimeError("No execution exists")
@@ -764,6 +803,71 @@ def execution_status(
     typer.echo(
         json.dumps(record.to_dict(), indent=2, sort_keys=True)
     )
+
+
+def run_execution_orchestration(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Run one explicitly authorized workflow through controlled Codex."""
+    try:
+        result = _orchestration_service().run(
+            CodexExecutionRequest(workflow_id)
+        )
+    except (
+        ExecutionBridgeError,
+        OSError,
+        RuntimeError,
+        TypeError,
+        ValueError,
+    ) as error:
+        _workflow_error("execution orchestration", error)
+    typer.echo(json.dumps(
+        result.orchestration.to_dict(), indent=2, sort_keys=True
+    ))
+    if result.orchestration.status.value not in {
+        "COMMIT_READY",
+        "COMPLETED",
+    }:
+        raise typer.Exit(code=1)
+
+
+def list_execution_orchestrations(
+    workflow_id: Optional[str] = typer.Option(None, "--workflow-id"),
+    architecture_run_id: Optional[str] = typer.Option(
+        None, "--architecture-run-id"
+    ),
+    execution_id: Optional[str] = typer.Option(None, "--execution-id"),
+    authorization_id: Optional[str] = typer.Option(
+        None, "--authorization-id"
+    ),
+    status: Optional[str] = typer.Option(None, "--status"),
+) -> None:
+    """List persisted orchestration runs without starting a process."""
+    try:
+        records = _orchestration_service().store.records(workflow_id)
+        filters = (
+            ("architecture_run_id", architecture_run_id),
+            ("execution_id", execution_id),
+            ("authorization_id", authorization_id),
+        )
+        for field_name, value in filters:
+            if value is not None:
+                records = tuple(
+                    item for item in records
+                    if getattr(item, field_name) == value
+                )
+        if status is not None:
+            expected_status = CodexExecutionStatus(status)
+            records = tuple(
+                item for item in records if item.status is expected_status
+            )
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution orchestration list", error)
+    typer.echo(json.dumps(
+        {"orchestrations": [item.to_dict() for item in records]},
+        indent=2,
+        sort_keys=True,
+    ))
 
 
 def retry_execution(
@@ -878,6 +982,13 @@ def _execution_service() -> CodexExecutionService:
     )
 
 
+def _orchestration_service() -> CodexExecutionOrchestrator:
+    return CodexExecutionOrchestrator(
+        workflows=ArchitectureWorkflowStore(),
+        repository=Path.cwd(),
+    )
+
+
 def feedback_status(
     workflow_id: str = typer.Option(..., "--workflow-id"),
 ) -> None:
@@ -940,6 +1051,8 @@ workflow_app.command("decide")(decide_workflow)
 workflow_app.command("generate-codex")(generate_workflow_codex)
 workflow_app.command("feedback-status")(feedback_status)
 execution_app.command("status")(execution_status)
+execution_app.command("run")(run_execution_orchestration)
+execution_app.command("list")(list_execution_orchestrations)
 execution_app.command("retry")(retry_execution)
 execution_app.command("cancel")(cancel_execution)
 execution_app.command("watch-once")(watch_executions_once)

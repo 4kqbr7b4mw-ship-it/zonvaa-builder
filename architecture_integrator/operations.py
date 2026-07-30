@@ -30,6 +30,10 @@ from architecture_integrator.supersession import (
 )
 from codex_execution.models import ExecutionOrigin, ExecutionRecord, ExecutionStatus
 from codex_execution.store import ExecutionStore
+from codex_execution.orchestration import (
+    CodexExecutionOrchestrationStore,
+    CodexExecutionStatus,
+)
 
 
 class ArchitectureNextStep(str, Enum):
@@ -134,6 +138,14 @@ class ArchitectureOperationStatus:
     execution_id: Optional[str]
     execution_origin: Optional[ExecutionOrigin]
     execution_status: Optional[ExecutionStatus]
+    orchestration_id: Optional[str]
+    orchestration_status: Optional[CodexExecutionStatus]
+    orchestration_step: Optional[str]
+    orchestration_started_at: Optional[str]
+    orchestration_completed_at: Optional[str]
+    orchestration_exit_code: Optional[int]
+    orchestration_validation: Optional[bool]
+    orchestration_blocker: Optional[str]
     attempt_count: int
     result_commit: Optional[str]
     handover_paths: Tuple[str, ...]
@@ -182,6 +194,22 @@ class ArchitectureOperationStatus:
             ExecutionStatus,
         ):
             raise TypeError("execution_status must be ExecutionStatus or None")
+        if self.orchestration_status is not None and not isinstance(
+            self.orchestration_status,
+            CodexExecutionStatus,
+        ):
+            raise TypeError(
+                "orchestration_status must be CodexExecutionStatus or None"
+            )
+        if self.orchestration_exit_code is not None and (
+            isinstance(self.orchestration_exit_code, bool)
+            or not isinstance(self.orchestration_exit_code, int)
+        ):
+            raise TypeError("orchestration_exit_code must be int or None")
+        if self.orchestration_validation is not None and not isinstance(
+            self.orchestration_validation, bool
+        ):
+            raise TypeError("orchestration_validation must be bool or None")
         if self.feedback_status is not None and not isinstance(
             self.feedback_status,
             FeedbackStatus,
@@ -198,6 +226,11 @@ class ArchitectureOperationStatus:
             (self.architecture_run_id, "architecture_run_id"),
             (self.authorization_id, "authorization_id"),
             (self.execution_id, "execution_id"),
+            (self.orchestration_id, "orchestration_id"),
+            (self.orchestration_step, "orchestration_step"),
+            (self.orchestration_started_at, "orchestration_started_at"),
+            (self.orchestration_completed_at, "orchestration_completed_at"),
+            (self.orchestration_blocker, "orchestration_blocker"),
             (self.result_commit, "result_commit"),
             (self.intake_path, "intake_path"),
             (self.review_id, "review_id"),
@@ -262,6 +295,17 @@ class ArchitectureOperationStatus:
                 if self.execution_status is not None
                 else None
             ),
+            "orchestration_id": self.orchestration_id,
+            "orchestration_status": (
+                self.orchestration_status.value
+                if self.orchestration_status is not None else None
+            ),
+            "orchestration_step": self.orchestration_step,
+            "orchestration_started_at": self.orchestration_started_at,
+            "orchestration_completed_at": self.orchestration_completed_at,
+            "orchestration_exit_code": self.orchestration_exit_code,
+            "orchestration_validation": self.orchestration_validation,
+            "orchestration_blocker": self.orchestration_blocker,
             "attempt_count": self.attempt_count,
             "result_commit": self.result_commit,
             "handover_paths": list(self.handover_paths),
@@ -301,6 +345,9 @@ class ArchitectureOperationQuery:
     workflow_id: Optional[str] = None
     architecture_run_id: Optional[str] = None
     execution_id: Optional[str] = None
+    orchestration_id: Optional[str] = None
+    authorization_id: Optional[str] = None
+    orchestration_status: Optional[str] = None
     review_id: Optional[str] = None
     commit: Optional[str] = None
     handover_path: Optional[str] = None
@@ -316,6 +363,8 @@ class ArchitectureOperationQuery:
             or re.fullmatch(r"[0-9a-fA-F]{7,40}", self.commit) is None
         ):
             raise ValueError("commit must be a 7 to 40 character SHA")
+        if self.orchestration_status is not None:
+            CodexExecutionStatus(self.orchestration_status)
 
     def to_dict(self) -> Dict[str, Optional[str]]:
         return {
@@ -323,6 +372,9 @@ class ArchitectureOperationQuery:
             "workflow_id": self.workflow_id,
             "architecture_run_id": self.architecture_run_id,
             "execution_id": self.execution_id,
+            "orchestration_id": self.orchestration_id,
+            "authorization_id": self.authorization_id,
+            "orchestration_status": self.orchestration_status,
             "review_id": self.review_id,
             "commit": self.commit,
             "handover_path": self.handover_path,
@@ -397,6 +449,7 @@ class ArchitectureOperationsAgent:
         self.workflows = workflows
         self.feedback = ArchitectureFeedbackStore(workflows)
         self.executions = ExecutionStore(workflows)
+        self.orchestrations = CodexExecutionOrchestrationStore(workflows)
         self.review_decisions = ArchitectureReviewDecisionStore(self.feedback)
         self.supersessions = ArchitectureWorkflowSupersessionStore(workflows)
 
@@ -480,6 +533,15 @@ class ArchitectureOperationsAgent:
         feedback = self._feedback(workflow_id, issues)
         executions = self._executions(workflow_id, issues)
         execution = self._select_execution(executions, feedback)
+        orchestrations = self.orchestrations.records(workflow_id)
+        orchestration = orchestrations[-1] if orchestrations else None
+        if orchestration is not None:
+            artifacts.append(self._artifact(
+                "codex_execution_orchestration",
+                self.orchestrations.path(
+                    workflow_id, orchestration.orchestration_id
+                ),
+            ))
         intake = self._intake(workflow_id, issues)
         review = self._review(workflow_id, issues)
         review_decision = self._review_decision(workflow_id, issues)
@@ -570,6 +632,35 @@ class ArchitectureOperationsAgent:
             execution_id=execution.execution_id if execution else None,
             execution_origin=execution.origin if execution else None,
             execution_status=execution.status if execution else None,
+            orchestration_id=(
+                orchestration.orchestration_id if orchestration else None
+            ),
+            orchestration_status=(
+                orchestration.status if orchestration else None
+            ),
+            orchestration_step=(
+                orchestration.current_step.value if orchestration else None
+            ),
+            orchestration_started_at=(
+                orchestration.started_at.isoformat()
+                if orchestration else None
+            ),
+            orchestration_completed_at=(
+                orchestration.completed_at.isoformat()
+                if orchestration and orchestration.completed_at else None
+            ),
+            orchestration_exit_code=(
+                orchestration.process.exit_code if orchestration else None
+            ),
+            orchestration_validation=(
+                orchestration.validation_summary.passed
+                if orchestration and orchestration.validation_summary
+                else None
+            ),
+            orchestration_blocker=(
+                orchestration.failure.message
+                if orchestration and orchestration.failure else None
+            ),
             attempt_count=len(execution.attempts) if execution else 0,
             result_commit=execution.resulting_commit if execution else None,
             handover_paths=execution.handover_paths if execution else (),
@@ -655,6 +746,14 @@ class ArchitectureOperationsAgent:
             execution_id=decision.execution_id,
             execution_origin=decision.execution_origin,
             execution_status=None,
+            orchestration_id=None,
+            orchestration_status=None,
+            orchestration_step=None,
+            orchestration_started_at=None,
+            orchestration_completed_at=None,
+            orchestration_exit_code=None,
+            orchestration_validation=None,
+            orchestration_blocker=None,
             attempt_count=0,
             result_commit=decision.reviewed_commit,
             handover_paths=(),
@@ -1194,11 +1293,19 @@ class ArchitectureOperationsAgent:
             "workflow_id",
             "architecture_run_id",
             "execution_id",
+            "orchestration_id",
+            "authorization_id",
             "review_id",
         ):
             expected = values[name]
             if expected is not None and getattr(item, name) != expected:
                 return False
+        if values["orchestration_status"] is not None and (
+            item.orchestration_status is None
+            or item.orchestration_status.value
+            != values["orchestration_status"]
+        ):
+            return False
         if values["commit"] is not None and (
             item.result_commit is None
             or not item.result_commit.startswith(values["commit"].lower())
@@ -1381,6 +1488,21 @@ def render_operation(status: ArchitectureOperationStatus) -> str:
             status.architecture_run_id or "missing"
         ),
         "Execution: {}".format(status.execution_id or "missing"),
+        "Orchestration: {}".format(status.orchestration_id or "missing"),
+        "Orchestration Status: {}".format(
+            status.orchestration_status.value
+            if status.orchestration_status else "missing"
+        ),
+        "Orchestration Step: {}".format(
+            status.orchestration_step or "missing"
+        ),
+        "Orchestration Validation: {}".format(
+            status.orchestration_validation
+            if status.orchestration_validation is not None else "missing"
+        ),
+        "Orchestration Blocker: {}".format(
+            status.orchestration_blocker or "none"
+        ),
         "Execution Origin: {}".format(
             status.execution_origin.value
             if status.execution_origin else "missing"
