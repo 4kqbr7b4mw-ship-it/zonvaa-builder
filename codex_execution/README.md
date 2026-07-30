@@ -135,9 +135,14 @@ result, is not changed automatically and is reported as a risk.
 Architecture Workflow v2 may persist
 `feedback/execution-authorization.json`. When present, the Bridge additionally
 requires its confirmed approval status, workflow and deterministic
-Execution-ID, prompt hash, repository and expected base commit to match before
-Codex starts. Historical confirmed workflows without this additive artifact
-remain readable and executable under their existing prompt proof.
+Execution-ID, prompt hash, repository, expected base commit and explicitly
+authorized local branch to match before Codex starts. New authorizations use
+schema `1.1`; the branch is never inferred at execution time. Remote refs,
+wildcards and detached-HEAD placeholders are rejected.
+
+Historical schema-`1.0` authorizations without a branch remain readable and are
+reported as legacy, but cannot start a new automated Codex execution. They are
+not mutated or silently completed with `main`.
 
 After success, the watcher can hand the owning workflow directly to the
 Architecture feedback coordinator. The coordinator consumes the existing

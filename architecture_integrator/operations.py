@@ -135,6 +135,9 @@ class ArchitectureOperationStatus:
     workflow_status: Optional[WorkflowStatus]
     architecture_run_id: Optional[str]
     authorization_id: Optional[str]
+    authorized_branch: Optional[str]
+    current_branch: Optional[str]
+    branch_match: Optional[bool]
     execution_id: Optional[str]
     execution_origin: Optional[ExecutionOrigin]
     execution_status: Optional[ExecutionStatus]
@@ -210,6 +213,10 @@ class ArchitectureOperationStatus:
             self.orchestration_validation, bool
         ):
             raise TypeError("orchestration_validation must be bool or None")
+        if self.branch_match is not None and not isinstance(
+            self.branch_match, bool
+        ):
+            raise TypeError("branch_match must be bool or None")
         if self.feedback_status is not None and not isinstance(
             self.feedback_status,
             FeedbackStatus,
@@ -225,6 +232,8 @@ class ArchitectureOperationStatus:
         for value, name in (
             (self.architecture_run_id, "architecture_run_id"),
             (self.authorization_id, "authorization_id"),
+            (self.authorized_branch, "authorized_branch"),
+            (self.current_branch, "current_branch"),
             (self.execution_id, "execution_id"),
             (self.orchestration_id, "orchestration_id"),
             (self.orchestration_step, "orchestration_step"),
@@ -284,6 +293,9 @@ class ArchitectureOperationStatus:
             ),
             "architecture_run_id": self.architecture_run_id,
             "authorization_id": self.authorization_id,
+            "authorized_branch": self.authorized_branch,
+            "current_branch": self.current_branch,
+            "branch_match": self.branch_match,
             "execution_id": self.execution_id,
             "execution_origin": (
                 self.execution_origin.value
@@ -629,6 +641,18 @@ class ArchitectureOperationsAgent:
                 )
             ),
             authorization_id=authorization_id,
+            authorized_branch=(
+                authorization.authorized_branch
+                if authorization is not None else None
+            ),
+            current_branch=(
+                orchestration.branch if orchestration is not None else None
+            ),
+            branch_match=(
+                orchestration.authorized_branch is not None
+                and orchestration.branch == orchestration.authorized_branch
+                if orchestration is not None else None
+            ),
             execution_id=execution.execution_id if execution else None,
             execution_origin=execution.origin if execution else None,
             execution_status=execution.status if execution else None,
@@ -743,6 +767,9 @@ class ArchitectureOperationsAgent:
             workflow_status=None,
             architecture_run_id=decision.architecture_run_id,
             authorization_id=None,
+            authorized_branch=None,
+            current_branch=None,
+            branch_match=None,
             execution_id=decision.execution_id,
             execution_origin=decision.execution_origin,
             execution_status=None,
@@ -1488,6 +1515,14 @@ def render_operation(status: ArchitectureOperationStatus) -> str:
             status.architecture_run_id or "missing"
         ),
         "Execution: {}".format(status.execution_id or "missing"),
+        "Authorized Branch: {}".format(
+            status.authorized_branch or "missing"
+        ),
+        "Current Branch: {}".format(status.current_branch or "missing"),
+        "Branch Match: {}".format(
+            status.branch_match
+            if status.branch_match is not None else "missing"
+        ),
         "Orchestration: {}".format(status.orchestration_id or "missing"),
         "Orchestration Status: {}".format(
             status.orchestration_status.value

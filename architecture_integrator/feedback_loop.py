@@ -1,7 +1,7 @@
 import json
 import subprocess
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Callable, Optional, Tuple
 
 from architecture_integrator.feedback import (
     ApprovalStatus,
@@ -52,12 +52,14 @@ class ArchitectureFeedbackLoop:
         integrator: ArchitectureIntegrator,
         repository: Path,
         store: Optional[ArchitectureFeedbackStore] = None,
+        branch_resolver: Optional[Callable[[], str]] = None,
     ) -> None:
         self.workflows = workflows
         self.execution = execution
         self.integrator = integrator
         self.repository = repository.resolve()
         self.store = store or ArchitectureFeedbackStore(workflows)
+        self.branch_resolver = branch_resolver or self._git_branch
 
     def authorize(
         self,
@@ -76,6 +78,7 @@ class ArchitectureFeedbackLoop:
         decisions = self.workflows.decisions(workflow_id)
         proof = self.workflows.prompt_proof(workflow_id)
         base_commit = expected_base_commit or self._git_head()
+        authorized_branch = self.branch_resolver()
         execution_id = self.execution.execution_id(
             workflow_id,
             proof["prompt_hash"],
@@ -93,6 +96,7 @@ class ArchitectureFeedbackLoop:
                 run_id,
                 execution_id,
                 base_commit,
+                authorized_branch,
             ),
             architecture_run_id=run_id,
             workflow_id=workflow_id,
@@ -109,6 +113,7 @@ class ArchitectureFeedbackLoop:
             allowed_actions=self.ALLOWED_ACTIONS,
             expected_completion_artifacts=self.EXPECTED_ARTIFACTS,
             authorized_at=max(item.decided_at for item in decisions),
+            authorized_branch=authorized_branch,
         )
         self.store.write_authorization(authorization)
         if self.store.record(workflow_id) is None:
@@ -475,6 +480,21 @@ class ArchitectureFeedbackLoop:
         if result.returncode != 0:
             raise RuntimeError("Cannot determine repository HEAD")
         return result.stdout.strip()
+
+    def _git_branch(self) -> str:
+        result = subprocess.run(
+            ("git", "branch", "--show-current"),
+            cwd=str(self.repository),
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        branch = result.stdout.strip()
+        if result.returncode != 0 or not branch:
+            raise RuntimeError(
+                "Cannot create authorization from detached HEAD"
+            )
+        return branch
 
     def _deviation(self, code: str, message: str) -> HandoverDeviation:
         return HandoverDeviation(code=code, message=message)

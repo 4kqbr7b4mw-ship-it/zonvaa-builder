@@ -195,6 +195,7 @@ class CodexExecutionValidationResult:
 @dataclass(frozen=True)
 class CodexExecutionOrchestrationError:
     status: CodexExecutionStatus
+    code: str
     message: str
     failure: Optional[ExecutionFailure] = None
 
@@ -209,6 +210,7 @@ class CodexExecutionOrchestrationError:
             CodexExecutionStatus.RECOVERY_REQUIRED,
         }:
             raise ValueError("error status must be a failure status")
+        _text(self.code, "code")
         _text(self.message, "message")
         if self.failure is not None and not isinstance(
             self.failure, ExecutionFailure
@@ -218,6 +220,7 @@ class CodexExecutionOrchestrationError:
     def to_dict(self) -> Dict[str, Any]:
         return {
             "status": self.status.value,
+            "code": self.code,
             "message": self.message,
             "failure": self.failure.to_dict() if self.failure else None,
         }
@@ -226,6 +229,7 @@ class CodexExecutionOrchestrationError:
     def from_dict(cls, data: Dict[str, Any]) -> "CodexExecutionOrchestrationError":
         return cls(
             status=CodexExecutionStatus(data["status"]),
+            code=data.get("code", "LEGACY_ORCHESTRATION_ERROR"),
             message=data["message"],
             failure=(
                 ExecutionFailure.from_dict(data["failure"])
@@ -245,6 +249,7 @@ class CodexExecutionOrchestration:
     prompt_proof_id: str
     repository_path: str
     branch: str
+    authorized_branch: Optional[str]
     base_commit: str
     starting_git_status: Tuple[str, ...]
     starting_origin_commit: str
@@ -276,12 +281,15 @@ class CodexExecutionOrchestration:
             _identifier(value, name, prefix)
         for value, name in (
             (self.repository_path, "repository_path"),
-            (self.branch, "branch"),
             (self.base_commit, "base_commit"),
             (self.starting_origin_commit, "starting_origin_commit"),
             (self.starting_origin_divergence, "starting_origin_divergence"),
         ):
             _text(value, name)
+        if self.branch:
+            _text(self.branch, "branch")
+        if self.authorized_branch is not None:
+            _text(self.authorized_branch, "authorized_branch")
         if re.fullmatch(r"[0-9a-f]{40}", self.base_commit) is None:
             raise ValueError("base_commit must be a full SHA")
         if re.fullmatch(r"[0-9a-f]{40}", self.starting_origin_commit) is None:
@@ -340,6 +348,12 @@ class CodexExecutionOrchestration:
             "prompt_proof_id": self.prompt_proof_id,
             "repository_path": self.repository_path,
             "branch": self.branch,
+            "current_branch": self.branch,
+            "authorized_branch": self.authorized_branch,
+            "branch_match": (
+                self.authorized_branch is not None
+                and self.branch == self.authorized_branch
+            ),
             "base_commit": self.base_commit,
             "starting_git_status": list(self.starting_git_status),
             "starting_origin_commit": self.starting_origin_commit,
@@ -379,6 +393,7 @@ class CodexExecutionOrchestration:
             prompt_proof_id=data["prompt_proof_id"],
             repository_path=data["repository_path"],
             branch=data["branch"],
+            authorized_branch=data.get("authorized_branch"),
             base_commit=data["base_commit"],
             starting_git_status=tuple(data["starting_git_status"]),
             starting_origin_commit=data["starting_origin_commit"],
@@ -572,6 +587,7 @@ class CodexExecutionOrchestrator:
             ),
             repository_path=str(self.repository),
             branch=branch,
+            authorized_branch=authorization.authorized_branch,
             base_commit=head,
             starting_git_status=status,
             starting_origin_commit=origin_commit,
@@ -596,7 +612,9 @@ class CodexExecutionOrchestrator:
                 updated_at=self.clock(),
                 completed_at=self.clock(),
                 failure=CodexExecutionOrchestrationError(
-                    CodexExecutionStatus.BLOCKED, blocker
+                    CodexExecutionStatus.BLOCKED,
+                    blocker[0],
+                    blocker[1],
                 ),
             )
             self.store.write(blocked)
@@ -876,20 +894,54 @@ class CodexExecutionOrchestrator:
         self,
         record: CodexExecutionOrchestration,
         authorization: ExecutionAuthorization,
-    ) -> Optional[str]:
-        if record.branch != "main":
-            return "Authorized execution requires branch main."
+    ) -> Optional[Tuple[str, str]]:
+        if authorization.authorized_branch is None:
+            return (
+                "AUTHORIZED_BRANCH_MISSING",
+                "Legacy authorization has no authorized branch.",
+            )
+        if not record.branch:
+            return (
+                "DETACHED_HEAD_NOT_ALLOWED",
+                "Detached HEAD is not allowed for Codex execution.",
+            )
+        if record.branch != authorization.authorized_branch:
+            return (
+                "AUTHORIZED_BRANCH_MISMATCH",
+                (
+                    "Authorized branch '{}' differs from current branch '{}'; "
+                    "workflow={}, authorization={}, repository={}."
+                ).format(
+                    authorization.authorized_branch,
+                    record.branch,
+                    record.workflow_id,
+                    record.authorization_id,
+                    record.repository_path,
+                ),
+            )
         if record.base_commit != authorization.expected_base_commit:
-            return "Repository HEAD differs from authorized base commit."
+            return (
+                "AUTHORIZED_BASE_COMMIT_MISMATCH",
+                "Repository HEAD differs from authorized base commit.",
+            )
         if record.starting_git_status:
-            return "Execution requires a clean working tree."
+            return (
+                "WORKING_TREE_DIRTY",
+                "Execution requires a clean working tree.",
+            )
         if self._has_other_active(record):
-            return "Another active orchestration exists."
+            return (
+                "ACTIVE_ORCHESTRATION_EXISTS",
+                "Another active orchestration exists.",
+            )
         existing = self.executions.existing(
             record.workflow_id, record.execution_id
         )
         if existing is not None and existing.origin is ExecutionOrigin.RECONSTRUCTED:
-            return "Reconstructed historical execution cannot be started."
+            return (
+                "RECONSTRUCTED_EXECUTION_NOT_RUNNABLE",
+                "Reconstructed historical execution cannot be started.",
+            )
         return None
 
     def _has_other_active(self, record: CodexExecutionOrchestration) -> bool:
@@ -919,6 +971,7 @@ class CodexExecutionOrchestrator:
             completed_at=self.clock(),
             failure=CodexExecutionOrchestrationError(
                 CodexExecutionStatus.RECOVERY_REQUIRED,
+                "PROCESS_STATE_UNKNOWN",
                 "Persisted active process state cannot be reconstructed.",
             ),
         )
@@ -939,7 +992,10 @@ class CodexExecutionOrchestrator:
             updated_at=self.clock(),
             completed_at=self.clock(),
             failure=CodexExecutionOrchestrationError(
-                status, redact(message), failure
+                status,
+                "{}_{}".format(status.value, step.value),
+                redact(message),
+                failure,
             ),
         )
         self.store.write(failed)

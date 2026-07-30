@@ -233,6 +233,7 @@ def feedback_authorization(bridge, prompt_hash, base_commit=START):
         allowed_actions=("create_commit", "create_handover"),
         expected_completion_artifacts=("result_commit", "json_handover"),
         authorized_at=NOW,
+        authorized_branch="main",
     )
 
 

@@ -15,6 +15,7 @@ from architecture_integrator import (
     ArchitectureFeedbackStore,
     ArchitectureWorkflowStore,
     ExecutionAuthorization,
+    validate_local_branch_name,
 )
 from builder.main import app
 from codex_execution import (
@@ -148,6 +149,8 @@ def workflow_fixture(
     authorization=True,
     proof=True,
     allowed_actions=("modify_authorized_repository",),
+    authorized_branch="main",
+    authorization_schema="1.1",
 ):
     root = repository / "knowledge" / "architecture_workflows"
     folder = root / WORKFLOW
@@ -197,6 +200,7 @@ def workflow_fixture(
     if authorization:
         ArchitectureFeedbackStore(workflows).write_authorization(
             ExecutionAuthorization(
+                schema_version=authorization_schema,
                 authorization_id=AUTHORIZATION,
                 architecture_run_id=RUN,
                 workflow_id=WORKFLOW,
@@ -212,6 +216,7 @@ def workflow_fixture(
                     "test_result", "doctor_result", "git_status"
                 ),
                 authorized_at=NOW,
+                authorized_branch=authorized_branch,
             )
         )
     return workflows
@@ -247,6 +252,29 @@ def test_request_rejects_unknown_or_traversing_workflow_ids():
     for value in ("unknown", "../workflow-0123456789abcdef"):
         with pytest.raises(ValueError):
             CodexExecutionRequest(value)
+
+
+@pytest.mark.parametrize(
+    "value",
+    (
+        "",
+        "origin/main",
+        "refs/heads/main",
+        "feature/*",
+        "HEAD",
+        "a..b",
+        "feature/\nbranch",
+    ),
+)
+def test_authorized_branch_rejects_non_local_or_unsafe_names(value):
+    with pytest.raises(ValueError):
+        validate_local_branch_name(value)
+
+
+def test_authorized_branch_accepts_normalized_local_name():
+    assert validate_local_branch_name("feature/branch-bound-auth") == (
+        "feature/branch-bound-auth"
+    )
 
 
 def test_tracked_runner_reports_process_id_and_separate_output(tmp_path):
@@ -307,6 +335,50 @@ def test_repository_preflight_blocks_unsafe_state(
     service, _ = orchestrator(tmp_path, runner)
     record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
     assert record.status is expected
+    assert runner.codex_called == 0
+
+
+def test_branch_mismatch_has_structured_context_and_no_process(tmp_path):
+    runner = OrchestrationRunner(tmp_path, branch="feature/other")
+    service, _ = orchestrator(tmp_path, runner)
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+    assert record.status is CodexExecutionStatus.BLOCKED
+    assert record.failure.code == "AUTHORIZED_BRANCH_MISMATCH"
+    assert "main" in record.failure.message
+    assert "feature/other" in record.failure.message
+    assert WORKFLOW in record.failure.message
+    assert AUTHORIZATION in record.failure.message
+    assert str(tmp_path) in record.failure.message
+    assert record.process.process_id is None
+    assert service.executions.records(WORKFLOW) == ()
+    assert runner.codex_called == 0
+
+
+def test_detached_head_is_blocked_even_when_base_commit_matches(tmp_path):
+    runner = OrchestrationRunner(tmp_path, branch="", head=BASE)
+    service, _ = orchestrator(tmp_path, runner)
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+    assert record.failure.code == "DETACHED_HEAD_NOT_ALLOWED"
+    assert record.process.process_id is None
+    assert runner.codex_called == 0
+
+
+def test_legacy_authorization_is_readable_but_not_executable_or_mutated(
+    tmp_path,
+):
+    service, runner = orchestrator(
+        tmp_path,
+        authorized_branch=None,
+        authorization_schema="1.0",
+    )
+    path = service.feedback.authorization_path(WORKFLOW)
+    before = path.read_bytes()
+    authorization = service.feedback.authorization(WORKFLOW)
+    assert authorization.legacy
+    assert authorization.authorized_branch is None
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+    assert record.failure.code == "AUTHORIZED_BRANCH_MISSING"
+    assert path.read_bytes() == before
     assert runner.codex_called == 0
 
 
@@ -492,6 +564,7 @@ def test_recovery_required_does_not_restart_unknown_process(tmp_path):
         prompt_proof_id="prompt-proof-" + proof["prompt_hash"][:16],
         repository_path=str(tmp_path),
         branch="main",
+        authorized_branch="main",
         base_commit=BASE,
         starting_git_status=(),
         starting_origin_commit=BASE,
@@ -550,6 +623,9 @@ def test_cli_help_and_machine_readable_status(tmp_path, monkeypatch):
     assert help_result.exit_code == 0
     assert "--workflow-id" in help_result.stdout
     assert json.loads(status.stdout)["orchestration_id"] == record.orchestration_id
+    assert json.loads(status.stdout)["authorized_branch"] == "main"
+    assert json.loads(status.stdout)["current_branch"] == "main"
+    assert json.loads(status.stdout)["branch_match"] is True
     assert len(json.loads(listing.stdout)["orchestrations"]) == 1
 
 
@@ -572,6 +648,9 @@ def test_operations_agent_exposes_orchestration_read_only(tmp_path):
     assert status.orchestration_id == record.orchestration_id
     assert status.orchestration_step == "COMMIT"
     assert status.orchestration_validation is True
+    assert status.authorized_branch == "main"
+    assert status.current_branch == "main"
+    assert status.branch_match is True
     assert service.store.path(
         WORKFLOW, record.orchestration_id
     ).read_bytes() == before

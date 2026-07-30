@@ -171,6 +171,16 @@ class CodexExecutionService:
                 "git", "branch", "--show-current",
                 execution_id=execution_id,
             )
+            if authorization is not None:
+                if authorization.authorized_branch is None:
+                    raise RuntimeError("AUTHORIZED_BRANCH_MISSING")
+                if not branch:
+                    raise RuntimeError("DETACHED_HEAD_NOT_ALLOWED")
+                if branch != authorization.authorized_branch:
+                    raise RuntimeError(
+                        "AUTHORIZED_BRANCH_MISMATCH: authorized={} actual={}"
+                        .format(authorization.authorized_branch, branch)
+                    )
             commit = self._required(
                 ExecutionStep.REPOSITORY_INSPECTION,
                 "git", "rev-parse", "HEAD",

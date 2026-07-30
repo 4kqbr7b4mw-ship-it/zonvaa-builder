@@ -3,7 +3,67 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Automated Codex Execution Orchestration v1
+## Aktiver Plan: Branch-bound Execution Authorization v1
+
+### Ziel und Nicht-Ziele
+
+Neue Execution Authorizations binden Repository und Base Commit zusätzlich an
+einen ausdrücklich ermittelten lokalen Branch. Historische Schema-1.0-
+Authorizations bleiben unverändert lesbar, sind aber nicht erneut ausführbar.
+Nicht eingeführt werden Branchwechsel, Migration historischer Artefakte,
+Codex-Ausführung, produktive Orchestration oder Push.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `d052a222c4108084acb6cc4fec7bfdb708d2e223`,
+  `0 behind / 1 ahead` gegenüber `origin/main`.
+- Preflight mit Mission Context Schema 1.6 war erfolgreich.
+- 716 Tests bestanden unter Python 3.9.6; Doctor war erfolgreich.
+- Execution Authorization Schema 1.0 bindet Workflow, Run, Prompt,
+  Repository und Base Commit, aber keinen Branch.
+- ADR-0041 persistiert den tatsächlich geprüften Branch erst beim Start und
+  dokumentiert diese Lücke ausdrücklich.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Vorbedingungen, Preflight, Authorization, Bridge, Orchestrator,
+  Operations und Tests prüfen.
+- [x] ADR-0042 und Authorization Schema 1.1 ergänzen.
+- [x] Explizite Branch-Ermittlung und strikte lokale Branchvalidierung bauen.
+- [x] Bridge und Orchestrator mit strukturierten Branch-Blockern härten.
+- [x] Status-, Listen- und Operations-Anzeigen ergänzen.
+- [x] Legacy-, Mismatch-, Detached- und Read-only-Tests ergänzen.
+- [x] Gesamttests, Doctor, Diff, Handover und Commit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- Schema 1.1 verlangt `authorized_branch`; Schema 1.0 bleibt ohne impliziten
+  Default lesbar und wird als Legacy markiert.
+- Der Branch wird bei Authorization-Erzeugung aus Git gelesen und in
+  Authorization-ID sowie Artefakt gebunden, nicht erst beim Execution-Start.
+- Eine Branchabweichung blockiert vor Prozessauflösung und PID-Erzeugung.
+
+### Risiken und Teststrategie
+
+- Historische Schema-1.0-Authorizations können ohne ausdrücklich autorisierte
+  Migration nicht erneut ausgeführt werden.
+- Branchnamen werden mit einem konservativen, Git-kompatiblen lokalen Vertrag
+  validiert; Remote- und Ref-Schreibweisen bleiben ausgeschlossen.
+- Tests verwenden ausschließlich Fake-Codex und temporäre Artefakte.
+
+### Abweichungen und Abschlusszustand
+
+- ADR-0041 wurde als historisch bindende Entscheidung nicht umgeschrieben;
+  ADR-0042 präzisiert den Authorization-Vertrag additiv.
+- Die bestehende direkte Execution Bridge wurde ebenfalls gehärtet, damit sie
+  die neue Branchgrenze nicht am Orchestrator vorbei umgehen kann.
+- 143 fokussierte Tests und die vollständige Suite mit 727 Tests bestanden.
+- Doctor und `git diff --check` waren erfolgreich; die versionierten
+  historischen Authorization-Artefakte blieben unverändert.
+- Es fand keine reale Codex-Ausführung, produktive Orchestration,
+  Branchänderung oder Push-Ausführung statt.
+
+## Abgeschlossener Plan: Automated Codex Execution Orchestration v1
 
 ### Ziel und Nicht-Ziele
 

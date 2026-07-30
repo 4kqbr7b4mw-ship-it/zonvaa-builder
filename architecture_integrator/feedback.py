@@ -187,11 +187,18 @@ class ExecutionAuthorization:
     allowed_actions: Tuple[str, ...]
     expected_completion_artifacts: Tuple[str, ...]
     authorized_at: datetime
-    schema_version: str = "1.0"
+    authorized_branch: Optional[str] = None
+    schema_version: str = "1.1"
 
     def __post_init__(self) -> None:
-        if self.schema_version != "1.0":
+        if self.schema_version not in {"1.0", "1.1"}:
             raise ValueError("Unsupported execution authorization schema")
+        if self.schema_version == "1.1":
+            validate_local_branch_name(self.authorized_branch)
+        elif self.authorized_branch is not None:
+            raise ValueError(
+                "Schema 1.0 authorization cannot contain authorized_branch"
+            )
         _identifier(self.authorization_id, "authorization_id", "authorization")
         _identifier(
             self.architecture_run_id,
@@ -228,7 +235,7 @@ class ExecutionAuthorization:
         _aware(self.authorized_at, "authorized_at")
 
     def to_dict(self) -> Dict[str, Any]:
-        return {
+        result = {
             "schema_version": self.schema_version,
             "authorization_id": self.authorization_id,
             "architecture_run_id": self.architecture_run_id,
@@ -246,6 +253,13 @@ class ExecutionAuthorization:
             ),
             "authorized_at": self.authorized_at.isoformat(),
         }
+        if self.schema_version == "1.1":
+            result["authorized_branch"] = self.authorized_branch
+        return result
+
+    @property
+    def legacy(self) -> bool:
+        return self.schema_version == "1.0"
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "ExecutionAuthorization":
@@ -266,7 +280,31 @@ class ExecutionAuthorization:
                 data["expected_completion_artifacts"]
             ),
             authorized_at=datetime.fromisoformat(data["authorized_at"]),
+            authorized_branch=data.get("authorized_branch"),
         )
+
+
+def validate_local_branch_name(value: object) -> str:
+    _text(value, "authorized_branch")
+    branch = str(value)
+    if (
+        branch in {"HEAD", "(detached)", "DETACHED_HEAD"}
+        or branch.startswith(("origin/", "refs/", "remotes/"))
+        or branch.startswith(("-", ".", "/"))
+        or branch.endswith(("/", ".", ".lock"))
+        or "//" in branch
+        or ".." in branch
+        or "@{" in branch
+        or any(character in branch for character in " ~^:?*[\\")
+        or any(
+            ord(character) < 32 or ord(character) == 127
+            for character in branch
+        )
+    ):
+        raise ValueError(
+            "authorized_branch must be a normalized local branch name"
+        )
+    return branch
 
 
 @dataclass(frozen=True)

@@ -165,6 +165,7 @@ def authorization(workflows, workflow_id, execution_id):
             "markdown_handover",
         ),
         authorized_at=NOW,
+        authorized_branch="main",
     )
     ArchitectureFeedbackStore(workflows).write_authorization(item)
     return item

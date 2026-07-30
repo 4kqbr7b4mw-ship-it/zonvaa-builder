@@ -113,6 +113,7 @@ def _setup(runtime, tmp_path):
         service,
         integrator,
         repository,
+        branch_resolver=lambda: "main",
     )
     service.repository = repository
     authorization = loop.authorize(
@@ -203,6 +204,8 @@ def test_confirmed_decision_creates_authorized_execution_artifact(
     assert authorization.workflow_id == workflow.workflow_id
     assert authorization.approval_status.value == "CONFIRMED"
     assert authorization.expected_base_commit == BASE
+    assert authorization.schema_version == "1.1"
+    assert authorization.authorized_branch == "main"
     assert "create_handover" in authorization.allowed_actions
     assert "push" not in authorization.allowed_actions
 

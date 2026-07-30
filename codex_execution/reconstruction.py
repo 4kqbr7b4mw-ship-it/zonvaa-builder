@@ -428,6 +428,7 @@ class ExecutionReconstructionService:
             store=feedback_store,
         )
         adapted = ExecutionAuthorization(
+            schema_version="1.0",
             authorization_id=feedback_authorization_id,
             architecture_run_id=architecture_run_id,
             workflow_id=workflow_id,
