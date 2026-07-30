@@ -3,6 +3,22 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Understanding Core v1
+
+### Ziel und Nicht-Ziele
+
+Ein unveränderlicher, rein transienter Understanding State hält ausschließlich
+Facts, Hypotheses, Unknowns, Contradictions und Goals. Aus Nutzereingaben
+entsteht genau eine Frage zum besseren Verständnis. Nicht enthalten sind
+Entscheidung, Routing, Workflow-Auswahl, Memory, Profil oder Persistenz.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight und vorhandenen Architekturkontext prüfen.
+- [x] Typisierte unveränderliche Modelle und zustandslosen Service ergänzen.
+- [x] Dreizehn fokussierte Vertrags- und Verhaltensprüfungen ergänzen.
+- [x] Vollständige Tests, Doctor und Git-Prüfungen abschließen.
+
 ## Aktiver Plan: Builder Reset v2
 
 ### Ziel und Nicht-Ziele
