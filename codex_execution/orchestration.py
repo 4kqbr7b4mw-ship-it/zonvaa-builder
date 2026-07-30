@@ -31,6 +31,12 @@ from codex_execution.errors import (
 from codex_execution.models import ExecutionFailure, ExecutionOrigin, ExecutionStep
 from codex_execution.runner import CommandResult, SubprocessCommandRunner
 from codex_execution.store import ExecutionStore
+from codex_execution.preparation import (
+    ArchitectureExecutionPreparationService,
+    ArchitectureExecutionPreparationStore,
+    PreparationBaselineAssessment,
+    PreparationWorkingTreeState,
+)
 
 
 class CodexExecutionStatus(str, Enum):
@@ -134,6 +140,9 @@ class CodexExecutionValidationResult:
     head_changed: bool
     push_detected: bool
     diff_summary: str = ""
+    preparation_files: Tuple[str, ...] = ()
+    codex_result_changes: Tuple[str, ...] = ()
+    preparation_hash_match: bool = True
 
     def __post_init__(self) -> None:
         for value in (
@@ -155,6 +164,14 @@ class CodexExecutionValidationResult:
         _status_lines(self.git_status, "git_status")
         _strings(self.changed_files, "changed_files", required=False)
         _strings(self.forbidden_changes, "forbidden_changes", required=False)
+        _strings(self.preparation_files, "preparation_files", required=False)
+        _strings(
+            self.codex_result_changes,
+            "codex_result_changes",
+            required=False,
+        )
+        if not isinstance(self.preparation_hash_match, bool):
+            raise TypeError("preparation_hash_match must be bool")
 
     @property
     def passed(self) -> bool:
@@ -181,6 +198,9 @@ class CodexExecutionValidationResult:
             "head_changed": self.head_changed,
             "push_detected": self.push_detected,
             "diff_summary": self.diff_summary,
+            "preparation_files": list(self.preparation_files),
+            "codex_result_changes": list(self.codex_result_changes),
+            "preparation_hash_match": self.preparation_hash_match,
             "passed": self.passed,
         }
 
@@ -199,6 +219,13 @@ class CodexExecutionValidationResult:
             head_changed=data["head_changed"],
             push_detected=data["push_detected"],
             diff_summary=data.get("diff_summary", ""),
+            preparation_files=tuple(data.get("preparation_files", ())),
+            codex_result_changes=tuple(
+                data.get("codex_result_changes", data["changed_files"])
+            ),
+            preparation_hash_match=data.get(
+                "preparation_hash_match", True
+            ),
         )
 
 
@@ -279,6 +306,12 @@ class CodexExecutionOrchestration:
     prompt_commit_instruction: Optional[str] = None
     prompt_authorization_match: Optional[bool] = None
     push_forbidden: Optional[bool] = None
+    preparation_baseline_id: Optional[str] = None
+    preparation_baseline_valid: Optional[bool] = None
+    preparation_files: Tuple[str, ...] = ()
+    preparation_hash_match: Optional[bool] = None
+    unauthorized_working_tree_changes: Tuple[str, ...] = ()
+    codex_result_changes: Tuple[str, ...] = ()
     schema_version: str = "1.0"
 
     def __post_init__(self) -> None:
@@ -343,6 +376,24 @@ class CodexExecutionOrchestration:
             if value is not None and not isinstance(value, bool):
                 raise TypeError("{} must be bool or None".format(name))
         _optional_text(self.proposed_commit_message, "proposed_commit_message")
+        _optional_text(
+            self.preparation_baseline_id, "preparation_baseline_id"
+        )
+        for value, name in (
+            (self.preparation_baseline_valid, "preparation_baseline_valid"),
+            (self.preparation_hash_match, "preparation_hash_match"),
+        ):
+            if value is not None and not isinstance(value, bool):
+                raise TypeError("{} must be bool or None".format(name))
+        for value, name in (
+            (self.preparation_files, "preparation_files"),
+            (
+                self.unauthorized_working_tree_changes,
+                "unauthorized_working_tree_changes",
+            ),
+            (self.codex_result_changes, "codex_result_changes"),
+        ):
+            _strings(value, name, required=False)
 
     @property
     def terminal(self) -> bool:
@@ -410,6 +461,14 @@ class CodexExecutionOrchestration:
             "prompt_authorization_match": self.prompt_authorization_match,
             "push_forbidden": self.push_forbidden,
             "proposed_commit_message": self.proposed_commit_message,
+            "preparation_baseline_id": self.preparation_baseline_id,
+            "preparation_baseline_valid": self.preparation_baseline_valid,
+            "preparation_files": list(self.preparation_files),
+            "preparation_hash_match": self.preparation_hash_match,
+            "unauthorized_working_tree_changes": list(
+                self.unauthorized_working_tree_changes
+            ),
+            "codex_result_changes": list(self.codex_result_changes),
             "next_step": (
                 "MANUAL_COMMIT_APPROVAL"
                 if self.status is CodexExecutionStatus.COMMIT_READY
@@ -469,6 +528,18 @@ class CodexExecutionOrchestration:
                 "prompt_authorization_match"
             ),
             push_forbidden=data.get("push_forbidden"),
+            preparation_baseline_id=data.get("preparation_baseline_id"),
+            preparation_baseline_valid=data.get(
+                "preparation_baseline_valid"
+            ),
+            preparation_files=tuple(data.get("preparation_files", ())),
+            preparation_hash_match=data.get("preparation_hash_match"),
+            unauthorized_working_tree_changes=tuple(
+                data.get("unauthorized_working_tree_changes", ())
+            ),
+            codex_result_changes=tuple(
+                data.get("codex_result_changes", ())
+            ),
         )
 
 
@@ -577,6 +648,17 @@ class CodexExecutionOrchestrator:
         self.feedback = ArchitectureFeedbackStore(workflows)
         self.store = CodexExecutionOrchestrationStore(workflows)
         self.executions = ExecutionStore(workflows)
+        self.preparation_store = ArchitectureExecutionPreparationStore(
+            workflows
+        )
+        self.preparations = ArchitectureExecutionPreparationService(
+            workflows=workflows,
+            repository=self.repository,
+            feedback=self.feedback,
+            store=self.preparation_store,
+            runner=runner,
+            clock=clock,
+        )
 
     def orchestration_id(
         self, workflow_id: str, authorization_id: str, prompt_hash: str
@@ -660,11 +742,35 @@ class CodexExecutionOrchestrator:
             ),
             push_forbidden=semantics.push_forbidden,
         )
+        baseline = self.preparation_store.read(request.workflow_id)
+        if baseline is not None:
+            record = record.evolve(
+                starting_git_status=self._lines(self._required((
+                    "git",
+                    "status",
+                    "--porcelain=v1",
+                    "--untracked-files=all",
+                )))
+            )
+        assessment = self._preparation_assessment(
+            record, authorization, baseline, allow_result_changes=False
+        )
+        if baseline is not None:
+            record = record.evolve(
+                preparation_baseline_id=baseline.baseline_id,
+                preparation_baseline_valid=assessment.baseline_valid,
+                preparation_files=assessment.preparation_files,
+                preparation_hash_match=assessment.hash_match,
+                unauthorized_working_tree_changes=(
+                    assessment.unauthorized_changes
+                ),
+            )
         blocker = self._preflight_blocker(
             record,
             authorization,
             proof,
             semantics,
+            assessment,
         )
         if blocker:
             blocked = record.evolve(
@@ -827,7 +933,15 @@ class CodexExecutionOrchestrator:
         status_lines = self._lines(
             self._required(("git", "status", "--porcelain"))
         )
-        changed = self._changed_files(status_lines)
+        baseline = self.preparation_store.read(record.workflow_id)
+        assessment = self._preparation_assessment(
+            record, authorization, baseline, allow_result_changes=True
+        )
+        changed = (
+            assessment.codex_result_changes
+            if baseline is not None
+            else self._changed_files(status_lines)
+        )
         forbidden = self._forbidden_changes(
             changed, record.workflow_id
         )
@@ -852,7 +966,35 @@ class CodexExecutionOrchestrator:
             head_changed=head != record.base_commit,
             push_detected=remote_after != record.starting_origin_commit,
             diff_summary=diff_summary,
+            preparation_files=assessment.preparation_files,
+            codex_result_changes=changed,
+            preparation_hash_match=assessment.hash_match,
         )
+        if baseline is not None and assessment.staged_paths:
+            return self._fail(
+                record.evolve(
+                    validation_summary=validation,
+                    preparation_baseline_valid=False,
+                ),
+                CodexExecutionStatus.VALIDATION_FAILED,
+                CodexExecutionStep.RESULT_VALIDATION,
+                "Staging is not allowed with this preparation baseline.",
+                code="PREPARATION_STAGED_CHANGES_NOT_ALLOWED",
+            )
+        if baseline is not None and (
+            not assessment.hash_match or assessment.missing_paths
+        ):
+            return self._fail(
+                record.evolve(
+                    validation_summary=validation,
+                    preparation_baseline_valid=False,
+                    preparation_hash_match=False,
+                ),
+                CodexExecutionStatus.VALIDATION_FAILED,
+                CodexExecutionStep.RESULT_VALIDATION,
+                "A protected preparation artifact was modified.",
+                code="PREPARATION_ARTIFACT_MODIFIED",
+            )
         if not validation.passed:
             return self._fail(
                 record.evolve(validation_summary=validation),
@@ -865,6 +1007,9 @@ class CodexExecutionOrchestrator:
             current_step=CodexExecutionStep.RESULT_VALIDATION,
             updated_at=self.clock(),
             validation_summary=validation,
+            preparation_baseline_valid=assessment.baseline_valid,
+            preparation_hash_match=assessment.hash_match,
+            codex_result_changes=changed,
         )
         self.store.write(validated)
         ready = validated.evolve(
@@ -968,6 +1113,7 @@ class CodexExecutionOrchestrator:
         authorization: ExecutionAuthorization,
         proof: Dict[str, Any],
         semantics: CodexPromptSemantics,
+        assessment: PreparationBaselineAssessment,
     ) -> Optional[Tuple[str, str]]:
         if authorization.authorized_branch is None:
             return (
@@ -1016,10 +1162,15 @@ class CodexExecutionOrchestrator:
                 "AUTHORIZED_BASE_COMMIT_MISMATCH",
                 "Repository HEAD differs from authorized base commit.",
             )
-        if record.starting_git_status:
+        if record.starting_git_status and record.preparation_baseline_id is None:
             return (
                 "WORKING_TREE_DIRTY",
                 "Execution requires a clean working tree.",
+            )
+        if assessment.error_code is not None:
+            return (
+                assessment.error_code,
+                "Working tree does not match the authorized preparation baseline.",
             )
         if self._has_other_active(record):
             return (
@@ -1103,6 +1254,7 @@ class CodexExecutionOrchestrator:
         step: CodexExecutionStep,
         message: str,
         failure: Optional[ExecutionFailure] = None,
+        code: Optional[str] = None,
     ) -> CodexExecutionOrchestration:
         failed = record.evolve(
             status=status,
@@ -1111,13 +1263,64 @@ class CodexExecutionOrchestrator:
             completed_at=self.clock(),
             failure=CodexExecutionOrchestrationError(
                 status,
-                "{}_{}".format(status.value, step.value),
+                code or "{}_{}".format(status.value, step.value),
                 redact(message),
                 failure,
             ),
         )
         self.store.write(failed)
         return failed
+
+    def _preparation_assessment(
+        self,
+        record: CodexExecutionOrchestration,
+        authorization: ExecutionAuthorization,
+        baseline: Any,
+        allow_result_changes: bool,
+    ) -> PreparationBaselineAssessment:
+        if baseline is None:
+            status_entries = (
+                self._lines(
+                    self._required(("git", "status", "--porcelain"))
+                )
+                if allow_result_changes
+                else record.starting_git_status
+            )
+            changed = self._changed_files(status_entries)
+            return PreparationBaselineAssessment(
+                working_tree_state=(
+                    PreparationWorkingTreeState.CLEAN_WORKING_TREE
+                    if not changed
+                    else PreparationWorkingTreeState.UNAUTHORIZED_DIRTY_WORKING_TREE
+                ),
+                baseline_valid=not changed,
+                hash_match=True,
+                preparation_files=(),
+                codex_result_changes=changed if allow_result_changes else (),
+                unauthorized_changes=changed if not allow_result_changes else (),
+                missing_paths=(),
+                modified_paths=(),
+                staged_paths=(),
+                error_code=None if not changed else "WORKING_TREE_DIRTY",
+            )
+        status_entries = (
+            self._lines(self._required((
+                "git",
+                "status",
+                "--porcelain=v1",
+                "--untracked-files=all",
+            )))
+            if allow_result_changes
+            else record.starting_git_status
+        )
+        return self.preparations.assess(
+            baseline,
+            authorization,
+            record.branch,
+            record.base_commit,
+            status_entries,
+            allow_result_changes,
+        )
 
     def _run(self, arguments: Tuple[str, ...]) -> CommandResult:
         return self.runner.run(arguments, cwd=self.repository)

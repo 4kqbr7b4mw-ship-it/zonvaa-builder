@@ -34,6 +34,7 @@ from architecture_integrator.io import (
 from builder.runtime import get_runtime
 from codex_execution import (
     ArchitectureExecutionWatcher,
+    ArchitectureExecutionPreparationService,
     CodexExecutionOrchestrator,
     CodexExecutionRequest,
     CodexExecutionStatus,
@@ -848,6 +849,35 @@ def run_execution_orchestration(
         raise typer.Exit(code=1)
 
 
+def prepare_execution_orchestration(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Capture the immutable authorized workflow preparation baseline."""
+    try:
+        baseline = _preparation_service().prepare(workflow_id)
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution preparation", error)
+    typer.echo(json.dumps(
+        baseline.to_dict(), indent=2, sort_keys=True
+    ))
+
+
+def execution_preparation_status(
+    workflow_id: str = typer.Option(..., "--workflow-id"),
+) -> None:
+    """Show a preparation baseline without creating or changing it."""
+    try:
+        service = _preparation_service()
+        baseline = service.store.read(workflow_id)
+        if baseline is None:
+            raise RuntimeError("No preparation baseline exists")
+    except (OSError, RuntimeError, TypeError, ValueError) as error:
+        _workflow_error("execution preparation status", error)
+    typer.echo(json.dumps(
+        baseline.to_dict(), indent=2, sort_keys=True
+    ))
+
+
 def list_execution_orchestrations(
     workflow_id: Optional[str] = typer.Option(None, "--workflow-id"),
     architecture_run_id: Optional[str] = typer.Option(
@@ -1006,6 +1036,13 @@ def _orchestration_service() -> CodexExecutionOrchestrator:
     )
 
 
+def _preparation_service() -> ArchitectureExecutionPreparationService:
+    return ArchitectureExecutionPreparationService(
+        workflows=ArchitectureWorkflowStore(),
+        repository=Path.cwd(),
+    )
+
+
 def feedback_status(
     workflow_id: str = typer.Option(..., "--workflow-id"),
 ) -> None:
@@ -1069,6 +1106,8 @@ workflow_app.command("generate-codex")(generate_workflow_codex)
 workflow_app.command("feedback-status")(feedback_status)
 execution_app.command("status")(execution_status)
 execution_app.command("run")(run_execution_orchestration)
+execution_app.command("prepare")(prepare_execution_orchestration)
+execution_app.command("preparation-status")(execution_preparation_status)
 execution_app.command("list")(list_execution_orchestrations)
 execution_app.command("retry")(retry_execution)
 execution_app.command("cancel")(cancel_execution)

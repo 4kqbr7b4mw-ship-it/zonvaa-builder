@@ -23,6 +23,11 @@ from architecture_integrator.workflow import (
 )
 from builder.main import app
 from codex_execution import (
+    ArchitectureExecutionPreparationService,
+    ArchitectureExecutionPreparationStore,
+    ArchitectureExecutionPreparationBaseline,
+    ArchitectureExecutionPreparationFile,
+    PreparationGitState,
     CodexExecutionOrchestration,
     CodexExecutionOrchestrationStore,
     CodexExecutionOrchestrator,
@@ -107,6 +112,14 @@ class OrchestrationRunner:
         if args[:4] == ("git", "rev-list", "--left-right", "--count"):
             return CommandResult(0, "0\t0\n", "")
         if args == ("git", "status", "--porcelain"):
+            return CommandResult(
+                0,
+                self.final_status if self.codex_called else self.initial_status,
+                "",
+            )
+        if args == (
+            "git", "status", "--porcelain=v1", "--untracked-files=all"
+        ):
             return CommandResult(
                 0,
                 self.final_status if self.codex_called else self.initial_status,
@@ -280,6 +293,45 @@ def orchestrator(tmp_path, runner=None, **fixture_options):
         codex_resolver=lambda: "/usr/local/bin/codex",
     )
     return service, fake
+
+
+def attach_preparation_baseline(service, fake, *, modify=False, staged=False):
+    relative = (
+        "knowledge/architecture_workflows/{}/proposals/proposal-a.json"
+    ).format(WORKFLOW)
+    path = service.repository / relative
+    path.write_text("{}\n", encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    baseline = ArchitectureExecutionPreparationBaseline(
+        baseline_id="preparation-baseline-0123456789abcdef",
+        workflow_id=WORKFLOW,
+        architecture_run_id=RUN,
+        authorization_id=AUTHORIZATION,
+        repository_path=str(service.repository),
+        branch="main",
+        base_commit=BASE,
+        created_at=NOW,
+        allowed_paths=(relative,),
+        files=(
+            ArchitectureExecutionPreparationFile(
+                path=relative,
+                git_state=PreparationGitState.UNTRACKED,
+                sha256=digest,
+                size=path.stat().st_size,
+            ),
+        ),
+        git_status_entries=("?? {}".format(relative),),
+        content_hashes=(digest,),
+        staged_paths=(),
+        untracked_paths=(relative,),
+    )
+    service.preparation_store.write(baseline)
+    if modify:
+        path.write_text("changed preparation\n", encoding="utf-8")
+    prefix = "A " if staged else "??"
+    fake.initial_status = "{} {}\n".format(prefix, relative)
+    fake.final_status = "?? {}\n M builder/result.py\n".format(relative)
+    return baseline
 
 
 def test_models_are_immutable_and_status_values_are_stable(tmp_path):
@@ -907,3 +959,48 @@ def test_no_shell_push_or_branch_switch_is_invoked(tmp_path):
     assert "switch" not in flat
     assert "checkout" not in flat
     assert all(isinstance(command, tuple) for command in fake.commands)
+
+
+def test_fake_codex_run_accepts_valid_preparation_and_separates_result(tmp_path):
+    service, fake = orchestrator(tmp_path)
+    baseline = attach_preparation_baseline(service, fake)
+
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+
+    assert record.status is CodexExecutionStatus.COMMIT_READY
+    assert record.preparation_baseline_id == baseline.baseline_id
+    assert record.preparation_baseline_valid
+    assert record.preparation_hash_match
+    assert record.codex_result_changes == ("builder/result.py",)
+    assert record.validation_summary.preparation_files == (
+        baseline.files[0].path,
+    )
+    assert record.validation_summary.codex_result_changes == (
+        "builder/result.py",
+    )
+    assert fake.codex_called == 1
+    assert fake.commit_called == 0
+
+
+@pytest.mark.parametrize(
+    "modify,staged,error_code",
+    [
+        (True, False, "PREPARATION_BASELINE_MISMATCH"),
+        (False, True, "PREPARATION_STAGED_CHANGES_NOT_ALLOWED"),
+    ],
+)
+def test_preparation_mismatch_blocks_without_process_or_attempt(
+    tmp_path, modify, staged, error_code
+):
+    service, fake = orchestrator(tmp_path)
+    attach_preparation_baseline(
+        service, fake, modify=modify, staged=staged
+    )
+
+    record = service.run(CodexExecutionRequest(WORKFLOW)).orchestration
+
+    assert record.status is CodexExecutionStatus.BLOCKED
+    assert record.failure.code == error_code
+    assert record.process.process_id is None
+    assert fake.codex_called == 0
+    assert service.executions.existing(WORKFLOW, EXECUTION) is None

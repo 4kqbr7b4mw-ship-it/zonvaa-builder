@@ -31,9 +31,23 @@ from codex_execution.orchestration import (
     CodexExecutionStep,
     CodexExecutionValidationResult,
 )
+from codex_execution.preparation import (
+    ArchitectureExecutionPreparationBaseline,
+    ArchitectureExecutionPreparationFile,
+    ArchitectureExecutionPreparationService,
+    ArchitectureExecutionPreparationStore,
+    PreparationBaselineAssessment,
+    PreparationBaselineError,
+    PreparationGitState,
+    PreparationWorkingTreeState,
+)
 
 __all__ = [
     "ArchitectureExecutionWatcher",
+    "ArchitectureExecutionPreparationBaseline",
+    "ArchitectureExecutionPreparationFile",
+    "ArchitectureExecutionPreparationService",
+    "ArchitectureExecutionPreparationStore",
     "AttemptTrigger",
     "CheckStatus",
     "CodexExecutionService",
@@ -59,6 +73,10 @@ __all__ = [
     "ExecutionStatus",
     "ExecutionStore",
     "RedactionStatus",
+    "PreparationBaselineAssessment",
+    "PreparationBaselineError",
+    "PreparationGitState",
+    "PreparationWorkingTreeState",
     "execution_attempt_id",
     "SubprocessCommandRunner",
 ]

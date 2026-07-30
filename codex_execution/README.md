@@ -151,6 +151,29 @@ Historical schema-`1.0` authorizations without a branch remain readable and are
 reported as legacy, but cannot start a new automated Codex execution. They are
 not mutated or silently completed with `main`.
 
+## Authorized workflow preparation
+
+An officially generated, not-yet-committed workflow package can be captured
+before execution:
+
+```text
+python3 -m builder.main architecture execution prepare \
+  --workflow-id workflow-0123456789abcdef
+python3 -m builder.main architecture execution preparation-status \
+  --workflow-id workflow-0123456789abcdef
+```
+
+The preparation baseline derives its paths from the concrete workflow
+manifest. It binds every new workflow artifact by SHA-256 to the workflow,
+authorization, branch and base commit. Existing files, staged changes, foreign
+workflow paths and later hash changes remain blocked. The technical baseline
+is stored under the ignored `executions/` runtime area; it does not replace the
+versioned workflow, prompt, proof or authorization artifacts.
+
+After Codex, validation reports protected preparation files separately from
+Codex result changes. A changed or missing preparation artifact fails
+validation and is never repaired automatically.
+
 After success, the watcher can hand the owning workflow directly to the
 Architecture feedback coordinator. The coordinator consumes the existing
 Execution Record and its immutable Attempt History; it does not copy or replace

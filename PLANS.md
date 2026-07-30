@@ -3,7 +3,61 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Authorization-Aware Codex Prompt Generation v1
+## Aktiver Plan: Authorized Workflow Preparation Baseline v1
+
+### Ziel und Nicht-Ziele
+
+Ein offiziell vorbereiteter, noch nicht committeter Architecture Workflow kann
+als unveränderliche, autorisierungsgebundene Baseline erfasst und vom
+Orchestrator sicher gestartet werden. Beliebige Dirty-Tree-Zustände bleiben
+gesperrt. Nicht eingeführt werden reale Codex-Ausführung, produktive Baseline,
+Commit, Push oder Migration historischer Artefakte.
+
+### Geprüfter Ausgangszustand
+
+- `main` stand sauber auf `d2a63bdce3dc6ed228d2b2a7506cbd352d737033`,
+  `0 behind / 4 ahead` gegenüber `origin/main`.
+- Preflight war erfolgreich.
+- 737 Tests bestanden; Doctor war erfolgreich.
+- Der Orchestrator verlangte bisher pauschal einen vollständig sauberen
+  Arbeitsbaum.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Bestehende Workflow-, Authorization-, Orchestration- und Git-Verträge prüfen.
+- [x] ADR-0045 und unveränderliches Preparation-Baseline-Modell ergänzen.
+- [x] Offiziellen `architecture execution prepare`-Pfad ergänzen.
+- [x] Hash-, Pfad-, Branch-, Commit-, Authorization- und Staging-Prüfung integrieren.
+- [x] Orchestrator-Preflight und Ergebnisvalidierung auf Baseline-Schutz erweitern.
+- [x] Read-only Status, Dokumentation und fokussierte Tests ergänzen.
+- [x] Gesamttests, Doctor, Diff, Handover und Einzelcommit vorbereiten.
+
+### Entscheidungen und Begründungen
+
+- Die Baseline liegt als technischer Nachweis im weiterhin ignorierten
+  `executions/`-Runtime-Baum; Workflow, Prompt, Proof und Authorization bleiben
+  versionierbare Quellen.
+- V1 akzeptiert ausschließlich neue, ungetrackte Dateien des konkreten
+  Workflow-Manifests. Bestehende Dateien und gestagte Änderungen werden
+  abgelehnt.
+- Nach Codex werden geschützte Preparation-Dateien und neue Ergebnisänderungen
+  getrennt ausgewiesen.
+
+### Risiken und Teststrategie
+
+- Umbenennungen und Git-Porcelain-Pfade mit Quoting werden in V1 bewusst
+  blockiert, statt mehrdeutig interpretiert.
+- Tests verwenden temporäre Git-Repositories und Fake-Codex; kein produktiver
+  Lauf wird gestartet.
+
+### Abweichungen und Abschlusszustand
+
+- 59 fokussierte Tests und die vollständige Suite mit 747 Tests bestanden.
+- Doctor und `git diff --check` waren erfolgreich.
+- Es wurden keine reale Codex-Ausführung, produktive Baseline, historische
+  Artefaktänderung oder Push-Ausführung vorgenommen.
+
+## Abgeschlossener Plan: Authorization-Aware Codex Prompt Generation v1
 
 ### Ziel und Nicht-Ziele
 
