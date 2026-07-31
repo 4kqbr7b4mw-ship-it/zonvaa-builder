@@ -173,3 +173,21 @@ def test_develop_push_requires_prior_matching_task_and_separate_call(tmp_path):
     pushed = facade.push(remote="origin", remote_branch="main")
     assert pushed == commit
     assert runner.pushes == 1
+
+
+def test_develop_push_ignores_prior_read_only_tasks_with_same_start_head(
+    tmp_path,
+):
+    repo = repository(tmp_path)
+    runner = DevelopRunner(change_files=False)
+    facade = service(repo, runner)
+
+    assert facade.run("Analyze source structure").changed_files == ()
+    assert facade.run("Review source naming").changed_files == ()
+
+    runner.change_files = True
+    assert facade.run("Update source").commit_ready is True
+    commit = facade.commit("Update source")
+
+    assert facade.push(remote="origin", remote_branch="main") == commit
+    assert runner.pushes == 1

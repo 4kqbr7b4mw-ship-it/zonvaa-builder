@@ -250,7 +250,13 @@ class DevelopmentService:
                         candidates.append(task)
                 else:
                     parent = core._git("rev-parse", "{}^".format(head))
-                    if parent.exit_code == 0 and parent.stdout.strip() == task.start_head:
+                    if (
+                        receipt.result is RunResult.COMPLETED
+                        and task.commit_permitted
+                        and receipt.git_gate.changed_paths
+                        and parent.exit_code == 0
+                        and parent.stdout.strip() == task.start_head
+                    ):
                         candidates.append(task)
         if len(candidates) != 1:
             raise TaskRunError(
