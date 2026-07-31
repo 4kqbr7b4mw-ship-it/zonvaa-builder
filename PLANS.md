@@ -18,6 +18,7 @@ Execution-Logik oder Umgehung des Git Gates entsteht nicht.
 - [x] Reset-v2-Task-, Guard-, Receipt-, Gate- und Approval-Verträge prüfen.
 - [x] Develop-Fassade und `develop`, `develop commit`, `develop push` ergänzen.
 - [x] Kompakten Ergebnisbericht ohne interne Zustände implementieren.
+- [x] Finale Codex-Antwort und commitlosen read-only Abschluss ausgeben.
 - [x] Erfolgs-, Veto-, Guard-, Qualitäts-, Commit- und Push-Pfade testen.
 - [x] Vollständige Tests, Doctor und Git-Prüfungen abschließen.
 

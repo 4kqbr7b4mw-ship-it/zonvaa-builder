@@ -22,6 +22,7 @@ from builder_task.service import BuilderTaskService, TaskRunError
 @dataclass(frozen=True)
 class DevelopmentReport:
     goal: str
+    codex_answer: str
     changed_files: Tuple[str, ...]
     tests: str
     doctor: str
@@ -33,13 +34,18 @@ class DevelopmentReport:
     def to_dict(self) -> Dict[str, object]:
         return {
             "Ziel": self.goal,
+            "Codex-Antwort": self.codex_answer,
             "Geänderte Dateien": list(self.changed_files),
             "Tests": self.tests,
             "Doctor": self.doctor,
             "Diff-Status": self.diff_status,
             "Git-Status": list(self.git_status),
             "Blocker": list(self.blockers),
-            "Commit bereit": "Ja" if self.commit_ready else "Nein",
+            "Commit bereit": (
+                "Kein Commit erforderlich"
+                if not self.changed_files
+                else ("Ja" if self.commit_ready else "Nein")
+            ),
         }
 
 
@@ -91,6 +97,7 @@ class DevelopmentService:
             )
             return DevelopmentReport(
                 goal=goal,
+                codex_answer="Nicht ausgeführt",
                 changed_files=(),
                 tests="Nicht ausgeführt",
                 doctor="Nicht ausgeführt",
@@ -103,6 +110,7 @@ class DevelopmentService:
         if no_tests:
             return DevelopmentReport(
                 goal=goal,
+                codex_answer="Nicht ausgeführt",
                 changed_files=(),
                 tests="Nicht ausgeführt",
                 doctor="Nicht ausgeführt",
@@ -140,6 +148,7 @@ class DevelopmentService:
         except TaskRunError as error:
             return DevelopmentReport(
                 goal=goal,
+                codex_answer="Nicht ausgeführt",
                 changed_files=(),
                 tests="Nicht ausgeführt",
                 doctor="Nicht ausgeführt",
@@ -158,6 +167,9 @@ class DevelopmentService:
             blockers = tuple(sorted(set(blockers + ("EXECUTION_FAILED",))))
         return DevelopmentReport(
             goal=goal,
+            codex_answer=(
+                core.store.task_dir(task.task_id) / "stdout.log"
+            ).read_text(encoding="utf-8"),
             changed_files=receipt.git_gate.changed_paths,
             tests=_check_label(tests),
             doctor=_check_label(doctor),
@@ -168,6 +180,7 @@ class DevelopmentService:
                 receipt.result is RunResult.COMPLETED
                 and receipt.git_gate.passed
                 and task.commit_permitted
+                and bool(receipt.git_gate.changed_paths)
             ),
         )
 

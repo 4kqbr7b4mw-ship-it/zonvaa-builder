@@ -36,8 +36,15 @@ def repository(tmp_path: Path) -> Path:
 
 
 class DevelopRunner(LocalCommandRunner):
-    def __init__(self, failing_check=()) -> None:
+    def __init__(
+        self,
+        failing_check=(),
+        codex_answer="done",
+        change_files=True,
+    ) -> None:
         self.failing_check = tuple(failing_check)
+        self.codex_answer = codex_answer
+        self.change_files = change_files
         self.starts = 0
         self.pushes = 0
 
@@ -57,8 +64,9 @@ class DevelopRunner(LocalCommandRunner):
     def run_tracked(self, arguments, cwd, process_started, **kwargs):
         self.starts += 1
         process_started(1234)
-        (cwd / "source.txt").write_text("changed\n", encoding="utf-8")
-        return CommandResult(0, "done", "")
+        if self.change_files:
+            (cwd / "source.txt").write_text("changed\n", encoding="utf-8")
+        return CommandResult(0, self.codex_answer, "")
 
     def _check(self, command):
         if self.failing_check and command[: len(self.failing_check)] == self.failing_check:
@@ -87,6 +95,29 @@ def test_successful_one_command_run_uses_single_core_execution(tmp_path):
     assert report.blockers == ()
     assert report.commit_ready is True
     assert git(repo, "rev-parse", "HEAD") == git(repo, "rev-list", "--max-parents=0", "HEAD")
+
+
+def test_read_only_analysis_includes_complete_codex_answer(tmp_path):
+    repo = repository(tmp_path)
+    answer = "Analyseergebnis:\n- Befund A\n- Befund B\n\nKeine Änderungen vorgenommen."
+    report = service(
+        repo,
+        DevelopRunner(codex_answer=answer, change_files=False),
+    ).run("Analyze the source without changes")
+
+    assert report.codex_answer == answer
+    assert report.to_dict()["Codex-Antwort"] == answer
+
+
+def test_zero_changed_files_require_no_commit(tmp_path):
+    repo = repository(tmp_path)
+    report = service(repo, DevelopRunner(change_files=False)).run(
+        "Analyze the source without changes"
+    )
+
+    assert report.changed_files == ()
+    assert report.commit_ready is False
+    assert report.to_dict()["Commit bereit"] == "Kein Commit erforderlich"
 
 
 def test_veto_path_stops_before_execution(tmp_path):
