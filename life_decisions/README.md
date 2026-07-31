@@ -98,3 +98,33 @@ belegte Facts, Goals, Personen, Bereiche, Dokumentreferenzen, organisatorische
 Schritte und Fachprüfbedarfe sowie getrennte Unknowns, Hypotheses und
 Contradictions. Es ist keine Rechtsberatung, Vollmacht, Wirksamkeitsprüfung,
 Personen- oder Geschäftsfähigkeitsbewertung und keine fachliche Freigabe.
+
+## Vorsorgevollmacht-Experience v1
+
+`GuardianPowerOfAttorneyExperienceService` projiziert eine vollständig
+konsistente Journey in einen unveränderlichen, UI-neutralen Darstellungs- und
+Interaktionsvertrag. Journey und Experience bleiben getrennt: Die Journey
+enthält den fachlichen Ablaufzustand, die Experience ordnet ausschließlich
+bereits vorhandene Inhalte, technische Referenzen und zulässige nächste
+Handlungen für eine kanonische deutsche Darstellung. Sie interpretiert keine
+Nutzeraussage, formuliert keine Frage dynamisch und verändert kein fachliches
+Artefakt.
+
+Jeder Journey-Status besitzt einen stabilen, sachlichen Darstellungstext.
+`NEEDS_CLARIFICATION` zeigt exakt die vorhandene kontrollierte Frage;
+`QUESTION_UNRESOLVED` wiederholt sie nicht. Offene wesentliche und sonstige
+Punkte, zurückgestellte, verworfene und ohne Änderung geschlossene Punkte,
+Hypothesen und Widersprüche bleiben getrennt. Eine Darstellungsaktion beschreibt
+nur eine im bestehenden Modell zulässige menschlich kontrollierte Handlung;
+sie ist weder Ausführung, Empfehlung, Resolution noch State-Änderung.
+
+Ein vorhandenes Professional-Review-Paket wird ohne zusätzliche Checkliste,
+Fachprüfung oder Bewertung gespiegelt und kann später auf einem Bildschirm, in
+einer API oder in einem nutzerkontrollierten Export verwendet werden. Dieser
+Baustein erzeugt jedoch weder Benutzeroberfläche noch PDF oder DOCX. Technische
+Konsistenzfehler bleiben von der nutzerverständlichen Blockademeldung getrennt;
+bei inkonsistenten Artefakten werden keine teilweisen Fachinhalte dargestellt.
+Fachgrenzen wie fehlende Rechts-, Wirksamkeits-, Personen-, medizinische oder
+steuerliche Bewertung sind sichtbar. Der Service ist zustandslos, persistiert
+nichts, nutzt weder Netzwerk noch LLM und enthält keine dynamische
+Sprachgenerierung.

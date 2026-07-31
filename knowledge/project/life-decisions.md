@@ -68,6 +68,24 @@ oder sonstige fachliche Freigabe. Der Service persistiert nichts, analysiert
 keine Dokumente, nutzt kein Netzwerk und aktiviert weder Workflow noch
 Capability.
 
+## Guardian Life Decision Experience v1
+
+Die Vorsorgevollmacht-Experience überführt eine vollständig konsistente Journey
+deterministisch in ein UI-neutrales Darstellungsmodell. Sie zeigt den aktuellen
+Stand, höchstens die bereits kontrollierte Frage, getrennte offene,
+zurückgestellte und geschlossene Punkte, Hypothesen, Widersprüche, zulässige
+nächste Handlungen und sichtbare Fachgrenzen. Diese Handlungen führen nichts
+aus und stellen weder Empfehlung noch Entscheidung dar.
+
+Die Experience interpretiert keine Sprache, ergänzt keine Personen,
+Vertretungsbereiche, Checklisten oder Fachprüfbedarfe und erzeugt keine
+Resolution oder Understanding Revision. Ein vorhandenes Professional-Review-
+Paket wird ausschließlich aus seinen vorhandenen Inhalten dargestellt.
+Inkonsistente Artefakte liefern eine sachliche Blockademeldung ohne teilweise
+Fachinhalte; technische Prüfinformationen bleiben davon getrennt. Die
+Darstellung ist kanonisch deutsch, zustandslos und ohne Persistenz, Netzwerk,
+LLM, Dokumentgenerator oder Benutzeroberfläche.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.

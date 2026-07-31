@@ -76,6 +76,19 @@ from life_decisions.journey import (
     PowerOfAttorneyProfessionalReviewPreparation,
     PowerOfAttorneyQuestionCatalog,
 )
+from life_decisions.experience import (
+    GuardianPowerOfAttorneyExperienceService,
+    PowerOfAttorneyExperienceAction,
+    PowerOfAttorneyExperienceActionType,
+    PowerOfAttorneyExperienceConsistencyError,
+    PowerOfAttorneyExperienceItem,
+    PowerOfAttorneyExperiencePoint,
+    PowerOfAttorneyExperiencePointDisposition,
+    PowerOfAttorneyExperienceQuestion,
+    PowerOfAttorneyExperienceTechnicalIssue,
+    PowerOfAttorneyJourneyExperience,
+    PowerOfAttorneyProfessionalReviewExperience,
+)
 
 __all__ = [
     "CaseStatus",
@@ -146,4 +159,15 @@ __all__ = [
     "PowerOfAttorneyJourneyType",
     "PowerOfAttorneyProfessionalReviewPreparation",
     "PowerOfAttorneyQuestionCatalog",
+    "GuardianPowerOfAttorneyExperienceService",
+    "PowerOfAttorneyExperienceAction",
+    "PowerOfAttorneyExperienceActionType",
+    "PowerOfAttorneyExperienceConsistencyError",
+    "PowerOfAttorneyExperienceItem",
+    "PowerOfAttorneyExperiencePoint",
+    "PowerOfAttorneyExperiencePointDisposition",
+    "PowerOfAttorneyExperienceQuestion",
+    "PowerOfAttorneyExperienceTechnicalIssue",
+    "PowerOfAttorneyJourneyExperience",
+    "PowerOfAttorneyProfessionalReviewExperience",
 ]

@@ -3,6 +3,51 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Life Decision Experience v1 – Vorsorgevollmacht
+
+### Ziel und Nicht-Ziele
+
+Eine zustandslose, typisierte Experience-Schicht projiziert ausschließlich
+vorhandene, konsistente Journey-Artefakte in eine UI-neutrale kanonische
+deutsche Darstellung. Sie interpretiert keine Sprache, verändert keinen State,
+führt keine Aktion aus, ergänzt keine Empfehlungen und persistiert nichts.
+
+### Bestand und Entscheidungen
+
+- Die Journey bleibt alleinige fachliche Quelle; die Experience ist nur
+  Darstellungs- und Interaktionsvertrag.
+- Kontrollierte Fragen werden unverändert übernommen und niemals dynamisch
+  formuliert oder mit Beispielantworten ergänzt.
+- Offene, zurückgestellte, verworfene, ohne Änderung geschlossene und durch
+  Revision beantwortete Punkte bleiben fachlich getrennt.
+- Professional-Review-Inhalte werden ohne Standardcheckliste oder neue
+  Fachprüfung gespiegelt.
+- Inkonsistente Artefakte erzeugen eine inhaltsarme Nutzerblockade mit getrennt
+  referenzierbaren technischen Prüfinformationen.
+
+### Arbeitsschritte
+
+- [x] Journey-, Conversation- und Professional-Review-Verträge prüfen.
+- [x] Immutable Experience-, Action-, Point- und Error-Verträge implementieren.
+- [x] Statusprojektion und vollständige Konsistenzprüfung ergänzen.
+- [x] Positive, negative und deterministische Tests ergänzen.
+- [x] Produktstatus, Life-Decisions-Dokumentation und Handover-Test aktualisieren.
+- [x] Fokussierte, kombinierte und vollständige Qualitätsprüfung abschließen.
+- [x] Read-only Handover sowie tatsächliche Diff-Prüfung abschließen.
+- [x] Freigegebenen Commit und Push nach erfolgreicher Prüfung vorbereiten.
+
+### Ergebnis
+
+Die Experience stellt alle sieben Journey-Statuswerte stabil und kanonisch
+deutsch dar, übernimmt höchstens die vorhandene kontrollierte Frage und trennt
+Fachinhalt, zulässige Handlungsoptionen und technische Prüfinformationen. Alle
+offenen, zurückgestellten, verworfenen, geschlossenen und extern revidierten
+Punkte behalten ihre fachliche Bedeutung. Professional-Review-Inhalte werden
+ohne Ergänzung gespiegelt. 24 fokussierte Experience-Tests, 61 Journey-/
+Experience-/Handover-Tests, 174 kombinierte Understanding-/Life-Decisions-/
+Handover-Tests und alle 942 Repository-Tests bestanden; Doctor,
+`git diff --check` und der read-only Handover waren erfolgreich.
+
 ## Aktiver Plan: Guardian Life Decision Conversation v2
 
 ### Ziel und Nicht-Ziele
