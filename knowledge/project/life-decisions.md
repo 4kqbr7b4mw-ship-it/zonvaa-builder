@@ -34,6 +34,16 @@ aktiviert keinen Workflow. Hypothesen, offene Punkte und Widersprüche bleiben
 getrennt sichtbar; nur ausdrücklich übergebene organisatorische Schritte und
 Fachprüfungen erscheinen in der Vorbereitung.
 
+Die v2-Gesprächsführung erzeugt daraus jeweils genau einen referenzierbaren
+Turn. Mehrere wesentliche Lücken werden ausschließlich in ihrer dokumentierten
+Tupelreihenfolge bearbeitet. Eine weiterhin offene, bereits identisch gestellte
+Frage wird als `QUESTION_UNRESOLVED` ausgewiesen und weder umformuliert noch
+automatisch beantwortet; dabei wird die gesamte explizit übergebene
+Turn-Historie geprüft. Erst ein extern kontrolliert revidierter
+Understanding State kann zur nächsten Lücke führen. Readiness bedeutet nur,
+dass keine ausdrücklich markierte wesentliche Lücke mehr unbearbeitet ist;
+sichtbare Widersprüche bleiben erhalten.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.

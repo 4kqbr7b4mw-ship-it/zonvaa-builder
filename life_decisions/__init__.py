@@ -55,6 +55,13 @@ from life_decisions.conversation import (
     ReviewNeed,
     UserStatementReference,
 )
+from life_decisions.conversation_turn import (
+    GuardianPowerOfAttorneyConversationService,
+    PowerOfAttorneyConversationTurn,
+    PowerOfAttorneyConversationTurnInput,
+    PowerOfAttorneyUnderstandingQuestion,
+    understanding_state_content_hash,
+)
 
 __all__ = [
     "CaseStatus",
@@ -108,4 +115,9 @@ __all__ = [
     "RepresentationAreaReference",
     "ReviewNeed",
     "UserStatementReference",
+    "GuardianPowerOfAttorneyConversationService",
+    "PowerOfAttorneyConversationTurn",
+    "PowerOfAttorneyConversationTurnInput",
+    "PowerOfAttorneyUnderstandingQuestion",
+    "understanding_state_content_hash",
 ]

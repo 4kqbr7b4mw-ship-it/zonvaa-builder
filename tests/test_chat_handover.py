@@ -41,6 +41,7 @@ PRODUCT_STATUS = """# Status
 - Guardian Understanding Proposal Layer v1
 - Guardian Clarification Resolution v1
 - Guardian Life Decision Conversation v1: Vorsorgevollmacht
+- Guardian Life Decision Conversation v2: Mehrzügige Vorsorgevollmacht-Gesprächsführung
 
 ## Aktueller fachlicher Stand
 
@@ -113,6 +114,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Guardian Understanding Proposal Layer v1" in output
     assert "Guardian Clarification Resolution v1" in output
     assert "Guardian Life Decision Conversation v1: Vorsorgevollmacht" in output
+    assert "Guardian Life Decision Conversation v2" in output
     assert "Keine Intent Engine" in output
 
 
@@ -125,6 +127,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Guardian Understanding Proposal Layer v1",
         "Guardian Clarification Resolution v1",
         "Guardian Life Decision Conversation v1: Vorsorgevollmacht",
+        "Guardian Life Decision Conversation v2: Mehrzügige Vorsorgevollmacht-Gesprächsführung",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",

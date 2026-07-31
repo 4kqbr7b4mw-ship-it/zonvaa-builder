@@ -21,6 +21,7 @@ from life_decisions.models import DocumentReference
 
 class PowerOfAttorneyConversationStatus(str, Enum):
     NEEDS_CLARIFICATION = "NEEDS_CLARIFICATION"
+    QUESTION_UNRESOLVED = "QUESTION_UNRESOLVED"
     CONVERSATION_PREPARATION_READY = "CONVERSATION_PREPARATION_READY"
 
 

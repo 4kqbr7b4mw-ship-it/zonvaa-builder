@@ -29,3 +29,37 @@ Angaben ergänzen noch Personen, Bereiche, Schritte oder Prüfungen auswählen.
 Vorhandene Dokumente bleiben `DocumentReference`-Objekte unter
 nutzergesteuerter Speicherung. Der Baustein liest, kopiert, analysiert oder
 persistiert keine Originaldatei.
+
+## Mehrzügige Gesprächsführung v2
+
+`GuardianPowerOfAttorneyConversationService` erzeugt aus einer vorhandenen
+Preparation genau einen zustandslosen Conversation Turn. Bei mehreren
+wesentlichen Lücken gilt ausschließlich deren Tupelreihenfolge in
+`missing_information`: Die erste als `essential=True` markierte Lücke ist die
+nächste. Diese stabile Reihenfolge ist keine Priorisierung oder Bewertung. Die
+zugehörige Frage muss vollständig typisiert übergeben sein, zur ersten Lücke
+passen und deren Quellenreferenz erhalten; der Service formuliert sie nicht.
+
+Ein identischer Turn in der vollständig explizit übergebenen bisherigen
+Turn-Historie mit weiterhin derselben offenen Lücke führt zu
+`QUESTION_UNRESOLVED` — auch wenn andere Turns dazwischenliegen. Das Ergebnis
+referenziert Frage und den relevanten früheren Turn, stellt
+aber keine Ersatzfrage, interpretiert keine Antwort und ändert keinen State.
+Eine Fortsetzung nach Klärung konsumiert nur eine extern erzeugte
+`ClarificationResolution`, `UnderstandingRevision` und deren resultierenden
+`UnderstandingState`. Der Service erzeugt oder führt keines dieser Artefakte
+selbst aus.
+
+`CONVERSATION_PREPARATION_READY` bedeutet nur, dass die ausdrücklich
+übergebene Preparation keine unbearbeitete wesentliche Lücke enthält.
+Widersprüche und Fachprüfbedarfe bleiben sichtbar; der Status behauptet weder
+Widerspruchsfreiheit, Eignung, Empfehlung noch rechtliche Wirksamkeit.
+
+Zustandslosigkeit ist eine Eigenschaft dieses Services, keine Entscheidung
+gegen eine spätere nutzerkontrollierte Beziehungsschicht. Turn-Artefakte haben
+stabile IDs und vollständige Referenzen und können außerhalb des Services
+gespeichert werden. Der Service selbst persistiert sie nicht und deutet
+Antworten niemals automatisch. Weil `UnderstandingState` noch keine native ID
+besitzt, bindet der Turn die externe State-ID zusätzlich an einen
+deterministischen SHA-256-Hash des kanonischen State-Inhalts. Strukturell
+identische States besitzen absichtlich denselben Inhaltsnachweis.

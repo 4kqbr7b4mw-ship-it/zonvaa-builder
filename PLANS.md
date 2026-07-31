@@ -3,6 +3,49 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Life Decision Conversation v2
+
+### Ziel und Nicht-Ziele
+
+Eine minimale zustandslose Turn-Schicht verwendet die vorhandene
+Vorsorgevollmacht-Preparation und erzeugt genau eine ausdrücklich typisierte
+Frage zur ersten wesentlichen Lücke. Sie deutet keine Antwort, erzeugt keine
+Understanding-Artefakte, verändert keinen State und persistiert nichts.
+
+### Bestand und Entscheidungen
+
+- Die stabile Auswahlordnung ist die vorhandene Tupelreihenfolge der
+  `missing_information`; die erste wesentliche Lücke wird verwendet.
+- `QUESTION_UNRESOLVED` prüft alle explizit übergebenen bisherigen Turns und
+  referenziert den relevanten identischen offenen Turn, ohne Ersatzfrage,
+  Interpretation oder Eskalation.
+- Externe State-IDs werden zusätzlich an den deterministischen SHA-256-Hash
+  des kanonischen `UnderstandingState`-Inhalts gebunden.
+- Resolution, Revision und neuer State entstehen ausschließlich außerhalb des
+  Services im bestehenden kontrollierten Understanding-Ablauf.
+- Readiness bedeutet nur: keine unbearbeitete wesentliche Lücke in der
+  expliziten Preparation. Widersprüche bleiben sichtbar.
+
+### Arbeitsschritte
+
+- [x] V1-Preparation-, Clarification- und Understanding-Revision-Verträge prüfen.
+- [x] Immutable Question-, Turn- und Turn-Input-Verträge implementieren.
+- [x] Deterministische Reihenfolge, Schleifenschutz und Referenzkette testen.
+- [x] Life-Decisions-Dokumentation und Produktstatus aktualisieren.
+- [x] Fokussierte und vollständige Qualitätsprüfung ausführen.
+- [x] Read-only Handover mit Vorher-/Nachher-Nachweis ausführen.
+
+### Ergebnis
+
+Die Turn-Schicht erzeugt deterministisch genau eine explizite Frage zur ersten
+wesentlichen Lücke oder `QUESTION_UNRESOLVED` bei unverändert offenem
+Vorgängerturn. Externe Resolutionen und Revisionen werden nur als vollständige
+Referenzkette konsumiert. In der abschließenden Commit-Fähigkeitsprüfung
+bestanden 28 fokussierte Turn-Tests, 70
+Conversation-/Handover-Fokustests, 230 kombinierte Understanding-/
+Life-Decisions-/Handover-Tests und alle 892 Repository-Tests;
+Doctor und `git diff --check` waren erfolgreich.
+
 ## Aktiver Plan: Guardian Life Decision Conversation v1 – Vorsorgevollmacht
 
 ### Ziel und Nicht-Ziele
