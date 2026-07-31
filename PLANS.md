@@ -3,6 +3,33 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Understanding Model v2
+
+### Ziel und Nicht-Ziele
+
+Der bestehende Understanding State wird über mehrere Gesprächsschritte
+deterministisch und revidierbar fortgeschrieben. Ein expliziter typisierter
+Änderungsvertrag bindet jede Änderung an die neue Nutzeraussage. Bestehende
+Informationen und Widersprüche werden nicht still entfernt. Routing,
+Entscheidungen, Fähigkeiten, Persistenz, Memory, Scores und externe Modelle
+bleiben ausgeschlossen.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight und Understanding-v1-Verträge prüfen.
+- [x] Immutable Status-, Operations-, Change- und Revision-Modelle ergänzen.
+- [x] Deterministische Mehrschritt-Fortschreibung implementieren.
+- [x] 29 fokussierte Understanding-Tests ausführen.
+- [x] Vollständige Tests, Doctor und Git-Prüfungen abschließen.
+
+### Sicherheitsgrenzen
+
+- Ohne explizite Änderungsoperation bleibt der Zustand unverändert.
+- Korrekturen, Verwerfungen und Schließungen markieren bestehende Einträge,
+  statt sie still zu löschen.
+- Jede Änderung enthält die auslösende Nutzeraussage; jede Revision erzeugt
+  genau eine nächste Verständnisfrage.
+
 ## Aktiver Plan: Builder v2.1 – One Command Development
 
 ### Ziel und Nicht-Ziele

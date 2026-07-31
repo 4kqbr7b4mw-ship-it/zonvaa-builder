@@ -1,16 +1,26 @@
 from __future__ import annotations
 
 import re
+from dataclasses import replace
 from typing import Iterable, Tuple
 
 from guardian_understanding.models import (
     Contradiction,
     Fact,
+    FactStatus,
     Goal,
+    GoalStatus,
     Hypothesis,
+    HypothesisStatus,
+    UnderstandingChange,
+    UnderstandingOperation,
+    UnderstandingOperationType,
+    UnderstandingRevision,
     UnderstandingResult,
     UnderstandingState,
+    UnderstandingUpdate,
     Unknown,
+    UnknownStatus,
 )
 
 
@@ -98,6 +108,232 @@ class GuardianUnderstandingService:
             understanding_question=_understanding_question(state),
         )
 
+    def advance(
+        self,
+        existing: UnderstandingState,
+        update: UnderstandingUpdate,
+    ) -> UnderstandingRevision:
+        if not isinstance(existing, UnderstandingState):
+            raise TypeError("existing must be an UnderstandingState")
+        if not isinstance(update, UnderstandingUpdate):
+            raise TypeError("update must be an UnderstandingUpdate")
+
+        state = existing
+        changes = []
+        for operation in update.operations:
+            state, change = _apply_operation(
+                state,
+                operation,
+                update.user_statement,
+            )
+            changes.append(change)
+        return UnderstandingRevision(
+            state=state,
+            changes=tuple(changes),
+            understanding_question=_understanding_question(state),
+        )
+
+
+def _apply_operation(
+    state: UnderstandingState,
+    requested: UnderstandingOperation,
+    source_statement: str,
+) -> Tuple[UnderstandingState, UnderstandingChange]:
+    operation = requested.operation
+    target = requested.target_text
+    value = requested.value_text
+
+    if operation is UnderstandingOperationType.ADD_FACT:
+        value = _required(value, operation)
+        state = replace(state, facts=_append_unique(state.facts, Fact(value)))
+    elif operation is UnderstandingOperationType.CONFIRM_FACT:
+        target = _required(target, operation)
+        state = replace(
+            state,
+            facts=_replace_status(state.facts, target, FactStatus.CONFIRMED),
+        )
+        value = target
+    elif operation is UnderstandingOperationType.CORRECT_FACT:
+        target = _required(target, operation)
+        value = _required(value, operation)
+        corrected = _replace_status(state.facts, target, FactStatus.CORRECTED)
+        corrected = _append_unique(corrected, Fact(value))
+        state = replace(
+            state,
+            facts=corrected,
+            contradictions=_append_unique(
+                state.contradictions,
+                Contradiction("{} <> {}".format(target, value)),
+            ),
+        )
+    elif operation is UnderstandingOperationType.MARK_FACT_CONTRADICTORY:
+        target = _required(target, operation)
+        value = _required(value, operation)
+        state = replace(
+            state,
+            facts=_replace_status(
+                state.facts,
+                target,
+                FactStatus.CONTRADICTED,
+            ),
+            contradictions=_append_unique(
+                state.contradictions,
+                Contradiction("{} <> {}".format(target, value)),
+            ),
+        )
+    elif operation is UnderstandingOperationType.ADD_HYPOTHESIS:
+        value = _required(value, operation)
+        state = replace(
+            state,
+            hypotheses=_append_unique(
+                state.hypotheses,
+                Hypothesis(value),
+            ),
+        )
+    elif operation is UnderstandingOperationType.REFINE_HYPOTHESIS:
+        target = _required(target, operation)
+        value = _required(value, operation)
+        hypotheses = _replace_status(
+            state.hypotheses,
+            target,
+            HypothesisStatus.REFINED,
+        )
+        state = replace(
+            state,
+            hypotheses=_append_unique(hypotheses, Hypothesis(value)),
+        )
+    elif operation is UnderstandingOperationType.WEAKEN_HYPOTHESIS:
+        target = _required(target, operation)
+        state = replace(
+            state,
+            hypotheses=_replace_status(
+                state.hypotheses,
+                target,
+                HypothesisStatus.WEAKENED,
+            ),
+        )
+        value = target
+    elif operation is UnderstandingOperationType.REJECT_HYPOTHESIS:
+        target = _required(target, operation)
+        state = replace(
+            state,
+            hypotheses=_replace_status(
+                state.hypotheses,
+                target,
+                HypothesisStatus.REJECTED,
+            ),
+        )
+    elif operation is UnderstandingOperationType.ADD_UNKNOWN:
+        value = _required(value, operation)
+        state = replace(
+            state,
+            unknowns=_append_unique(state.unknowns, Unknown(value)),
+        )
+    elif operation is UnderstandingOperationType.REFINE_UNKNOWN:
+        target = _required(target, operation)
+        value = _required(value, operation)
+        unknowns = _replace_status(
+            state.unknowns,
+            target,
+            UnknownStatus.REFINED,
+        )
+        state = replace(
+            state,
+            unknowns=_append_unique(unknowns, Unknown(value)),
+        )
+    elif operation is UnderstandingOperationType.CLOSE_UNKNOWN:
+        target = _required(target, operation)
+        state = replace(
+            state,
+            unknowns=_replace_status(
+                state.unknowns,
+                target,
+                UnknownStatus.CLOSED,
+            ),
+        )
+    elif operation is UnderstandingOperationType.ADD_CONTRADICTION:
+        value = _required(value, operation)
+        state = replace(
+            state,
+            contradictions=_append_unique(
+                state.contradictions,
+                Contradiction(value),
+            ),
+        )
+    elif operation is UnderstandingOperationType.ADD_GOAL:
+        value = _required(value, operation)
+        state = replace(
+            state,
+            goals=_append_unique(state.goals, Goal(value)),
+        )
+    elif operation is UnderstandingOperationType.CHANGE_GOAL:
+        target = _required(target, operation)
+        value = _required(value, operation)
+        goals = _replace_status(state.goals, target, GoalStatus.CHANGED)
+        state = replace(state, goals=_append_unique(goals, Goal(value)))
+    elif operation is UnderstandingOperationType.CONFIRM_GOAL:
+        target = _required(target, operation)
+        state = replace(
+            state,
+            goals=_replace_status(
+                state.goals,
+                target,
+                GoalStatus.CONFIRMED,
+            ),
+        )
+        value = target
+    elif operation is UnderstandingOperationType.DEACTIVATE_GOAL:
+        target = _required(target, operation)
+        state = replace(
+            state,
+            goals=_replace_status(
+                state.goals,
+                target,
+                GoalStatus.NOT_CURRENT,
+            ),
+        )
+    else:
+        raise ValueError("Unsupported understanding operation")
+
+    return state, UnderstandingChange(
+        operation=operation,
+        source_statement=source_statement,
+        target_text=target,
+        result_text=value,
+    )
+
+
+def _required(value: object, operation: UnderstandingOperationType) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError("{} requires a text value".format(operation.value))
+    return value
+
+
+def _append_unique(items: Tuple[object, ...], item: object) -> Tuple[object, ...]:
+    if item in items:
+        return items
+    return items + (item,)
+
+
+def _replace_status(
+    items: Tuple[object, ...],
+    target_text: str,
+    status: object,
+) -> Tuple[object, ...]:
+    matches = tuple(
+        index
+        for index, item in enumerate(items)
+        if getattr(item, "text", None) == target_text
+    )
+    if len(matches) != 1:
+        raise ValueError(
+            "Operation target must match exactly one existing item: {}".format(
+                target_text
+            )
+        )
+    index = matches[0]
+    return items[:index] + (replace(items[index], status=status),) + items[index + 1:]
+
 
 def _normalize_input(value: object) -> str:
     if not isinstance(value, str):
@@ -133,11 +369,17 @@ def _is_contradiction(value: str) -> bool:
 def _understanding_question(state: UnderstandingState) -> str:
     if state.contradictions:
         question = "Welche der widersprüchlichen Aussagen beschreibt Ihre Situation im Moment am besten?"
-    elif state.unknowns:
+    elif any(item.status is not UnknownStatus.CLOSED for item in state.unknowns):
         question = "Was davon wäre für Ihr Verständnis jetzt am wichtigsten zu klären?"
-    elif state.hypotheses:
+    elif any(
+        item.status is not HypothesisStatus.REJECTED
+        for item in state.hypotheses
+    ):
         question = "Was davon ist für Sie bereits sicher und was noch eine Vermutung?"
-    elif state.goals:
+    elif any(
+        item.status in (GoalStatus.CURRENT, GoalStatus.CONFIRMED)
+        for item in state.goals
+    ):
         question = "Was möchten Sie daran zuerst besser verstehen?"
     else:
         question = "Was ist Ihnen daran im Moment am wichtigsten?"
