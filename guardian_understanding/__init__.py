@@ -31,15 +31,29 @@ from guardian_understanding.proposal import (
     UnderstandingProposalSelection,
     UnderstandingProposalSet,
 )
+from guardian_understanding.clarification import (
+    ClarificationResolution,
+    ClarificationResolutionRequest,
+    ClarificationResolutionResult,
+    ClarificationResolutionType,
+    GuardianClarificationResolutionService,
+    ProposalDisposition,
+    ProposalDispositionType,
+)
 
 __all__ = [
     "Contradiction",
+    "ClarificationResolution",
+    "ClarificationResolutionRequest",
+    "ClarificationResolutionResult",
+    "ClarificationResolutionType",
     "Fact",
     "FactStatus",
     "Goal",
     "GoalStatus",
     "GuardianUnderstandingService",
     "GuardianUnderstandingProposalService",
+    "GuardianClarificationResolutionService",
     "Hypothesis",
     "HypothesisStatus",
     "UnderstandingChange",
@@ -50,6 +64,8 @@ __all__ = [
     "UnderstandingProposalCandidate",
     "UnderstandingProposalSelection",
     "UnderstandingProposalSet",
+    "ProposalDisposition",
+    "ProposalDispositionType",
     "UnderstandingRevision",
     "UnderstandingResult",
     "UnderstandingState",

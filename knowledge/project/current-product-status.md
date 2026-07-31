@@ -17,10 +17,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Understanding Core v1
 - Guardian Understanding Model v2
 - Guardian Understanding Proposal Layer v1
+- Guardian Clarification Resolution v1
 
 ## Aktueller fachlicher Stand
 
-- Die drei genannten Guardian-Understanding-Bausteine sind abgeschlossen.
+- Die vier genannten Guardian-Understanding-Bausteine sind abgeschlossen.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

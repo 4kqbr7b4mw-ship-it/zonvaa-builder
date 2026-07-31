@@ -3,6 +3,36 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Clarification Resolution v1
+
+### Ziel und Nicht-Ziele
+
+Eine neue Nutzerantwort wird unverändert mit der ursprünglichen
+Verständnisfrage und ihrem Proposal-Satz verbunden. Nur ein ausdrücklicher,
+typisierter `SELECT_PROPOSAL`-Resolution-Typ darf über den bestehenden
+Proposal-Service eine unveränderte Operation anwenden. Automatische
+Sprachinterpretation, Auswahl, Ranking, Routing, Persistenz und ein zweiter
+Revisionspfad bleiben ausgeschlossen.
+
+### Arbeitsschritte
+
+- [x] Bestehende Understanding-, Proposal-, Question- und Revision-Verträge prüfen.
+- [x] Stabile Fragenreferenz und immutable Clarification-Resolution ergänzen.
+- [x] Resolution-Typen, Proposal-Dispositionen und sichere Delegation umsetzen.
+- [x] Fokussierte Vertrags-, Quellen-, Negativ- und Determinismus-Tests ergänzen.
+- [x] Produktstatus und knappe Understanding-Dokumentation aktualisieren.
+- [x] Fokussierte und vollständige Prüfungen sowie read-only Handover ausführen.
+
+### Ergebnis
+
+`SELECT_PROPOSAL`, `REJECT_PROPOSALS`, `KEEP_OPEN` und
+`CLOSE_WITHOUT_CHANGE` erzeugen deterministische, unveränderliche
+Resolution-Artefakte mit vollständiger Quellenkette. Nur die ausdrückliche
+Auswahl delegiert einmalig an den bestehenden Proposal- und Understanding-
+Revisionspfad; alle anderen Ergebnisse enthalten keine Application. Die 19
+fokussierten Clarification-Tests und alle 845 Repository-Tests bestanden;
+Doctor und `git diff --check` waren erfolgreich.
+
 ## Aktiver Plan: Repository-basierter Arbeitskontext und Chat-Übergabe
 
 ### Ziel

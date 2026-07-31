@@ -59,6 +59,7 @@ class UnderstandingProposalSet:
     user_statement: str
     proposals: Tuple[UnderstandingProposal, ...]
     understanding_question: Optional[str]
+    understanding_question_id: Optional[str]
 
     def __post_init__(self) -> None:
         _identifier(self.statement_id, "statement_id", "statement")
@@ -82,6 +83,15 @@ class UnderstandingProposalSet:
             raise ValueError("All proposals must reference the same statement")
         if self.understanding_question is not None:
             _question(self.understanding_question)
+            _identifier(
+                self.understanding_question_id,
+                "understanding_question_id",
+                "understanding-question",
+            )
+        elif self.understanding_question_id is not None:
+            raise ValueError(
+                "A question ID requires an understanding question"
+            )
         if len(self.proposals) > 1 and self.understanding_question is None:
             raise ValueError(
                 "Alternative proposals require one understanding question"
@@ -167,6 +177,11 @@ class GuardianUnderstandingProposalService:
             user_statement=user_statement,
             proposals=proposals,
             understanding_question=question,
+            understanding_question_id=(
+                _question_id(statement_id, question, proposals)
+                if question is not None
+                else None
+            ),
         )
 
     def apply(
@@ -224,6 +239,27 @@ def _proposal_id(
     )
     digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
     return "understanding-proposal-{}".format(digest[:16])
+
+
+def _question_id(
+    statement_id: str,
+    question: str,
+    proposals: Tuple[UnderstandingProposal, ...],
+) -> str:
+    payload = json.dumps(
+        {
+            "statement_id": statement_id,
+            "question": question,
+            "proposal_ids": tuple(
+                proposal.proposal_id for proposal in proposals
+            ),
+        },
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    return "understanding-question-{}".format(digest[:16])
 
 
 def _text(value: object, name: str) -> None:
