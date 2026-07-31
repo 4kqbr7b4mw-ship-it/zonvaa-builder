@@ -3,6 +3,35 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Understanding Proposal Layer v1
+
+### Ziel und Nicht-Ziele
+
+Mögliche Interpretationen einer Nutzeraussage werden als immutable,
+nicht-autoritative Proposals vor jede Zustandsänderung gesetzt. Jedes Proposal
+enthält genau eine bestehende Understanding Operation, Quellenbezug und
+Begründung. Erst eine explizite Auswahl delegiert diese unveränderte Operation
+an den bestehenden deterministischen Revisionsmechanismus. NLP, Intent,
+Confidence, Ranking, automatische Auswahl, Routing und Persistenz bleiben
+ausgeschlossen.
+
+### Arbeitsschritte und Fortschritt
+
+- [x] Preflight und bestehende Understanding-v2-Verträge prüfen.
+- [x] Proposal-, Alternative-, Selection- und Application-Verträge ergänzen.
+- [x] Deterministische IDs und explizite Negativmarkierungen implementieren.
+- [x] Knappe fachliche Dokumentation ergänzen.
+- [x] 47 fokussierte Understanding-Tests ausführen.
+- [x] Vollständige Tests, Doctor und Git-Prüfungen abschließen.
+
+### Sicherheitsgrenzen
+
+- Proposal-Erzeugung verändert keinen Understanding State.
+- Proposals sind ausdrücklich weder Facts noch Zustandsänderungen.
+- Ohne konkrete Proposal-ID-Auswahl findet keine Revision statt.
+- Die ausgewählte Operation bleibt unverändert; es gibt keine parallele
+  Revisionslogik.
+
 ## Aktiver Plan: Guardian Understanding Model v2
 
 ### Ziel und Nicht-Ziele

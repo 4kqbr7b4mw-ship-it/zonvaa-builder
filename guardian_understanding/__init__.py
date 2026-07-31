@@ -23,6 +23,14 @@ from guardian_understanding.models import (
     UnknownStatus,
 )
 from guardian_understanding.service import GuardianUnderstandingService
+from guardian_understanding.proposal import (
+    GuardianUnderstandingProposalService,
+    UnderstandingProposal,
+    UnderstandingProposalApplication,
+    UnderstandingProposalCandidate,
+    UnderstandingProposalSelection,
+    UnderstandingProposalSet,
+)
 
 __all__ = [
     "Contradiction",
@@ -31,11 +39,17 @@ __all__ = [
     "Goal",
     "GoalStatus",
     "GuardianUnderstandingService",
+    "GuardianUnderstandingProposalService",
     "Hypothesis",
     "HypothesisStatus",
     "UnderstandingChange",
     "UnderstandingOperation",
     "UnderstandingOperationType",
+    "UnderstandingProposal",
+    "UnderstandingProposalApplication",
+    "UnderstandingProposalCandidate",
+    "UnderstandingProposalSelection",
+    "UnderstandingProposalSet",
     "UnderstandingRevision",
     "UnderstandingResult",
     "UnderstandingState",
