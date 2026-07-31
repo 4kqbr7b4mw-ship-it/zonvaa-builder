@@ -62,6 +62,20 @@ from life_decisions.conversation_turn import (
     PowerOfAttorneyUnderstandingQuestion,
     understanding_state_content_hash,
 )
+from life_decisions.journey import (
+    ControlledPowerOfAttorneyQuestion,
+    GuardianPowerOfAttorneyJourneyService,
+    PowerOfAttorneyExternalClarification,
+    PowerOfAttorneyGapBinding,
+    PowerOfAttorneyGapType,
+    PowerOfAttorneyJourney,
+    PowerOfAttorneyJourneyAction,
+    PowerOfAttorneyJourneyInput,
+    PowerOfAttorneyJourneyStatus,
+    PowerOfAttorneyJourneyType,
+    PowerOfAttorneyProfessionalReviewPreparation,
+    PowerOfAttorneyQuestionCatalog,
+)
 
 __all__ = [
     "CaseStatus",
@@ -120,4 +134,16 @@ __all__ = [
     "PowerOfAttorneyConversationTurnInput",
     "PowerOfAttorneyUnderstandingQuestion",
     "understanding_state_content_hash",
+    "ControlledPowerOfAttorneyQuestion",
+    "GuardianPowerOfAttorneyJourneyService",
+    "PowerOfAttorneyExternalClarification",
+    "PowerOfAttorneyGapBinding",
+    "PowerOfAttorneyGapType",
+    "PowerOfAttorneyJourney",
+    "PowerOfAttorneyJourneyAction",
+    "PowerOfAttorneyJourneyInput",
+    "PowerOfAttorneyJourneyStatus",
+    "PowerOfAttorneyJourneyType",
+    "PowerOfAttorneyProfessionalReviewPreparation",
+    "PowerOfAttorneyQuestionCatalog",
 ]

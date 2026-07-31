@@ -63,3 +63,38 @@ Antworten niemals automatisch. Weil `UnderstandingState` noch keine native ID
 besitzt, bindet der Turn die externe State-ID zusätzlich an einen
 deterministischen SHA-256-Hash des kanonischen State-Inhalts. Strukturell
 identische States besitzen absichtlich denselben Inhaltsnachweis.
+
+## Vorsorgevollmacht-Journey v1
+
+`GuardianPowerOfAttorneyJourneyService` verbindet den bestehenden
+`UnderstandingState`, die Conversation Preparation, kontrollierte Fragen,
+Conversation Turns sowie extern erzeugte Resolutions und Revisionen. Er
+validiert und referenziert diese Artefakte, interpretiert aber weder
+Nutzerantworten noch erzeugt er Proposals, Resolutions, Operations oder States.
+Alle Historie wird ausdrücklich als Eingabe übergeben; der Service persistiert
+nichts und greift nicht auf Netzwerk oder Dokumentinhalte zu.
+
+Der kontrollierte Fragenkatalog enthält ausschließlich statische, neutrale
+Fragen für bereits unterstützte Lückenarten. Eine `PowerOfAttorneyGapBinding`
+bindet eine konkrete `MissingInformation` ausdrücklich an eine solche Art. Die
+erste noch aktive, als wesentlich markierte Lücke in der Preparation-Reihenfolge
+bestimmt die Frage. Fehlt die Bindung oder der Katalogeintrag, gilt
+`BLOCKED_MISSING_CONTROLLED_QUESTION`; es entsteht keine freie Ersatzfrage.
+
+Eine unverändert offene, bereits gestellte Frage führt unter Berücksichtigung
+der gesamten Turn-Historie zu `QUESTION_UNRESOLVED`. KEEP_OPEN und
+REJECT_PROPOSALS bleiben als zurückgestellte offene Punkte sichtbar;
+CLOSE_WITHOUT_CHANGE wird getrennt dokumentiert und niemals als Fact
+dargestellt. Nur eine vollständig übergebene SELECT_PROPOSAL-Kette mit externer
+Revision kann einen aktualisierten State belegen. Widersprüche bleiben in jedem
+Status sichtbar und blockieren nur über eine zugleich ausdrücklich vorhandene
+wesentliche Lücke.
+
+`CONVERSATION_PREPARATION_READY` bedeutet lediglich, dass keine unbearbeitete
+wesentliche Gesprächslücke verbleibt. Erst die ausdrückliche Anforderung eines
+deterministischen `PowerOfAttorneyProfessionalReviewPreparation` führt zu
+`PROFESSIONAL_REVIEW_PREPARATION_READY`. Das Paket übernimmt ausschließlich
+belegte Facts, Goals, Personen, Bereiche, Dokumentreferenzen, organisatorische
+Schritte und Fachprüfbedarfe sowie getrennte Unknowns, Hypotheses und
+Contradictions. Es ist keine Rechtsberatung, Vollmacht, Wirksamkeitsprüfung,
+Personen- oder Geschäftsfähigkeitsbewertung und keine fachliche Freigabe.

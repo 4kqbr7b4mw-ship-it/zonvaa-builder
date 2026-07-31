@@ -44,6 +44,30 @@ Understanding State kann zur nächsten Lücke führen. Readiness bedeutet nur,
 dass keine ausdrücklich markierte wesentliche Lücke mehr unbearbeitet ist;
 sichtbare Widersprüche bleiben erhalten.
 
+## Guardian Life Decision Journey v1
+
+Die Vorsorgevollmacht-Journey verbindet die vorhandenen Understanding-,
+Preparation-, Turn-, Resolution- und Revision-Artefakte zu einem
+deterministischen, zustandslosen Produktablauf. Ein statischer typisierter
+Fragenkatalog liefert höchstens eine neutrale Frage für die erste wesentliche
+offene Lücke in Preparation-Reihenfolge. Fehlt eine kontrollierte Frage, wird
+sichtbar blockiert; es gibt keine freie Formulierung oder automatische
+Interpretation.
+
+Unveränderte Fragen werden nicht wiederholt. Offengehaltene und verworfene
+Proposal-Klärungen bleiben zurückgestellt, ohne Änderung geschlossene Punkte
+bleiben getrennt von Facts, und Widersprüche bleiben sichtbar. Nur eine extern
+vollständig belegte Proposal-Auswahl samt Understanding Revision kann den
+aktualisierten State für den nächsten Journey-Schritt liefern.
+
+Bei ausreichendem Stand kann auf ausdrückliche Anforderung ein
+Professional-Review-Vorbereitungspaket entstehen. Es übernimmt ausschließlich
+typisierte vorhandene Inhalte und enthält keine Standardcheckliste. Die beiden
+Readiness-Status sind keine juristische, notarielle, medizinische, steuerliche
+oder sonstige fachliche Freigabe. Der Service persistiert nichts, analysiert
+keine Dokumente, nutzt kein Netzwerk und aktiviert weder Workflow noch
+Capability.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.

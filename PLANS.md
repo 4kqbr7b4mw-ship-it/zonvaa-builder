@@ -2424,3 +2424,34 @@ Architekturdokumentation und Tests sind umgesetzt. Die vollständige Suite
 bestand mit 282 Tests; Doctor, produktiver Preflight und `git diff --check`
 waren erfolgreich. Der lokale Handover gehört zum abschließenden Commit; es
 wurde kein Push ausgeführt.
+# Guardian Life Decision Journey v1: Vorsorgevollmacht
+
+## Ziel
+
+Die bestehenden Understanding-, Preparation-, Turn-, Resolution- und
+Revision-Verträge zu einer deterministischen, zustandslosen
+Vorsorgevollmacht-Journey verbinden.
+
+## Grenzen
+
+- Keine Interpretation, Proposal-Erzeugung, Auswahl, Resolution oder Revision.
+- Keine Rechtsberatung, Vollmacht, Personenbewertung oder Empfehlung.
+- Keine Persistenz, Netzwerkverbindung, Builder- oder Workflow-Erweiterung.
+
+## Umsetzung
+
+- [x] Bestehende Conversation- und Understanding-Verträge prüfen.
+- [x] Typisierten Journey-Vertrag und kontrollierten Fragenkatalog ergänzen.
+- [x] Artefaktketten, Schleifenschutz und Readiness deterministisch verbinden.
+- [x] Professional-Review-Vorbereitung ohne Defaults ergänzen.
+- [x] Fokussierte positive und negative Tests ergänzen.
+- [x] Vollständige Regression, Doctor, Diff-Prüfung und Handover abschließen.
+
+## Entscheidungen
+
+- Die Journey ist vorsorgevollmacht-spezifisch; es entsteht kein allgemeines
+  Journey- oder Fragenframework.
+- Lücken werden ausdrücklich über `PowerOfAttorneyGapBinding` an einen
+  statischen Katalog gebunden. Fehlende Bindungen blockieren sicher.
+- Conversation- und Professional-Review-Readiness bleiben getrennte,
+  ausdrücklich begrenzte Aussagen ohne fachliche Freigabewirkung.
