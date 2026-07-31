@@ -130,6 +130,22 @@ weder Pflegegrad noch Leistungen und erzeugen keinen Maßnahmenplan. Der
 Baustein ist deterministisch und zustandslos, ohne Persistenz, Netzwerk, LLM,
 Routing, automatische Domain-Aktivierung oder Multi-Agenten-Framework.
 
+### Scenario Validation v1
+
+Zwölf anonymisierte, vollständig typisierte Lebenslagen prüfen den bestehenden
+Family-Care-Vertrag von der Situation bis zur Experience. Die Matrix umfasst
+plötzliche und schleichende Pflegeverläufe, ungeklärte Vertretung, familiäre
+Widersprüche, Wohnen und Finanzierung, medizinische Hypothesen,
+Dokumentreferenzen, mehrere wesentliche Lücken, revisionsbeantwortete Punkte
+und einen möglichen Interessenkonflikt. Ergänzende Robustheitstests decken
+fremde Referenzen, unvollständige Artefaktketten und Bindungsfehler ab.
+
+Die Validierung erzeugt keine Laufzeitlogik und interpretiert keine realen
+Freitexte. Sie bestätigt ausschließlich, dass typisierte Eingaben unverändert,
+quellenbezogen und ohne automatische Empfehlung oder Entscheidung verarbeitet
+werden. Die vollständige Matrix und verbleibende Risiken stehen in
+`knowledge/project/family-care-scenario-validation.md`.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.

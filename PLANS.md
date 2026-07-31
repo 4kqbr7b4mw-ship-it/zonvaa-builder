@@ -3,7 +3,34 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Guardian Cross-Domain Life Situation v1 – Pflegefall in der Familie
+## Aktiver Plan: Family Care Cross-Domain Scenario Validation v1
+
+### Ziel und Grenzen
+
+Der bestehende Family-Care-Baustein wird mit zwölf anonymisierten, vollständig
+typisierten Lebenslagen und gezielten Robustheitsfällen fachlich validiert.
+Die Validierung besteht nur aus Tests und einem versionierten Matrix-Artefakt;
+sie führt keinen neuen Service, Workflow oder Statusautomaten ein.
+
+### Arbeitsschritte
+
+- [x] Verträge, Wissensgrundlagen und bestehendes Validierungsmuster prüfen.
+- [x] Zwölf fachliche Szenarien und zusätzliche Robustheitsfälle modellieren.
+- [x] Reproduzierte Vertragslücken minimal schließen und regressionssichern.
+- [x] Validierungsmatrix und kanonischen Produktstatus aktualisieren.
+- [x] Vollständige Regression, Doctor, Diff und Handover abschließen.
+
+### Befunde
+
+Die Szenarien zeigten vier konkrete Vertragslücken: leere Contributions,
+Dependency-Domänen ohne Contribution, fremde Proposal-Ursprünge und fehlende
+neutrale Review-Kategorien. Diese Grenzen wurden ohne neue Architektur direkt
+im bestehenden Vertrag geschlossen. Zwei unvollständige Test-Fixtures wurden
+korrigiert; bestehende Assertions blieben unverändert. 23 fokussierte
+Szenariotests, 67 Family-Care-/Handover-Tests, 265 kombinierte Understanding-/
+Life-Decisions-/Handover-Tests und alle 1033 Repository-Tests bestanden.
+
+## Abgeschlossener Plan: Guardian Cross-Domain Life Situation v1 – Pflegefall in der Familie
 
 ### Ziel und Grenzen
 

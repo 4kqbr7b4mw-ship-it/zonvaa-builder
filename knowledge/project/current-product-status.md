@@ -25,6 +25,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Life Decision Experience v1: Vorsorgevollmacht
 - Guardian Life Decision v1: Patientenverfügung
 - Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
+- Family Care Cross-Domain Scenario Validation v1
 
 ## Aktueller fachlicher Stand
 
@@ -39,6 +40,10 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Contributions und Abhängigkeiten, eine kontrollierte Guardian-Frage, Journey,
   Professional-Review-Vorbereitung und UI-neutrale Experience. Für den Nutzer
   bleibt ausschließlich ein Guardian sichtbar.
+- Zwölf anonymisierte, vollständig typisierte Family-Care-Szenarien sowie
+  Robustheits- und Negativfälle validieren den bestehenden Vertrag. Vier dabei
+  gefundene Vertragslücken wurden minimal geschlossen; die Scenario Validation
+  ergänzt weder Service noch Workflow oder Laufzeitlogik.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

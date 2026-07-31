@@ -250,7 +250,7 @@ def test_domain_contributions_share_one_state_and_have_no_domain_state():
 
 
 def test_only_explicit_contributions_and_entries_are_present():
-    result = prepare(contribution_inputs=(), support_needs=(), housing_and_property=(), financial_and_organizational=(), care_and_health_documents=())
+    result = prepare(contribution_inputs=(), dependencies=(), support_needs=(), housing_and_property=(), financial_and_organizational=(), care_and_health_documents=())
 
     assert result.contributions == ()
     assert result.support_needs == ()
@@ -306,9 +306,9 @@ def test_unknown_dependency_or_point_reference_is_rejected():
     unknown = replace(DEPENDENCY, target_point_id="family-care-point-unknown")
     with pytest.raises(ValueError, match="unknown point"):
         situation_input(dependencies=(unknown,))
-    bad_contribution = replace(contributions()[0], essential_point_ids=("family-care-point-unknown",))
+    bad_contribution = replace(contributions()[0], essential_point_ids=("family-care-point-unknown",), dependency_ids=())
     with pytest.raises(ValueError, match="incompatible point"):
-        situation_input(contribution_inputs=(bad_contribution,))
+        situation_input(contribution_inputs=(bad_contribution,), dependencies=())
 
 
 def test_first_active_essential_point_gets_exactly_one_controlled_question():

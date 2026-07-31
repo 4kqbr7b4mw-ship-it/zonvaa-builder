@@ -219,6 +219,23 @@ class FamilyCareDomainContributionInput:
             (self.professional_boundaries, "professional_boundaries"),
         ):
             _texts(values, name)
+        if not any(
+            (
+                self.facts,
+                self.goals,
+                self.hypotheses,
+                self.unknowns,
+                self.contradictions,
+                self.explicit_entries,
+                self.essential_point_ids,
+                self.other_point_ids,
+                self.deferred_point_ids,
+                self.professional_reviews,
+                self.organizational_steps,
+                self.dependency_ids,
+            )
+        ):
+            raise ValueError("domain contribution requires explicit content")
 
 
 @dataclass(frozen=True)
@@ -313,9 +330,12 @@ class FamilyCareSituationInput:
                 raise ValueError("Contribution source {} is outside UnderstandingState".format(name))
         points = {item.point_id: item for item in self.open_points}
         dependencies = {item.dependency_id: item for item in self.dependencies}
+        contribution_domains = {item.domain for item in self.contribution_inputs}
         for dependency in self.dependencies:
             if dependency.source_point_id not in points or dependency.target_point_id not in points:
                 raise ValueError("dependency references unknown point")
+            if any(domain not in contribution_domains for domain in dependency.domains):
+                raise ValueError("dependency domain requires explicit contribution")
         for contribution in self.contribution_inputs:
             for values, state_values in (
                 (contribution.facts, self.facts), (contribution.goals, self.goals),
@@ -660,6 +680,10 @@ class GuardianFamilyCareJourneyService:
 
     def _clarifications(self, source: FamilyCareJourneyInput) -> Tuple[Tuple[str, ...], Tuple[str, ...], Tuple[str, ...], Tuple[str, ...]]:
         turns = {item.turn_id: item for item in source.previous_turns}
+        statements = {
+            item.statement_id: item.text
+            for item in source.situation.referenced_user_statements
+        }
         deferred, rejected, closed, answered = [], [], [], []
         for item in source.clarifications:
             turn = turns.get(item.source_turn_id)
@@ -672,6 +696,13 @@ class GuardianFamilyCareJourneyService:
                 continue
             if resolution.question_id != turn.question_id or resolution.answer_statement_id != item.answer_statement.statement_id or resolution.answer_text != item.answer_statement.text:
                 raise ValueError("CLARIFICATION_REFERENCE_MISMATCH")
+            if (
+                statements.get(resolution.proposal_statement_id)
+                != resolution.original_user_statement
+                or resolution.source_reference
+                != item.answer_statement.source_reference
+            ):
+                raise ValueError("PROPOSAL_ORIGIN_MISMATCH")
             selected = resolution.resolution_type is ClarificationResolutionType.SELECT_PROPOSAL
             complete = all(value is not None for value in (item.revision, item.revision_reference, item.resulting_understanding_state_id, item.resulting_understanding_state_hash))
             if selected != complete:
