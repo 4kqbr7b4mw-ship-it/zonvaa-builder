@@ -68,7 +68,13 @@ app.add_typer(develop_app, name="develop")
 @app.callback()
 def main(ctx: typer.Context) -> None:
     """Initialisiert die Builder-Runtime."""
-    if ctx.invoked_subcommand not in {"goal", "preflight", "task", "develop"}:
+    if ctx.invoked_subcommand not in {
+        "goal",
+        "handover",
+        "preflight",
+        "task",
+        "develop",
+    }:
         get_runtime()
 
 

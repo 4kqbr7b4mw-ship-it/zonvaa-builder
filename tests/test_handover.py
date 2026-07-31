@@ -115,28 +115,31 @@ def test_handover_input_rejects_invalid_check_instead_of_dropping_it(
         load_handover_input(input_file)
 
 
-def test_handover_cli_uses_local_end_to_end_path(monkeypatch):
-    monkeypatch.setattr(main_module, "get_runtime", lambda: object())
-    with runner.isolated_filesystem():
-        input_file = Path("handover-input.json")
-        input_file.write_text(
-            json.dumps(input_payload()),
-            encoding="utf-8",
-        )
+def test_handover_cli_is_read_only_and_skips_runtime(monkeypatch):
+    runtime_calls = []
 
-        result = runner.invoke(
-            app,
-            ["handover", "--input", str(input_file)],
-        )
+    class StubHandover:
+        def __init__(self, repository):
+            self.repository = repository
 
-        assert result.exit_code == 0, result.output
-        json_files = list(Path("knowledge/handovers").glob("*.json"))
-        markdown_files = list(Path("knowledge/handovers").glob("*.md"))
-        assert len(json_files) == 1
-        assert len(markdown_files) == 1
-        assert json.loads(
-            json_files[0].read_text(encoding="utf-8")
-        )["push_status"] == "not_pushed"
+        def render(self):
+            return "# ZONVAA V2 Chat-Übergabe\n"
+
+    monkeypatch.setattr(
+        main_module,
+        "get_runtime",
+        lambda: runtime_calls.append("called"),
+    )
+    monkeypatch.setattr(
+        "commands.handover.ChatHandover",
+        StubHandover,
+    )
+
+    result = runner.invoke(app, ["handover"])
+
+    assert result.exit_code == 0, result.output
+    assert result.output == "# ZONVAA V2 Chat-Übergabe\n"
+    assert runtime_calls == []
 
 
 def test_handover_schema_has_no_document_content_field():

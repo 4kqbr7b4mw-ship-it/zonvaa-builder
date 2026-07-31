@@ -2,24 +2,13 @@ from pathlib import Path
 
 import typer
 
-from builder.handover import HandoverWriter, load_handover_input
+from builder.chat_handover import ChatHandover
 
 
-def handover(
-    input_file: Path = typer.Option(
-        ...,
-        "--input",
-        exists=True,
-        file_okay=True,
-        dir_okay=False,
-        readable=True,
-        resolve_path=True,
-    ),
-) -> None:
-    """Create local machine- and human-readable handover files."""
+def handover() -> None:
+    """Print the canonical read-only context for a new ZONVAA chat."""
     try:
-        record = load_handover_input(input_file)
-        json_path, markdown_path = HandoverWriter().write(record)
+        text = ChatHandover(Path.cwd()).render()
     except (OSError, TypeError, ValueError) as error:
         typer.echo(
             "Handover failed: {}: {}".format(
@@ -29,5 +18,4 @@ def handover(
             err=True,
         )
         raise typer.Exit(code=1)
-    typer.echo("JSON: {}".format(json_path))
-    typer.echo("Markdown: {}".format(markdown_path))
+    typer.echo(text, nl=False)

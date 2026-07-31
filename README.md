@@ -1,5 +1,21 @@
 # ZONVAA Builder
 
+## Arbeitskontext für einen neuen Chat
+
+Die verbindliche Arbeitsweise steht ausschließlich in [AGENTS.md](AGENTS.md),
+der aktuelle fachliche Produktstand in
+[knowledge/project/current-product-status.md](knowledge/project/current-product-status.md).
+Chatgedächtnis ist keine Projektquelle. Codex führt für eine Übergabe
+
+```text
+python3 -m builder.main handover
+```
+
+aus und liefert den vollständigen Text zurück; der Nutzer muss dafür keine
+Terminalbefehle ausführen. Der Befehl liest ausschließlich Repository-Dokumente
+und lokalen Git-Zustand. Er schreibt keine Dateien, führt keine Tests aus und
+stößt weder Staging, Commit noch Push an.
+
 ## Bestätigte Architektur lokal ausführen
 
 Die [Automated Codex Execution Bridge](codex_execution/README.md) übergibt

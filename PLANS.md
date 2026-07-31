@@ -3,6 +3,46 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Repository-basierter Arbeitskontext und Chat-Übergabe
+
+### Ziel
+
+Die verbindliche Zusammenarbeit und der aktuelle ZONVAA-V2-Produktstand
+werden kanonisch im Repository dokumentiert. Ein kleiner read-only
+`handover`-Befehl gibt diesen Kontext zusammen mit dem aktuellen Git-Zustand
+für einen neuen Chat aus.
+
+### Bestand und Entscheidungen
+
+- `AGENTS.md` bleibt die einzige kanonische Quelle für die dauerhafte
+  Zusammenarbeit; es entsteht kein paralleles Arbeitsvereinbarungsdokument.
+- `knowledge/project/current-product-status.md` ergänzt die bestehende
+  Projektwissensstruktur um den kleinen kanonischen Produktstand.
+- Der bestehende persistente `builder.handover`-Vertrag bleibt für historische
+  und maschinenlesbare Abschlussartefakte erhalten. Nur der öffentliche
+  `handover`-CLI-Einstieg wird zur geforderten read-only Chat-Übergabe.
+- Die Übergabe liest lokale Git-Referenzen und Dokumente, trifft keine
+  Produktentscheidung und löst weder Tests noch schreibende Aktionen aus.
+
+### Schritte
+
+- [x] Bestehende Arbeitsregeln, Projektstatus- und Handover-Strukturen prüfen.
+- [x] Kanonischen Arbeitskontext und Produktstand dokumentieren.
+- [x] Read-only Chat-Handover und Runtime-Grenze implementieren.
+- [x] Fokussierte Tests für Dokument-, Git- und Read-only-Vertrag ergänzen.
+- [x] Fokussierte und vollständige Prüfungen, Doctor, Diff und Status ausführen.
+
+### Ergebnis
+
+Der öffentliche `handover`-Befehl erzeugt keine Artefakte mehr, überspringt
+die schreibende Runtime-Initialisierung und gibt den kanonischen Arbeits- und
+Produktkontext zusammen mit dem zur Laufzeit gelesenen Git-Zustand aus.
+Temporäre Git-Repositories belegen fehlendes Remote, Ahead/Behind, sauberen
+und unsauberen Arbeitsbaum, Branch-Abweichung sowie unveränderte Dateien,
+Index-, HEAD- und Remote-Referenzen. Die fokussierten 23 Tests und die
+vollständige Suite mit 826 Tests bestanden; Doctor und `git diff --check`
+waren erfolgreich.
+
 ## Aktiver Plan: Guardian Understanding Proposal Layer v1
 
 ### Ziel und Nicht-Ziele
