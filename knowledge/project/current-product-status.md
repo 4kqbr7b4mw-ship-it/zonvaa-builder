@@ -18,10 +18,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Understanding Model v2
 - Guardian Understanding Proposal Layer v1
 - Guardian Clarification Resolution v1
+- Guardian Life Decision Conversation v1: Vorsorgevollmacht
 
 ## Aktueller fachlicher Stand
 
-- Die vier genannten Guardian-Understanding-Bausteine sind abgeschlossen.
+- Die vier Guardian-Understanding-Bausteine und der erste begrenzte
+  Life-Decisions-Gesprächsfall sind abgeschlossen.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

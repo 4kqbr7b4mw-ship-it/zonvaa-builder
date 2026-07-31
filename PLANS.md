@@ -3,6 +3,46 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Life Decision Conversation v1 – Vorsorgevollmacht
+
+### Ziel und Nicht-Ziele
+
+Ein zustandsloser, typisierter Conversation-Baustein bereitet ausdrücklich
+referenzierte Understanding-Informationen für ein Gespräch über eine
+Vorsorgevollmacht auf. Er interpretiert keine Sprache, erzeugt keine
+Understanding Operation, verändert keinen State, aktiviert keinen Workflow und
+leistet weder Rechtsberatung noch Dokumenterstellung.
+
+### Bestand und Entscheidungen
+
+- `UnderstandingState` sowie Fact-, Hypothesis-, Unknown-, Contradiction- und
+  Goal-Typen bleiben die einzige Verständnisquelle.
+- `life_decisions.models.DocumentReference` bleibt die nutzerkontrollierte
+  Referenzgrenze für vorhandene Dokumente.
+- Der alte `PowerOfAttorneyWorkflow` wird nicht aufgerufen oder erweitert;
+  Goal-, Runtime-, Execution- und Workflow-Mechanik wird nicht übernommen.
+- Fehlende wesentliche Angaben und die eine nächste Verständnisfrage sind
+  ausdrücklich typisierte Eingaben, keine semantischen Ableitungen.
+
+### Arbeitsschritte
+
+- [x] V2-Wissen, Life-Decisions-Verträge und Understanding-Grenzen prüfen.
+- [x] Minimalen immutable Conversation-Preparation-Vertrag implementieren.
+- [x] Referenz-, Vollständigkeits-, Fachprüfungs- und Sicherheitsgrenzen testen.
+- [x] Produktstatus und knappe fachliche Dokumentation aktualisieren.
+- [x] Fokussierte, kombinierte und vollständige Qualitätsprüfung ausführen.
+- [x] Read-only Handover mit Vorher-/Nachher-Nachweis ausführen.
+
+### Ergebnis
+
+Die Vorsorgevollmacht-Vorbereitung referenziert ausschließlich explizit
+bereitgestellte Understanding-Objekte, Aussagen, Clarification Resolutions,
+Personenrollen, Vertretungsbereiche und nutzerkontrollierte Dokumentreferenzen.
+Wesentliche Lücken benötigen genau eine typisierte Verständnisfrage; Schritte
+und Fachprüfungen werden nicht automatisch empfohlen. 19 fokussierte, 202
+kombinierte und alle 864 Repository-Tests bestanden; Doctor und
+`git diff --check` waren erfolgreich.
+
 ## Aktiver Plan: Guardian Clarification Resolution v1
 
 ### Ziel und Nicht-Ziele

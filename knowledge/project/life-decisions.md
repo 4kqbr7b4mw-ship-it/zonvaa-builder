@@ -24,6 +24,16 @@ ZONVAA ersetzt keine Rechtsanwälte, Notare, Steuerberater, Ärzte oder sonstige
 
 Life Decisions soll verständlich informieren, strukturiert Fragen stellen, fehlende Angaben erkennen, Widersprüche und Unsicherheiten sichtbar machen, Entscheidungen und Gründe dokumentieren, Fachgespräche vorbereiten, an Prüf- und Aktualisierungstermine erinnern und Dokumente mit den zugehörigen Entscheidungen verknüpfen.
 
+## Guardian Life Decision Conversation v1
+
+Der erste produktnahe V2-Gesprächsfall bereitet das Thema Vorsorgevollmacht
+ausschließlich aus einem vorhandenen `UnderstandingState` und ausdrücklich
+typisierten Fachreferenzen vor. Er interpretiert keine natürliche Sprache,
+wählt keine Person oder Vertretungsbereiche, erzeugt keine Vollmacht und
+aktiviert keinen Workflow. Hypothesen, offene Punkte und Widersprüche bleiben
+getrennt sichtbar; nur ausdrücklich übergebene organisatorische Schritte und
+Fachprüfungen erscheinen in der Vorbereitung.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.

@@ -38,6 +38,23 @@ from life_decisions.power_of_attorney import (
     PowerOfAttorneyWorkflowStatus,
     RepresentationMode,
 )
+from life_decisions.conversation import (
+    GuardianLifeDecisionConversationService,
+    MissingInformation,
+    OrganizationalPreparationStep,
+    PowerOfAttorneyConversationInput,
+    PowerOfAttorneyConversationPreparation,
+    PowerOfAttorneyConversationStatus,
+    PowerOfAttorneyPersonRole,
+    PreparationStepType,
+    ProfessionalReviewCategory,
+    ProfessionalReviewNeed,
+    RelevantPersonRole,
+    RepresentationArea,
+    RepresentationAreaReference,
+    ReviewNeed,
+    UserStatementReference,
+)
 
 __all__ = [
     "CaseStatus",
@@ -76,4 +93,19 @@ __all__ = [
     "PowerOfAttorneyWorkflowResult",
     "PowerOfAttorneyWorkflowStatus",
     "RepresentationMode",
+    "GuardianLifeDecisionConversationService",
+    "MissingInformation",
+    "OrganizationalPreparationStep",
+    "PowerOfAttorneyConversationInput",
+    "PowerOfAttorneyConversationPreparation",
+    "PowerOfAttorneyConversationStatus",
+    "PowerOfAttorneyPersonRole",
+    "PreparationStepType",
+    "ProfessionalReviewCategory",
+    "ProfessionalReviewNeed",
+    "RelevantPersonRole",
+    "RepresentationArea",
+    "RepresentationAreaReference",
+    "ReviewNeed",
+    "UserStatementReference",
 ]
