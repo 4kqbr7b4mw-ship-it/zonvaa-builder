@@ -160,3 +160,29 @@ rechtliche oder steuerliche Beratung, beurteilt weder Einwilligungsfähigkeit
 noch Personen oder Wirksamkeit und trifft keine Behandlungsentscheidung. Alle
 Services sind deterministisch und zustandslos, ohne Persistenz, Netzwerk, LLM,
 Dokumentanalyse, Exportgenerator oder Benutzeroberfläche.
+
+## Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
+
+`GuardianFamilyCarePreparationService` strukturiert eine ausdrücklich
+typisierte familiäre Pflegesituation auf genau einem vorhandenen
+`UnderstandingState`. Für den Nutzer bleibt ein Guardian sichtbar. Die sieben
+fachlich getrennten Contributions besitzen weder einen eigenen State noch
+Persönlichkeit oder Ausführungsbefugnis. Nur explizit übergebene Contributions
+werden dargestellt; es gibt keine automatische Domain-Aktivierung und kein
+Routing.
+
+Offene Punkte und Cross-Domain-Abhängigkeiten sind unveränderliche, explizite
+Eingaben. Sie werden validiert und referenziert, aber nicht abgeleitet,
+bewertet oder priorisiert. Ein statischer deutscher Fragenkatalog bindet
+höchstens eine Frage an die erste aktive wesentliche Lücke in stabiler
+Eingabereihenfolge. Conversation und Journey interpretieren keine Antwort und
+validieren nur vollständig übergebene externe Clarification-/Revision-Ketten.
+Die gesamte Turn-Historie verhindert eine erneute Ausgabe derselben weiterhin
+offenen Frage.
+
+Professional-Review-Paket und UI-neutrale Experience spiegeln ausschließlich
+vorhandene Inhalte. Sie erzeugen keine Checkliste, Empfehlung, Pflegegrad- oder
+Leistungsberechnung, Immobilien- oder Finanzbewertung und keinen Maßnahmenplan.
+Alle Fachgrenzen bleiben sichtbar. Die Services sind zustandslos und
+deterministisch; sie persistieren nichts, nutzen weder Netzwerk noch LLM und
+bilden weder Agentenkommunikation noch ein allgemeines Cross-Domain-Framework.

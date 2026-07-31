@@ -3,7 +3,48 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Guardian Life Decision v1 – Patientenverfügung
+## Aktiver Plan: Guardian Cross-Domain Life Situation v1 – Pflegefall in der Familie
+
+### Ziel und Grenzen
+
+Eine zustandslose vertikale Kette strukturiert eine ausdrücklich typisierte
+familiäre Pflegesituation auf einer gemeinsamen Understanding-Basis. Für den
+Nutzer bleibt genau ein Guardian sichtbar. Fachlich getrennte Contributions
+sind weder Agenten noch Berater und führen keine Aktionen aus.
+
+### Entscheidungen
+
+- Unterstützt werden ausschließlich die sieben beauftragten Domänen.
+- Contributions referenzieren denselben State und übernehmen nur explizit
+  zugewiesene Inhalte; Domänen werden nicht automatisch aktiviert.
+- Abhängigkeiten sind eigene explizite Eingaben und werden weder abgeleitet
+  noch gewichtet.
+- Die erste aktive wesentliche Lücke in Eingabereihenfolge bindet höchstens
+  eine statische kontrollierte Guardian-Frage.
+- Conversation, Journey, Professional Review und Experience bleiben
+  deterministisch, zustandslos und ohne Beratung, Routing oder Multi-Agentik.
+
+### Arbeitsschritte
+
+- [x] Bestehende Understanding- und Life-Decisions-Verträge analysieren.
+- [x] Situation, Contributions, offene Punkte und Abhängigkeiten modellieren.
+- [x] Fragenkatalog, Conversation, Journey und Review implementieren.
+- [x] UI-neutrale kanonische deutsche Experience implementieren.
+- [x] Positive und negative Cross-Domain-Tests ergänzen.
+- [x] Produktstatus, Dokumentation, Exporte und Handover aktualisieren.
+- [x] Vollständige Qualitätssicherung abschließen.
+- [x] Freigegebenen Commit und Push abschließen.
+
+### Ergebnis
+
+Die Cross-Domain-Kette übernimmt ausschließlich explizite Contributions,
+Abhängigkeiten und offene Punkte auf einem gemeinsamen Understanding State.
+Sie stellt höchstens eine kontrollierte Guardian-Frage und validiert externe
+Klärungen bis zur belegten Revision. 33 fokussierte Cross-Domain-Tests,
+176 Life-Decisions-/Handover-Regressionstests und alle 1010 Repository-Tests
+bestanden. Doctor und `git diff --check` waren erfolgreich.
+
+## Abgeschlossener Plan: Guardian Life Decision v1 – Patientenverfügung
 
 ### Ziel und Grenzen
 

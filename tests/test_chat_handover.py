@@ -46,6 +46,7 @@ PRODUCT_STATUS = """# Status
 - Power-of-Attorney Professional Review Preparation
 - Guardian Life Decision Experience v1: Vorsorgevollmacht
 - Guardian Life Decision v1: Patientenverfügung
+- Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
 
 ## Aktueller fachlicher Stand
 
@@ -123,6 +124,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Power-of-Attorney Professional Review Preparation" in output
     assert "Guardian Life Decision Experience v1" in output
     assert "Guardian Life Decision v1: Patientenverfügung" in output
+    assert "Guardian Cross-Domain Life Situation v1" in output
     assert "Keine Intent Engine" in output
 
 
@@ -140,6 +142,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Power-of-Attorney Professional Review Preparation",
         "Guardian Life Decision Experience v1: Vorsorgevollmacht",
         "Guardian Life Decision v1: Patientenverfügung",
+        "Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",

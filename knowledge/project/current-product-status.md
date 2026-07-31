@@ -24,6 +24,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Power-of-Attorney Professional Review Preparation
 - Guardian Life Decision Experience v1: Vorsorgevollmacht
 - Guardian Life Decision v1: Patientenverfügung
+- Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
 
 ## Aktueller fachlicher Stand
 
@@ -33,6 +34,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   abgeschlossen.
 - Die zustandslose Patientenverfügungs-Preparation, Conversation, Journey,
   Professional-Review-Vorbereitung und UI-neutrale Experience sind abgeschlossen.
+- Die erste Cross-Domain-Lebenslage strukturiert den Pflegefall in der Familie
+  über einen gemeinsamen Understanding State, explizite fachlich getrennte
+  Contributions und Abhängigkeiten, eine kontrollierte Guardian-Frage, Journey,
+  Professional-Review-Vorbereitung und UI-neutrale Experience. Für den Nutzer
+  bleibt ausschließlich ein Guardian sichtbar.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

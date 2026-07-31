@@ -105,6 +105,31 @@ erstellt keine Patientenverfügung, bewertet keine Behandlung,
 Einwilligungsfähigkeit, Person oder Wirksamkeit und nutzt weder Persistenz,
 Netzwerk, LLM noch Dokumentgenerator.
 
+## Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
+
+Der erste fachübergreifende V2-Fall verbindet einen gemeinsamen
+`UnderstandingState` mit ausschließlich explizit übergebenen Contributions aus
+Pflege und Versorgung, Gesundheit und medizinischer Organisation, Life
+Decisions und Vertretung, Wohnen und Immobilie, Finanzen und Kosten, Familie
+und Rollen sowie Dokumenten und Organisation. Für Nutzer bleibt ein Guardian
+sichtbar; Contributions sind keine Fachagenten, führen kein eigenes Gespräch
+und besitzen keinen konkurrierenden State.
+
+Explizite offene Punkte und Abhängigkeiten werden unverändert validiert und in
+stabiler Eingabereihenfolge dargestellt. Sie werden nicht automatisch
+abgeleitet, gewichtet oder priorisiert. Ein kontrollierter deutscher Katalog
+liefert genau eine Frage zur ersten aktiven wesentlichen Lücke. Externe
+Antworten werden nicht interpretiert; Conversation und Journey können nur eine
+vollständige Clarification-/Revision-Kette referenzieren. Widersprüche bleiben
+sichtbar und werden nicht aufgelöst.
+
+Professional-Review-Paket und UI-neutrale Experience spiegeln ausschließlich
+belegte Inhalte. Sie beraten weder pflegerisch, medizinisch, rechtlich,
+steuerlich, finanziell noch zu Immobilien, bewerten keine Personen, berechnen
+weder Pflegegrad noch Leistungen und erzeugen keinen Maßnahmenplan. Der
+Baustein ist deterministisch und zustandslos, ohne Persistenz, Netzwerk, LLM,
+Routing, automatische Domain-Aktivierung oder Multi-Agenten-Framework.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.
