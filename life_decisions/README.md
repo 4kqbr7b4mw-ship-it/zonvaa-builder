@@ -128,3 +128,35 @@ Fachgrenzen wie fehlende Rechts-, Wirksamkeits-, Personen-, medizinische oder
 steuerliche Bewertung sind sichtbar. Der Service ist zustandslos, persistiert
 nichts, nutzt weder Netzwerk noch LLM und enthält keine dynamische
 Sprachgenerierung.
+
+## Guardian Life Decision v1: Patientenverfügung
+
+Der zweite vollständige Life-Decisions-Anwendungsfall bildet eine eigenständige
+vertikale Kette aus `UnderstandingState`, typisierter Preparation,
+kontrollierten Conversation Turns, externen Clarification-/Revision-Artefakten,
+Journey, Professional-Review-Paket und UI-neutraler Experience. Er verwendet
+die bewährten Invarianten der Vorsorgevollmacht, verändert deren fachliche
+Verträge aber nicht und führt keine allgemeine Life-Decisions-Engine ein.
+
+Unterstützt werden ausschließlich ausdrücklich typisierte medizinische
+Situationen, Maßnahmen, neutrale Haltungen, Bedingungen, persönliche Wünsche
+und Werte, Personenrollen, Dokumentreferenzen, organisatorische Schritte und
+Fachprüfbedarfe. `UNSPECIFIED` ist keine Zustimmung und `UNCERTAIN` keine
+Ablehnung. Bedingte Haltungen benötigen ausdrücklich übergebene Bedingungen;
+aus Zielen, Werten oder anderen Aussagen wird keine Haltung abgeleitet.
+
+Der statische Fragenkatalog bindet genau eine neutrale deutsche Frage an eine
+bereits typisierte wesentliche Lücke. Die gesamte Turn-Historie verhindert die
+Wiederholung einer unverändert offenen Frage. Antworten, Proposals,
+Resolutions, Revisionen und neue States entstehen außerhalb der Conversation-
+und Journey-Services und werden nur als vollständige Referenzkette validiert.
+Widersprüche bleiben sichtbar und werden weder medizinisch noch rechtlich
+aufgelöst.
+
+Das Professional-Review-Paket und die Experience spiegeln ausschließlich
+vorhandene Inhalte; sie erzeugen keine Checkliste, Empfehlung, medizinische
+Erklärung oder Patientenverfügung. Der Baustein leistet keine medizinische,
+rechtliche oder steuerliche Beratung, beurteilt weder Einwilligungsfähigkeit
+noch Personen oder Wirksamkeit und trifft keine Behandlungsentscheidung. Alle
+Services sind deterministisch und zustandslos, ohne Persistenz, Netzwerk, LLM,
+Dokumentanalyse, Exportgenerator oder Benutzeroberfläche.

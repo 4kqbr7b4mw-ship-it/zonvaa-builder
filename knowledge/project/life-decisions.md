@@ -86,6 +86,25 @@ Fachinhalte; technische Prüfinformationen bleiben davon getrennt. Die
 Darstellung ist kanonisch deutsch, zustandslos und ohne Persistenz, Netzwerk,
 LLM, Dokumentgenerator oder Benutzeroberfläche.
 
+## Guardian Life Decision v1: Patientenverfügung
+
+Die Patientenverfügungs-Journey ist der zweite vollständige V2-Life-Decisions-
+Anwendungsfall. Sie übernimmt nur explizit typisierte Situationen, Maßnahmen,
+Haltungen, Bedingungen, Wünsche, Werte, Personen, Dokumente, Schritte und
+Prüfbedarfe aus einem referenzierten `UnderstandingState` und fachlichen
+Eingaben. Ein statischer Katalog stellt höchstens eine kontrollierte Frage zur
+ersten wesentlichen Lücke; die vollständige Turn-Historie verhindert eine
+unbemerkte Wiederholung.
+
+Externe Antworten werden nicht gedeutet. Nur vollständige, explizite
+Clarification- und Revision-Ketten können mit einer aktualisierten Preparation
+fortfahren. Widersprüche, Unknowns und Hypothesen bleiben getrennt sichtbar.
+Das Professional-Review-Paket und die kanonische deutsche Experience ergänzen
+weder medizinische Inhalte noch Checklisten oder Empfehlungen. Der Baustein
+erstellt keine Patientenverfügung, bewertet keine Behandlung,
+Einwilligungsfähigkeit, Person oder Wirksamkeit und nutzt weder Persistenz,
+Netzwerk, LLM noch Dokumentgenerator.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.

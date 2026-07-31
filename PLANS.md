@@ -3,6 +3,47 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Life Decision v1 – Patientenverfügung
+
+### Ziel und Grenzen
+
+Ein eigenständiger, zustandsloser Patientenverfügungs-Baustein verbindet
+Understanding, explizite Preparation, kontrollierte Turns, externe Klärung,
+Journey, Professional Review und UI-neutrale Experience. Er erstellt keine
+Patientenverfügung, berät oder bewertet nicht und interpretiert keine Sprache.
+
+### Entscheidungen
+
+- Fachliche Patientenverfügungsmodelle bleiben anwendungsfallspezifisch.
+- Vorhandene technische Basistypen für Aussagen, Lücken, Dokumente, Schritte,
+  Fachprüfbedarfe und State-Hashing werden unverändert wiederverwendet.
+- Situationen, Maßnahmen, Haltungen und Bedingungen entstehen nur aus
+  expliziten typisierten Eingaben.
+- Ein statischer Fragenkatalog und die gesamte Turn-Historie sichern genau eine
+  kontrollierte Frage und verhindern Schleifen.
+- Nur vollständige externe Resolution-/Revision-Ketten können einen
+  aktualisierten State und eine aktualisierte Preparation belegen.
+
+### Arbeitsschritte
+
+- [x] Bestehende Life-Decisions- und Understanding-Verträge analysieren.
+- [x] Preparation-, Conversation-, Journey- und Review-Verträge implementieren.
+- [x] Kanonische deutsche Experience und Konsistenzgrenzen implementieren.
+- [x] Positive und negative Patientenverfügungs-Tests ergänzen.
+- [x] Produktstatus, Dokumentation, Exporte und Handover-Test aktualisieren.
+- [x] Fokussierte und vollständige Qualitätssicherung abschließen.
+- [x] Tatsächlichen Diff und freigegebenen Commit/Push vorbereiten.
+
+### Ergebnis
+
+Die Patientenverfügungs-Kette übernimmt ausschließlich explizite fachliche
+Eingaben, stellt genau eine kontrollierte Frage und validiert externe
+Klärungen bis zum resultierenden State. Widersprüche, neutrale Haltungen und
+alle Fachgrenzen bleiben sichtbar. 35 fokussierte Patientenverfügungs-Tests,
+143 Conversation-/Journey-/Experience-/Handover-Tests, 176 Life-Decisions-/
+Handover-Tests und alle 977 Repository-Tests bestanden. Doctor,
+`git diff --check` und der read-only Handover waren erfolgreich.
+
 ## Aktiver Plan: Guardian Life Decision Experience v1 – Vorsorgevollmacht
 
 ### Ziel und Nicht-Ziele

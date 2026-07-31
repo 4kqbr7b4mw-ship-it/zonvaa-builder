@@ -23,6 +23,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Life Decision Journey v1: Vorsorgevollmacht
 - Power-of-Attorney Professional Review Preparation
 - Guardian Life Decision Experience v1: Vorsorgevollmacht
+- Guardian Life Decision v1: Patientenverfügung
 
 ## Aktueller fachlicher Stand
 
@@ -30,6 +31,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Vorsorgevollmacht-Gesprächsführung, die kontrollierte Journey, ihre
   Professional-Review-Vorbereitung und die UI-neutrale Experience sind
   abgeschlossen.
+- Die zustandslose Patientenverfügungs-Preparation, Conversation, Journey,
+  Professional-Review-Vorbereitung und UI-neutrale Experience sind abgeschlossen.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen
