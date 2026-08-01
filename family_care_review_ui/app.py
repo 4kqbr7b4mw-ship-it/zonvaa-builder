@@ -62,6 +62,31 @@ class FamilyCareReviewSession:
                 "statements": tuple(item.text for item in situation.referenced_user_statements),
                 "state_id": situation.understanding_state_id,
             },
+            "guardian_view": {
+                "summary": situation.triggering_statement.text,
+                "known": _texts(situation.facts),
+                "open": tuple(
+                    item.text
+                    for item in (
+                        journey.essential_open_points
+                        + journey.other_open_points
+                        + journey.deferred_points
+                    )
+                ),
+                "next_checks": tuple(
+                    item.reason for item in situation.professional_reviews
+                )
+                + tuple(item.description for item in situation.organizational_steps),
+                "involved": tuple(
+                    {
+                        "label": item.label,
+                        "role": item.role,
+                        "relationship": item.relationship,
+                    }
+                    for item in situation.people
+                ),
+                "progress": "Schritt {} von 6".format(self.step),
+            },
             "cross_domain": {
                 "contributions": tuple({"domain": item.domain.value, "entries": tuple(entry.text for entry in item.explicit_entries)} for item in situation.contributions),
                 "dependencies": tuple(item.description for item in situation.dependencies),
