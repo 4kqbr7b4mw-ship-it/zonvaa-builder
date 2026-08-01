@@ -33,6 +33,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Classification Contract v1
 - Guardian Answer Foundation Integration v1
 - Guardian Controlled Orientation Package v1
+- Guardian Personal Preparation Package v1
 
 ## Aktueller fachlicher Stand
 
@@ -86,6 +87,14 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   vollständig und konsistent referenzierten Source Chain sind zulässig.
   Text, Quellen und fachliche Prüfung werden weder erzeugt noch semantisch
   bewertet; Herkunft und Prüfstatus bleiben rein deklarativ, ohne Runtime oder
+  Ausführungsmacht.
+- Das Guardian Personal Preparation Package dokumentiert bereits
+  bereitgestellte persönliche B2-Vorbereitung mit bekannten Tatsachen, offenen
+  Fragen, Optionen, Unsicherheiten und professionellen Prüfthemen. Es verlangt
+  exakt B2/B2 und eine vollständige Source-Chain-Bindung; eine bestehende B1-
+  Orientierung kann optional nur referenziert werden. Inhalte, Optionen und
+  Risiken werden nicht erzeugt, interpretiert, priorisiert oder entschieden;
+  Provider und Fachprüfstatus bleiben ohne Autorisierungs- oder
   Ausführungsmacht.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 

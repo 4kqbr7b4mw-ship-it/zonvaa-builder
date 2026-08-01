@@ -91,6 +91,22 @@ from guardian_understanding.controlled_orientation import (
     OrientationProviderType,
     ProfessionalReviewStatus,
 )
+from guardian_understanding.personal_preparation import (
+    B2PersonalPreparationContract,
+    B2PersonalPreparationContractValidator,
+    B2PersonalPreparationSafetyValidator,
+    GeneralOrientationReference,
+    KnownFactEntry,
+    OpenQuestionEntry,
+    OptionForConsiderationEntry,
+    PersonalContextReference,
+    PersonalPreparationCapability,
+    PersonalPreparationEnvelope,
+    PersonalPreparationEnvelopeValidator,
+    PersonalPreparationValidationError,
+    ProfessionalReviewTopicEntry,
+    UncertaintyEntry,
+)
 
 __all__ = [
     "Contradiction",
@@ -164,4 +180,18 @@ __all__ = [
     "ControlledOrientationValidationError",
     "OrientationProviderType",
     "ProfessionalReviewStatus",
+    "B2PersonalPreparationContract",
+    "B2PersonalPreparationContractValidator",
+    "B2PersonalPreparationSafetyValidator",
+    "GeneralOrientationReference",
+    "KnownFactEntry",
+    "OpenQuestionEntry",
+    "OptionForConsiderationEntry",
+    "PersonalContextReference",
+    "PersonalPreparationCapability",
+    "PersonalPreparationEnvelope",
+    "PersonalPreparationEnvelopeValidator",
+    "PersonalPreparationValidationError",
+    "ProfessionalReviewTopicEntry",
+    "UncertaintyEntry",
 ]

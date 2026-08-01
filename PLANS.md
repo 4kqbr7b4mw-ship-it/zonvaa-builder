@@ -2773,3 +2773,31 @@ Semantik, Recherche, Runtime, Aktivierung, Persistenz oder Zustandsänderung.
 - Exakte Classification-, Boundary- und Source-Chain-Bindungen.
 - Negative Machtgrenzen sowie Regression aller Guardian-Vertragsfamilien,
   E7a und Chat-Handover.
+# Guardian Personal Preparation Package v1
+
+## Ziel und Grenzen
+
+Einen unveränderlichen, typisierten Nachweis für bereits bereitgestellte
+persönliche Vorbereitung auf B2-Niveau ergänzen. Classification, Boundary,
+Source Chains und optional eine vorhandene kontrollierte B1-Orientierung werden
+nur strukturell verbunden. Keine Interpretation, Inhaltserzeugung, Auswahl,
+Entscheidung, Runtime, Persistenz oder Zustandsänderung.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Ausgangszustand, Preflight, ADRs und bestehende Guardian-Verträge prüfen.
+- [x] B2 Personal Preparation Contract und Strukturvalidator ergänzen.
+- [x] Exakte B2-Sicherheitsprüfung über die kanonische Schutzordnung ergänzen.
+- [x] Vollständigen Integrations-Envelope mit optionalem B1-Nachweis ergänzen.
+- [x] Fokussierte Tests und Dokumentation ergänzen.
+- [x] Guardian- und vollständige Regression, Doctor, Diff und Handover prüfen.
+
+## Entscheidungen
+
+- Provider- und Prüfstatus sowie Boundary-, Classification- und Source-Chain-
+  Referenzen werden unverändert aus den bestehenden Verträgen wiederverwendet.
+- Die fünf Vorbereitungsbereiche erhalten kleine fachlich benannte immutable
+  Eintragstypen; es entsteht kein allgemeines Content- oder Formularmodell.
+- Der B2-Envelope verlangt die vollständige, exakt gleiche Source-Chain-Menge.
+- Eine optionale B1-Orientierung wird nur als bereits validierter Envelope
+  referenziert und niemals kopiert oder in B2-Inhalte umgewandelt.

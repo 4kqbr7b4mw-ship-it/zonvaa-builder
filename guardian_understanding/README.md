@@ -112,3 +112,27 @@ Autorisierung. Der fachliche Prüfstatus ist rein deklarativ; nur eine als
 durchgeführt deklarierte Prüfung benötigt eine Referenz, bestätigt aber weder
 Richtigkeit noch Qualifikation. Der Baustein recherchiert und persistiert
 nicht, besitzt keine Antwort-Runtime und keine Ausführungsmacht.
+
+## Guardian Personal Preparation Package v1
+
+Eine persönliche B2-Vorbereitung strukturiert ausschließlich bereits
+bereitgestellte persönliche Angaben: bekannte Tatsachen, offene Fragen,
+nebeneinander zu prüfende Optionen, Unsicherheiten und Themen für eine
+professionelle Prüfung. Sie darf außerdem dokumentieren, welche Unterlagen oder
+Informationen noch benötigt werden. Sie extrahiert oder erzeugt diese Inhalte
+nicht und wählt, priorisiert oder bewertet keine Option.
+
+Der vollständige Nachweis verlangt exakt eine B2-Classification und eine
+B2-Boundary sowie eine vollständig identische Source-Chain-Menge. Eine bereits
+validierte B1 Controlled Orientation kann optional rein deklarativ referenziert
+werden; sie ist keine Voraussetzung und wird weder geladen, kopiert noch in
+B2-Inhalte umgewandelt. Textfelder werden ausschließlich strukturell, nicht
+semantisch validiert.
+
+B2 darf keine konkrete Rechtsgestaltung empfehlen, individuelle Steuer-,
+Finanzierungs-, medizinische oder sonstige professionelle Einzelfallentscheidung
+treffen, einen Vertrag als unterschriftsreif bestätigen, persönliche Risiken
+abschließend bewerten oder Handlungen ausführen und freigeben. Provider-Herkunft
+und Fachprüfstatus bleiben rein deklarativ und erzeugen weder Autorisierung noch
+Richtigkeitsbestätigung. Der Baustein besitzt keine Recherche, Runtime,
+Persistenz, Aktivierung oder Zustandsänderungsmacht.
