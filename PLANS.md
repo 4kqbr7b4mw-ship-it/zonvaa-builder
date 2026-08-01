@@ -3,6 +3,23 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Source Chain Contracts v1
+
+### Ziel und Grenzen
+
+Die zweite gesondert freigegebene Ausbaustufe aus ADR-0047 bildet nur einen
+unveränderlichen T4-Quellenketten-Vertrag und dessen strukturellen Validator.
+Sie beschafft, interpretiert, bewertet, vergleicht oder ersetzt keine Quellen
+und besitzt keine B1-/B2-/B3-Laufzeitkopplung oder Ausführungsmacht.
+
+### Arbeitsschritte
+
+- [x] ADR-0047, Answer Boundary Contracts und bestehende Quelltypen prüfen.
+- [x] Zwölf Pflichtfelder, Unsicherheitswerte und Neuprüfung typisieren.
+- [x] Deklarative Widersprüche und reine Strukturvalidierung implementieren.
+- [x] Positive, negative, immutable und Regressionstests ergänzen.
+- [x] Produktstatus, vollständige Regression, Doctor, Diff und Handover abschließen.
+
 ## Aktiver Plan: Guardian Answer Boundary Contracts v1
 
 ### Ziel und Grenzen

@@ -48,6 +48,19 @@ from guardian_understanding.answer_boundary import (
     AnswerOperatingMode,
     GuardianAnswerBoundaryValidator,
 )
+from guardian_understanding.source_chain import (
+    DeclaredSourceContradiction,
+    GuardianAnswerContextReference,
+    GuardianSourceChainContract,
+    GuardianSourceChainValidator,
+    SourceChainCapability,
+    SourceChainValidationError,
+    SourceKind,
+    SourceProvenanceCategory,
+    SourceRecheckKind,
+    SourceRecheckRequirement,
+    SourceUncertaintyStatus,
+)
 
 __all__ = [
     "Contradiction",
@@ -86,4 +99,15 @@ __all__ = [
     "AnswerCapability",
     "AnswerOperatingMode",
     "GuardianAnswerBoundaryValidator",
+    "DeclaredSourceContradiction",
+    "GuardianAnswerContextReference",
+    "GuardianSourceChainContract",
+    "GuardianSourceChainValidator",
+    "SourceChainCapability",
+    "SourceChainValidationError",
+    "SourceKind",
+    "SourceProvenanceCategory",
+    "SourceRecheckKind",
+    "SourceRecheckRequirement",
+    "SourceUncertaintyStatus",
 ]

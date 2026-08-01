@@ -29,6 +29,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Family Care End-to-End Reference Journey v1
 - Guardian Family Care Review UI v1 (lokales internes Prüfwerkzeug)
 - Guardian Answer Boundary Contracts v1
+- Guardian Source Chain Contracts v1
 
 ## Aktueller fachlicher Stand
 
@@ -61,6 +62,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Validator erlaubt nur Schutzeskalation, erzwingt die B3-Nicht-Bestätigung und
   besitzt keinerlei Klassifizierungs-, Aktivierungs-, Routing- oder
   Zustandsänderungsbefugnis.
+- Die Guardian Source Chain Contracts bilden die zwölf Pflichtfelder aus
+  ADR-0047 § 7 als unveränderliche, typisierte T4-Struktur ab. Widersprüche
+  bleiben deklarativ; der Validator bewertet, recherchiert, ersetzt oder
+  priorisiert keine Quelle und besitzt weder B1-/B2-/B3-Laufzeitkopplung noch
+  Persistenz- oder Ausführungsmacht.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

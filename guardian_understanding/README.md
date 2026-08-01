@@ -47,3 +47,17 @@ Fähigkeiten zum Ändern von States, Artefakten, Resolutionen, Rechten,
 Freigaben, Journey-Status oder Quellenketten sowie Aktivierung, Workflow und
 Routing müssen ausdrücklich verboten bleiben. Der Validator interpretiert
 keine Sprache, klassifiziert keine Anfrage und führt nichts aus.
+
+## Guardian Source Chain Contracts v1
+
+Der unveränderliche T4-Vertrag bildet alle zwölf Pflichtfelder aus ADR-0047
+§ 7 explizit ab: Quelle und Herausgeber; Quellenart und Autorität; Referenz;
+Abrufzeitpunkt; Veröffentlichungs- oder Versionsstand; gestützte Aussage;
+Rechtsraum oder Geltungsbereich; deklarierte Widersprüche; Unsicherheitsstatus;
+Neuprüfungsbedarf; Guardian-Antwort- und Gesprächskontext; Provenienz.
+
+Widersprüche sind ausschließlich bereits bereitgestellte Referenzen. Weder
+Zeitpunkt, Version, Quellenart noch Widerspruch erzeugen automatisch Vorrang,
+Ablösung, Bewertung oder Statusänderung. Der Validator prüft nur Typen und
+Struktur. Er recherchiert und persistiert nicht, besitzt keine Ausführungsmacht
+und ist zur Laufzeit nicht mit B1, B2 oder B3 verbunden.
