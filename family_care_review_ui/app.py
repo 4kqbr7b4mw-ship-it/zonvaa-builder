@@ -66,7 +66,7 @@ class FamilyCareReviewSession:
                 "summary": situation.triggering_statement.text,
                 "known": _texts(situation.facts),
                 "open": tuple(
-                    item.text
+                    _guardian_open_text(item.text)
                     for item in (
                         journey.essential_open_points
                         + journey.other_open_points
@@ -161,3 +161,10 @@ class FamilyCareReviewSession:
 
 def _texts(items) -> tuple:
     return tuple(item.text for item in items)
+
+
+def _guardian_open_text(text: str) -> str:
+    """Use controlled display text without changing the referenced artifact."""
+    if text == "Die bestehende Vertretungsgrundlage ist offen.":
+        return "Es ist noch offen, wer Entscheidungen übernehmen darf, wenn die betroffene Person das selbst nicht kann."
+    return text
