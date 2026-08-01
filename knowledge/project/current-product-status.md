@@ -27,6 +27,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
 - Family Care Cross-Domain Scenario Validation v1
 - Family Care End-to-End Reference Journey v1
+- Guardian Family Care Review UI v1 (lokales internes Prüfwerkzeug)
 
 ## Aktueller fachlicher Stand
 
@@ -51,6 +52,9 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   ungeklärte Vertretungs-, Wohn- und Kostenpunkte bleiben als `KEEP_OPEN`
   sichtbar. Journey, explizit gebundenes Professional Review und UI-neutrale
   Experience sind konsistent, ohne automatische Semantik oder Aktivierung.
+- Eine kleine lokale Review UI macht denselben typisierten Referenzfall
+  schrittweise prüfbar. Sie ist weder Nutzer-App noch Produktionsfrontend und
+  hält ausschließlich einen flüchtigen UI-Schrittzeiger im Arbeitsspeicher.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

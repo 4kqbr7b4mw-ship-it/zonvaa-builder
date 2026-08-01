@@ -3,7 +3,30 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Family Care End-to-End Reference Journey v1
+## Aktiver Plan: Guardian Family Care Review UI v1
+
+### Ziel und Grenzen
+
+Ein kleines lokales Prüfwerkzeug stellt den vorhandenen sechszügigen,
+anonymisierten Referenzfall strukturiert dar. Es besitzt nur flüchtigen
+In-Memory-Zustand, ruft ausschließlich bestehende Services auf und ergänzt
+keine fachliche Semantik, Persistenz oder Produktionsoberfläche.
+
+### Arbeitsschritte
+
+- [x] Vorhandene UI- und Web-Abhängigkeiten sowie App-Einstiege prüfen.
+- [x] Strukturell testbaren Review-Session-Adapter ergänzen.
+- [x] Lokalen Standardbibliothek-Server und statische Review-Ansicht ergänzen.
+- [x] Fokussierte positive und negative UI-Tests ergänzen.
+- [x] Manuelle Browserprüfung, Regression, Doctor, Diff und Handover abschließen.
+
+Die UI wurde über alle sechs Schritte manuell durchgespielt. Dabei wurde eine
+begrenzte Darstellungsunschärfe gefunden und behoben: Contributions und
+Personen erschienen zunächst als rohe JSON-Zeilen; sie werden nun ruhig und
+lesbar als vorhandene Werte dargestellt. Der lokale Server beendet sich nach
+`Ctrl-C` ohne Fehlertrace.
+
+## Abgeschlossener Plan: Family Care End-to-End Reference Journey v1
 
 ### Ziel und Grenzen
 

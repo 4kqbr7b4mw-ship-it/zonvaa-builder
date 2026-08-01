@@ -186,3 +186,19 @@ Leistungsberechnung, Immobilien- oder Finanzbewertung und keinen Maßnahmenplan.
 Alle Fachgrenzen bleiben sichtbar. Die Services sind zustandslos und
 deterministisch; sie persistieren nichts, nutzen weder Netzwerk noch LLM und
 bilden weder Agentenkommunikation noch ein allgemeines Cross-Domain-Framework.
+# Guardian Family Care Review UI v1
+
+Das gezielte interne Prüfwerkzeug zeigt den bestehenden anonymisierten
+Family-Care-Referenzfall ohne neue Fachlogik. Start im Repository:
+
+```bash
+python3 -m family_care_review_ui
+```
+
+Danach ist die Oberfläche ausschließlich lokal unter
+`http://127.0.0.1:8765` erreichbar; `Ctrl-C` beendet sie. Codex übernimmt
+Start, Prüfung und Bericht, der Nutzer dient nicht als Terminal-Transportweg.
+Die Session speichert nur einen flüchtigen Schrittzeiger. Öffnen, Fortschreiben
+und Reset verändern keine Repository-Datei. Es gibt keine externe Verbindung,
+Persistenz, Freitextinterpretation, automatische Proposal-/Resolution-/
+Revision-Erzeugung, Empfehlung oder Entscheidung.

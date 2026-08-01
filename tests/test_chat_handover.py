@@ -49,6 +49,7 @@ PRODUCT_STATUS = """# Status
 - Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
 - Family Care Cross-Domain Scenario Validation v1
 - Family Care End-to-End Reference Journey v1
+- Guardian Family Care Review UI v1 (lokales internes Prüfwerkzeug)
 
 ## Aktueller fachlicher Stand
 
@@ -129,6 +130,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Guardian Cross-Domain Life Situation v1" in output
     assert "Family Care Cross-Domain Scenario Validation v1" in output
     assert "Family Care End-to-End Reference Journey v1" in output
+    assert "Guardian Family Care Review UI v1" in output
     assert "Keine Intent Engine" in output
 
 
@@ -149,6 +151,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie",
         "Family Care Cross-Domain Scenario Validation v1",
         "Family Care End-to-End Reference Journey v1",
+        "Guardian Family Care Review UI v1 (lokales internes Prüfwerkzeug)",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",
