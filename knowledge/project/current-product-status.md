@@ -31,6 +31,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Answer Boundary Contracts v1
 - Guardian Source Chain Contracts v1
 - Guardian Classification Contract v1
+- Guardian Answer Foundation Integration v1
 
 ## Aktueller fachlicher Stand
 
@@ -73,6 +74,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Mindestschutz werden ausschließlich über die kanonische Boundary-Schutzordnung
   geprüft; Herkunft bedeutet keine Autorisierung. Der Baustein klassifiziert
   und aktiviert nichts und besitzt keine Runtime oder Ausführungsmacht.
+- Die Guardian Answer Foundation Integration verbindet Boundary,
+  Classification und Source Chain ausschließlich über immutable IDs und einen
+  strukturellen Validator. Schutzvergleiche verwenden nur die kanonische
+  Boundary-Ordnung; es entstehen keine Rückreferenz, Runtime, Aktivierung,
+  Interpretation, Normalisierung oder Zustandsänderung.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

@@ -12,6 +12,7 @@ from guardian_understanding.answer_boundary import (
     answer_mode_protection_level,
     most_protective_answer_mode,
 )
+from guardian_understanding.source_chain import SourceChainReference
 
 
 class ClassificationReason(str, Enum):
@@ -76,6 +77,7 @@ class GuardianClassificationContract:
     uncertainty_status: ClassificationUncertaintyStatus
     conversation_context_reference: str
     previous_classification_id: Optional[str]
+    source_chain_references: Tuple[SourceChainReference, ...] = ()
     capabilities: Tuple[ClassificationCapability, ...] = (
         ClassificationCapability.RECORD_PROVIDED_CLASSIFICATION,
     )
@@ -113,6 +115,11 @@ class GuardianClassificationContract:
         )
         if self.previous_classification_id is not None:
             _text(self.previous_classification_id, "previous_classification_id")
+        _typed_tuple(
+            self.source_chain_references,
+            SourceChainReference,
+            "source_chain_references",
+        )
         _typed_tuple(
             self.capabilities,
             ClassificationCapability,
@@ -179,6 +186,16 @@ class GuardianClassificationValidator:
                 "previous_classification_id must not reference the contract itself",
             )
 
+        source_chain_ids = tuple(
+            reference.source_chain_id
+            for reference in contract.source_chain_references
+        )
+        if len(source_chain_ids) != len(set(source_chain_ids)):
+            _invalid(
+                "DUPLICATE_SOURCE_CHAIN_REFERENCE",
+                "source-chain references must be unique",
+            )
+
         if not contract.capabilities:
             _invalid(
                 "RECORD_CAPABILITY_MISSING",
@@ -223,4 +240,3 @@ def _typed_tuple(value: object, item_type: type, name: str) -> None:
         raise TypeError("{} must be a tuple".format(name))
     if not all(isinstance(item, item_type) for item in value):
         raise TypeError("{} contains invalid items".format(name))
-

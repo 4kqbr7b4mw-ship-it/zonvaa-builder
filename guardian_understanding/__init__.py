@@ -46,6 +46,7 @@ from guardian_understanding.answer_boundary import (
     AnswerBoundaryValidationError,
     AnswerCapability,
     AnswerOperatingMode,
+    ClassificationReference,
     GuardianAnswerBoundaryValidator,
     answer_mode_protection_level,
     most_protective_answer_mode,
@@ -56,6 +57,7 @@ from guardian_understanding.source_chain import (
     GuardianSourceChainContract,
     GuardianSourceChainValidator,
     SourceChainCapability,
+    SourceChainReference,
     SourceChainValidationError,
     SourceKind,
     SourceProvenanceCategory,
@@ -71,6 +73,11 @@ from guardian_understanding.classification import (
     ClassificationValidationError,
     GuardianClassificationContract,
     GuardianClassificationValidator,
+)
+from guardian_understanding.answer_foundation import (
+    AnswerFoundationIntegrationError,
+    GuardianAnswerFoundationIntegration,
+    GuardianAnswerFoundationIntegrationValidator,
 )
 
 __all__ = [
@@ -109,6 +116,7 @@ __all__ = [
     "AnswerBoundaryValidationError",
     "AnswerCapability",
     "AnswerOperatingMode",
+    "ClassificationReference",
     "GuardianAnswerBoundaryValidator",
     "answer_mode_protection_level",
     "most_protective_answer_mode",
@@ -117,6 +125,7 @@ __all__ = [
     "GuardianSourceChainContract",
     "GuardianSourceChainValidator",
     "SourceChainCapability",
+    "SourceChainReference",
     "SourceChainValidationError",
     "SourceKind",
     "SourceProvenanceCategory",
@@ -130,4 +139,7 @@ __all__ = [
     "ClassificationValidationError",
     "GuardianClassificationContract",
     "GuardianClassificationValidator",
+    "AnswerFoundationIntegrationError",
+    "GuardianAnswerFoundationIntegration",
+    "GuardianAnswerFoundationIntegrationValidator",
 ]

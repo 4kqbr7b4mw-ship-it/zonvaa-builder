@@ -72,6 +72,14 @@ def most_protective_answer_mode(
 
 
 @dataclass(frozen=True)
+class ClassificationReference:
+    classification_id: str
+
+    def __post_init__(self) -> None:
+        _text(self.classification_id, "classification_id")
+
+
+@dataclass(frozen=True)
 class AnswerBoundaryContract:
     requested_mode: AnswerOperatingMode
     effective_mode: AnswerOperatingMode
@@ -83,6 +91,7 @@ class AnswerBoundaryContract:
     boundary_statement: Optional[str]
     allowed_capabilities: Tuple[AnswerCapability, ...]
     forbidden_capabilities: Tuple[AnswerCapability, ...]
+    classification_reference: Optional[ClassificationReference] = None
 
     def __post_init__(self) -> None:
         _enum(self.requested_mode, AnswerOperatingMode, "requested_mode")
@@ -106,6 +115,13 @@ class AnswerBoundaryContract:
             _text(self.boundary_statement, "boundary_statement")
         _capabilities(self.allowed_capabilities, "allowed_capabilities")
         _capabilities(self.forbidden_capabilities, "forbidden_capabilities")
+        if self.classification_reference is not None and not isinstance(
+            self.classification_reference,
+            ClassificationReference,
+        ):
+            raise TypeError(
+                "classification_reference must be a ClassificationReference"
+            )
 
 
 class AnswerBoundaryValidationError(ValueError):

@@ -20,6 +20,9 @@ WORKING_CONTEXT = """# Rules
 - ZONVAA V2 ist aktiv. ZONVAA V1 ist ausschließlich Archiv.
 - Keine automatische Architekturentscheidung.
 - Keine ungefragten schreibenden Git-Operationen.
+- Fachlich kohärente Teilbausteine dürfen als reviewbares Paket bearbeitet
+  werden; Teilberichte und Tests bleiben getrennt, die Integration wird geprüft.
+  Blockierte Teile werden nicht umgedeutet oder durch Ersatzarchitektur umgangen.
 
 ## Other
 
@@ -53,6 +56,7 @@ PRODUCT_STATUS = """# Status
 - Guardian Answer Boundary Contracts v1
 - Guardian Source Chain Contracts v1
 - Guardian Classification Contract v1
+- Guardian Answer Foundation Integration v1
 
 ## Aktueller fachlicher Stand
 
@@ -137,11 +141,18 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Guardian Answer Boundary Contracts v1" in output
     assert "Guardian Source Chain Contracts v1" in output
     assert "Guardian Classification Contract v1" in output
+    assert "Guardian Answer Foundation Integration v1" in output
+    assert "reviewbares Paket" in output
+    assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
 
 
 def test_repository_canonical_status_matches_confirmed_product_state():
     output = ChatHandover(PROJECT_ROOT).render()
+
+    assert "Fachlich kohärente, architektonisch geklärte Teilbausteine" in output
+    assert "Bericht und Tests bleiben je Teilbaustein" in output
+    assert "nicht umgedeutet oder durch Ersatzarchitektur umgangen" in output
 
     expected_in_order = (
         "Guardian Understanding Core v1",
@@ -161,6 +172,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Guardian Answer Boundary Contracts v1",
         "Guardian Source Chain Contracts v1",
         "Guardian Classification Contract v1",
+        "Guardian Answer Foundation Integration v1",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",

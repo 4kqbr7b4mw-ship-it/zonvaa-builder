@@ -18,6 +18,11 @@ Zusammenarbeit im aktiven ZONVAA-Repository.
   Archiv und weder Arbeitsverzeichnis noch Implementierungsquelle.
 - Architekturentscheidungen dürfen nicht automatisch abgeleitet werden.
 - Schreibende Git-Operationen erfolgen nie ungefragt.
+- Fachlich kohärente, architektonisch geklärte Teilbausteine dürfen als ein
+  Arbeitspaket umgesetzt werden. Bericht und Tests bleiben je Teilbaustein
+  getrennt; zusätzlich wird die Integration geprüft. Blockierte Teile werden
+  nicht umgedeutet oder durch Ersatzarchitektur umgangen. Das Paket bleibt nur
+  zulässig, solange Diff, Machtgrenzen und Teilberichte ehrlich reviewbar sind.
 
 Chatgedächtnis ist keine verlässliche Projektquelle. Das Repository ist die
 verbindliche Quelle für Arbeitsweise und Produktstand. Für einen neuen Chat

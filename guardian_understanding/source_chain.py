@@ -58,6 +58,14 @@ NON_EXECUTING_SOURCE_CHAIN_CAPABILITIES = (
 
 
 @dataclass(frozen=True)
+class SourceChainReference:
+    source_chain_id: str
+
+    def __post_init__(self) -> None:
+        _text(self.source_chain_id, "source_chain_id")
+
+
+@dataclass(frozen=True)
 class DeclaredSourceContradiction:
     conflicting_source_chain_id: str
     declaration_reference: str
@@ -254,4 +262,3 @@ def _typed_tuple(value: object, item_type: type, name: str) -> None:
         raise TypeError("{} must be a tuple".format(name))
     if not all(isinstance(item, item_type) for item in value):
         raise TypeError("{} contains invalid items".format(name))
-

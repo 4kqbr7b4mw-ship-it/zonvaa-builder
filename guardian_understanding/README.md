@@ -74,3 +74,16 @@ Validator verlangt ihre höchste Schutzstufe als wirksame Stufe und wahrt eine
 bereitgestellte Mindeststufe. Der Bereitsteller-Nachweis dokumentiert nur die
 Herkunft, nicht Autorität oder Berechtigung. Es existieren keine Interpretation,
 Klassifikations-Runtime, B1-/B2-/B3-Aktivierung oder Ausführungsmacht.
+
+## Guardian Answer Foundation Integration v1
+
+Die drei Vertragsfamilien bleiben eigenständig und werden nur deklarativ
+verbunden: Ein Boundary Contract kann genau eine Classification-ID referenzieren;
+eine Classification kann mehrere eindeutige Source-Chain-IDs referenzieren.
+Es gibt keine Rückreferenzen, Registry, Historienauflösung oder Ladefunktion.
+
+Der Integrationsvalidator prüft ausschließlich bereitgestellte IDs, optional
+vollständige Source-Chain-Mengen und die Boundary-Schutzstufe über die kanonische
+Ordnung aus `answer_boundary.py`. Er gibt dasselbe Integrationsobjekt mit
+denselben Vertragsobjekten zurück und klassifiziert, interpretiert, aktiviert,
+normalisiert oder persistiert nichts.

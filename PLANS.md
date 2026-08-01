@@ -3,6 +3,23 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Answer Foundation Integration v1
+
+### Ziel und Grenzen
+
+Das kohärente Paket verbindet Boundary, Classification und Source Chain nur
+über immutable Referenzen und strukturelle Konsistenzprüfungen. Es ergänzt
+E7a als Paketregel, aber keine Klassifikations-, Recherche-, Antwort- oder
+Ausführungsruntime.
+
+### Teilbausteine
+
+- [x] Kanonische B-Stufen und Schutzordnung ohne Paralleldefinition integrieren.
+- [x] Boundary→Classification und Classification→Source Chain referenzieren.
+- [x] Deterministischen Gesamtvalidator ohne Normalisierung ergänzen.
+- [x] E7a und Handover-Arbeitskontext dokumentieren.
+- [x] Getrennte Teiltests, Gesamtregression, Doctor, Diff und Handover abschließen.
+
 ## Aktiver Plan: Guardian Classification Contract v1
 
 ### Ziel und Grenzen

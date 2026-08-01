@@ -69,3 +69,28 @@ Institution, Governance, data-ownership, and domain decisions are untouched.
 There is one process owner and one receipt rather than a distributed lifecycle.
 Humans retain commit and push authority. The design intentionally accepts less
 automation and requires explicit handling of stale locks and interrupted runs.
+
+## E7a – Paket-Granularität
+
+Mehrere architektonisch geklärte und fachlich zusammengehörige Teilbausteine
+werden durch ChatGPT zu einem gemeinsamen Codex-Arbeitspaket gebündelt. Die
+Paketgröße richtet sich nach fachlicher Kohäsion, nicht nach Dateianzahl,
+künstlicher Sprintgröße, Kalenderdauer oder möglichst vielen Einzelfreigaben.
+
+Ein Paket erhält einen Gesamtbericht mit getrennten Abschnitten je
+Teilbaustein: fachliches Ergebnis, geänderte Dateien, fokussierte Tests sowie
+Grenzen und Nicht-Ziele. Zusätzlich ist ein Integrationsabschnitt erforderlich.
+
+Scheitert ein Teilbaustein, wird seine Spezifikation nicht eigenmächtig
+verändert und keine Ersatzarchitektur improvisiert. Der konkrete Blocker wird
+berichtet. Unabhängige Teile dürfen nur weitergeführt werden, wenn dadurch kein
+inkonsistenter Gesamtzustand entsteht.
+
+Ein Paket ist zu groß, sobald seine Teile fachlich nicht mehr eng
+zusammengehören, der Diff nicht in einer ehrlichen Prüfsitzung bewertet werden
+kann, unabhängige Macht- oder Risikogrenzen vermischt werden oder der
+Gesamtbericht nicht mehr klar seziert werden kann.
+
+Unverändert gelten die Freigabegrenzen: Implementierung ist keine
+Commit-Freigabe, Commit ist keine Push-Freigabe, Tests und Diff-Prüfung erfolgen
+vor dem Commit und der Push wird separat freigegeben.
