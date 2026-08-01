@@ -26,6 +26,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Life Decision v1: Patientenverfügung
 - Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
 - Family Care Cross-Domain Scenario Validation v1
+- Family Care End-to-End Reference Journey v1
 
 ## Aktueller fachlicher Stand
 
@@ -44,6 +45,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Robustheits- und Negativfälle validieren den bestehenden Vertrag. Vier dabei
   gefundene Vertragslücken wurden minimal geschlossen; die Scenario Validation
   ergänzt weder Service noch Workflow oder Laufzeitlogik.
+- Ein anonymisierter End-to-End-Referenzfall validiert sechs chronologische
+  kontrollierte Gesprächszüge mit vollständiger Quellenkette. Drei ausdrücklich
+  ausgewählte Proposals führen über bestehende Revisionen zu neuem State;
+  ungeklärte Vertretungs-, Wohn- und Kostenpunkte bleiben als `KEEP_OPEN`
+  sichtbar. Journey, explizit gebundenes Professional Review und UI-neutrale
+  Experience sind konsistent, ohne automatische Semantik oder Aktivierung.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

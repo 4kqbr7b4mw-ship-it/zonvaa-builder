@@ -3,7 +3,42 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
-## Aktiver Plan: Family Care Cross-Domain Scenario Validation v1
+## Aktiver Plan: Family Care End-to-End Reference Journey v1
+
+### Ziel und Grenzen
+
+Ein anonymisierter, vollständig typisierter Referenzfall verbindet die
+bestehenden Understanding-, Proposal-, Clarification-, Revision- und
+Family-Care-Verträge über sechs kontrollierte Gesprächszüge. Er ergänzt nur
+Tests und Dokumentation; es entsteht kein Produktservice, Workflow,
+Statusautomat oder paralleler Understanding-Vertrag.
+
+### Arbeitsschritte
+
+- [x] Bestehende Verträge und Szenariovalidierung prüfen.
+- [x] Sechs chronologische Gesprächszüge mit vollständigen Quellenketten bilden.
+- [x] Reproduzierte Integrationslücken minimal schließen und regressionssichern.
+- [x] Professional Review, Experience und Robustheitsfälle validieren.
+- [x] Produktstatus, vollständige Regression, Doctor, Diff und Handover abschließen.
+
+### Befunde
+
+Der reale Mehrzugfall zeigte zwei begrenzte Integrationslücken: Proposals
+konnten eine vorhandene kontrollierte Frage nicht identitätstreu referenzieren,
+und die Family-Care-Journey verlangte fälschlich, dass jede historische
+Revision bereits dem letzten State entspricht. Der Vertrag akzeptiert nun eine
+validierte vorhandene Frage-ID und prüft historische Revisionen chronologisch
+als Kette; nur deren letztes ausgewähltes Ergebnis muss dem aktuellen State
+entsprechen. Offen gebliebene Punkte werden ausdrücklich als `KEEP_OPEN`
+erhalten und nicht als beantwortet dargestellt.
+
+Neun fokussierte End-to-End-Tests, 65 Family-Care-Tests, 55 Proposal-/
+Clarification-/Revision-Regressionstests, 79 kombinierte Understanding-/
+Life-Decisions-/Handover-Tests und die vollständige Suite mit 1044 Tests
+bestanden. Doctor, `git diff --check` und der unverändernde read-only Handover
+waren erfolgreich.
+
+## Abgeschlossener Plan: Family Care Cross-Domain Scenario Validation v1
 
 ### Ziel und Grenzen
 

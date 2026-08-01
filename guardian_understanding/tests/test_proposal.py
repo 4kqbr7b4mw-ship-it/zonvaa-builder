@@ -327,6 +327,46 @@ def test_single_proposal_may_carry_one_clarifying_question():
     )
 
 
+def test_existing_controlled_question_id_is_preserved_without_rewriting():
+    controlled_question_id = "understanding-question-family-care-support"
+    proposal_set = GuardianUnderstandingProposalService().create(
+        EMPTY,
+        STATEMENT_ID,
+        "Die typisierte Antwort bezieht sich auf die kontrollierte Frage.",
+        (
+            candidate(
+                UnderstandingOperationType.ADD_FACT,
+                "Die Antwort bleibt ein nicht autoritativer Vorschlag.",
+                value="Der Unterstützungsbedarf wurde ausdrücklich beschrieben.",
+            ),
+        ),
+        "Welche Unterstützung wird nach der Entlassung konkret benötigt?",
+        controlled_question_id,
+    )
+
+    assert proposal_set.understanding_question_id == controlled_question_id
+    assert proposal_set.understanding_question == (
+        "Welche Unterstützung wird nach der Entlassung konkret benötigt?"
+    )
+
+
+def test_controlled_question_id_requires_a_matching_question():
+    with pytest.raises(ValueError, match="requires a question"):
+        GuardianUnderstandingProposalService().create(
+            EMPTY,
+            STATEMENT_ID,
+            "Eine typisierte Antwort.",
+            (
+                candidate(
+                    UnderstandingOperationType.ADD_FACT,
+                    "Ein nicht autoritativer Vorschlag.",
+                    value="Eine ausdrücklich beschriebene Tatsache.",
+                ),
+            ),
+            understanding_question_id="understanding-question-family-care-support",
+        )
+
+
 def test_proposal_contract_has_no_confidence_or_ranking():
     proposal_set = proposals(
         EMPTY,

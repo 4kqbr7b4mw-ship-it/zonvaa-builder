@@ -48,6 +48,7 @@ PRODUCT_STATUS = """# Status
 - Guardian Life Decision v1: Patientenverfügung
 - Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie
 - Family Care Cross-Domain Scenario Validation v1
+- Family Care End-to-End Reference Journey v1
 
 ## Aktueller fachlicher Stand
 
@@ -127,6 +128,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Guardian Life Decision v1: Patientenverfügung" in output
     assert "Guardian Cross-Domain Life Situation v1" in output
     assert "Family Care Cross-Domain Scenario Validation v1" in output
+    assert "Family Care End-to-End Reference Journey v1" in output
     assert "Keine Intent Engine" in output
 
 
@@ -146,6 +148,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Guardian Life Decision v1: Patientenverfügung",
         "Guardian Cross-Domain Life Situation v1: Pflegefall in der Familie",
         "Family Care Cross-Domain Scenario Validation v1",
+        "Family Care End-to-End Reference Journey v1",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",

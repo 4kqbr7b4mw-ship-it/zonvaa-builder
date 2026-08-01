@@ -139,6 +139,7 @@ class GuardianUnderstandingProposalService:
         user_statement: str,
         candidates: Tuple[UnderstandingProposalCandidate, ...],
         understanding_question: Optional[str] = None,
+        understanding_question_id: Optional[str] = None,
     ) -> UnderstandingProposalSet:
         if not isinstance(existing, UnderstandingState):
             raise TypeError("existing must be an UnderstandingState")
@@ -172,15 +173,27 @@ class GuardianUnderstandingProposalService:
             )
             for candidate in candidates
         )
+        if understanding_question_id is not None:
+            if question is None:
+                raise ValueError("A controlled question ID requires a question")
+            _identifier(
+                understanding_question_id,
+                "understanding_question_id",
+                "understanding-question",
+            )
         return UnderstandingProposalSet(
             statement_id=statement_id,
             user_statement=user_statement,
             proposals=proposals,
             understanding_question=question,
             understanding_question_id=(
-                _question_id(statement_id, question, proposals)
-                if question is not None
-                else None
+                understanding_question_id
+                if understanding_question_id is not None
+                else (
+                    _question_id(statement_id, question, proposals)
+                    if question is not None
+                    else None
+                )
             ),
         )
 

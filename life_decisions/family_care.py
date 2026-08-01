@@ -680,11 +680,25 @@ class GuardianFamilyCareJourneyService:
 
     def _clarifications(self, source: FamilyCareJourneyInput) -> Tuple[Tuple[str, ...], Tuple[str, ...], Tuple[str, ...], Tuple[str, ...]]:
         turns = {item.turn_id: item for item in source.previous_turns}
+        turn_order = {
+            item.turn_id: index
+            for index, item in enumerate(source.previous_turns)
+        }
         statements = {
             item.statement_id: item.text
             for item in source.situation.referenced_user_statements
         }
         deferred, rejected, closed, answered = [], [], [], []
+        if tuple(item.source_turn_id for item in source.clarifications) != tuple(
+            sorted(
+                (item.source_turn_id for item in source.clarifications),
+                key=lambda item: turn_order.get(item, len(turn_order)),
+            )
+        ):
+            raise ValueError("CLARIFICATION_ORDER_MISMATCH")
+        previous_selected_state_id = None
+        previous_selected_state_hash = None
+        latest_selected = None
         for item in source.clarifications:
             turn = turns.get(item.source_turn_id)
             if turn is None:
@@ -720,12 +734,16 @@ class GuardianFamilyCareJourneyService:
                     for change in item.revision.changes
                 ):
                     raise ValueError("REVISION_OPERATION_MISMATCH")
-                if (
-                    item.revision.state != source.situation.understanding_state
-                    or item.resulting_understanding_state_id != source.situation.understanding_state_id
-                    or item.resulting_understanding_state_hash != understanding_state_content_hash(item.revision.state)
-                ):
+                if item.resulting_understanding_state_hash != understanding_state_content_hash(item.revision.state):
                     raise ValueError("RESULTING_STATE_MISMATCH")
+                if previous_selected_state_id is not None and (
+                    turn.understanding_state_id != previous_selected_state_id
+                    or turn.understanding_state_hash != previous_selected_state_hash
+                ):
+                    raise ValueError("REVISION_CHAIN_MISMATCH")
+                previous_selected_state_id = item.resulting_understanding_state_id
+                previous_selected_state_hash = item.resulting_understanding_state_hash
+                latest_selected = item
                 answered.append(turn.point_id)
             elif resolution.resolution_type is ClarificationResolutionType.KEEP_OPEN:
                 deferred.append(turn.point_id)
@@ -733,6 +751,12 @@ class GuardianFamilyCareJourneyService:
                 deferred.append(turn.point_id); rejected.append(turn.point_id)
             elif resolution.resolution_type is ClarificationResolutionType.CLOSE_WITHOUT_CHANGE:
                 closed.append(turn.point_id)
+        if latest_selected is not None and (
+            latest_selected.revision.state != source.situation.understanding_state
+            or latest_selected.resulting_understanding_state_id != source.situation.understanding_state_id
+            or latest_selected.resulting_understanding_state_hash != source.situation.understanding_state_hash
+        ):
+            raise ValueError("RESULTING_STATE_MISMATCH")
         return tuple(item for item in deferred if item), tuple(item for item in rejected if item), tuple(item for item in closed if item), tuple(item for item in answered if item)
 
     @staticmethod

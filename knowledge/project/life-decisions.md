@@ -146,6 +146,22 @@ quellenbezogen und ohne automatische Empfehlung oder Entscheidung verarbeitet
 werden. Die vollständige Matrix und verbleibende Risiken stehen in
 `knowledge/project/family-care-scenario-validation.md`.
 
+### End-to-End Reference Journey v1
+
+Ein anonymisierter Referenzfall verbindet die bereits bestehenden Verträge
+über sechs kontrollierte Gesprächszüge. Jede Frage bleibt an den ersten aktiven
+wesentlichen Punkt gebunden; jede Antwort wird über Proposal, ausdrückliche
+Clarification Resolution und gegebenenfalls bestehende Understanding Revision
+quellenbezogen weitergeführt. Ausgewählte Proposals verändern ihre Operation
+nicht. Punkte ohne ausreichende Klärung bleiben ausdrücklich offen und lösen
+keine Revision aus.
+
+Die Validierung ergänzt keinen Produktservice und interpretiert keine Sprache.
+Sie bestätigt die chronologische Revisionskette, den Schleifenschutz, höchstens
+eine aktive Frage, explizite Review-Bindungen und eine konsistente UI-neutrale
+Experience. Der vollständige Fall steht in
+`knowledge/project/family-care-end-to-end-reference-journey.md`.
+
 ## Datenprinzip
 
 Nutzer bestimmen den Speicherort ihrer Originaldateien. Originale verbleiben möglichst lokal, auf einem NAS oder im persönlichen Cloudspeicher. ZONVAA ist eine Intelligenz- und Entscheidungsschicht und kein zentraler Besitzer der Originale. Nur ausdrücklich freigegebene Inhalte dürfen verarbeitet werden. Sensible Inhalte müssen vor externer Verarbeitung löschbar oder schwärzbar sein. Originale, extrahierte Fakten, Interpretationen und Entscheidungen werden getrennt behandelt. Freigaben und Löschungen bleiben nachvollziehbar; eine stillschweigende Wiederverwendung findet nicht statt.
