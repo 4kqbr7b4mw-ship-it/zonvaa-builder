@@ -47,6 +47,8 @@ from guardian_understanding.answer_boundary import (
     AnswerCapability,
     AnswerOperatingMode,
     GuardianAnswerBoundaryValidator,
+    answer_mode_protection_level,
+    most_protective_answer_mode,
 )
 from guardian_understanding.source_chain import (
     DeclaredSourceContradiction,
@@ -60,6 +62,15 @@ from guardian_understanding.source_chain import (
     SourceRecheckKind,
     SourceRecheckRequirement,
     SourceUncertaintyStatus,
+)
+from guardian_understanding.classification import (
+    ClassificationCapability,
+    ClassificationProviderType,
+    ClassificationReason,
+    ClassificationUncertaintyStatus,
+    ClassificationValidationError,
+    GuardianClassificationContract,
+    GuardianClassificationValidator,
 )
 
 __all__ = [
@@ -99,6 +110,8 @@ __all__ = [
     "AnswerCapability",
     "AnswerOperatingMode",
     "GuardianAnswerBoundaryValidator",
+    "answer_mode_protection_level",
+    "most_protective_answer_mode",
     "DeclaredSourceContradiction",
     "GuardianAnswerContextReference",
     "GuardianSourceChainContract",
@@ -110,4 +123,11 @@ __all__ = [
     "SourceRecheckKind",
     "SourceRecheckRequirement",
     "SourceUncertaintyStatus",
+    "ClassificationCapability",
+    "ClassificationProviderType",
+    "ClassificationReason",
+    "ClassificationUncertaintyStatus",
+    "ClassificationValidationError",
+    "GuardianClassificationContract",
+    "GuardianClassificationValidator",
 ]

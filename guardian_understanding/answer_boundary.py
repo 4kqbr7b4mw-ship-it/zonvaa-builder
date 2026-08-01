@@ -52,6 +52,25 @@ _PROTECTION_LEVEL = {
 }
 
 
+def answer_mode_protection_level(mode: AnswerOperatingMode) -> int:
+    """Return the canonical ADR-0047 protection level for a typed mode."""
+
+    _enum(mode, AnswerOperatingMode, "mode")
+    return _PROTECTION_LEVEL[mode]
+
+
+def most_protective_answer_mode(
+    modes: Tuple[AnswerOperatingMode, ...],
+) -> AnswerOperatingMode:
+    """Select the highest typed mode using only the canonical protection order."""
+
+    if not isinstance(modes, tuple) or not modes:
+        raise ValueError("modes must be a non-empty tuple")
+    for mode in modes:
+        _enum(mode, AnswerOperatingMode, "mode")
+    return max(modes, key=answer_mode_protection_level)
+
+
 @dataclass(frozen=True)
 class AnswerBoundaryContract:
     requested_mode: AnswerOperatingMode
@@ -104,7 +123,9 @@ class GuardianAnswerBoundaryValidator:
         if not isinstance(contract, AnswerBoundaryContract):
             raise TypeError("contract must be an AnswerBoundaryContract")
 
-        if _PROTECTION_LEVEL[contract.effective_mode] < _PROTECTION_LEVEL[contract.requested_mode]:
+        if answer_mode_protection_level(
+            contract.effective_mode
+        ) < answer_mode_protection_level(contract.requested_mode):
             _invalid("MODE_DOWNGRADE", "effective_mode must not reduce protection")
 
         allowed = set(contract.allowed_capabilities)

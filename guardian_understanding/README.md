@@ -61,3 +61,16 @@ Zeitpunkt, Version, Quellenart noch Widerspruch erzeugen automatisch Vorrang,
 Ablösung, Bewertung oder Statusänderung. Der Validator prüft nur Typen und
 Struktur. Er recherchiert und persistiert nicht, besitzt keine Ausführungsmacht
 und ist zur Laufzeit nicht mit B1, B2 oder B3 verbunden.
+
+## Guardian Classification Contract v1
+
+Der unveränderliche Klassifikationsnachweis beschreibt ausschließlich eine
+bereits bereitgestellte Zuordnung. Er verwendet `AnswerOperatingMode` und die
+kanonische Schutzordnung direkt aus den Answer Boundary Contracts; es gibt
+weder eine zweite B-Stufen-Enum noch eine parallele Eskalationsmatrix.
+
+Eine nicht leere Kandidatenmenge hält Unsicherheit typisiert fest. Der
+Validator verlangt ihre höchste Schutzstufe als wirksame Stufe und wahrt eine
+bereitgestellte Mindeststufe. Der Bereitsteller-Nachweis dokumentiert nur die
+Herkunft, nicht Autorität oder Berechtigung. Es existieren keine Interpretation,
+Klassifikations-Runtime, B1-/B2-/B3-Aktivierung oder Ausführungsmacht.

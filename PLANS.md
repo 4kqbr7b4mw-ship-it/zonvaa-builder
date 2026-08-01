@@ -3,6 +3,23 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Classification Contract v1
+
+### Ziel und Grenzen
+
+Die dritte gesondert freigegebene Ausbaustufe aus ADR-0047 dokumentiert nur
+eine bereits bereitgestellte Klassifikation. B-Stufen und Schutzordnung stammen
+ausschließlich aus den Answer Boundary Contracts. Der Baustein interpretiert,
+klassifiziert, autorisiert und aktiviert nichts und besitzt keine Runtime.
+
+### Arbeitsschritte
+
+- [x] ADR, Boundary-, Source-Chain-Verträge und Regressionen prüfen.
+- [x] Bestehende Schutzordnung kanonisch referenzierbar machen.
+- [x] Immutable Klassifikationsnachweis und Strukturvalidator ergänzen.
+- [x] Kandidaten-, Mindestschutz-, Herkunfts- und Negativtests ergänzen.
+- [x] Produktstatus, vollständige Regression, Doctor, Diff und Handover abschließen.
+
 ## Aktiver Plan: Guardian Source Chain Contracts v1
 
 ### Ziel und Grenzen

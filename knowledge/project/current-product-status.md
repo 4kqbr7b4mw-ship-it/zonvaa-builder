@@ -30,6 +30,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Family Care Review UI v1 (lokales internes Prüfwerkzeug)
 - Guardian Answer Boundary Contracts v1
 - Guardian Source Chain Contracts v1
+- Guardian Classification Contract v1
 
 ## Aktueller fachlicher Stand
 
@@ -67,6 +68,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   bleiben deklarativ; der Validator bewertet, recherchiert, ersetzt oder
   priorisiert keine Quelle und besitzt weder B1-/B2-/B3-Laufzeitkopplung noch
   Persistenz- oder Ausführungsmacht.
+- Der Guardian Classification Contract dokumentiert bereits bereitgestellte
+  B1-/B2-/B3-Zuordnungen als unveränderlichen Nachweis. Kandidaten und
+  Mindestschutz werden ausschließlich über die kanonische Boundary-Schutzordnung
+  geprüft; Herkunft bedeutet keine Autorisierung. Der Baustein klassifiziert
+  und aktiviert nichts und besitzt keine Runtime oder Ausführungsmacht.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen
