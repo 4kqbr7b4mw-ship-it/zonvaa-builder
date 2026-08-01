@@ -40,6 +40,14 @@ from guardian_understanding.clarification import (
     ProposalDisposition,
     ProposalDispositionType,
 )
+from guardian_understanding.answer_boundary import (
+    ALWAYS_FORBIDDEN_CAPABILITIES,
+    AnswerBoundaryContract,
+    AnswerBoundaryValidationError,
+    AnswerCapability,
+    AnswerOperatingMode,
+    GuardianAnswerBoundaryValidator,
+)
 
 __all__ = [
     "Contradiction",
@@ -72,4 +80,10 @@ __all__ = [
     "UnderstandingUpdate",
     "Unknown",
     "UnknownStatus",
+    "ALWAYS_FORBIDDEN_CAPABILITIES",
+    "AnswerBoundaryContract",
+    "AnswerBoundaryValidationError",
+    "AnswerCapability",
+    "AnswerOperatingMode",
+    "GuardianAnswerBoundaryValidator",
 ]

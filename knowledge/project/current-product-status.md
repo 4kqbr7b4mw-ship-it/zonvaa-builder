@@ -28,6 +28,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Family Care Cross-Domain Scenario Validation v1
 - Family Care End-to-End Reference Journey v1
 - Guardian Family Care Review UI v1 (lokales internes Prüfwerkzeug)
+- Guardian Answer Boundary Contracts v1
 
 ## Aktueller fachlicher Stand
 
@@ -55,6 +56,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Eine kleine lokale Review UI macht denselben typisierten Referenzfall
   schrittweise prüfbar. Sie ist weder Nutzer-App noch Produktionsfrontend und
   hält ausschließlich einen flüchtigen UI-Schrittzeiger im Arbeitsspeicher.
+- Die Guardian Answer Boundary Contracts bilden B1, B2 und B3 ausschließlich
+  als unveränderliches Sicherheits- und Auditmetadatum ab. Ihr deterministischer
+  Validator erlaubt nur Schutzeskalation, erzwingt die B3-Nicht-Bestätigung und
+  besitzt keinerlei Klassifizierungs-, Aktivierungs-, Routing- oder
+  Zustandsänderungsbefugnis.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

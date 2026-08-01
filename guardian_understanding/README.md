@@ -32,3 +32,18 @@ operation and resulting `UnderstandingRevision` remain separately traceable.
 
 A later semantic component may prepare typed resolution suggestions only. It
 must not choose a resolution, select a proposal, or activate a revision.
+
+## Guardian Answer Boundary Contracts v1
+
+ADR-0047 ergänzt das Understanding Model um interne, unveränderliche
+Antwortgrenzen für allgemeine Orientierung (`B1`), persönliche Vorbereitung
+(`B2`) und die zwingende fachliche Nicht-Bestätigung (`B3`). Die Betriebsart
+ist ausschließlich bereits typisiertes Sicherheits- und Auditmetadatum.
+
+`GuardianAnswerBoundaryValidator` prüft deterministisch, dass Schutz nur
+gleich bleibt oder erhöht wird, B2 keine fachliche Einzelfallentscheidung
+zulässt und B3 eine kontrollierte klare Nicht-Bestätigung enthält. Sämtliche
+Fähigkeiten zum Ändern von States, Artefakten, Resolutionen, Rechten,
+Freigaben, Journey-Status oder Quellenketten sowie Aktivierung, Workflow und
+Routing müssen ausdrücklich verboten bleiben. Der Validator interpretiert
+keine Sprache, klassifiziert keine Anfrage und führt nichts aus.

@@ -3,6 +3,24 @@
 Für längere Arbeitspakete wird dieser Plan während der Umsetzung aktualisiert.
 Er dokumentiert bestätigte Fakten und ersetzt keine ADR.
 
+## Aktiver Plan: Guardian Answer Boundary Contracts v1
+
+### Ziel und Grenzen
+
+Die kleinste gesondert freigegebene Ausbaustufe aus ADR-0047 ergänzt nur
+immutable B1-/B2-/B3-Metadaten und einen deterministischen Validator. Sie
+klassifiziert keine Anfragen, erzeugt keine Antworten und führt keine Aktion,
+Recherche, Aktivierung, Persistenz oder Zustandsänderung aus.
+
+### Arbeitsschritte
+
+- [x] Bestehende Understanding-Verträge und ADR-0047 vollständig prüfen.
+- [x] Typisierte Betriebsarten, Capabilities und Boundary-Vertrag ergänzen.
+- [x] Schutzeskalation, B2-Grenze, B3-Nicht-Bestätigung und absolute
+  Ausführungsverbote deterministisch validieren.
+- [x] Positive, negative, immutable und deterministische Tests ergänzen.
+- [x] Produktstatus, Regression, Doctor, Diff und Handover abschließen.
+
 ## Aktiver Plan: Guardian Family Care Review UI v1
 
 ### Ziel und Grenzen
