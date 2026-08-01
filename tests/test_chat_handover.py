@@ -57,6 +57,7 @@ PRODUCT_STATUS = """# Status
 - Guardian Source Chain Contracts v1
 - Guardian Classification Contract v1
 - Guardian Answer Foundation Integration v1
+- Guardian Controlled Orientation Package v1
 
 ## Aktueller fachlicher Stand
 
@@ -142,6 +143,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Guardian Source Chain Contracts v1" in output
     assert "Guardian Classification Contract v1" in output
     assert "Guardian Answer Foundation Integration v1" in output
+    assert "Guardian Controlled Orientation Package v1" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -173,6 +175,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Guardian Source Chain Contracts v1",
         "Guardian Classification Contract v1",
         "Guardian Answer Foundation Integration v1",
+        "Guardian Controlled Orientation Package v1",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",

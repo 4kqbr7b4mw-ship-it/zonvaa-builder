@@ -32,6 +32,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Source Chain Contracts v1
 - Guardian Classification Contract v1
 - Guardian Answer Foundation Integration v1
+- Guardian Controlled Orientation Package v1
 
 ## Aktueller fachlicher Stand
 
@@ -79,6 +80,13 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   strukturellen Validator. Schutzvergleiche verwenden nur die kanonische
   Boundary-Ordnung; es entstehen keine Rückreferenz, Runtime, Aktivierung,
   Interpretation, Normalisierung oder Zustandsänderung.
+- Das Guardian Controlled Orientation Package dokumentiert bereits
+  bereitgestellte allgemeine B1-Orientierung als unveränderlichen Nachweis.
+  Nur exakt B1 klassifizierte und begrenzte Inhalte mit mindestens einer
+  vollständig und konsistent referenzierten Source Chain sind zulässig.
+  Text, Quellen und fachliche Prüfung werden weder erzeugt noch semantisch
+  bewertet; Herkunft und Prüfstatus bleiben rein deklarativ, ohne Runtime oder
+  Ausführungsmacht.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

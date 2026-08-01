@@ -81,6 +81,7 @@ class ClassificationReference:
 
 @dataclass(frozen=True)
 class AnswerBoundaryContract:
+    boundary_id: str
     requested_mode: AnswerOperatingMode
     effective_mode: AnswerOperatingMode
     classification_reason: str
@@ -94,6 +95,7 @@ class AnswerBoundaryContract:
     classification_reference: Optional[ClassificationReference] = None
 
     def __post_init__(self) -> None:
+        _text(self.boundary_id, "boundary_id")
         _enum(self.requested_mode, AnswerOperatingMode, "requested_mode")
         _enum(self.effective_mode, AnswerOperatingMode, "effective_mode")
         _text(self.classification_reason, "classification_reason")

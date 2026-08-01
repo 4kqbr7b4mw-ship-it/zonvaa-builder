@@ -2736,3 +2736,40 @@ Vorsorgevollmacht-Journey verbinden.
   statischen Katalog gebunden. Fehlende Bindungen blockieren sicher.
 - Conversation- und Professional-Review-Readiness bleiben getrennte,
   ausdrücklich begrenzte Aussagen ohne fachliche Freigabewirkung.
+# Guardian Controlled Orientation Package v1
+
+## Ziel und Grenzen
+
+Einen unveränderlichen, typisierten Nachweis für bereits bereitgestellte
+allgemeine B1-Orientierung ergänzen und vollständig mit Classification,
+Boundary, Source Chains und Answer Foundation verbinden. Keine Textgenerierung,
+Semantik, Recherche, Runtime, Aktivierung, Persistenz oder Zustandsänderung.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Preflight, ADR-0046, ADR-0047 und bestehende Vertragsfamilien prüfen.
+- [x] B1 Orientation Contract und rein strukturellen Validator ergänzen.
+- [x] Exakte B1-Sicherheitsgrenze über kanonische Typen ergänzen.
+- [x] Vollständigen Controlled-Orientation-Envelope ergänzen.
+- [x] Fokussierte Vertrags-, Sicherheits- und Integrationstests ergänzen.
+- [x] Dokumentations-, Guardian- und vollständige Regression abschließen.
+- [x] Doctor, Diff-Prüfung, Status und read-only Handover abschließen.
+
+## Entscheidungen
+
+- `AnswerBoundaryContract` erhält die kleinste fehlende stabile `boundary_id`,
+  damit die vorgeschriebene rein deklarative Boundary-Referenz möglich ist.
+- Provider-Herkunft und fachlicher Prüfstatus sind spezifische kleine Enums;
+  der Classification-Provider beschreibt eine andere Herkunftssemantik.
+- Eine durchgeführte fachliche Prüfung benötigt eine Referenz. Andere Status
+  dürfen keine Prüfungsreferenz tragen und dadurch keine Bestätigung erfinden.
+- Der vollständige B1-Envelope akzeptiert keine partielle Source-Chain-Prüfung
+  und bewahrt Reihenfolge sowie Objektidentität unverändert.
+
+## Teststrategie
+
+- Vertragsstruktur, Immutability, Provider- und Prüfstatusvarianten.
+- Ausschließlich B1/B1, keine professionelle Einzelfallentscheidung.
+- Exakte Classification-, Boundary- und Source-Chain-Bindungen.
+- Negative Machtgrenzen sowie Regression aller Guardian-Vertragsfamilien,
+  E7a und Chat-Handover.

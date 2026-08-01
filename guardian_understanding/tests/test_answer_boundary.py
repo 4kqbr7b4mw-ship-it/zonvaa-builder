@@ -34,6 +34,7 @@ def contract(requested, effective=None, **changes):
         ),
     }[effective]
     values = {
+        "boundary_id": "boundary-1",
         "requested_mode": requested,
         "effective_mode": effective,
         "classification_reason": "Bereits typisierter Prüfgrund.",

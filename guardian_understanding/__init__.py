@@ -79,6 +79,18 @@ from guardian_understanding.answer_foundation import (
     GuardianAnswerFoundationIntegration,
     GuardianAnswerFoundationIntegrationValidator,
 )
+from guardian_understanding.controlled_orientation import (
+    B1OrientationContract,
+    B1OrientationContractValidator,
+    B1OrientationSafetyValidator,
+    BoundaryReference,
+    ControlledOrientationCapability,
+    ControlledOrientationEnvelope,
+    ControlledOrientationEnvelopeValidator,
+    ControlledOrientationValidationError,
+    OrientationProviderType,
+    ProfessionalReviewStatus,
+)
 
 __all__ = [
     "Contradiction",
@@ -142,4 +154,14 @@ __all__ = [
     "AnswerFoundationIntegrationError",
     "GuardianAnswerFoundationIntegration",
     "GuardianAnswerFoundationIntegrationValidator",
+    "B1OrientationContract",
+    "B1OrientationContractValidator",
+    "B1OrientationSafetyValidator",
+    "BoundaryReference",
+    "ControlledOrientationCapability",
+    "ControlledOrientationEnvelope",
+    "ControlledOrientationEnvelopeValidator",
+    "ControlledOrientationValidationError",
+    "OrientationProviderType",
+    "ProfessionalReviewStatus",
 ]

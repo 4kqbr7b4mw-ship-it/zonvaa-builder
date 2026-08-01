@@ -87,3 +87,28 @@ vollständige Source-Chain-Mengen und die Boundary-Schutzstufe über die kanonis
 Ordnung aus `answer_boundary.py`. Er gibt dasselbe Integrationsobjekt mit
 denselben Vertragsobjekten zurück und klassifiziert, interpretiert, aktiviert,
 normalisiert oder persistiert nichts.
+
+## Guardian Controlled Orientation Package v1
+
+Eine kontrollierte B1-Orientierung beschreibt ausschließlich bereits
+bereitgestellte Inhalte. Sie generiert, formuliert, übersetzt, verbessert oder
+interpretiert keinen Text. Ein vollständiger Nachweis verlangt exakt eine
+wirksame B1-Classification, eine B1-Boundary und mindestens eine vollständig
+bereitgestellte, in Classification und Orientierung identisch referenzierte
+Source Chain.
+
+Allgemeine B1-Orientierung darf Begriffe und allgemeine Abläufe erklären,
+typische Optionen oder Risiken darstellen, Unsicherheit und Quellenstände
+sichtbar machen sowie zu persönlicher Vorbereitung oder professioneller
+Prüfung überleiten. Sie darf keine persönliche Einzelfallentscheidung,
+individuelle Rechts-, Steuer-, Finanz- oder medizinische Entscheidung,
+Handlungsempfehlung, professionelle Bestätigung oder Ausführung darstellen.
+Da v1 keine natürliche Sprache auswertet, sichert die vorgelagerte typisierte
+B1-Classification diese Grenze; die Textfelder werden nur strukturell auf
+nicht leere, unveränderte Werte geprüft.
+
+Der Provider-Nachweis dokumentiert nur die Herkunft und erteilt keine
+Autorisierung. Der fachliche Prüfstatus ist rein deklarativ; nur eine als
+durchgeführt deklarierte Prüfung benötigt eine Referenz, bestätigt aber weder
+Richtigkeit noch Qualifikation. Der Baustein recherchiert und persistiert
+nicht, besitzt keine Antwort-Runtime und keine Ausführungsmacht.
