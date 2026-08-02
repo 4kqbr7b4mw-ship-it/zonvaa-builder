@@ -55,7 +55,7 @@ def test_affected_adrs_reference_one_canonical_rule_without_weakening():
         assert "unverändert" in read(path)
 
 
-def test_trust_council_document_is_complete_but_unfilled():
+def test_founder_acknowledgement_is_documented_with_temporary_role_limit():
     trust = read(
         GOVERNANCE / "trust-council-acknowledgement-adr-0058.md"
     )
@@ -63,7 +63,7 @@ def test_trust_council_document_is_complete_but_unfilled():
     for value in (
         "Dokument-ID: `TRUST-ACK-ADR-0058-V1`",
         "Dokumentversion: 1.0",
-        "Kenntnisnahmedatum: _auszufüllen_",
+        "Kenntnisnahmedatum: 02.08.2026",
         "## Beratungsgegenstand",
         "Vetodomäne 2",
         "### Datenhoheit und Depersonalisierungsgrenze",
@@ -72,15 +72,48 @@ def test_trust_council_document_is_complete_but_unfilled():
         "### Betriebsblock",
         "### Widerruf und AAV/UODL",
         "## Ergebnisfeld der Kenntnisnahme",
-        "Ergebnis: `OFFEN`",
+        "Ergebnis: `ZUR KENNTNIS GENOMMEN`",
+        "Kenntnis genommen durch: Michael Giese",
+        "Institutionsgründer in konstituierender Funktion",
+        "vor erstmaliger Konstituierung des ordentlichen Vertrauensrats",
+        "bestätigt, geändert oder ersetzt werden",
         "## Vorbehalte, Auflagen und Sondervoten",
         "## Provenienz",
-        "keine Runtime-Freigabe",
-        "keine Implementierungsfreigabe",
-        "keine Produktfreigabe",
+        "keine B2-Runtime",
+        "keine allgemeine B2-Implementierung",
+        "keine B2-Produktfreigabe",
     ):
         assert value in trust
-    assert "Beschluss- oder Kenntnisnahmeprovenienz: _nicht vorhanden" in trust
+    assert "ordentliche Vertrauensratsbestätigung ausstehend" in trust
+    assert "keine allgemeine B2-Implementierung" in trust
+
+
+def test_adr_0059_implementation_approval_is_separate_and_strictly_bounded():
+    approval = read(
+        GOVERNANCE / "institutional-implementation-approval-adr-0059.md"
+    )
+
+    for value in (
+        "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0059-V1",
+        "Status: `ERTEILT`",
+        "Michael Giese",
+        "Institutionsgründer in konstituierender Funktion",
+        "Guardian B2 Data Corridor and Consent Boundary v1",
+        "ADR-0059",
+        "immutable B2 Data Corridor Contracts",
+        "Consent Boundary",
+        "Data Classification",
+        "Depersonalization Boundary",
+        "deterministischer Validator",
+        "read-only Snapshot",
+        "B2 Authority",
+        "B2 Authorization Grants",
+        "B2 Runtime",
+        "personenbezogene Verarbeitung",
+        "kein Präzedenzfall",
+        "Commit und Push bleiben davon getrennt",
+    ):
+        assert value in approval
 
 
 def test_institutional_process_separates_roles_documents_and_gates():
@@ -99,17 +132,18 @@ def test_institutional_process_separates_roles_documents_and_gates():
     assert "automatisch abgeleitet werden" in process
 
 
-def test_b2_readiness_keeps_human_gates_and_runtime_blocked():
+def test_b2_readiness_allows_only_adr_0059_and_keeps_runtime_blocked():
     readiness = read(GOVERNANCE / "b2-readiness-statement.md")
 
     for row in (
         "| Betriebsblock | ABGESCHLOSSEN |",
         "| ADR-0058 | RATIFIZIERT |",
-        "| I4-/Regelquellenklärung | GEKLÄRT OHNE HISTORISCHE I4-REKONSTRUKTION |",
-        "| Vertrauensratsunterlage | VORBEREITET UND UNAUSGEFÜLLT |",
-        "| Vertrauensrats-Kenntnisnahme | OFFEN |",
-        "| Institutionelle Implementierungsfreigabe | OFFEN |",
-        "| B2-Implementierung | GESPERRT |",
+        "| Regelquellenklärung | ABGESCHLOSSEN |",
+        "| Vertrauensrats-Kenntnisnahme | DOKUMENTIERT DURCH INSTITUTIONSGRÜNDER IN KONSTITUIERENDER FUNKTION |",
+        "| Ordentliche Vertrauensratsbestätigung | AUSSTEHEND |",
+        "| Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |",
+        "| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERUNG ZULÄSSIG |",
+        "| Alle weiteren B2-Pakete | GESPERRT |",
         "| B2-Runtime | GESPERRT |",
     ):
         assert row in readiness

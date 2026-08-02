@@ -223,24 +223,30 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Physical Persistence speichern keine B2-Inhalte, Metrics und Notifications
   verarbeiten sie nicht. ADR-0058 implementiert weder Runtime noch Vertrag,
   Provider, API oder Produktfunktion.
-- Jede B2-Implementierung bleibt bis zur dokumentierten
-  Vertrauensrats-Kenntnisnahme und einer gesonderten institutionellen
-  Implementierungsfreigabe blockiert.
+- Die Gründer-Kenntnisnahme zu ADR-0058 ist am 02.08.2026 durch Michael Giese
+  in konstituierender Funktion dokumentiert. Sie muss in der ersten
+  ordentlichen Sitzung des künftig konstituierten Vertrauensrats bestätigt,
+  geändert oder ersetzt werden.
 - Die C1 Governance Consolidation ordnet C1, Institution, Authority und
-  Runtime kanonisch ein und stellt die formale, noch unausgefüllte
-  Vertrauensrats-Kenntnisnahmevorlage für ADR-0058 bereit. Die Prüfung fand
+  Runtime kanonisch ein und stellte die formale
+  Vertrauensrats-Kenntnisnahmeunterlage für ADR-0058 bereit. Die Prüfung fand
   keine ursprüngliche I4-Quellnorm und keine mehrfachen ADR-Verweise darauf;
   deshalb wurde C1 nicht verändert und keine historische Regel rekonstruiert.
 - Der B2-Readiness-Stand bestätigt den abgeschlossenen Betriebsblock und die
   abgeschlossene Verfassungsanalyse. Die historische I4-Frage ist als nicht
   belegbar geklärt; `GOV-SYSTEM-BEHAVIOR-ONLY-1` konsolidiert den bereits
-  ratifizierten gemeinsamen Kern als neue C2-Referenz. Kenntnisnahme und
-  institutionelle Freigabe bleiben offen.
+  ratifizierten gemeinsamen Kern als neue C2-Referenz.
 - Institution Layer Completion v1 dokumentiert Analyse, Referenz-Mapping,
-  vollständige unausgefüllte Vertrauensratsunterlage, institutionellen
-  Freigabeablauf und eine nicht ausführende Future B2 Package Map. Keine
-  B2-Runtime oder B2-Implementierung ist autorisiert.
-- Der nächste Produktbaustein ist noch nicht bestimmt.
+  Gründer-Kenntnisnahme, institutionellen Freigabeablauf und eine nicht
+  ausführende Future B2 Package Map.
+- Die gesonderte institutionelle Freigabe
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0059-V1` erlaubt ausschließlich Guardian
+  B2 Data Corridor and Consent Boundary v1: ADR-0059, immutable Verträge,
+  Consent Boundary, Data Classification, Depersonalization Boundary,
+  deterministischen Validator, read-only Snapshot, Tests und Dokumentation.
+- Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
+- Der nächste zulässige begrenzte Baustein ist Guardian B2 Data Corridor and
+  Consent Boundary v1.
 
 ## Bewusste Produktgrenzen
 
@@ -256,4 +262,5 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Noch nicht bestimmt. Der Handover wählt keinen Produktbaustein automatisch aus.
+Guardian B2 Data Corridor and Consent Boundary v1 im exakt freigegebenen
+Umfang. Der Handover erweitert diese institutionelle Freigabe nicht.

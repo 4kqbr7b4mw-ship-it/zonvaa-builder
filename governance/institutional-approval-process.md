@@ -25,3 +25,17 @@ Diese Dokumentation ist keine Workflow-Engine. Sie erzeugt keine Entscheidung,
 Kenntnisnahme, Freigabe, Runtime, Autorisierung oder Implementierung. Kein
 Schritt darf aus dem erfolgreichen Abschluss eines vorherigen Schritts
 automatisch abgeleitet werden.
+
+## Dokumentierter Übergangsstand für ADR-0059
+
+- Schritt 4 wurde für ADR-0058 am 02.08.2026 durch Michael Giese als
+  Institutionsgründer in konstituierender Funktion dokumentiert.
+- Diese Gründer-Kenntnisnahme gilt nur bis zur erstmaligen Konstituierung des
+  ordentlichen Vertrauensrats und muss in dessen erster ordentlicher Sitzung
+  bestätigt, geändert oder ersetzt werden.
+- Schritt 5 wurde ausschließlich für `Guardian B2 Data Corridor and Consent
+  Boundary v1` durch
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0059-V1` erteilt.
+- Die dokumentierte Freigabe erlaubt keinen anderen B2-Baustein und keine
+  B2-Runtime. Jeder weitere Scope beginnt erneut am jeweils erforderlichen
+  institutionellen Gate.

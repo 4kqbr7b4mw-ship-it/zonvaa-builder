@@ -2,21 +2,21 @@
 
 Dokument-ID: `TRUST-ACK-ADR-0058-V1`
 
-Status: Vorlage – Kenntnisnahme offen
+Status: Kenntnisnahme dokumentiert – ordentliche Vertrauensratsbestätigung ausstehend
 
 Normstufe: C2-Verfahrensnachweis
 
 Dokumentversion: 1.0
 
-Kenntnisnahmedatum: _auszufüllen_
+Kenntnisnahmedatum: 02.08.2026
 
 ## Bezug und Zweck
 
-Diese Vorlage dokumentiert ausschließlich die institutionelle Kenntnisnahme
+Dieses Dokument weist ausschließlich die institutionelle Kenntnisnahme
 des Vertrauensrats zu
 `knowledge/adr/ADR-0058-guardian-b2-architecture-v1.md`.
 
-Sie betrifft Vetodomäne 2: Datenverwendung und externe Recherche. Die Vorlage
+Sie betrifft Vetodomäne 2: Datenverwendung und externe Recherche. Die Kenntnisnahme
 erteilt keine Zustimmung, Autorisierung oder Freigabe und ersetzt weder das
 Prüf- und Vetoverfahren der Governance Charter noch eine gesonderte spätere
 Architektur- oder Implementierungsentscheidung.
@@ -102,48 +102,66 @@ Unterlage erfindet keine Lösch-, Speicher- oder Widerrufslogik.
   noch nicht als B2-Verträge entschieden.
 - Provider-, Credential-, Ausführungs- und Missbrauchsgrenzen für B2 sind noch
   nicht entschieden.
-- Die Vertrauensrats-Kenntnisnahme selbst ist noch nicht erfolgt.
+- Die erstmalige Bestätigung, Änderung oder Ersetzung durch den ordentlichen
+  Vertrauensrat ist noch nicht erfolgt.
 
 ## Offene Folgeentscheidungen
 
-- institutionelle Freigabe nach erfolgter Kenntnisnahme,
 - jeweils gesonderte Architekturentscheidungen für B2 Authority und Grants,
   Datenkorridor und Depersonalisierung, Invocation, Provider und Runtime,
-- jeweils gesonderte begrenzte Implementierungsaufträge.
+- jeweils gesonderte begrenzte Implementierungsaufträge; ausschließlich
+  ADR-0059 besitzt derzeit eine eigene dokumentierte Freigabe.
 
 ## Ergebnisfeld der Kenntnisnahme
 
-- Ergebnis: `OFFEN`
-- Kenntnis genommen durch: _nicht eingetragen_
-- Rolle oder Mandatsreferenz: _nicht eingetragen_
-- Datum und Zeitpunkt: _nicht eingetragen_
-- Anmerkungen oder Auflagen: _nicht eingetragen_
-- Veto oder Eskalationsreferenz: _nicht eingetragen_
+- Ergebnis: `ZUR KENNTNIS GENOMMEN`
+- Kenntnis genommen durch: Michael Giese
+- Rolle oder Mandatsreferenz: Institutionsgründer in konstituierender Funktion
+  vor erstmaliger Konstituierung des ordentlichen Vertrauensrats
+- Datum: 02.08.2026
+- Feststellung: Prüfung und Anerkennung der in ADR-0058 festgelegten
+  verfassungsrechtlichen Grenzen
+- Anmerkungen oder Auflagen: _nicht dokumentiert_
+- Veto oder Eskalationsreferenz: _nicht dokumentiert_
 
 ## Teilnehmende oder verantwortliche Rollen
 
-- Vertrauensratsvertretung: _auszufüllen_
-- Protokollverantwortung: _auszufüllen_
-- Chief-Architect-Referenz: _auszufüllen_
-- Weitere beratende Rollen: _auszufüllen_
+- Kenntnisnehmender in konstituierender Funktion: Michael Giese
+- Ordentliche Vertrauensratsvertretung: _noch nicht konstituiert_
+- Protokollverantwortung: _nicht eingetragen_
+- Chief-Architect-Referenz: _nicht eingetragen_
+- Weitere beratende Rollen: _nicht eingetragen_
 
 ## Vorbehalte, Auflagen und Sondervoten
 
-- Vorbehalte oder Auflagen: _auszufüllen_
-- Minderheits- oder Sondervotum: _auszufüllen oder ausdrücklich als nicht
-  vorhanden zu kennzeichnen_
+- Vorbehalte oder Auflagen: _nicht dokumentiert_
+- Minderheits- oder Sondervotum: _nicht dokumentiert; keine ordentliche
+  Vertrauensratssitzung hat stattgefunden_
+
+## Rollenbegrenzung und Bestätigungspflicht
+
+Diese Gründer-Kenntnisnahme gilt ausschließlich bis zur erstmaligen
+Konstituierung des ordentlichen Vertrauensrats. Sie muss bei dessen erster
+ordentlicher Sitzung ausdrücklich bestätigt, geändert oder ersetzt werden.
+Bis dahin wird weder eine ordentliche Ratsentscheidung noch ein dauerhaftes
+Vertretungsmandat behauptet.
 
 ## Provenienz
 
-- Bezug: ADR-0058, Version am Repository-Stand _auszufüllen_
+- Bezug: ADR-0058 am Repository-Stand
+  `de60ea7ddb49be43f4b6999d537e87339a669315`
 - I4-Analyse: `GOV-ANALYSIS-I4-2026-08-02`
 - Kanonische Mindestgrenze: `GOV-SYSTEM-BEHAVIOR-ONLY-1`
-- Erstellerrolle der Vorlage: Codex im dokumentarischen Auftrag
-- Beschluss- oder Kenntnisnahmeprovenienz: _nicht vorhanden; auszufüllen_
+- Dokumentationsgrundlage: ausdrückliche institutionelle Erklärung von
+  Michael Giese im Chat am 02.08.2026
+- Beschluss- oder Kenntnisnahmeprovenienz: Gründer-Kenntnisnahme in
+  konstituierender Funktion; ordentliche Vertrauensratsbestätigung ausstehend
 
-Ein ausgefülltes Ergebnisfeld dokumentiert ausschließlich den institutionellen
-Vorgang. Auch eine erfolgreiche Kenntnisnahme ist keine Runtime-Freigabe,
-keine Implementierungsfreigabe und keine Produktfreigabe.
+Die Kenntnisnahme dokumentiert ausschließlich den institutionellen Vorgang.
+Sie autorisiert keine B2-Runtime, keine personenbezogenen Provider-Aufrufe,
+keine B2-Produktfreigabe, keine allgemeine B2-Implementierung, keine
+B2-Persistenz, keine B2-Metriken oder Benachrichtigungen und keine Aufhebung
+bestehender Schutzgrenzen.
 
 Eine anschließende institutionelle Implementierungsfreigabe ist ein eigener,
 getrennter Schritt und darf nicht aus diesem Dokument abgeleitet werden.

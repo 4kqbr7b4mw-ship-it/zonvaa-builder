@@ -3164,8 +3164,8 @@ Produktfunktion zu implementieren.
 - Im kanonischen Repository ist keine historische Norm `I4` auffindbar. Sie
   wurde nicht rekonstruiert. Der gemeinsame bereits ratifizierte Kern wird
   über `GOV-SYSTEM-BEHAVIOR-ONLY-1` kanonisch referenziert.
-- Die erforderliche Vertrauensrats-Kenntnisnahme ist nicht durch die
-  Dokumentation selbst erfüllt.
+- Die Gründer-Kenntnisnahme ist dokumentiert, bleibt aber bis zur ersten
+  ordentlichen Vertrauensratssitzung bestätigungsbedürftig.
 
 # C1 Governance Consolidation v1
 
@@ -3193,8 +3193,9 @@ Verträge, Klassen, Validatoren oder APIs.
 
 - Die historische Quelle `I4` bleibt nicht belegbar; die neue kanonische
   C2-Referenz darf nicht als historische I4-Regel dargestellt werden.
-- Die Vertrauensrats-Kenntnisnahme und eine anschließende institutionelle
-  Freigabe sind noch nicht erfolgt.
+- Die ordentliche Vertrauensratsbestätigung der Gründer-Kenntnisnahme ist noch
+  nicht erfolgt.
+- Nur ADR-0059 besitzt eine gesonderte begrenzte Implementierungsfreigabe.
 
 # Institution Layer Completion v1
 
@@ -3219,6 +3220,26 @@ Runtime, Verträge, Klassen, APIs oder automatische Entscheidung.
 
 ## Verbleibende menschliche Gates
 
-- Vertrauensrats-Kenntnisnahme: offen.
-- Gesonderte institutionelle Implementierungsfreigabe: offen.
-- B2-Implementierung und B2-Runtime: gesperrt.
+- Gründer-Kenntnisnahme: dokumentiert.
+- Ordentliche Vertrauensratsbestätigung: ausstehend.
+- Gesonderte institutionelle Implementierungsfreigabe für ADR-0059: erteilt.
+- Alle weiteren B2-Pakete und B2-Runtime: gesperrt.
+
+# Institutionelle ADR-0059-Freigabedokumentation
+
+## Ziel und Grenzen
+
+Die ausdrücklich erteilte Gründer-Kenntnisnahme zu ADR-0058 und die davon
+getrennte, ausschließlich auf Guardian B2 Data Corridor and Consent Boundary
+v1 begrenzte Implementierungsfreigabe kanonisch dokumentieren. Keine
+B2-Verträge, Produktdateien, Runtime, Provider oder Verarbeitung umsetzen.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Gründer-Kenntnisnahme mit Rolle, Datum und Vetodomäne dokumentieren.
+- [x] Bestätigungspflicht des künftigen ordentlichen Vertrauensrats festhalten.
+- [x] Gesonderte ADR-0059-Implementierungsfreigabe mit geschlossenem Scope
+  dokumentieren.
+- [x] Alle weiteren B2-Pakete und B2-Runtime ausdrücklich gesperrt halten.
+- [x] Dokumentations-, Handover-, Gesamt-, Doctor- und Diff-Prüfungen
+  abschließen.

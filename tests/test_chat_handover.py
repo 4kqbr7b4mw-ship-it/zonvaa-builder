@@ -78,7 +78,10 @@ PRODUCT_STATUS = """# Status
 
 ## Aktueller fachlicher Stand
 
-- Der nächste Produktbaustein ist noch nicht bestimmt.
+- Die Gründer-Kenntnisnahme zu ADR-0058 ist dokumentiert.
+- Nur Guardian B2 Data Corridor and Consent Boundary v1 ist institutionell
+  zur Implementierung freigegeben.
+- Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen
 
@@ -94,7 +97,7 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Noch nicht bestimmt. Der Handover wählt keinen Produktbaustein automatisch aus.
+Guardian B2 Data Corridor and Consent Boundary v1 im exakt freigegebenen Umfang.
 """
 
 
@@ -178,6 +181,9 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Guardian B2 Architecture v1" in output
     assert "C1 Governance Consolidation v1" in output
     assert "Institution Layer Completion v1" in output
+    assert "Gründer-Kenntnisnahme zu ADR-0058 ist dokumentiert" in output
+    assert "Guardian B2 Data Corridor and Consent Boundary v1" in output
+    assert "jede B2-Runtime bleiben gesperrt" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -236,7 +242,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Kein persistentes Guardian Memory",
         "Keine LLM-Integration",
         "Keine Confidence-Scores",
-        "Noch nicht bestimmt",
+        "Guardian B2 Data Corridor and Consent Boundary v1",
     )
     positions = [output.index(value) for value in expected_in_order]
     assert positions == sorted(positions)
@@ -290,6 +296,7 @@ def test_c1_governance_consolidation_is_documentation_only():
     readiness = (
         PROJECT_ROOT / "governance" / "b2-readiness-statement.md"
     ).read_text(encoding="utf-8")
+    normalized_readiness = " ".join(readiness.split())
     adr = (
         PROJECT_ROOT
         / "knowledge"
@@ -300,10 +307,13 @@ def test_c1_governance_consolidation_is_documentation_only():
     for value in (
         "TRUST-ACK-ADR-0058-V1",
         "Vetodomäne 2",
-        "Ergebnis: `OFFEN`",
-        "keine Runtime-Freigabe",
-        "keine Implementierungsfreigabe",
-        "keine Produktfreigabe",
+        "Ergebnis: `ZUR KENNTNIS GENOMMEN`",
+        "Michael Giese",
+        "Institutionsgründer in konstituierender Funktion",
+        "ordentliche Vertrauensratsbestätigung ausstehend",
+        "keine B2-Runtime",
+        "keine allgemeine B2-Implementierung",
+        "keine B2-Produktfreigabe",
     ):
         assert value in trust
     for layer in (
@@ -316,12 +326,12 @@ def test_c1_governance_consolidation_is_documentation_only():
     for state in (
         "Betriebsblock ist auf",
         "B2-Verfassungsanalyse ist mit ADR-0058 abgeschlossen",
-        "Vertrauensrats-Kenntnisnahme ist noch offen",
+        "Gründer-Kenntnisnahme zu ADR-0058",
         "Keine B2-Runtime ist autorisiert",
-        "Keine B2-Implementierung ist autorisiert",
-        "ausschließlich der institutionelle Freigabeprozess",
+        "Guardian B2 Data Corridor and Consent Boundary v1",
+        "Alle weiteren B2-Pakete bleiben gesperrt",
     ):
-        assert state in readiness
+        assert state in normalized_readiness
     assert "keine historische oder kanonische Regel `I4`" in adr
     assert "keine C1-Verfassungsänderung" in adr
 
@@ -438,7 +448,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_does_not_select_a_next_product_component(tmp_path):
+def test_handover_reports_only_the_institutionally_approved_next_scope(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -447,8 +457,9 @@ def test_handover_does_not_select_a_next_product_component(tmp_path):
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    assert "Noch nicht bestimmt" in next_section
-    assert "automatisch aus" in next_section
+    assert "Guardian B2 Data Corridor and Consent Boundary v1" in next_section
+    assert "exakt freigegebenen Umfang" in next_section
+    assert "B2 Runtime" not in next_section
 
 
 def test_handover_never_presents_v1_as_active_repository(tmp_path):
