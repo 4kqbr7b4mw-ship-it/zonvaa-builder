@@ -73,6 +73,7 @@ PRODUCT_STATUS = """# Status
 - Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)
 - Operational Notifications v1 (deklarative Nachweise ohne Zustellung)
 - Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
+- C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
 
 ## Aktueller fachlicher Stand
 
@@ -174,6 +175,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Operational Metrics v1" in output
     assert "Operational Notifications v1" in output
     assert "Guardian B2 Architecture v1" in output
+    assert "C1 Governance Consolidation v1" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -221,6 +223,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)",
         "Operational Notifications v1 (deklarative Nachweise ohne Zustellung)",
         "Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)",
+        "C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",
@@ -270,6 +273,54 @@ def test_guardian_b2_architecture_is_documented_without_implementation():
     for inheritance in ("GEERBT", "VERSCHÄRFT", "NEU", "UNZULÄSSIG"):
         assert inheritance in adr
     assert "Diese ADR führt keine Klasse, API, Runtime" in adr
+
+
+def test_c1_governance_consolidation_is_documentation_only():
+    trust = (
+        PROJECT_ROOT
+        / "governance"
+        / "trust-council-acknowledgement-adr-0058.md"
+    ).read_text(encoding="utf-8")
+    mapping = (
+        PROJECT_ROOT / "governance" / "architecture-map.md"
+    ).read_text(encoding="utf-8")
+    readiness = (
+        PROJECT_ROOT / "governance" / "b2-readiness-statement.md"
+    ).read_text(encoding="utf-8")
+    adr = (
+        PROJECT_ROOT
+        / "knowledge"
+        / "adr"
+        / "ADR-0058-guardian-b2-architecture-v1.md"
+    ).read_text(encoding="utf-8")
+
+    for value in (
+        "TRUST-ACK-ADR-0058-V1",
+        "Vetodomäne 2",
+        "Ergebnis: `OFFEN`",
+        "keine Runtime-Freigabe",
+        "keine Implementierungsfreigabe",
+        "keine Produktfreigabe",
+    ):
+        assert value in trust
+    for layer in (
+        "## C1-Verfassung",
+        "## Institution Layer",
+        "## Authority Layer",
+        "## Runtime Layer",
+    ):
+        assert layer in mapping
+    for state in (
+        "Betriebsblock ist auf",
+        "B2-Verfassungsanalyse ist mit ADR-0058 abgeschlossen",
+        "Vertrauensrats-Kenntnisnahme ist noch offen",
+        "Keine B2-Runtime ist autorisiert",
+        "Keine B2-Implementierung ist autorisiert",
+        "ausschließlich der institutionelle Freigabeprozess",
+    ):
+        assert state in readiness
+    assert "ursprüngliche I4-Quellregel" in adr
+    assert "Eine Promotion nach C1" in adr
 
 
 def test_handover_reads_local_and_remote_head_at_runtime(tmp_path):

@@ -9,6 +9,10 @@ Implementierung sind die Kenntnisnahme des Vertrauensrats und die Auflösung
 des in Abschnitt 2 dokumentierten fehlenden kanonischen I4-Verweises
 erforderlich.
 
+Die formale, noch offene Kenntnisnahmevorlage liegt unter
+`governance/trust-council-acknowledgement-adr-0058.md`. Der aktuelle
+Freigabestand steht in `governance/b2-readiness-statement.md`.
+
 ## 1. Kontext
 
 B1 gibt allgemeine Orientierung auf Grundlage nicht personenbezogener oder
@@ -55,6 +59,12 @@ kanonischen User-Owned-Data-Vertrag.
 
 Der fehlende I4-Verweis wird nicht durch eine Annahme, Nummerierung eines
 anderen Dokuments oder eine neue Regel dieser ADR ersetzt.
+
+Die repositoryweite C1-Governance-Konsolidierung vom 02.08.2026 hat weder eine
+ursprüngliche I4-Quellregel noch mehrere ADR-Verweise auf eine solche Regel
+gefunden. Eine Promotion nach C1 war deshalb ohne inhaltliche Erfindung nicht
+möglich. Bis zur Benennung einer belastbaren Quelle bleibt ADR-0058 die einzige
+Stelle, die den fehlenden Verweis dokumentiert; sie erhebt ihn nicht zur Norm.
 
 ## 3. Neue Architekturentscheidungen
 
@@ -184,6 +194,9 @@ nicht Gegenstand dieser ADR.
 Der fehlende kanonische I4-Verweis bleibt eine offene Architekturfrage und
 blockiert jede Implementierung. Vertrauensrats-Kenntnisnahme bleibt ebenfalls
 eine Voraussetzung und ist durch dieses Dokument nicht bereits erfolgt.
+
+Die Ebenenzuordnung von C1, Institution, Authority und Runtime ist unter
+`governance/architecture-map.md` rein referenziell dokumentiert.
 
 ## 6. Nicht-Ziele
 

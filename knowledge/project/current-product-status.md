@@ -48,6 +48,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)
 - Operational Notifications v1 (deklarative Nachweise ohne Zustellung)
 - Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
+- C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
 
 ## Aktueller fachlicher Stand
 
@@ -224,6 +225,15 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Jede B2-Implementierung bleibt bis zur dokumentierten
   Vertrauensrats-Kenntnisnahme und zur Benennung der im Repository derzeit
   nicht auffindbaren kanonischen I4-Regel blockiert.
+- Die C1 Governance Consolidation ordnet C1, Institution, Authority und
+  Runtime kanonisch ein und stellt die formale, noch unausgefüllte
+  Vertrauensrats-Kenntnisnahmevorlage für ADR-0058 bereit. Die Prüfung fand
+  keine ursprüngliche I4-Quellnorm und keine mehrfachen ADR-Verweise darauf;
+  deshalb wurde weder C1 verändert noch eine Ersatzregel erzeugt.
+- Der B2-Readiness-Stand bestätigt den abgeschlossenen Betriebsblock und die
+  abgeschlossene Verfassungsanalyse. Vertrauensrats-Kenntnisnahme,
+  I4-Quellenklärung und institutionelle Freigabe bleiben offen. Keine
+  B2-Runtime oder B2-Implementierung ist autorisiert.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

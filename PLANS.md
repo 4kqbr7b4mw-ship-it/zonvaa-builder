@@ -3166,3 +3166,32 @@ Produktfunktion zu implementieren.
   B2-Implementierung benannt werden.
 - Die erforderliche Vertrauensrats-Kenntnisnahme ist nicht durch die
   Dokumentation selbst erfüllt.
+
+# C1 Governance Consolidation v1
+
+## Ziel und Grenzen
+
+C1-, Institution-, Authority- und Runtime-Verantwortungen konsolidieren, den
+I4-Herkunftsbefund festhalten, eine formale Vertrauensratsvorlage für ADR-0058
+bereitstellen und den B2-Readiness-Stand dokumentieren. Ausschließlich
+Verfassungs- und Governance-Dokumentation; keine Produktfunktion, Runtime,
+Verträge, Klassen, Validatoren oder APIs.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Sämtliche ADRs sowie C1, C2, Institution, AAV, UODL und Guardian-
+  Architektur auf I4-Herkunft und Governance-Grenzen prüfen.
+- [x] Fehlende I4-Quellnorm ohne Rekonstruktion oder C1-Promotion festhalten.
+- [x] Formale Vertrauensrats-Kenntnisnahmevorlage zu ADR-0058 dokumentieren.
+- [x] Kanonisches Governance Architecture Mapping dokumentieren.
+- [x] B2 Readiness Statement ohne Runtime- oder Implementierungsfreigabe
+  dokumentieren.
+- [x] Produktstatus und read-only Handover aktualisieren.
+- [x] Dokumentationsprüfungen, Gesamtsuite, Doctor und Diff prüfen.
+
+## Offene Governance-Punkte
+
+- Die ursprüngliche Quelle und der unveränderte Inhalt von `I4` sind im
+  Repository nicht vorhanden und dürfen nicht rekonstruiert werden.
+- Die Vertrauensrats-Kenntnisnahme und eine anschließende institutionelle
+  Freigabe sind noch nicht erfolgt.
