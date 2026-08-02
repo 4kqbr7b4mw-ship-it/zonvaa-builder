@@ -2,7 +2,7 @@
 
 Stand: 02.08.2026
 
-Status: institutionelle Freigabe offen
+Status: B2 gesperrt – institutionelle Freigabe offen
 
 ## Bestätigter Stand
 
@@ -11,13 +11,18 @@ Status: institutionelle Freigabe offen
   Vertragsebene vollständig abgeschlossen.
 - Die B2-Verfassungsanalyse ist mit ADR-0058 abgeschlossen.
 - Die Vertrauensrats-Kenntnisnahme ist noch offen.
-- Die kanonische Herkunft und Bedeutung des Verweises `I4` ist weiterhin
-  ungeklärt; es wurde keine Ersatzregel erzeugt.
+- Die historische Bezeichnung `I4` ist als nicht belegbar geklärt. Es wurde
+  keine historische Regel rekonstruiert. Der bereits ratifizierte gemeinsame
+  Kern besitzt mit `GOV-SYSTEM-BEHAVIOR-ONLY-1` eine neue kanonische
+  C2-Architekturreferenz.
+- Die vollständige Vertrauensratsunterlage ist vorbereitet, aber nicht
+  ausgefüllt und nicht zur Kenntnis genommen.
 
 ## Freigabegrenze
 
 - Keine B2-Runtime ist autorisiert.
 - Keine B2-Implementierung ist autorisiert.
+- Die institutionelle Implementierungsfreigabe ist offen.
 - Kein B2-Vertrag, Provider, Grant, Workflow oder Produktbaustein ist durch
   dieses Statement freigegeben.
 - Der abgeschlossene Betriebsblock erweitert keine B1-Macht und autorisiert
@@ -25,8 +30,22 @@ Status: institutionelle Freigabe offen
 
 ## Nächste zulässige Aktivität
 
-Zulässig ist ausschließlich der institutionelle Freigabeprozess. Eine
-institutionelle Freigabe kann erst nach erfolgreicher dokumentierter
-Vertrauensrats-Kenntnisnahme und nach kanonischer Klärung des I4-Verweises
-erfolgen. Erst danach darf ein neuer begrenzter Architekturauftrag erwogen
-werden. Kenntnisnahme oder Freigabe allein ist keine Implementierungsfreigabe.
+Zulässig ist ausschließlich der institutionelle Freigabeprozess gemäß
+`governance/institutional-approval-process.md`. Eine technische
+B2-Implementierung darf erst nach tatsächlich dokumentierter
+Vertrauensrats-Kenntnisnahme und gesonderter institutioneller
+Implementierungsfreigabe als nächste Aktivität erscheinen. Bis dahin bleiben
+B2-Implementierung und B2-Runtime gesperrt.
+
+## Statusmodell
+
+| Gate | Status |
+|---|---|
+| Betriebsblock | ABGESCHLOSSEN |
+| ADR-0058 | RATIFIZIERT |
+| I4-/Regelquellenklärung | GEKLÄRT OHNE HISTORISCHE I4-REKONSTRUKTION |
+| Vertrauensratsunterlage | VORBEREITET UND UNAUSGEFÜLLT |
+| Vertrauensrats-Kenntnisnahme | OFFEN |
+| Institutionelle Implementierungsfreigabe | OFFEN |
+| B2-Implementierung | GESPERRT |
+| B2-Runtime | GESPERRT |

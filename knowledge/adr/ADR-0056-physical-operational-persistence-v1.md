@@ -110,6 +110,10 @@ einem validierten Operational-Memory-Package binden. Nutzerdaten,
 Gesprächsinhalte, Nutzerprofile, Nutzungsmuster und personenbezogene Artefakte
 sind auf dieser Ebene nicht darstellbar.
 
+Zusätzlich gilt die kanonische Mindestgrenze
+`GOV-SYSTEM-BEHAVIOR-ONLY-1`. Sie ändert weder den zulässigen Artefaktkatalog
+noch die strengere Bindung an bereits validierte Operational-Memory-Objekte.
+
 Persistenz besitzt keine Runtime- oder Governance-Macht. Ein erfolgreicher
 Speichernachweis aktiviert keine Capability, keinen Provider, keine Runtime,
 keinen Workflow und keine fachliche Entscheidung.

@@ -43,6 +43,11 @@ andere.
 
 ## Absolute Nutzergrenze
 
+Kanonische schichtübergreifende Mindestgrenze ist
+`GOV-SYSTEM-BEHAVIOR-ONLY-1` unter
+`governance/system-behavior-only-rule.md`. Die nachfolgenden strengeren
+Observation-Regeln bleiben unverändert maßgeblich.
+
 Observation beobachtet ausschließlich Systemverhalten. Observation beobachtet
 niemals Nutzerverhalten. Verboten sind insbesondere:
 

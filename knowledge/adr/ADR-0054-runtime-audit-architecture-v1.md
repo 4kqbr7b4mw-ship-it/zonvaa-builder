@@ -143,6 +143,10 @@ Nutzeranalysen oder personenbezogenen Auswertungen erzeugen. Audit Profiles
 und Scopes aktivieren keine Observation, Runtime, Capability, Werkzeuge oder
 Workflows und autorisieren keinen Provider.
 
+Diese Audit-Grenze erbt zusätzlich die kanonische Mindestregel
+`GOV-SYSTEM-BEHAVIOR-ONLY-1`. Ihre strengeren Scope-, Evidence- und
+Nichtbeurteilbarkeitsregeln bleiben unverändert.
+
 ## Nicht-Ziele
 
 - keine Runtime-Erweiterung, B2-Runtime oder B3-Runtime,

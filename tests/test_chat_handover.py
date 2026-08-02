@@ -74,6 +74,7 @@ PRODUCT_STATUS = """# Status
 - Operational Notifications v1 (deklarative Nachweise ohne Zustellung)
 - Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
 - C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
+- Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)
 
 ## Aktueller fachlicher Stand
 
@@ -176,6 +177,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Operational Notifications v1" in output
     assert "Guardian B2 Architecture v1" in output
     assert "C1 Governance Consolidation v1" in output
+    assert "Institution Layer Completion v1" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -224,6 +226,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Operational Notifications v1 (deklarative Nachweise ohne Zustellung)",
         "Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)",
         "C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)",
+        "Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",
@@ -267,7 +270,7 @@ def test_guardian_b2_architecture_is_documented_without_implementation():
         "Persistence speichern keine B2-Inhalte",
         "B2 berührt Vetodomäne 2 zwingend",
         "Vertrauensrats-Kenntnisnahme",
-        "Keine Regel wird rekonstruiert",
+        "Sie wurde nicht rekonstruiert",
     ):
         assert rule in adr
     for inheritance in ("GEERBT", "VERSCHÄRFT", "NEU", "UNZULÄSSIG"):
@@ -319,8 +322,8 @@ def test_c1_governance_consolidation_is_documentation_only():
         "ausschließlich der institutionelle Freigabeprozess",
     ):
         assert state in readiness
-    assert "ursprüngliche I4-Quellregel" in adr
-    assert "Eine Promotion nach C1" in adr
+    assert "keine historische oder kanonische Regel `I4`" in adr
+    assert "keine C1-Verfassungsänderung" in adr
 
 
 def test_handover_reads_local_and_remote_head_at_runtime(tmp_path):

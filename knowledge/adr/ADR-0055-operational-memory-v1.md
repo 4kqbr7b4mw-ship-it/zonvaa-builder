@@ -53,6 +53,11 @@ Nutzungsmuster, themenbezogene Nutzungsinformationen, personenbezogene
 Artefakte und nutzeridentifizierende Metadaten sind keine zulässigen
 Artefakttypen.
 
+Die schichtübergreifende Mindestgrenze ist
+`GOV-SYSTEM-BEHAVIOR-ONLY-1`. Der geschlossene, strengere Artefaktkatalog
+dieser ADR bleibt unverändert und darf durch die Referenz nicht erweitert
+werden.
+
 Die Nicht-Nutzerdaten-Grenze aus ADR-0053 wird vollständig geerbt. Sie darf
 weder durch freie Typbezeichnungen, generische Payloads, Locator-Felder noch
 eine allgemeine Storage-Abstraktion umgangen werden. Der Artefaktkatalog ist

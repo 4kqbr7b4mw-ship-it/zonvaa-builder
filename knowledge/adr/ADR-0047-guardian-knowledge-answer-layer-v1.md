@@ -635,6 +635,13 @@ Rechercheergebnisse erzeugen keine:
 * stillen Interessenmodelle
 * versteckten Risikoklassifikationen
 
+Der gemeinsame betriebliche Mindestkern dieser Grenze wird seit der
+Institution-Layer-Konsolidierung unter
+`GOV-SYSTEM-BEHAVIOR-ONLY-1` in
+`governance/system-behavior-only-rule.md` referenziert. D6 bleibt die
+unveränderte, strengere Recherche- und Antwortregel; die Referenz ersetzt sie
+nicht.
+
 ⸻
 
 7. Quellenketten-Artefakt
@@ -1338,4 +1345,3 @@ Der Guardian darf menschlich sprechen. Er darf aber keine Gewissheit erfinden, k
 > **Das Modell redet. Der Kern entscheidet. Die Quelle belegt. Die Grenze schützt. Nie umgekehrt.**
 
 ---
-

@@ -49,6 +49,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Operational Notifications v1 (deklarative Nachweise ohne Zustellung)
 - Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
 - C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
+- Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)
 
 ## Aktueller fachlicher Stand
 
@@ -223,16 +224,21 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   verarbeiten sie nicht. ADR-0058 implementiert weder Runtime noch Vertrag,
   Provider, API oder Produktfunktion.
 - Jede B2-Implementierung bleibt bis zur dokumentierten
-  Vertrauensrats-Kenntnisnahme und zur Benennung der im Repository derzeit
-  nicht auffindbaren kanonischen I4-Regel blockiert.
+  Vertrauensrats-Kenntnisnahme und einer gesonderten institutionellen
+  Implementierungsfreigabe blockiert.
 - Die C1 Governance Consolidation ordnet C1, Institution, Authority und
   Runtime kanonisch ein und stellt die formale, noch unausgefüllte
   Vertrauensrats-Kenntnisnahmevorlage für ADR-0058 bereit. Die Prüfung fand
   keine ursprüngliche I4-Quellnorm und keine mehrfachen ADR-Verweise darauf;
-  deshalb wurde weder C1 verändert noch eine Ersatzregel erzeugt.
+  deshalb wurde C1 nicht verändert und keine historische Regel rekonstruiert.
 - Der B2-Readiness-Stand bestätigt den abgeschlossenen Betriebsblock und die
-  abgeschlossene Verfassungsanalyse. Vertrauensrats-Kenntnisnahme,
-  I4-Quellenklärung und institutionelle Freigabe bleiben offen. Keine
+  abgeschlossene Verfassungsanalyse. Die historische I4-Frage ist als nicht
+  belegbar geklärt; `GOV-SYSTEM-BEHAVIOR-ONLY-1` konsolidiert den bereits
+  ratifizierten gemeinsamen Kern als neue C2-Referenz. Kenntnisnahme und
+  institutionelle Freigabe bleiben offen.
+- Institution Layer Completion v1 dokumentiert Analyse, Referenz-Mapping,
+  vollständige unausgefüllte Vertrauensratsunterlage, institutionellen
+  Freigabeablauf und eine nicht ausführende Future B2 Package Map. Keine
   B2-Runtime oder B2-Implementierung ist autorisiert.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 

@@ -130,6 +130,10 @@ Deliverystatus, Review und Provenienz.
 
 ## Absolute Nutzergrenze
 
+Kanonische schichtübergreifende Mindestgrenze ist
+`GOV-SYSTEM-BEHAVIOR-ONLY-1`. Die nachfolgenden strengeren Metrics- und
+Notifications-Verbote bleiben unverändert.
+
 Die Nicht-Nutzerdaten-Grenzen aus ADR-0053 bis ADR-0056 werden unverändert
 geerbt. Der geschlossene technische Ereigniskatalog und die geschlossenen
 Artefakttypen verhindern Nutzerbeobachtung auf Vertragsebene. Es gibt keine

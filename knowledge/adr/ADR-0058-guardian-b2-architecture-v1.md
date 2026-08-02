@@ -5,9 +5,8 @@
 RATIFIZIERT – 02.08.2026
 
 Reine Architekturentscheidung. Keine Implementierungsfreigabe. Vor jeder
-Implementierung sind die Kenntnisnahme des Vertrauensrats und die Auflösung
-des in Abschnitt 2 dokumentierten fehlenden kanonischen I4-Verweises
-erforderlich.
+Implementierung sind die Kenntnisnahme des Vertrauensrats und eine gesonderte
+institutionelle Implementierungsfreigabe erforderlich.
 
 Die formale, noch offene Kenntnisnahmevorlage liegt unter
 `governance/trust-council-acknowledgement-adr-0058.md`. Der aktuelle
@@ -55,16 +54,14 @@ kanonischen User-Owned-Data-Vertrag.
 | D1–D6 | ADR-0047 § 6 | UODL: Reference before Copy, Minimal Metadata, Explicit Consent, Privacy by Design | Entpersonalisierung ist Normalfall; Kontext und externe Recherche bleiben getrennt; Minimalität und Verbot stiller Anreicherung gelten fort. |
 | D3 | ADR-0047 § 6 | AAV: aktive, konkrete, zweckgebundene und widerrufbare Autorisierung | Einwilligung ist vorgangs- und datenklassenspezifisch, dokumentiert, widerrufbar und minimal. |
 | D3-UX | ADR-0047 § 6 | Nutzerhoheit und bewusste Autorisierung dürfen nicht umgangen werden | Keine Vorauswahl, Bevorzugung, Dauerfreigabe oder Blockade der entpersonalisierten Alternative. |
-| I4 | Kein kanonischer, als `I4` bezeichneter Normtext im Repository auffindbar | Keine belastbare Zuordnung ohne kanonische Quelle | Keine Regel wird rekonstruiert. Vor B2-Implementierung muss die zuständige kanonische Quelle benannt und ihre unveränderte Bindung dokumentiert werden. |
+| System Behavior Only | `GOV-SYSTEM-BEHAVIOR-ONLY-1` | C1-Nutzerhoheit, C2-Datendomäne sowie AAV-/UODL-Zweck- und Minimalitätsgrenzen bleiben bindend | Technische Betriebsnachweise dürfen nicht für Nutzerprofilbildung oder Nutzeranalyse zweckentfremdet werden. |
 
-Der fehlende I4-Verweis wird nicht durch eine Annahme, Nummerierung eines
-anderen Dokuments oder eine neue Regel dieser ADR ersetzt.
-
-Die repositoryweite C1-Governance-Konsolidierung vom 02.08.2026 hat weder eine
-ursprüngliche I4-Quellregel noch mehrere ADR-Verweise auf eine solche Regel
-gefunden. Eine Promotion nach C1 war deshalb ohne inhaltliche Erfindung nicht
-möglich. Bis zur Benennung einer belastbaren Quelle bleibt ADR-0058 die einzige
-Stelle, die den fehlenden Verweis dokumentiert; sie erhebt ihn nicht zur Norm.
+Die repositoryweite Analyse hat keine historische oder kanonische Regel `I4`
+gefunden. Sie wurde nicht rekonstruiert und nicht rückwirkend behauptet. Die
+bereits ratifizierten gemeinsamen Einzelnormen werden seit dem 02.08.2026 über
+die neue C2-Architekturreferenz `GOV-SYSTEM-BEHAVIOR-ONLY-1` konsolidiert.
+Diese Referenz ist keine C1-Verfassungsänderung und ersetzt keine strengere
+Einzelnorm.
 
 ## 3. Neue Architekturentscheidungen
 
@@ -160,8 +157,9 @@ Vertrauensebene.
 
 **Neue Regel:** B2 berührt Vetodomäne 2 zwingend. Vor jedem begrenzten
 Implementierungsauftrag ist die Vertrauensrats-Kenntnisnahme zu dokumentieren.
-Ohne diese Architekturfreigabe, die Auflösung des I4-Verweises und einen
-gesonderten begrenzten Auftrag ist jede B2-Implementierung unzulässig.
+Ohne dokumentierte Kenntnisnahme, gesonderte institutionelle
+Implementierungsfreigabe und einen begrenzten Auftrag ist jede
+B2-Implementierung unzulässig.
 
 ## 4. Vererbungsregeln
 
@@ -191,9 +189,10 @@ Depersonalisierung, B2 Invocation Boundary, B2 Provider-Grenze, B2 Runtime
 sowie deren begrenzte Betriebsnachweise. Ihre Reihenfolge und Umsetzung sind
 nicht Gegenstand dieser ADR.
 
-Der fehlende kanonische I4-Verweis bleibt eine offene Architekturfrage und
-blockiert jede Implementierung. Vertrauensrats-Kenntnisnahme bleibt ebenfalls
-eine Voraussetzung und ist durch dieses Dokument nicht bereits erfolgt.
+Die historische I4-Frage ist ohne Rekonstruktion geklärt; maßgeblich ist die
+neue kanonische C2-Referenz. Vertrauensrats-Kenntnisnahme und gesonderte
+institutionelle Implementierungsfreigabe bleiben offen und sind durch dieses
+Dokument nicht erfolgt.
 
 Die Ebenenzuordnung von C1, Institution, Authority und Runtime ist unter
 `governance/architecture-map.md` rein referenziell dokumentiert.

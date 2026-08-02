@@ -3161,9 +3161,9 @@ Produktfunktion zu implementieren.
 
 ## Architekturblocker
 
-- Im kanonischen Repository ist keine als `I4` bezeichnete Norm auffindbar.
-  Ihr Inhalt wird nicht rekonstruiert; die kanonische Quelle muss vor jeder
-  B2-Implementierung benannt werden.
+- Im kanonischen Repository ist keine historische Norm `I4` auffindbar. Sie
+  wurde nicht rekonstruiert. Der gemeinsame bereits ratifizierte Kern wird
+  über `GOV-SYSTEM-BEHAVIOR-ONLY-1` kanonisch referenziert.
 - Die erforderliche Vertrauensrats-Kenntnisnahme ist nicht durch die
   Dokumentation selbst erfüllt.
 
@@ -3191,7 +3191,34 @@ Verträge, Klassen, Validatoren oder APIs.
 
 ## Offene Governance-Punkte
 
-- Die ursprüngliche Quelle und der unveränderte Inhalt von `I4` sind im
-  Repository nicht vorhanden und dürfen nicht rekonstruiert werden.
+- Die historische Quelle `I4` bleibt nicht belegbar; die neue kanonische
+  C2-Referenz darf nicht als historische I4-Regel dargestellt werden.
 - Die Vertrauensrats-Kenntnisnahme und eine anschließende institutionelle
   Freigabe sind noch nicht erfolgt.
+
+# Institution Layer Completion v1
+
+## Ziel und Grenzen
+
+Die institutionellen Dokumentationsvoraussetzungen vor B2 schließen: den
+I4-Herkunftsbefund analysieren, eine kanonische C2-Mindestgrenze festlegen,
+Vertrauensratsunterlage und Freigabeprozess vervollständigen sowie Readiness
+und spätere Paketgrenzen transparent abbilden. Keine Produktimplementierung,
+Runtime, Verträge, Klassen, APIs oder automatische Entscheidung.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Sämtliche ADRs, MDRs und C1-/C2-/Institution-/AAV-/UODL-Quellen prüfen.
+- [x] I4 Canonical Source Analysis mit Variantenvergleich dokumentieren.
+- [x] C2-Referenz `GOV-SYSTEM-BEHAVIOR-ONLY-1` ohne C1-Änderung konsolidieren.
+- [x] ADR-0047 und ADR-0053 bis ADR-0058 referenziell harmonisieren.
+- [x] Beschlussfähige, unausgefüllte Vertrauensratsunterlage vervollständigen.
+- [x] Institutionellen Freigabeablauf und Future B2 Package Map dokumentieren.
+- [x] B2 Readiness mit eindeutigem Gate-Status aktualisieren.
+- [x] Dokumentations-, Handover-, Gesamt-, Doctor- und Diff-Prüfungen abschließen.
+
+## Verbleibende menschliche Gates
+
+- Vertrauensrats-Kenntnisnahme: offen.
+- Gesonderte institutionelle Implementierungsfreigabe: offen.
+- B2-Implementierung und B2-Runtime: gesperrt.

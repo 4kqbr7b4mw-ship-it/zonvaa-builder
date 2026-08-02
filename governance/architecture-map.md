@@ -22,6 +22,11 @@ Abweichungen gelten ausschließlich die jeweils genannten bindenden Dokumente.
 - **Ausgeschlossen:** Organe, Quoren, Runtime, Provider, Produktlogik,
   Implementierungsdetails und konkrete Autorisierungen.
 
+Die Untersuchung der nicht auffindbaren Bezeichnung `I4` führte zu keiner
+C1-Änderung. Die gemeinsame Systemverhaltensgrenze liegt als neue
+C2-Architekturreferenz unter `governance/system-behavior-only-rule.md` und
+behauptet keine historische C1-Identität.
+
 ## Institution Layer
 
 - **Zweck:** langfristige Systemgarantien für Governance, Nutzerhoheit,
@@ -61,6 +66,10 @@ Abweichungen gelten ausschließlich die jeweils genannten bindenden Dokumente.
 - **Ausgeschlossen:** C1- oder C2-Änderung, Authority-Erteilung,
   Nutzerbeobachtung, B2-/B3-Runtime, automatische Eskalation und jede nicht
   ausdrücklich freigegebene Macht.
+
+Für Observation, Audit, Operational Memory, Physical Persistence, Metrics,
+Notifications und eine mögliche B2-Stufe gilt zusätzlich die kanonische
+Mindestgrenze `GOV-SYSTEM-BEHAVIOR-ONLY-1`.
 
 ## Ebenengrenze
 

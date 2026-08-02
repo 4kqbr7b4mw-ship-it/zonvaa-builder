@@ -6,6 +6,10 @@ Status: Vorlage – Kenntnisnahme offen
 
 Normstufe: C2-Verfahrensnachweis
 
+Dokumentversion: 1.0
+
+Kenntnisnahmedatum: _auszufüllen_
+
 ## Bezug und Zweck
 
 Diese Vorlage dokumentiert ausschließlich die institutionelle Kenntnisnahme
@@ -16,6 +20,13 @@ Sie betrifft Vetodomäne 2: Datenverwendung und externe Recherche. Die Vorlage
 erteilt keine Zustimmung, Autorisierung oder Freigabe und ersetzt weder das
 Prüf- und Vetoverfahren der Governance Charter noch eine gesonderte spätere
 Architektur- oder Implementierungsentscheidung.
+
+## Beratungsgegenstand
+
+Gegenstand ist ausschließlich die Kenntnisnahme der mit ADR-0058 ratifizierten
+B2-Verfassungsarchitektur: Datenhoheit, Depersonalisierung, eigenständige
+B2-Authority und Grants, Verbot eines B1→B2-Upgrades, Inhaltsblindheit des
+Betriebsblocks sowie Widerrufs- und AAV-/UODL-Grenzen.
 
 ## Bestehendes bindendes Recht
 
@@ -44,6 +55,35 @@ Betriebsblocks.
 D3 bleibt notwendig, ist aber nicht hinreichend. Eine B1-Autorisierung
 autorisiert niemals B2.
 
+### Datenhoheit und Depersonalisierungsgrenze
+
+B2 darf nur einen ausdrücklich autorisierten, minimalen, zweck-, zeit- und
+datenklassengebundenen Korridor erhalten. Direkte und nicht erforderliche
+indirekte Identifikatoren werden vor B2 entfernt. Rohgespräche, vollständige
+Understanding States, Hypothesen, T2-Beziehungsartefakte, Zugangsdaten und
+nicht autorisierte Drittpersonendaten bleiben ausgeschlossen.
+
+### Eigenständige Authority- und Grant-Grenze
+
+B2 benötigt eine eigene Authority-Klasse und eigene Grants. D3 ersetzt weder
+Authority noch Grant, Provider-, Capability- oder Kontrollbindung. Ein
+B1-Grant darf niemals erweitert, migriert oder als B2-Grant interpretiert
+werden.
+
+### Betriebsblock
+
+Observation und Audit bleiben gegenüber B2-Inhalten blind. Operational Memory
+und Physical Persistence speichern keine B2-Inhalte. Metrics und Notifications
+verarbeiten keine B2-Inhalte. Die gemeinsame Mindestgrenze ist unter
+`GOV-SYSTEM-BEHAVIOR-ONLY-1` dokumentiert.
+
+### Widerruf und AAV/UODL
+
+Widerruf beendet die aktuelle Zugänglichkeit personenbezogener Inhalte.
+Governance-Nachweise bleiben nach den bestehenden AAV-Regeln erhalten. UODL
+bleibt für Eigentum, Referenzen, Speicherwahl und Operationen maßgeblich. Diese
+Unterlage erfindet keine Lösch-, Speicher- oder Widerrufslogik.
+
 ## Ausdrücklich nicht autorisierte Bereiche
 
 - B2 Runtime, Verträge, Provider, Invocation oder Capability,
@@ -55,8 +95,9 @@ autorisiert niemals B2.
 
 ## Offene Risiken
 
-- Im Repository ist keine kanonische, als `I4` bezeichnete Quellregel
-  auffindbar; ihr Inhalt und ihre Herkunft dürfen nicht rekonstruiert werden.
+- Eine historische, als `I4` bezeichnete Quellregel ist nicht belegbar. Die
+  neue C2-Referenz `GOV-SYSTEM-BEHAVIOR-ONLY-1` darf nicht rückwirkend als I4
+  bezeichnet werden.
 - Datenklassen, Depersonalisierungsnachweis und technische Widerrufsfolgen sind
   noch nicht als B2-Verträge entschieden.
 - Provider-, Credential-, Ausführungs- und Missbrauchsgrenzen für B2 sind noch
@@ -65,7 +106,6 @@ autorisiert niemals B2.
 
 ## Offene Folgeentscheidungen
 
-- kanonische Klärung des I4-Verweises,
 - institutionelle Freigabe nach erfolgter Kenntnisnahme,
 - jeweils gesonderte Architekturentscheidungen für B2 Authority und Grants,
   Datenkorridor und Depersonalisierung, Invocation, Provider und Runtime,
@@ -80,6 +120,30 @@ autorisiert niemals B2.
 - Anmerkungen oder Auflagen: _nicht eingetragen_
 - Veto oder Eskalationsreferenz: _nicht eingetragen_
 
+## Teilnehmende oder verantwortliche Rollen
+
+- Vertrauensratsvertretung: _auszufüllen_
+- Protokollverantwortung: _auszufüllen_
+- Chief-Architect-Referenz: _auszufüllen_
+- Weitere beratende Rollen: _auszufüllen_
+
+## Vorbehalte, Auflagen und Sondervoten
+
+- Vorbehalte oder Auflagen: _auszufüllen_
+- Minderheits- oder Sondervotum: _auszufüllen oder ausdrücklich als nicht
+  vorhanden zu kennzeichnen_
+
+## Provenienz
+
+- Bezug: ADR-0058, Version am Repository-Stand _auszufüllen_
+- I4-Analyse: `GOV-ANALYSIS-I4-2026-08-02`
+- Kanonische Mindestgrenze: `GOV-SYSTEM-BEHAVIOR-ONLY-1`
+- Erstellerrolle der Vorlage: Codex im dokumentarischen Auftrag
+- Beschluss- oder Kenntnisnahmeprovenienz: _nicht vorhanden; auszufüllen_
+
 Ein ausgefülltes Ergebnisfeld dokumentiert ausschließlich den institutionellen
 Vorgang. Auch eine erfolgreiche Kenntnisnahme ist keine Runtime-Freigabe,
 keine Implementierungsfreigabe und keine Produktfreigabe.
+
+Eine anschließende institutionelle Implementierungsfreigabe ist ein eigener,
+getrennter Schritt und darf nicht aus diesem Dokument abgeleitet werden.
