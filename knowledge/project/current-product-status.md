@@ -42,6 +42,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Read-only B1 Provider Runtime v1
 - Runtime Incident Evidence v1
 - Runtime Observation Governance v1
+- Runtime Audit Architecture v1
 
 ## Aktueller fachlicher Stand
 
@@ -159,6 +160,19 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   ausdrücklich unbeobachtet. Validator und read-only Snapshot besitzen keine
   Nutzerbeobachtung und keine Observation Runtime, Analyse, Telemetrie,
   Evidence- oder Incident-Erzeugung, Persistenz oder Aktivierung.
+- Runtime Audit Architecture v1 prüft bereitgestellte Observation-, Runtime-,
+  Incident- und No-Incident-Nachweise ausschließlich innerhalb eines konkret
+  gebundenen Observation Scopes. No-Incident Evidence führt Profile-Version,
+  Scope, beobachtete und nicht beobachtete Ereignisse sowie durchgeführte und
+  nicht durchgeführte Prüfungen. Fehlende Evidence bleibt eine sichtbare Lücke;
+  nicht beobachtete Bereiche bleiben nicht beurteilbar. Audit prüft nur
+  Systemverhalten und erzeugt keine Nutzerprofile, Persistenz, Metriken,
+  Benachrichtigungen, Incident-Erkennung oder Runtime-Aktivierung.
+- Eine B2- oder B3-Runtime bleibt gesperrt, bis Runtime Audit Architecture v1
+  und ein späterer, gesondert ratifizierter Operational-Memory-Block mit
+  Persistenz, Metriken und Benachrichtigungen jeweils ratifiziert,
+  implementiert und validiert sind. Diese Gate-Regel autorisiert keine neue
+  Runtime-Macht.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum
 from types import MappingProxyType
-from typing import Optional
+from typing import Optional, Tuple
 
 from governance.authority import (
     AuthorityCapability,
@@ -23,6 +23,7 @@ from governance.read_only_b1_runtime import (
     RuntimeProvisionStatus,
 )
 from guardian_understanding.answer_boundary import AnswerOperatingMode
+from governance.runtime_observation import RuntimeObservationEvent
 
 
 READ_ONLY_B1_RUNTIME_REFERENCE = (
@@ -105,6 +106,13 @@ class RuntimeNoIncidentEvidence:
     runtime_reference: str
     successful_execution_declared: bool
     no_detected_deviation_declared: bool
+    observation_profile_reference: str
+    observation_profile_version: int
+    observation_scope_reference: str
+    observed_runtime_events: Tuple[RuntimeObservationEvent, ...]
+    explicitly_unobserved_runtime_events: Tuple[RuntimeObservationEvent, ...]
+    performed_observation_checks: Tuple[str, ...]
+    unperformed_observation_checks: Tuple[str, ...]
     checked_at: datetime
     review_status: AuthorityReviewStatus
     review_reference: Optional[str]
@@ -116,6 +124,8 @@ class RuntimeNoIncidentEvidence:
             (self.execution_reference, "execution_reference"),
             (self.provider_reference, "provider_reference"),
             (self.runtime_reference, "runtime_reference"),
+            (self.observation_profile_reference, "observation_profile_reference"),
+            (self.observation_scope_reference, "observation_scope_reference"),
         ):
             _text(value, name)
         for value, name in (
@@ -127,6 +137,32 @@ class RuntimeNoIncidentEvidence:
         ):
             if not isinstance(value, bool):
                 raise TypeError("{} must be a bool".format(name))
+        if (
+            not isinstance(self.observation_profile_version, int)
+            or isinstance(self.observation_profile_version, bool)
+            or self.observation_profile_version < 1
+        ):
+            raise ValueError("observation_profile_version must be positive")
+        _typed_unique(
+            self.observed_runtime_events,
+            RuntimeObservationEvent,
+            "observed_runtime_events",
+        )
+        _typed_unique(
+            self.explicitly_unobserved_runtime_events,
+            RuntimeObservationEvent,
+            "explicitly_unobserved_runtime_events",
+        )
+        _strings(
+            self.performed_observation_checks,
+            "performed_observation_checks",
+            required=True,
+        )
+        _strings(
+            self.unperformed_observation_checks,
+            "unperformed_observation_checks",
+            required=False,
+        )
         _aware(self.checked_at, "checked_at")
         _review_pair(self.review_status, self.review_reference)
         _provenance(self.provenance)
@@ -400,6 +436,20 @@ class RuntimeIncidentValidator:
                 "NO_INCIDENT_DECLARATION_INCOMPLETE",
                 "both no-incident declarations are required",
             )
+        observed = set(evidence.observed_runtime_events)
+        unobserved = set(evidence.explicitly_unobserved_runtime_events)
+        if observed & unobserved or observed | unobserved != set(RuntimeObservationEvent):
+            _invalid(
+                "NO_INCIDENT_OBSERVATION_SCOPE_INVALID",
+                "no-incident evidence needs a complete observation partition",
+            )
+        if set(evidence.performed_observation_checks) & set(
+            evidence.unperformed_observation_checks
+        ):
+            _invalid(
+                "NO_INCIDENT_CHECKS_CONTRADICTORY",
+                "an observation check cannot be performed and unperformed",
+            )
         if not request.started_at <= evidence.checked_at <= result.finished_at:
             _invalid(
                 "NO_INCIDENT_TIME_INCONSISTENT",
@@ -498,3 +548,23 @@ def _review_pair(status, reference) -> None:
 def _provenance(value) -> None:
     if not isinstance(value, AuthorityProvenance):
         raise TypeError("provenance must be an AuthorityProvenance")
+
+
+def _typed_unique(values, item_type, name) -> None:
+    if not isinstance(values, tuple):
+        raise TypeError("{} must be a tuple".format(name))
+    if any(not isinstance(value, item_type) for value in values):
+        raise TypeError("{} contains an invalid value".format(name))
+    if len(values) != len(set(values)):
+        raise ValueError("{} must not contain duplicates".format(name))
+
+
+def _strings(values, name, required) -> None:
+    if not isinstance(values, tuple):
+        raise TypeError("{} must be a tuple".format(name))
+    if required and not values:
+        raise ValueError("{} must not be empty".format(name))
+    for value in values:
+        _text(value, name)
+    if len(values) != len(set(values)):
+        raise ValueError("{} must not contain duplicates".format(name))

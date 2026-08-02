@@ -3044,3 +3044,31 @@ Profilbildung, Analyse, Telemetrie, Persistenz oder Aktivierung.
   Deterministic Core, Model Layer und Guardian dürfen sie nicht ändern.
 - Validator und Snapshot beobachten nichts und besitzen keine Runtime-,
   Analyse-, Evidence-, Incident-, Persistenz- oder Ausführungsmacht.
+
+# Runtime Audit Architecture v1
+
+## Ziel und Grenzen
+
+Bereits bereitgestellte Observation-, Runtime-, Incident- und No-Incident-
+Nachweise innerhalb eines ausdrücklich gebundenen Observation Scopes immutable
+und deterministisch prüfen. Audit prüft nur Systemverhalten und besitzt keine
+Runtime-, Observation-, Erkennungs-, Persistenz-, Metrik-, Benachrichtigungs-
+oder Aktivierungsmacht.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0046 bis ADR-0053 sowie bestehende Governance- und Runtime-Verträge prüfen.
+- [x] Audit Profile, Audit Scope, Audit Evidence und Snapshot typisieren.
+- [x] No-Incident Evidence verbindlich an Profile-Version und Scope binden.
+- [x] Deterministischen Gesamtvalidator und Referenzszenarien ergänzen.
+- [x] ADR-0054, Public API, Produktstatus und Handover ergänzen.
+- [x] Gesamtregression, Doctor, Diff und read-only Handover abschließen.
+
+## Entscheidungen
+
+- Fehlende Evidence ist kein No-Incident-Nachweis und bleibt als Lücke sichtbar.
+- Nicht beobachtete Ereignisse bleiben ausdrücklich nicht prüfbar.
+- ADR-0053 sperrt Nutzerbeobachtung bereits typisiert; Audit bindet sich an
+  dieselben validierten Profile und Scopes und schließt Nutzungsthemen aus.
+- B2-/B3-Runtime bleibt bis zum Abschluss von Audit Architecture und einem
+  separat ratifizierten Operational-Memory-Block gesperrt.

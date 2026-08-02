@@ -22,6 +22,7 @@ from governance.runtime_incident import (
     RuntimeIncidentValidator,
     RuntimeNoIncidentEvidence,
 )
+from governance.runtime_observation import RuntimeObservationEvent
 from tests.test_guardian_capability_invocation import NOW, provenance
 from tests.test_read_only_b1_provider_runtime import FakeAdapter, envelope, run
 
@@ -37,6 +38,19 @@ def no_incident(outcome):
         runtime_reference=READ_ONLY_B1_RUNTIME_REFERENCE,
         successful_execution_declared=True,
         no_detected_deviation_declared=True,
+        observation_profile_reference="runtime-observation-profile-v1",
+        observation_profile_version=1,
+        observation_scope_reference="runtime-observation-scope-v1",
+        observed_runtime_events=tuple(
+            item
+            for item in RuntimeObservationEvent
+            if item is not RuntimeObservationEvent.INCIDENT_EVIDENCE_BOUND
+        ),
+        explicitly_unobserved_runtime_events=(
+            RuntimeObservationEvent.INCIDENT_EVIDENCE_BOUND,
+        ),
+        performed_observation_checks=("runtime execution outcome checked",),
+        unperformed_observation_checks=(),
         checked_at=INCIDENT_AT,
         review_status=AuthorityReviewStatus.REVIEWED,
         review_reference="review:no-incident",
@@ -179,6 +193,30 @@ def test_no_incident_requires_success_and_both_explicit_declarations():
             package(value, successful, no_incident_value=incomplete)
         )
     assert error.value.code == "NO_INCIDENT_DECLARATION_INCOMPLETE"
+
+
+def test_no_incident_requires_complete_noncontradictory_observation_binding():
+    value = envelope()
+    successful = run(value, FakeAdapter())
+    incomplete = replace(
+        no_incident(successful),
+        explicitly_unobserved_runtime_events=(),
+    )
+    with pytest.raises(RuntimeIncidentValidationError) as error:
+        RuntimeIncidentValidator().validate(
+            package(value, successful, no_incident_value=incomplete)
+        )
+    assert error.value.code == "NO_INCIDENT_OBSERVATION_SCOPE_INVALID"
+
+    contradictory = replace(
+        no_incident(successful),
+        unperformed_observation_checks=("runtime execution outcome checked",),
+    )
+    with pytest.raises(RuntimeIncidentValidationError) as error:
+        RuntimeIncidentValidator().validate(
+            package(value, successful, no_incident_value=contradictory)
+        )
+    assert error.value.code == "NO_INCIDENT_CHECKS_CONTRADICTORY"
 
 
 def test_incident_type_and_severity_must_match_runtime_outcome():

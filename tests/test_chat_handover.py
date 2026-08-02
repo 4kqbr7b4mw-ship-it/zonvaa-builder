@@ -67,6 +67,7 @@ PRODUCT_STATUS = """# Status
 - Read-only B1 Provider Runtime v1
 - Runtime Incident Evidence v1
 - Runtime Observation Governance v1
+- Runtime Audit Architecture v1
 
 ## Aktueller fachlicher Stand
 
@@ -162,6 +163,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Read-only B1 Provider Runtime v1" in output
     assert "Runtime Incident Evidence v1" in output
     assert "Runtime Observation Governance v1" in output
+    assert "Runtime Audit Architecture v1" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -203,6 +205,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Read-only B1 Provider Runtime v1",
         "Runtime Incident Evidence v1",
         "Runtime Observation Governance v1",
+        "Runtime Audit Architecture v1",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",
