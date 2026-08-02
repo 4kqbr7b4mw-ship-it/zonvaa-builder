@@ -40,6 +40,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Provider Authorization Package v1
 - Guardian Capability Invocation Boundary v1
 - Read-only B1 Provider Runtime v1
+- Runtime Incident Evidence v1
 
 ## Aktueller fachlicher Stand
 
@@ -143,6 +144,13 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   B3-Runtime. Da kein kanonisch autorisierter externer Provider mit sicherer
   Credential-Grenze vorliegt, wurde keine externe Anbindung improvisiert; die
   Ausführungsgrenze ist mit einem kontrollierten Testadapter validiert.
+- Runtime Incident Evidence v1 bindet bereits eingetretene oder ausdrücklich
+  ausgebliebene Runtime-Ereignisse an die unveränderten Execution-, Result-,
+  Evidence- und Receipt-Objekte der Read-only B1 Runtime. Typisierte Incident-
+  und No-Incident-Nachweise sowie ein read-only Snapshot bleiben immutable und
+  rein dokumentierend. No-Incident ist weder Qualitätsurteil noch Garantie;
+  es gibt keine automatische Incident-Erkennung, Fehlerbehebung, Retry-Logik,
+  Persistenz, Metrik, Benachrichtigung oder Aktivierung.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

@@ -2984,3 +2984,34 @@ Schreib-, Tool-, Workflow- oder allgemeine Provider-Runtime.
 - Das Repository enthält keinen kanonisch autorisierten externen Provider mit
   sicherer Credential-Grenze. Deshalb bleibt die externe Anbindung blockiert
   und die Runtime wird mit einem kontrollierten Testadapter validiert.
+
+# Runtime Incident Evidence v1
+
+## Ziel und Grenzen
+
+Bereits eingetretene oder ausdrücklich ausgebliebene Ereignisse der Read-only
+B1 Provider Runtime als immutable Incident- beziehungsweise No-Incident-
+Evidence dokumentieren und read-only projizieren. Es gibt keine automatische
+Incident-Erkennung; ebenso wenig Runtime-Erweiterung, Fehlerbehebung,
+Persistenz, Metrik, Benachrichtigung oder Aktivierung.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] E6, ADR-0051 sowie bestehende Runtime-, Governance- und
+  Handover-Verträge prüfen.
+- [x] Incident-, No-Incident-, Package- und Snapshot-Verträge typisieren.
+- [x] Deterministischen referenziellen Validator ergänzen.
+- [x] Sechs Runtime-Referenzszenarien, Public API und Dokumentation ergänzen.
+- [x] Governance-/Guardian-Regression, Gesamtsuite, Doctor, Diff und Handover
+  prüfen.
+
+## Entscheidungen
+
+- Incident-Typ, Severity, Ursachen und No-Incident-Erklärungen sind
+  bereitgestellte Nachweisdaten; der Validator erkennt oder bewertet sie nicht.
+- Genau eine Incident- oder No-Incident-Evidence wird an die unveränderten
+  Execution- und Outcome-Objekte gebunden.
+- No-Incident bedeutet nur, dass bei der dokumentierten erfolgreichen
+  Ausführung keine Abweichung erkannt wurde; es ist keine Garantie.
+- Snapshot und Validator besitzen keine Reaktions-, Retry-, Persistenz-,
+  Benachrichtigungs-, Workflow- oder Ausführungsmacht.
