@@ -50,6 +50,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
 - C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
 - Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)
+- Guardian B2 Data Corridor and Consent Boundary v1
 
 ## Aktueller fachlicher Stand
 
@@ -245,8 +246,15 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Consent Boundary, Data Classification, Depersonalization Boundary,
   deterministischen Validator, read-only Snapshot, Tests und Dokumentation.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
-- Der nächste zulässige begrenzte Baustein ist Guardian B2 Data Corridor and
-  Consent Boundary v1.
+- Guardian B2 Data Corridor and Consent Boundary v1 bindet D1–D6, D3, die
+  kanonische AAV-Autorisierung und dieselbe UODL-Referenz in immutable
+  Verträgen. Vollständige Negativregeln schließen Datenklassen, Quellen,
+  Flüsse, Kombinationen, Restidentifikatoren, Zweckänderungen und jede
+  Weitergabe an den Betriebsblock typisiert aus. Validator und read-only
+  Snapshot bewegen, verarbeiten oder speichern keine Daten.
+- ADR-0059 ist implementiert und validiert. Alle weiteren B2-Pakete sowie die
+  B2-Runtime bleiben GESPERRT und benötigen eine eigene institutionelle
+  Freigabe.
 
 ## Bewusste Produktgrenzen
 
@@ -262,5 +270,6 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Guardian B2 Data Corridor and Consent Boundary v1 im exakt freigegebenen
-Umfang. Der Handover erweitert diese institutionelle Freigabe nicht.
+Kein weiteres B2-Paket ist institutionell freigegeben. Die nächste Aktivität
+darf ausschließlich eine neue Architektur- und Freigabeentscheidung sein; B2-
+Runtime bleibt gesperrt.

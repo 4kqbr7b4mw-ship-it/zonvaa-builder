@@ -194,6 +194,38 @@ from governance.models import (
 )
 
 __all__ = [
+    "ALLOWED_B2_DATA_CLASSES",
+    "ALLOWED_B2_DATA_FLOWS",
+    "ALLOWED_B2_DATA_SOURCES",
+    "B2ConsentBoundary",
+    "B2ConsentRequirement",
+    "B2ConsentUse",
+    "B2DataClass",
+    "B2DataClassification",
+    "B2DataCorridor",
+    "B2DataCorridorPackage",
+    "B2DataCorridorSnapshot",
+    "B2DataCorridorValidationError",
+    "B2DataCorridorValidator",
+    "B2DataFlowDirection",
+    "B2DataRuleReference",
+    "B2DataSensitivity",
+    "B2DataSource",
+    "B2DepersonalizationBoundary",
+    "B2NegativeCorridorRules",
+    "B2ProhibitedCombination",
+    "B2ProhibitedDestination",
+    "B2ProhibitedPurposeChange",
+    "B2ProhibitedUse",
+    "B2ResidualIdentifier",
+    "D1_D6_REFERENCES",
+    "D3_REFERENCE",
+    "PROHIBITED_B2_DATA_CLASSES",
+    "PROHIBITED_B2_DATA_FLOWS",
+    "PROHIBITED_B2_DATA_SOURCES",
+    "PROHIBITED_RESIDUAL_IDENTIFIERS",
+    "REQUIRED_D3_BINDINGS",
+    "REQUIRED_PROHIBITED_USES",
     "ActorResponsibilityBoundary",
     "ALLOWED_INVOCATION_OPERATION_MODES",
     "AuthorizationDecisionEvidence",
@@ -367,3 +399,30 @@ __all__ = [
     "SYSTEM_OBSERVATION_CATEGORIES",
     "SYSTEM_AUDIT_SUBJECTS",
 ]
+
+
+_B2_DATA_CORRIDOR_EXPORTS = frozenset(
+    name
+    for name in __all__
+    if name.startswith("B2")
+    or name.startswith("ALLOWED_B2_")
+    or name.startswith("PROHIBITED_B2_")
+    or name in {
+        "D1_D6_REFERENCES",
+        "D3_REFERENCE",
+        "PROHIBITED_RESIDUAL_IDENTIFIERS",
+        "REQUIRED_D3_BINDINGS",
+        "REQUIRED_PROHIBITED_USES",
+    }
+)
+
+
+def __getattr__(name):
+    """Load the AAV/UODL-bound B2 API without creating an import cycle."""
+    if name in _B2_DATA_CORRIDOR_EXPORTS:
+        from governance import b2_data_corridor
+
+        value = getattr(b2_data_corridor, name)
+        globals()[name] = value
+        return value
+    raise AttributeError("module 'governance' has no attribute {!r}".format(name))

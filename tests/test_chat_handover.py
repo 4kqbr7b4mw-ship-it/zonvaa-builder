@@ -75,12 +75,13 @@ PRODUCT_STATUS = """# Status
 - Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
 - C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
 - Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)
+- Guardian B2 Data Corridor and Consent Boundary v1
 
 ## Aktueller fachlicher Stand
 
 - Die Gründer-Kenntnisnahme zu ADR-0058 ist dokumentiert.
-- Nur Guardian B2 Data Corridor and Consent Boundary v1 ist institutionell
-  zur Implementierung freigegeben.
+- Guardian B2 Data Corridor and Consent Boundary v1 ist implementiert und
+  validiert.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen
@@ -97,7 +98,8 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Guardian B2 Data Corridor and Consent Boundary v1 im exakt freigegebenen Umfang.
+Kein weiteres B2-Paket ist institutionell freigegeben. Die nächste Aktivität
+darf ausschließlich eine neue Architektur- und Freigabeentscheidung sein.
 """
 
 
@@ -231,9 +233,10 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)",
         "Operational Notifications v1 (deklarative Nachweise ohne Zustellung)",
         "Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)",
-        "C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)",
-        "Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)",
-        "Keine automatische Semantik",
+            "C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)",
+            "Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)",
+            "Guardian B2 Data Corridor and Consent Boundary v1",
+            "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",
         "Keine Decision Engine",
@@ -241,8 +244,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Keine automatische Workflow-Aktivierung",
         "Kein persistentes Guardian Memory",
         "Keine LLM-Integration",
-        "Keine Confidence-Scores",
-        "Guardian B2 Data Corridor and Consent Boundary v1",
+            "Keine Confidence-Scores",
     )
     positions = [output.index(value) for value in expected_in_order]
     assert positions == sorted(positions)
@@ -448,7 +450,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_reports_only_the_institutionally_approved_next_scope(tmp_path):
+def test_handover_reports_no_unapproved_b2_implementation_as_next_scope(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -457,8 +459,8 @@ def test_handover_reports_only_the_institutionally_approved_next_scope(tmp_path)
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    assert "Guardian B2 Data Corridor and Consent Boundary v1" in next_section
-    assert "exakt freigegebenen Umfang" in next_section
+    assert "Kein weiteres B2-Paket ist institutionell freigegeben" in next_section
+    assert "Architektur- und Freigabeentscheidung" in next_section
     assert "B2 Runtime" not in next_section
 
 

@@ -3243,3 +3243,28 @@ B2-Verträge, Produktdateien, Runtime, Provider oder Verarbeitung umsetzen.
 - [x] Alle weiteren B2-Pakete und B2-Runtime ausdrücklich gesperrt halten.
 - [x] Dokumentations-, Handover-, Gesamt-, Doctor- und Diff-Prüfungen
   abschließen.
+
+# Guardian B2 Data Corridor and Consent Boundary v1
+
+## Ziel und Grenzen
+
+Die erste technische Verfassungsgrenze der personenbezogenen Welt als
+immutable Verträge, deterministischen Validator und read-only Snapshot
+implementieren. Keine Datenbewegung, Verarbeitung, Authority, Provider,
+Invocation oder Runtime.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0059 mit D1–D6-, D3-, AAV-, UODL- und Betriebsblockbindung ratifizieren.
+- [x] Data Corridor, Consent Boundary, Data Classification und
+  Depersonalization Boundary typisieren.
+- [x] vollständige eigenständige Negative Corridor Rules implementieren.
+- [x] identitätstreuen Validator und read-only Snapshot implementieren.
+- [x] Public API, Produktstatus, Readiness und Handover aktualisieren.
+- [x] fokussierte Tests und vollständige Validierung ausführen.
+
+## Verbleibende Gates
+
+- Ordentliche Vertrauensratsbestätigung: ausstehend.
+- Alle weiteren B2-Pakete: GESPERRT.
+- B2-Runtime: GESPERRT.

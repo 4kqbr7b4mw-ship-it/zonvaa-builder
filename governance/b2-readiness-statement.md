@@ -2,7 +2,7 @@
 
 Stand: 02.08.2026
 
-Status: ADR-0059-Implementierung zulässig – übrige B2-Stufen gesperrt
+Status: ADR-0059 implementiert – übrige B2-Stufen gesperrt
 
 ## Bestätigter Stand
 
@@ -22,6 +22,8 @@ Status: ADR-0059-Implementierung zulässig – übrige B2-Stufen gesperrt
 - Die gesonderte institutionelle Implementierungsfreigabe
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0059-V1` ist ausschließlich für Guardian
   B2 Data Corridor and Consent Boundary v1 erteilt.
+- ADR-0059 und der freigegebene immutable Data-Corridor-Baustein sind
+  implementiert. Er bewegt oder verarbeitet keine personenbezogenen Daten.
 
 ## Freigabegrenze
 
@@ -54,6 +56,6 @@ institutionellen Freigabeprozess durchlaufen. B2-Runtime bleibt gesperrt.
 | Vertrauensrats-Kenntnisnahme | DOKUMENTIERT DURCH INSTITUTIONSGRÜNDER IN KONSTITUIERENDER FUNKTION |
 | Ordentliche Vertrauensratsbestätigung | AUSSTEHEND |
 | Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |
-| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERUNG ZULÄSSIG |
+| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

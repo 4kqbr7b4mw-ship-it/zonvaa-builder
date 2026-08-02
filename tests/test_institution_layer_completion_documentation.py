@@ -142,7 +142,7 @@ def test_b2_readiness_allows_only_adr_0059_and_keeps_runtime_blocked():
         "| Vertrauensrats-Kenntnisnahme | DOKUMENTIERT DURCH INSTITUTIONSGRÜNDER IN KONSTITUIERENDER FUNKTION |",
         "| Ordentliche Vertrauensratsbestätigung | AUSSTEHEND |",
         "| Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |",
-        "| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERUNG ZULÄSSIG |",
+        "| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |",
         "| Alle weiteren B2-Pakete | GESPERRT |",
         "| B2-Runtime | GESPERRT |",
     ):
