@@ -72,6 +72,10 @@ Für Observation, Audit, Operational Memory, Physical Persistence, Metrics,
 Notifications und eine mögliche B2-Stufe gilt zusätzlich die kanonische
 Mindestgrenze `GOV-SYSTEM-BEHAVIOR-ONLY-1`.
 
+Institutionelle Beschlüsse werden zusätzlich durch
+`GOV-INSTITUTIONAL-DECISION-SCOPE-1` begrenzt und müssen `Freigegeben` sowie
+`Ausdrücklich nicht freigegeben` getrennt dokumentieren.
+
 ## Ebenengrenze
 
 C1 schützt. Institution garantiert. Authority beschreibt und begrenzt

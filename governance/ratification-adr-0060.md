@@ -43,10 +43,11 @@ Metrics, Notifications und externe Anbindungen.
 
 ## Nächstes institutionelles Gate
 
-Die institutionelle Implementierungsfreigabe für ADR-0060 bleibt ein eigener,
-noch nicht gefasster menschlicher Beschluss. Sie benötigt ein separates,
-scopegebundenes Dokument und darf nicht aus diesem Ratifizierungsnachweis
-abgeleitet werden.
+Zum Zeitpunkt der Ratifizierung blieb die institutionelle
+Implementierungsfreigabe für ADR-0060 ein eigener, noch nicht gefasster
+menschlicher Beschluss. Der später getrennt gefasste Beschluss ist unter
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` dokumentiert und wird nicht aus
+diesem Ratifizierungsnachweis abgeleitet.
 
 ## Rollenbegrenzung
 

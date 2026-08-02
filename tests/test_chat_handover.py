@@ -82,8 +82,10 @@ PRODUCT_STATUS = """# Status
 - Die Gründer-Kenntnisnahme zu ADR-0058 ist dokumentiert.
 - Guardian B2 Data Corridor and Consent Boundary v1 ist implementiert und
   validiert.
-- ADR-0060 Guardian B2 Authority and Authorization v1 ist ratifiziert, aber
-  nicht implementierungsfreigegeben.
+- ADR-0060 Guardian B2 Authority and Authorization v1 ist ratifiziert und im
+  nicht ausführenden Vertragsscope begrenzt implementierungsfreigegeben.
+- Provider, Invocation, Runtime und technische Grant-Ausführung bleiben
+  gesperrt.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen
@@ -100,9 +102,9 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Kein weiteres B2-Paket ist institutionell freigegeben. Nächster zulässiger
-Schritt ist ausschließlich ein gesonderter institutioneller Beschluss über
-die Implementierungsfreigabe für ADR-0060.
+Nächster zulässiger Schritt ist ausschließlich ein separater Codex-
+Implementierungsauftrag im geschlossenen Scope von
+GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1.
 """
 
 
@@ -453,7 +455,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_reports_no_unapproved_b2_implementation_as_next_scope(tmp_path):
+def test_handover_reports_only_the_approved_adr_0060_scope_as_next_step(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -462,9 +464,8 @@ def test_handover_reports_no_unapproved_b2_implementation_as_next_scope(tmp_path
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    assert "Kein weiteres B2-Paket ist institutionell freigegeben" in next_section
-    assert "institutioneller Beschluss" in next_section
-    assert "Implementierungsfreigabe für ADR-0060" in next_section
+    assert "separater Codex-" in next_section
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1" in next_section
     assert "B2 Runtime" not in next_section
 
 

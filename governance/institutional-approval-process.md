@@ -45,9 +45,18 @@ automatisch abgeleitet werden.
 - ADR-0060 wurde durch den eigenständigen Beschlussnachweis
   `GOV-RATIFICATION-ADR-0060-V1` ratifiziert.
 - Architekturvalidierung und Ratifizierung erzeugen keine Implementierungsfreigabe.
-- Ein eigenes institutionelles Implementierungsfreigabedokument muss weiterhin
-  gesondert erstellt und ausdrücklich menschlich bestätigt werden.
-- Erst diese getrennte Bestätigung kann einen separaten Codex-Auftrag tragen.
+- Das eigene institutionelle Implementierungsfreigabedokument
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` wurde gesondert erstellt und
+  menschlich bestätigt.
+- Erst diese getrennte Bestätigung kann nun einen separaten, scopegebundenen
+  Codex-Auftrag tragen.
 - Der bisherige gestoppte Implementierungsauftrag hat diese Schritte nicht
   ersetzt; es wurde keine Änderung, Freigabe, Implementierung oder Runtime
   daraus abgeleitet.
+
+## Allgemeine Beschluss-Scope-Regel
+
+Jeder künftige institutionelle Beschluss folgt verbindlich
+`GOV-INSTITUTIONAL-DECISION-SCOPE-1` und enthält getrennte Abschnitte
+`Freigegeben` sowie `Ausdrücklich nicht freigegeben`. Eine fehlende Nennung ist
+keine stillschweigende Freigabe.

@@ -3290,8 +3290,11 @@ Provider, Runtime oder personenbezogene Verarbeitung.
 - [x] Freigabesequenz und weiterhin gesperrte B2-Bausteine festhalten.
 - [x] ausdrückliche menschliche Ratifizierung von ADR-0060 durch
   `GOV-RATIFICATION-ADR-0060-V1` dokumentieren.
-- [ ] gesonderte institutionelle Implementierungsfreigabe erstellen und
-  menschlich bestätigen.
+- [x] gesonderte institutionelle Implementierungsfreigabe durch
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` dokumentieren.
+- [x] allgemeine Zwei-Abschnitte-Regel
+  `GOV-INSTITUTIONAL-DECISION-SCOPE-1` dokumentieren.
+- [ ] separaten Codex-Implementierungsauftrag im freigegebenen Scope erteilen.
 
 ## Dokumentationsblocker
 

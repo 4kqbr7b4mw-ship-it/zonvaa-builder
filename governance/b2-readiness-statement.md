@@ -2,7 +2,7 @@
 
 Stand: 02.08.2026
 
-Status: ADR-0060 ratifiziert – nicht implementierungsfreigegeben
+Status: ADR-0060 ratifiziert und begrenzt implementierungsfreigegeben
 
 ## Bestätigter Stand
 
@@ -27,6 +27,10 @@ Status: ADR-0060 ratifiziert – nicht implementierungsfreigegeben
 - ADR-0060 ist durch `GOV-RATIFICATION-ADR-0060-V1` ratifiziert. Die
   Ratifizierung bestätigt ausschließlich die Architektur und ist keine
   institutionelle Implementierungsfreigabe.
+- Die davon getrennte Freigabe
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` erlaubt ausschließlich die
+  nicht ausführenden Authority-, Grant-, Evaluation- und Evidence-Verträge aus
+  ADR-0060. Alle späteren B2-Machtstufen bleiben gesperrt.
 
 ## Freigabegrenze
 
@@ -43,10 +47,10 @@ Status: ADR-0060 ratifiziert – nicht implementierungsfreigegeben
 
 ## Nächste zulässige Aktivität
 
-Nächster zulässiger Schritt ist ausschließlich ein gesonderter institutioneller
-Beschluss über eine eng begrenzte Implementierungsfreigabe für ADR-0060. Erst
-nach dessen Dokumentation und ausdrücklicher menschlicher Bestätigung darf ein
-separater Codex-Auftrag folgen. B2-Runtime bleibt gesperrt.
+Nächster zulässiger Schritt ist ausschließlich ein separater Codex-Auftrag im
+geschlossenen Scope von `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`.
+B2-Runtime, Provider, Invocation und jede technische Grant-Ausführung bleiben
+gesperrt.
 
 ## Statusmodell
 
@@ -59,7 +63,7 @@ separater Codex-Auftrag folgen. B2-Runtime bleibt gesperrt.
 | Ordentliche Vertrauensratsbestätigung | AUSSTEHEND |
 | Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |
 | B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
-| ADR-0060 B2 Authority and Authorization | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN |
-| Institutionelle Implementierungsfreigabe für ADR-0060 | NICHT ERSTELLT |
+| ADR-0060 B2 Authority and Authorization | RATIFIZIERT |
+| Institutionelle Implementierungsfreigabe für ADR-0060 | GÜLTIG – BEGRENZTER SCOPE |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

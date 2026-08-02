@@ -9,13 +9,13 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0060_is_ratified_without_implementation_approval():
+def test_adr_0060_is_ratified_with_separate_limited_implementation_approval():
     text = read(ADR)
-    assert "Status: RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in text
+    assert "Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN" in text
     assert "GOV-RATIFICATION-ADR-0060-V1" in text
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1" in text
     assert "trotz Ratifizierung keine institutionelle Implementierungsfreigabe" in text
     assert "Ratifizierung und Implementierungsfreigabe sind zwei eigenständige" in text
-    assert "Eine gesonderte institutionelle Implementierungsfreigabe erstellen. Offen" in text
     assert "separaten, scopegebundenen Codex-Implementierungsauftrag" in text
 
 
@@ -101,8 +101,8 @@ def test_existing_adr_0059_approval_is_not_extended():
     readiness = read(ROOT / "governance/b2-readiness-statement.md")
     assert "- B2 Authority," in approval
     assert "- B2 Authorization Grants," in approval
-    assert "| ADR-0060 B2 Authority and Authorization | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN |" in readiness
-    assert "| Institutionelle Implementierungsfreigabe für ADR-0060 | NICHT ERSTELLT |" in readiness
+    assert "| ADR-0060 B2 Authority and Authorization | RATIFIZIERT |" in readiness
+    assert "| Institutionelle Implementierungsfreigabe für ADR-0060 | GÜLTIG – BEGRENZTER SCOPE |" in readiness
     assert "| B2-Runtime | GESPERRT |" in readiness
 
 
@@ -121,6 +121,40 @@ def test_ratification_record_is_separate_and_grants_no_implementation_power():
         "keine institutionelle Implementierungsfreigabe",
         "ADR-0059",
         "Alle bislang gesperrten B2-Bereiche bleiben gesperrt",
-        "noch nicht gefasster menschlicher Beschluss",
+        "später getrennt gefasste Beschluss",
+    ):
+        assert phrase in text
+
+
+def test_adr_0060_implementation_approval_has_closed_positive_and_negative_scope():
+    text = read(ROOT / "governance/institutional-implementation-approval-adr-0060.md")
+    for phrase in (
+        "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1",
+        "INSTITUTIONELLE IMPLEMENTIERUNGSFREIGABE – GÜLTIG",
+        "21:44:59 Uhr",
+        "nicht der Zeitpunkt der Repository-Dokumentation",
+        "## Freigegeben",
+        "eigenständige B2-Authority-Klassen",
+        "immutable B2-Grants",
+        "zustandslose Authorization Evaluation",
+        "## Ausdrücklich nicht freigegeben",
+        "B2 Capability Invocation und B2 Runtime",
+        "jede technische Ausführung eines B2 Grants",
+        "Evaluation Evidence darf niemals Eingabe",
+        "Governance Evidence besitzt keinerlei autorisierende oder sperrende Wirkung",
+        "Ein unerlaubter personenbezogener Zustand darf strukturell nicht",
+    ):
+        assert phrase in text
+
+
+def test_every_future_institutional_decision_requires_positive_and_negative_sections():
+    text = read(ROOT / "governance/institutional-decision-scope-rule.md")
+    for phrase in (
+        "GOV-INSTITUTIONAL-DECISION-SCOPE-1",
+        "Jeder institutionelle Beschluss muss künftig",
+        "## Freigegeben",
+        "## Ausdrücklich nicht freigegeben",
+        "Eine fehlende Nennung ist keine Freigabe",
+        "keine Workflow-Engine",
     ):
         assert phrase in text

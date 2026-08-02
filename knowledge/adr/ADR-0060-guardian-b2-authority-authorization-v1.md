@@ -1,10 +1,12 @@
 # ADR-0060 – Guardian B2 Authority and Authorization v1
 
-Status: RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN
+Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN
 
 Ratifizierungsdatum: 02.08.2026
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0060-V1`
+
+Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`
 
 ## 1. Kontext und Governance-Grenze
 
@@ -21,8 +23,10 @@ Sequenz:
 2. Architektur validieren. Abgeschlossen.
 3. ADR-0060 ausdrücklich menschlich ratifizieren. Abgeschlossen und durch
    `GOV-RATIFICATION-ADR-0060-V1` dokumentiert.
-4. Eine gesonderte institutionelle Implementierungsfreigabe erstellen. Offen.
-5. Diese Implementierungsfreigabe ausdrücklich menschlich bestätigen. Offen.
+4. Eine gesonderte institutionelle Implementierungsfreigabe erstellen.
+   Abgeschlossen durch `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`.
+5. Diese Implementierungsfreigabe ausdrücklich menschlich bestätigen.
+   Abgeschlossen durch den getrennten externen Beschluss.
 6. Einen separaten, scopegebundenen Codex-Implementierungsauftrag erteilen. Offen.
 
 Ratifizierung und Implementierungsfreigabe sind zwei eigenständige menschliche
@@ -268,8 +272,9 @@ produktive externe Anbindungen, UI, Workflows und Werkzeuge.
 
 ADR-0060 implementiert dafür keine Verträge und formuliert keine
 Implementierungsfreigabe. Nach der dokumentierten menschlichen Ratifizierung
-ist weiterhin ein gesondertes, menschlich bestätigtes Freigabedokument mit erneut
-ausdrücklich begrenztem Scope erforderlich.
+ist das gesonderte, menschlich bestätigte Freigabedokument
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` mit erneut ausdrücklich
+begrenztem Scope maßgeblich. Es ersetzt keinen separaten Codex-Auftrag.
 
 ## 14. Auswirkungen und Nicht-Ziele
 

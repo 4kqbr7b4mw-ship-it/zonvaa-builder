@@ -256,12 +256,18 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   B2-Runtime bleiben GESPERRT und benötigen eine eigene institutionelle
   Freigabe.
 - ADR-0060 beschreibt Guardian B2 Authority and Authorization v1 als
-  `RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN`. Die Architektur trennt B2 strukturell von
+  ratifizierte Architektur. Die Architektur trennt B2 strukturell von
   B1, definiert immutable Grants ohne Wirksamkeitszustand, die vollständige
   D3-/T4-/AAV-/UODL-Bindung, Purpose-Verengung, einen expliziten
   Auswertungszeitpunkt und rein punktuelle Evaluation Evidence. Er ist keine
-  Implementierungsfreigabe und keine fachliche Implementierung. Der getrennte
-  Ratifizierungsnachweis ist `GOV-RATIFICATION-ADR-0060-V1`.
+  fachliche Implementierung. Ratifizierung und begrenzte
+  Implementierungsfreigabe sind getrennt dokumentiert durch
+  `GOV-RATIFICATION-ADR-0060-V1` und
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`. Provider, Invocation, Runtime
+  und jede technische Grant-Ausführung bleiben gesperrt.
+- `GOV-INSTITUTIONAL-DECISION-SCOPE-1` verlangt künftig für jeden
+  institutionellen Beschluss getrennte Abschnitte `Freigegeben` und
+  `Ausdrücklich nicht freigegeben`.
 
 ## Bewusste Produktgrenzen
 
@@ -278,7 +284,6 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 ## Nächster noch nicht begonnener Schritt
 
 Kein weiteres B2-Paket ist institutionell freigegeben. Nächster zulässiger
-Schritt ist ausschließlich ein gesonderter institutioneller Beschluss über
-die Implementierungsfreigabe für ADR-0060. Ratifizierung,
-Implementierungsfreigabe, deren menschliche Bestätigung und Codex-Auftrag
-bleiben getrennt; B2-Runtime bleibt gesperrt.
+Schritt ist ausschließlich ein separater Codex-Implementierungsauftrag im
+geschlossenen Scope von `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`.
+B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
