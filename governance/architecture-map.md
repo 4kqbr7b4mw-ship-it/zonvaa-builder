@@ -18,7 +18,7 @@ Abweichungen gelten ausschließlich die jeweils genannten bindenden Dokumente.
 - **Bindende Dokumente:** `constitution/constitution.md`, konkretisiert durch
   ADR-0027 ohne dessen operative Details in C1 zu erheben.
 - **Abhängige ADRs:** sämtliche nachrangigen ADRs, insbesondere ADR-0030,
-  ADR-0033 und ADR-0047 bis ADR-0058.
+  ADR-0033 und ADR-0047 bis ADR-0059; ADR-0060 liegt nur als Vorschlag vor.
 - **Ausgeschlossen:** Organe, Quoren, Runtime, Provider, Produktlogik,
   Implementierungsdetails und konkrete Autorisierungen.
 
@@ -49,7 +49,8 @@ behauptet keine historische C1-Identität.
   konkrete Authority-Nachweise innerhalb ihrer jeweiligen Verträge.
 - **Bindende Dokumente:** ADR-0030, ADR-0033 sowie ADR-0048, ADR-0049 und
   ADR-0050.
-- **Abhängige ADRs:** ADR-0051 bis ADR-0058.
+- **Abhängige ADRs:** ADR-0051 bis ADR-0059; ADR-0060 ist vorgeschlagen und
+  noch nicht bindend.
 - **Ausgeschlossen:** automatische Autorisierung, Providerwahl,
   Vertrauensbewertung, Capability-Aktivierung, Runtime-Ausführung und ein
   B1→B2-Upgrade.

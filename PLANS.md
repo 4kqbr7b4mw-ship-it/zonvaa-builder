@@ -3268,3 +3268,33 @@ Invocation oder Runtime.
 - Ordentliche Vertrauensratsbestätigung: ausstehend.
 - Alle weiteren B2-Pakete: GESPERRT.
 - B2-Runtime: GESPERRT.
+
+# ADR-0060 – Guardian B2 Authority and Authorization v1
+
+## Ziel und Grenzen
+
+Die eigenständige B2-Authority-, Grant- und Evaluation-Architektur vollständig
+als nicht ratifizierten Vorschlag dokumentieren. Ausschließlich Architektur-
+und Governance-Dokumentation; keine Klassen, Verträge, APIs, Validatoren,
+Provider, Runtime oder personenbezogene Verarbeitung.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] B1/B2-Trennung und eigenständige B2 Authority festlegen.
+- [x] immutable B2 Grants ohne gespeicherten Wirksamkeitszustand spezifizieren.
+- [x] D3-, T4-, AAV-, UODL- und Purpose-Scope-Bindungen entscheiden.
+- [x] expliziten Auswertungszeitpunkt, zustandslose Evaluation sowie positive
+  und negative Evidence bestimmen.
+- [x] strukturelle Ausschlüsse und Negative Authority and Grant Rules
+  dokumentieren.
+- [x] Freigabesequenz und weiterhin gesperrte B2-Bausteine festhalten.
+- [ ] ausdrückliche menschliche Ratifizierung von ADR-0060.
+- [ ] gesonderte institutionelle Implementierungsfreigabe erstellen und
+  menschlich bestätigen.
+
+## Dokumentationsblocker
+
+Das Repository besitzt kein kanonisches Accident- oder Operational-Ledger für
+erfolgreich abgewehrte Governance-Scope-Übergänge. ADR-0052 gilt ausschließlich
+für Runtime Incidents und wurde nicht zweckentfremdet. Der abgewehrte Auftrag
+wurde deshalb nicht in einem erfundenen Logbuch persistiert.

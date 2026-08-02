@@ -255,6 +255,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - ADR-0059 ist implementiert und validiert. Alle weiteren B2-Pakete sowie die
   B2-Runtime bleiben GESPERRT und benötigen eine eigene institutionelle
   Freigabe.
+- ADR-0060 beschreibt Guardian B2 Authority and Authorization v1 als
+  `VORGESCHLAGEN – NICHT RATIFIZIERT`. Der Vorschlag trennt B2 strukturell von
+  B1, definiert immutable Grants ohne Wirksamkeitszustand, die vollständige
+  D3-/T4-/AAV-/UODL-Bindung, Purpose-Verengung, einen expliziten
+  Auswertungszeitpunkt und rein punktuelle Evaluation Evidence. Er ist keine
+  Implementierungsfreigabe und keine fachliche Implementierung.
 
 ## Bewusste Produktgrenzen
 
@@ -270,6 +276,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Kein weiteres B2-Paket ist institutionell freigegeben. Die nächste Aktivität
-darf ausschließlich eine neue Architektur- und Freigabeentscheidung sein; B2-
-Runtime bleibt gesperrt.
+Kein weiteres B2-Paket ist institutionell freigegeben. Nächster zulässiger
+Schritt ist ausschließlich die ausdrückliche menschliche Ratifizierung von
+ADR-0060. Ratifizierung, institutionelle Implementierungsfreigabe, deren
+menschliche Bestätigung und Codex-Auftrag bleiben getrennt; B2-Runtime bleibt
+gesperrt.
