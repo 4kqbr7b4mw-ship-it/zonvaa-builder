@@ -94,3 +94,20 @@ Gesamtbericht nicht mehr klar seziert werden kann.
 Unverändert gelten die Freigabegrenzen: Implementierung ist keine
 Commit-Freigabe, Commit ist keine Push-Freigabe, Tests und Diff-Prüfung erfolgen
 vor dem Commit und der Push wird separat freigegeben.
+
+## E7b – Codex-Aufträge
+
+Ein Codex-Auftrag besteht ausschließlich aus dem direkt ausführbaren Auftrag.
+Vor dem Auftrag stehen keine Einleitung, Begründung, Zusammenfassung oder
+Meta-Kommentare. Die Architekturdiskussion endet mit der Architekturentscheidung.
+Nach der Architekturentscheidung beginnt unmittelbar der Codex-Auftrag.
+
+Bereits beschlossene Inhalte werden nicht erneut erklärt, sondern nur soweit
+wiederholt, wie sie für die korrekte Implementierung erforderlich sind. Der
+Auftrag ist so kurz wie möglich und so vollständig wie nötig. Jeder Satz im
+Auftrag muss einen konkreten Implementierungswert besitzen. Prozesskommentare
+gehören nicht in Codex-Aufträge.
+
+ChatGPT trennt strikt zwischen Architekturdiskussion, Codex-Auftrag, Bewertung
+des Codex-Berichts, Commit-Freigabe und Push-Freigabe. Diese Trennung verändert
+weder die bestehenden Freigabegrenzen noch Builder- oder Produktlogik.

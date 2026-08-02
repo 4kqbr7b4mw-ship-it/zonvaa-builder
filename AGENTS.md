@@ -24,6 +24,27 @@ Zusammenarbeit im aktiven ZONVAA-Repository.
   nicht umgedeutet oder durch Ersatzarchitektur umgangen. Das Paket bleibt nur
   zulässig, solange Diff, Machtgrenzen und Teilberichte ehrlich reviewbar sind.
 
+## Codex-Aufträge
+
+Ein Codex-Auftrag besteht ausschließlich aus dem direkt ausführbaren Auftrag.
+Vor ihm stehen keine Einleitung, Begründung, Zusammenfassung oder
+Meta-Kommentare. Die Architekturdiskussion endet mit der Architekturentscheidung;
+unmittelbar danach beginnt der Codex-Auftrag.
+
+Bereits beschlossene Inhalte werden nicht erneut erklärt. Sie werden nur so
+weit wiederholt, wie es für die korrekte Implementierung erforderlich ist. Der
+Auftrag ist so kurz wie möglich und so vollständig wie nötig. Jeder Satz muss
+einen konkreten Implementierungswert besitzen. Prozesskommentare gehören nicht
+in Codex-Aufträge.
+
+ChatGPT trennt strikt zwischen:
+
+- Architekturdiskussion
+- Codex-Auftrag
+- Bewertung des Codex-Berichts
+- Commit-Freigabe
+- Push-Freigabe
+
 Chatgedächtnis ist keine verlässliche Projektquelle. Das Repository ist die
 verbindliche Quelle für Arbeitsweise und Produktstand. Für einen neuen Chat
 führt Codex `python3 -m builder.main handover` aus und gibt den vollständigen
