@@ -2861,3 +2861,31 @@ nichts und ist keine Journey-State-Machine.
   die vorhandenen Nachweisstationen. Sie führen keinen Übergang aus.
 - Experience-Aktionen sind reine Sichtoptionen ohne Handler, Zustandsänderung
   oder Aktivierungswirkung.
+
+# Guardian Authority Model v1
+
+## Ziel und Grenzen
+
+Ein immutable, typisiertes Befugnismodell für abstrakte Authority-Typen,
+Akteursklassen, Verantwortungsgrenzen, Delegation, gemeinsame Ausübung,
+Kontrollstufen, Widerrufbarkeit, Provenienz und Reviewstatus ergänzen. Das
+Modell autorisiert keinen Provider, besitzt keine Runtime und führt nichts aus.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Governance-, Autorisierungs- und Guardian-Grundlagen prüfen.
+- [x] Authority-Verträge und strukturellen Validator implementieren.
+- [x] ADR-0048, Produktstatus und Handover ergänzen.
+- [x] Fokussierte Tests und Public-API-Prüfung abschließen.
+- [x] Guardian-Regression, Gesamtsuite, Doctor und Diff-Audit abschließen.
+
+## Entscheidungen
+
+- Akteursklassen sind abstrakte Verantwortungsrollen und keine konkreten
+  Provider, Personen oder Autorisierungen.
+- Jede Akteursklassengrenze ordnet alle vorhandenen Authority-Referenzen
+  ausdrücklich als zulässig oder verboten ein.
+- Delegation wird nur als Regel zwischen Akteursklassen beschrieben;
+  nicht delegierbare und gemeinsam auszuübende Befugnisse bleiben ausgeschlossen.
+- Das Paket verbleibt im bestehenden `governance`-Modul und erzeugt keinen
+  Runtime-, Registry-, Provider- oder Ausführungslayer.

@@ -1,4 +1,21 @@
 from governance.loader import GovernanceLoader
+from governance.authority import (
+    ActorResponsibilityBoundary,
+    AuthorityActorClass,
+    AuthorityCapability,
+    AuthorityControlLevel,
+    AuthorityDefinition,
+    AuthorityDelegationRule,
+    AuthorityExercise,
+    AuthorityModelCapability,
+    AuthorityProvenance,
+    AuthorityReviewStatus,
+    AuthorityType,
+    GuardianAuthorityModel,
+    GuardianAuthorityModelValidator,
+    GuardianAuthorityValidationError,
+    ProhibitedAuthorityCombination,
+)
 from governance.models import (
     GovernanceBody,
     GovernanceContext,
@@ -8,10 +25,25 @@ from governance.models import (
 )
 
 __all__ = [
+    "ActorResponsibilityBoundary",
+    "AuthorityActorClass",
+    "AuthorityCapability",
+    "AuthorityControlLevel",
+    "AuthorityDefinition",
+    "AuthorityDelegationRule",
+    "AuthorityExercise",
+    "AuthorityModelCapability",
+    "AuthorityProvenance",
+    "AuthorityReviewStatus",
+    "AuthorityType",
     "GovernanceBody",
     "GovernanceContext",
     "GovernanceLoader",
+    "GuardianAuthorityModel",
+    "GuardianAuthorityModelValidator",
+    "GuardianAuthorityValidationError",
     "NormLevel",
+    "ProhibitedAuthorityCombination",
     "ProtectionGoal",
     "TrustDomain",
 ]

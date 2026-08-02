@@ -36,6 +36,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Personal Preparation Package v1
 - Guardian Professional Decision Boundary Package v1
 - End-to-End Guardian Answer Reference Journey v1
+- Guardian Authority Model v1
 
 ## Aktueller fachlicher Stand
 
@@ -113,6 +114,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   vollständige und partielle Schutzpfade behalten ihre ursprünglichen Objekte,
   Quellen und Inhalte; die UI-neutrale Experience projiziert sie ohne
   Generierung, Interpretation, Priorisierung, Aktivierung oder Zustandsänderung.
+- Das Guardian Authority Model beschreibt Authority-Typen, abstrakte
+  Akteursklassen, Verantwortungsgrenzen, Delegierbarkeit, gemeinsame Ausübung,
+  Widerrufbarkeit, Kontrollstufen, verbotene Kombinationen, Provenienz und
+  Reviewstatus als immutable Architekturvertrag. Es autorisiert weder konkrete
+  Provider noch Personen, besitzt keine Runtime und führt keine Befugnis aus.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

@@ -61,6 +61,7 @@ PRODUCT_STATUS = """# Status
 - Guardian Personal Preparation Package v1
 - Guardian Professional Decision Boundary Package v1
 - End-to-End Guardian Answer Reference Journey v1
+- Guardian Authority Model v1
 
 ## Aktueller fachlicher Stand
 
@@ -150,6 +151,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Guardian Personal Preparation Package v1" in output
     assert "Guardian Professional Decision Boundary Package v1" in output
     assert "End-to-End Guardian Answer Reference Journey v1" in output
+    assert "Guardian Authority Model v1" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -185,6 +187,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Guardian Personal Preparation Package v1",
         "Guardian Professional Decision Boundary Package v1",
         "End-to-End Guardian Answer Reference Journey v1",
+        "Guardian Authority Model v1",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",
