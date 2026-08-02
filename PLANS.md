@@ -2920,3 +2920,33 @@ Persistenz oder allgemeine IAM-/RBAC-Architektur.
   validiert. Datumswerte lösen keine automatische Statusänderung aus.
 - Der Snapshot enthält Originalobjekte und prüft die explizite Kategorisierung,
   erzeugt aber weder Autorisierung noch Status.
+
+# Guardian Capability Invocation Boundary v1
+
+## Ziel und Grenzen
+
+Bereits bereitgestellte B1-Invocation-Requests gegen den bestehenden Authority-
+und Provider-Authorization-Nachweispfad prüfen, eine bereitgestellte Decision
+fail-closed validieren und daraus immutable Receipts sowie read-only Snapshots
+erzeugen. Keine Runtime, Provider-Ausführung, Capability-Aktivierung,
+Persistenz oder Audit-Logik.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0050 ratifiziert dokumentieren und bestehende Validatoranschlüsse prüfen.
+- [x] Request, Decision, Evidence, Receipt und Resolution Snapshot typisieren.
+- [x] Deterministischen B1-Validator und Fail-closed-Regeln implementieren.
+- [x] Referenzszenarien, Public API, Produktstatus und Handover abschließen.
+- [x] Governance-/Guardian-Regression, Gesamtsuite, Doctor und Diff prüfen.
+
+## Entscheidungen
+
+- Betriebsart, Authority, Capability, Provider, Authorization, Lifecycle und
+  Kontrollen werden ausschließlich aus den bestehenden kanonischen Typen
+  übernommen.
+- `ACCEPTED` dokumentiert nur grundsätzliche Zulässigkeit; es aktiviert und
+  autorisiert nichts.
+- Receipt-ID, Validierungszeitpunkt, Review und Provenienz werden typisiert
+  bereitgestellt; die reine Erzeugungsfunktion verwendet weder Uhr noch Zufall.
+- `DEGRADED` ist eine deklarierte Kennzeichnung und wird nicht erkannt oder
+  berechnet.

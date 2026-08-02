@@ -38,6 +38,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - End-to-End Guardian Answer Reference Journey v1
 - Guardian Authority Model v1
 - Guardian Provider Authorization Package v1
+- Guardian Capability Invocation Boundary v1
 
 ## Aktueller fachlicher Stand
 
@@ -125,6 +126,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Grants, Entscheidungsevidenz, Widerruf, Aussetzung, Ablauf, Wiederherstellung
   und Resolution Snapshots bleiben immutable und rein nachweisend; das Paket
   wählt keinen Provider, aktiviert keine Capability und besitzt keine Runtime.
+- Die Guardian Capability Invocation Boundary dokumentiert ausschließlich
+  bereitgestellte B1-Invocation-Requests, kontrollierte Entscheidungen und den
+  vollständigen Authority-/Provider-/Authorization-/Lifecycle-Prüfpfad. Sie
+  erzeugt immutable Receipts und read-only Snapshots ohne Persistenz,
+  Provider-Ausführung, Capability-Aktivierung oder Runtime.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen
