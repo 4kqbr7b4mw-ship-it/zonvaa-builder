@@ -47,6 +47,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Physical Operational Persistence v1 (technologieneutraler Port ohne Adapter)
 - Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)
 - Operational Notifications v1 (deklarative Nachweise ohne Zustellung)
+- Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
 
 ## Aktueller fachlicher Stand
 
@@ -210,6 +211,19 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   weder B2 noch B3 frei und erlaubt keine B2-/B3-Runtime oder Schreiboperation.
   Lediglich eine gesonderte Architekturentscheidung über eine mögliche
   B2-Stufe darf wieder aufgenommen werden.
+- ADR-0058 definiert B2 als eigene Verfassungsstufe und nicht als Erweiterung
+  der B1-Runtime. B2 benötigt eine eigene Authority-Klasse, eigene Grants,
+  zweck-, zeit- und datenklassengebundene Datenhoheit sowie vorgeschaltete
+  Minimierung und Depersonalisierung. D3 bleibt notwendig, ist aber nicht
+  hinreichend; ein B1-Grant autorisiert niemals B2.
+- Der bestehende Betriebsblock bleibt gegenüber B2-Inhalten blind:
+  Observation und Audit prüfen nur Systemverhalten, Operational Memory und
+  Physical Persistence speichern keine B2-Inhalte, Metrics und Notifications
+  verarbeiten sie nicht. ADR-0058 implementiert weder Runtime noch Vertrag,
+  Provider, API oder Produktfunktion.
+- Jede B2-Implementierung bleibt bis zur dokumentierten
+  Vertrauensrats-Kenntnisnahme und zur Benennung der im Repository derzeit
+  nicht auffindbaren kanonischen I4-Regel blockiert.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

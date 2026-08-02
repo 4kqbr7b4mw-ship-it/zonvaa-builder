@@ -72,6 +72,7 @@ PRODUCT_STATUS = """# Status
 - Physical Operational Persistence v1 (technologieneutraler Port ohne Adapter)
 - Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)
 - Operational Notifications v1 (deklarative Nachweise ohne Zustellung)
+- Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)
 
 ## Aktueller fachlicher Stand
 
@@ -172,6 +173,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Physical Operational Persistence v1" in output
     assert "Operational Metrics v1" in output
     assert "Operational Notifications v1" in output
+    assert "Guardian B2 Architecture v1" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -218,6 +220,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Physical Operational Persistence v1 (technologieneutraler Port ohne Adapter)",
         "Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)",
         "Operational Notifications v1 (deklarative Nachweise ohne Zustellung)",
+        "Guardian B2 Architecture v1 (reine Architekturentscheidung ohne Implementierung)",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",
@@ -232,6 +235,41 @@ def test_repository_canonical_status_matches_confirmed_product_state():
     positions = [output.index(value) for value in expected_in_order]
     assert positions == sorted(positions)
     assert git(PROJECT_ROOT, "rev-parse", "HEAD") in output
+
+
+def test_guardian_b2_architecture_is_documented_without_implementation():
+    adr = (
+        PROJECT_ROOT
+        / "knowledge"
+        / "adr"
+        / "ADR-0058-guardian-b2-architecture-v1.md"
+    ).read_text(encoding="utf-8")
+
+    for heading in (
+        "## 1. Kontext",
+        "## 2. Bestehendes Recht",
+        "## 3. Neue Architekturentscheidungen",
+        "## 4. Vererbungsregeln",
+        "## 5. Auswirkungen",
+        "## 6. Nicht-Ziele",
+    ):
+        assert heading in adr
+    for rule in (
+        "B2 besitzt eine eigene Authority-Klasse",
+        "B1-Autorisierung autorisiert niemals B2",
+        "D3 ist notwendige, aber nicht",
+        "hinreichende Voraussetzung",
+        "Observation bleibt gegenüber B2-Inhalten blind",
+        "Operational Memory und Physical Operational",
+        "Persistence speichern keine B2-Inhalte",
+        "B2 berührt Vetodomäne 2 zwingend",
+        "Vertrauensrats-Kenntnisnahme",
+        "Keine Regel wird rekonstruiert",
+    ):
+        assert rule in adr
+    for inheritance in ("GEERBT", "VERSCHÄRFT", "NEU", "UNZULÄSSIG"):
+        assert inheritance in adr
+    assert "Diese ADR führt keine Klasse, API, Runtime" in adr
 
 
 def test_handover_reads_local_and_remote_head_at_runtime(tmp_path):

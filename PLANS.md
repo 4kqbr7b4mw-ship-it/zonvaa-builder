@@ -3140,3 +3140,29 @@ Das Paket umfasst Operational Metrics v1 und Operational Notifications v1.
 - [x] ADR-0057, Public API, Produktstatus und Handover aktualisieren.
 - [x] Fokussierte und negative Referenzszenarien validieren.
 - [x] Regression, Gesamtsuite, Doctor, Diff und read-only Handover abschließen.
+
+# Guardian B2 Architecture v1
+
+## Ziel und Grenzen
+
+Die verfassungsrechtliche B2-Grenze als reine Architekturentscheidung
+dokumentieren. B2 ist keine Erweiterung der B1-Runtime. Eigene Authority und
+Authorization, Datenhoheit, Depersonalisierung, Widerruf und die inhaltsblinde
+Betriebsgrenze werden festgelegt, ohne Vertrag, Runtime, API oder
+Produktfunktion zu implementieren.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0046 bis ADR-0057, AAV, UODL und Guardian-Grundlagen prüfen.
+- [x] Bestehendes Recht und unverändert geerbte Regeln zuordnen.
+- [x] Neue B2-Architekturentscheidungen und Vererbungsmatrix dokumentieren.
+- [x] Produktstatus und read-only Handover aktualisieren.
+- [x] Dokumentationsprüfungen, Gesamtsuite, Doctor und Diff prüfen.
+
+## Architekturblocker
+
+- Im kanonischen Repository ist keine als `I4` bezeichnete Norm auffindbar.
+  Ihr Inhalt wird nicht rekonstruiert; die kanonische Quelle muss vor jeder
+  B2-Implementierung benannt werden.
+- Die erforderliche Vertrauensrats-Kenntnisnahme ist nicht durch die
+  Dokumentation selbst erfüllt.
