@@ -3072,3 +3072,30 @@ oder Aktivierungsmacht.
   dieselben validierten Profile und Scopes und schließt Nutzungsthemen aus.
 - B2-/B3-Runtime bleibt bis zum Abschluss von Audit Architecture und einem
   separat ratifizierten Operational-Memory-Block gesperrt.
+
+# Operational Memory v1
+
+## Ziel und Grenzen
+
+Bereits validierte maschinengenerierte Observation-, Runtime-, Incident- und
+Audit-Nachweise immutable als zulässige Speicherobjekte abbilden. Persistenz
+folgt Audit. Nutzerdaten, physische Speicherung, Datenbank, Dateiablage,
+Metriken, Benachrichtigungen, Archivierung, Löschung und Replikation bleiben
+außerhalb dieses Pakets.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0046 bis ADR-0054, AAV/UODL und bestehende Persistenzgrenzen prüfen.
+- [x] Operational Memory Record, Bindung, Package und Snapshot typisieren.
+- [x] Deterministischen Validator mit kanonischen Vorvalidatoren ergänzen.
+- [x] Duplikat-, Nutzerdaten-, Identitäts- und Negativtests ergänzen.
+- [x] ADR-0055, Public API, Produktstatus und Handover aktualisieren.
+- [x] Gesamtregression, Doctor, Diff und read-only Handover abschließen.
+
+## Bestandsbefund
+
+Es existiert keine kanonische physische Persistenzschnittstelle für
+Betriebsevidenz. `KnowledgeManager` validiert ohne Persistenz, die bestehende
+Memory-Klassifikation begründet keinen eigenen Speicher und UODL modelliert nur
+nutzerkontrollierte Referenzen. Operational Memory v1 führt deshalb keine
+Speichertechnologie oder allgemeine Storage-Abstraktion ein.

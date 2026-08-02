@@ -68,6 +68,7 @@ PRODUCT_STATUS = """# Status
 - Runtime Incident Evidence v1
 - Runtime Observation Governance v1
 - Runtime Audit Architecture v1
+- Operational Memory v1 (Speicherverträge ohne physische Persistenz)
 
 ## Aktueller fachlicher Stand
 
@@ -164,6 +165,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Runtime Incident Evidence v1" in output
     assert "Runtime Observation Governance v1" in output
     assert "Runtime Audit Architecture v1" in output
+    assert "Operational Memory v1" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
     assert "Keine Intent Engine" in output
@@ -206,6 +208,7 @@ def test_repository_canonical_status_matches_confirmed_product_state():
         "Runtime Incident Evidence v1",
         "Runtime Observation Governance v1",
         "Runtime Audit Architecture v1",
+        "Operational Memory v1 (Speicherverträge ohne physische Persistenz)",
         "Keine automatische Semantik",
         "Keine Intent Engine",
         "Kein Routing",

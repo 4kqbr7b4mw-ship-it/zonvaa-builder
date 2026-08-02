@@ -43,6 +43,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Runtime Incident Evidence v1
 - Runtime Observation Governance v1
 - Runtime Audit Architecture v1
+- Operational Memory v1 (Speicherverträge ohne physische Persistenz)
 
 ## Aktueller fachlicher Stand
 
@@ -173,6 +174,18 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Persistenz, Metriken und Benachrichtigungen jeweils ratifiziert,
   implementiert und validiert sind. Diese Gate-Regel autorisiert keine neue
   Runtime-Macht.
+- Operational Memory v1 bildet ausschließlich bereits validierte,
+  maschinengenerierte Observation-, Runtime-, Incident- und Audit-Nachweise als
+  immutable Records und identitätstreue Artefaktbindungen ab. Der geschlossene
+  Artefaktkatalog enthält keine Nutzerdaten, Gesprächsinhalte, Nutzerprofile,
+  Nutzungsmuster oder personenbezogenen Artefakte. Duplikate werden durch
+  Artefaktreferenz plus Version bestimmt. Validator und read-only Snapshot
+  persistieren, verändern, ergänzen, löschen oder archivieren nichts.
+- Eine kanonische physische Persistenzschnittstelle für Betriebsevidenz ist
+  nicht vorhanden. Datenbank, Dateiablage, Löschung, Archivierung, Retention,
+  Replikation, Metriken und Benachrichtigungen bleiben offene, gesondert zu
+  ratifizierende Architekturblöcke. AAV/UODL bleibt die getrennte spätere
+  Hoheitsarchitektur für Nutzerdaten. Das B2-/B3-Gate bleibt unerfüllt.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

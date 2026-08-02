@@ -130,6 +130,17 @@ from governance.runtime_audit import (
     RuntimeAuditValidationError,
     RuntimeAuditValidator,
 )
+from governance.operational_memory import (
+    OperationalMemoryArtifact,
+    OperationalMemoryArtifactBinding,
+    OperationalMemoryArtifactType,
+    OperationalMemoryOrigin,
+    OperationalMemoryPackage,
+    OperationalMemoryRecord,
+    OperationalMemorySnapshot,
+    OperationalMemoryValidationError,
+    OperationalMemoryValidator,
+)
 from governance.models import (
     GovernanceBody,
     GovernanceContext,
@@ -256,6 +267,15 @@ __all__ = [
     "GOVERNANCE_PROFILE_ACTORS",
     "ObservationProfileApprovalStatus",
     "ObservationSnapshotStatus",
+    "OperationalMemoryArtifact",
+    "OperationalMemoryArtifactBinding",
+    "OperationalMemoryArtifactType",
+    "OperationalMemoryOrigin",
+    "OperationalMemoryPackage",
+    "OperationalMemoryRecord",
+    "OperationalMemorySnapshot",
+    "OperationalMemoryValidationError",
+    "OperationalMemoryValidator",
     "PROHIBITED_USER_OBSERVATION_CATEGORIES",
     "PROHIBITED_USER_AUDIT_SUBJECTS",
     "READ_ONLY_B1_RUNTIME_REFERENCE",
