@@ -86,6 +86,8 @@ PRODUCT_STATUS = """# Status
   nicht ausführenden Vertragsscope begrenzt implementierungsfreigegeben.
 - Provider, Invocation, Runtime und technische Grant-Ausführung bleiben
   gesperrt.
+- Guardian Accountability & Explanation Layer ist nur als ruhender, nicht
+  geplanter Architekturkandidat registriert und erzeugt keine Freigabe.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen

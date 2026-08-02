@@ -268,6 +268,15 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - `GOV-INSTITUTIONAL-DECISION-SCOPE-1` verlangt künftig für jeden
   institutionellen Beschluss getrennte Abschnitte `Freigegeben` und
   `Ausdrücklich nicht freigegeben`.
+- Guardian Accountability & Explanation Layer ist ausschließlich als offener,
+  nicht geplanter und nicht implementierter Architekturkandidat registriert.
+  Die Registrierung ist eine eng begrenzte Ausnahme zu ADR-0046 E6, weil der
+  Kandidat bereits heute wirksame Verifizierbarkeitsgrenzen sichtbar hält; E6
+  bleibt unverändert. Aktivierung verlangt produktive B2-Runtime, erste reale
+  Rechenschaftspflichten und einen dokumentierten Aktivierungsbeschluss.
+- `GOV-NO-FABRICATION-1` ist nur ein offener Konsolidierungspunkt und keine
+  neue Governance-Regel. Aus beiden Registrierungen folgen weder Runtime, API,
+  Erklärungsschicht noch Implementierungsfreigabe.
 
 ## Bewusste Produktgrenzen
 

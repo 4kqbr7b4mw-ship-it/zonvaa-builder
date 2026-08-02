@@ -3302,3 +3302,22 @@ Das Repository besitzt kein kanonisches Accident- oder Operational-Ledger für
 erfolgreich abgewehrte Governance-Scope-Übergänge. ADR-0052 gilt ausschließlich
 für Runtime Incidents und wurde nicht zweckentfremdet. Der abgewehrte Auftrag
 wurde deshalb nicht in einem erfundenen Logbuch persistiert.
+
+# Guardian Accountability & Explanation Layer – offener Architekturkandidat
+
+## Status und Grenze
+
+- [x] Kandidaten als `Registriert`, `Nicht geplant` und `Nicht implementiert`
+  dokumentieren.
+- [x] ausschließlich die Registrierung als Ausnahme zu ADR-0046 E6 begründen;
+  E6 selbst unverändert lassen.
+- [x] Verfassungskern „Verifizierbarkeit statt Vertrauen“ dokumentieren.
+- [x] `GOV-NO-FABRICATION-1` nur als offenen C2-Konsolidierungspunkt
+  registrieren, nicht als neue Governance-Regel.
+- [x] Aktivierung an produktive B2-Runtime, reale Rechenschaftspflichten und
+  dokumentierten Aktivierungsbeschluss binden.
+- [x] Runtime, API, Erklärungsschicht, Vertrag und Implementierungsfreigabe
+  ausdrücklich ausschließen.
+
+Der Kandidat bleibt ruhend. Er ist kein geplantes Paket und kein zulässiger
+nächster Implementierungsschritt.

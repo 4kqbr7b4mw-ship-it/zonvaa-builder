@@ -16,6 +16,12 @@ ist ausschließlich Guardian B2 Data Corridor and Consent Boundary v1 durch
 | B2 Invocation Boundary | zulässigen B2-Aufruf strukturell begrenzen | Authority, Grant, Datenkorridor und Privacy Boundary | keine Provider-Ausführung | keine Auswahl, Klassifikation oder Runtime | ADR-0050-Muster; eigenes Invocation-Gate |
 | B2 Provider Runtime | genau freigegebene B2-Fähigkeit ausführen | alle vorgelagerten B2-Grenzen und Providerfreigabe | kein B3, kein Routing, kein freier Schreibzugriff | keine automatische Antwort, Providerwahl oder Fallback | Invocation und Provider Authorization; höchstes separates Machtgate |
 | B2 Observation, Audit and User-Owned Storage Integration | nicht-inhaltliche Betriebsnachweise und nutzerhoheitliche Referenzen binden | validierte B2-Runtime-Architektur | Betriebsblock bleibt inhaltsblind | keine Nutzeranalyse oder B2-Inhalte im Operational Memory | `GOV-SYSTEM-BEHAVIOR-ONLY-1`, AAV/UODL; eigene Governance-Freigabe |
+| Guardian Accountability & Explanation Layer | bereits vorhandene Evidenz referenzgebunden lesbar projizieren | produktive B2-Runtime, erste reale Rechenschaftspflichten und dokumentierter Aktivierungsbeschluss | Erklärung liest nur und entscheidet oder weiß nichts | keine zweite Wahrheit, Generierung, Runtime, API oder Evidenzerzeugung | registrierter, nicht geplanter und ausdrücklich ruhender E6-Ausnahmekandidat; keine Freigabe |
 
 Nicht Bestandteil dieser Landkarte sind Verträge, Klassen, APIs, Validatoren,
 Runtime-Komponenten, Provider, Persistenzadapter, UI oder Workflowaktivierung.
+
+Der Kandidat Guardian Accountability & Explanation Layer ist ausschließlich
+registriert. Seine Aufnahme ist eine auf die Registrierung begrenzte Ausnahme
+zu ADR-0046 E6; E6 bleibt unverändert. Der offene Konsolidierungspunkt
+`GOV-NO-FABRICATION-1` ist keine neue Governance-Regel.
