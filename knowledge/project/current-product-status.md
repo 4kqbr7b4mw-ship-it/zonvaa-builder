@@ -37,6 +37,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Professional Decision Boundary Package v1
 - End-to-End Guardian Answer Reference Journey v1
 - Guardian Authority Model v1
+- Guardian Provider Authorization Package v1
 
 ## Aktueller fachlicher Stand
 
@@ -119,6 +120,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Widerrufbarkeit, Kontrollstufen, verbotene Kombinationen, Provenienz und
   Reviewstatus als immutable Architekturvertrag. Es autorisiert weder konkrete
   Provider noch Personen, besitzt keine Runtime und führt keine Befugnis aus.
+- Das Guardian Provider Authorization Package bindet vorhandene Authority-
+  Definitionen kontrolliert an bereits bereitgestellte Provider-Identitäten.
+  Grants, Entscheidungsevidenz, Widerruf, Aussetzung, Ablauf, Wiederherstellung
+  und Resolution Snapshots bleiben immutable und rein nachweisend; das Paket
+  wählt keinen Provider, aktiviert keine Capability und besitzt keine Runtime.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

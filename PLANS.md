@@ -2889,3 +2889,34 @@ Modell autorisiert keinen Provider, besitzt keine Runtime und führt nichts aus.
   nicht delegierbare und gemeinsam auszuübende Befugnisse bleiben ausgeschlossen.
 - Das Paket verbleibt im bestehenden `governance`-Modul und erzeugt keinen
   Runtime-, Registry-, Provider- oder Ausführungslayer.
+
+# Guardian Provider Authorization Package v1
+
+## Ziel und Grenzen
+
+Bereits bereitgestellte Provider-Identitäten kontrolliert mit bestehenden
+Authority-Definitionen aus ADR-0048 verbinden. Grants, Entscheidungsevidenz,
+Lifecycle-Nachweise und Resolution Snapshot bleiben immutable und rein
+nachweisend. Keine Provider-Auswahl, Runtime, Capability-Aktivierung,
+Persistenz oder allgemeine IAM-/RBAC-Architektur.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Authority-, Authorization-, Provenienz- und Widerrufsverträge prüfen.
+- [x] Provider Identity, Authorization Grant und Decision Evidence ergänzen.
+- [x] Widerruf, Aussetzung, Ablauf und Wiederherstellung typisieren.
+- [x] Paketvalidator und read-only Resolution Snapshot ergänzen.
+- [x] Referenzszenarien, ADR-0049, Public API und Handover abschließen.
+- [x] Governance-/Guardian-Regression, Gesamtsuite, Doctor und Diff prüfen.
+
+## Entscheidungen
+
+- Authority-Typen, Akteursklassen, Capabilities, Kontrollstufen, Delegation,
+  Widerrufbarkeit, Provenienz und Reviewstatus werden direkt aus ADR-0048
+  wiederverwendet.
+- Delegierbare Grants referenzieren eine bestehende passende
+  `AuthorityDelegationRule`; andere Grants behalten die Authority-Referenz.
+- Status und Lifecycle werden ausschließlich aus bereitgestellten Nachweisen
+  validiert. Datumswerte lösen keine automatische Statusänderung aus.
+- Der Snapshot enthält Originalobjekte und prüft die explizite Kategorisierung,
+  erzeugt aber weder Autorisierung noch Status.
