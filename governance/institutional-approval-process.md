@@ -40,13 +40,13 @@ automatisch abgeleitet werden.
   B2-Runtime. Jeder weitere Scope beginnt erneut am jeweils erforderlichen
   institutionellen Gate.
 
-## Offener Übergangsstand für ADR-0060
+## Übergangsstand für ADR-0060
 
-- ADR-0060 liegt ausschließlich als vorgeschlagene Architekturentscheidung vor.
-- Architekturvalidierung erzeugt weder Ratifizierung noch Freigabe.
-- Eine ausdrückliche menschliche Ratifizierung ist der nächste offene Schritt.
-- Erst danach darf ein eigenes institutionelles Implementierungsfreigabedokument
-  erstellt und anschließend ausdrücklich menschlich bestätigt werden.
+- ADR-0060 wurde durch den eigenständigen Beschlussnachweis
+  `GOV-RATIFICATION-ADR-0060-V1` ratifiziert.
+- Architekturvalidierung und Ratifizierung erzeugen keine Implementierungsfreigabe.
+- Ein eigenes institutionelles Implementierungsfreigabedokument muss weiterhin
+  gesondert erstellt und ausdrücklich menschlich bestätigt werden.
 - Erst diese getrennte Bestätigung kann einen separaten Codex-Auftrag tragen.
 - Der bisherige gestoppte Implementierungsauftrag hat diese Schritte nicht
   ersetzt; es wurde keine Änderung, Freigabe, Implementierung oder Runtime

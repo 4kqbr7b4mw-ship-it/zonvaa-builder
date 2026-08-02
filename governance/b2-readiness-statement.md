@@ -2,7 +2,7 @@
 
 Stand: 02.08.2026
 
-Status: ADR-0060 vorgeschlagen – nicht ratifiziert, übrige B2-Stufen gesperrt
+Status: ADR-0060 ratifiziert – nicht implementierungsfreigegeben
 
 ## Bestätigter Stand
 
@@ -24,8 +24,9 @@ Status: ADR-0060 vorgeschlagen – nicht ratifiziert, übrige B2-Stufen gesperrt
   B2 Data Corridor and Consent Boundary v1 erteilt.
 - ADR-0059 und der freigegebene immutable Data-Corridor-Baustein sind
   implementiert. Er bewegt oder verarbeitet keine personenbezogenen Daten.
-- ADR-0060 dokumentiert B2 Authority and Authorization ausschließlich als
-  Architekturvorschlag. Sie ist weder ratifiziert noch implementierungsfreigegeben.
+- ADR-0060 ist durch `GOV-RATIFICATION-ADR-0060-V1` ratifiziert. Die
+  Ratifizierung bestätigt ausschließlich die Architektur und ist keine
+  institutionelle Implementierungsfreigabe.
 
 ## Freigabegrenze
 
@@ -42,10 +43,10 @@ Status: ADR-0060 vorgeschlagen – nicht ratifiziert, übrige B2-Stufen gesperrt
 
 ## Nächste zulässige Aktivität
 
-Zulässig sind ausschließlich Architekturvalidierung und eine ausdrückliche
-menschliche Ratifizierungsentscheidung zu ADR-0060. Erst danach dürfen ein
-gesondertes institutionelles Freigabedokument, dessen ausdrückliche menschliche
-Bestätigung und ein separater Codex-Auftrag folgen. B2-Runtime bleibt gesperrt.
+Nächster zulässiger Schritt ist ausschließlich ein gesonderter institutioneller
+Beschluss über eine eng begrenzte Implementierungsfreigabe für ADR-0060. Erst
+nach dessen Dokumentation und ausdrücklicher menschlicher Bestätigung darf ein
+separater Codex-Auftrag folgen. B2-Runtime bleibt gesperrt.
 
 ## Statusmodell
 
@@ -58,7 +59,7 @@ Bestätigung und ein separater Codex-Auftrag folgen. B2-Runtime bleibt gesperrt.
 | Ordentliche Vertrauensratsbestätigung | AUSSTEHEND |
 | Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |
 | B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
-| ADR-0060 B2 Authority and Authorization | VORGESCHLAGEN – NICHT RATIFIZIERT |
+| ADR-0060 B2 Authority and Authorization | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN |
 | Institutionelle Implementierungsfreigabe für ADR-0060 | NICHT ERSTELLT |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

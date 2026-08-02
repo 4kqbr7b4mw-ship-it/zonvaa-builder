@@ -82,8 +82,8 @@ PRODUCT_STATUS = """# Status
 - Die Gründer-Kenntnisnahme zu ADR-0058 ist dokumentiert.
 - Guardian B2 Data Corridor and Consent Boundary v1 ist implementiert und
   validiert.
-- ADR-0060 Guardian B2 Authority and Authorization v1 ist vorgeschlagen, nicht
-  ratifiziert und nicht implementierungsfreigegeben.
+- ADR-0060 Guardian B2 Authority and Authorization v1 ist ratifiziert, aber
+  nicht implementierungsfreigegeben.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen
@@ -101,8 +101,8 @@ PRODUCT_STATUS = """# Status
 ## Nächster noch nicht begonnener Schritt
 
 Kein weiteres B2-Paket ist institutionell freigegeben. Nächster zulässiger
-Schritt ist ausschließlich die ausdrückliche menschliche Ratifizierung von
-ADR-0060; eine Implementierungsfreigabe bleibt ein getrennter späterer Schritt.
+Schritt ist ausschließlich ein gesonderter institutioneller Beschluss über
+die Implementierungsfreigabe für ADR-0060.
 """
 
 
@@ -463,8 +463,8 @@ def test_handover_reports_no_unapproved_b2_implementation_as_next_scope(tmp_path
         1,
     )[1]
     assert "Kein weiteres B2-Paket ist institutionell freigegeben" in next_section
-    assert "menschliche Ratifizierung von" in next_section
-    assert "Implementierungsfreigabe bleibt ein getrennter" in next_section
+    assert "institutioneller Beschluss" in next_section
+    assert "Implementierungsfreigabe für ADR-0060" in next_section
     assert "B2 Runtime" not in next_section
 
 

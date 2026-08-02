@@ -3288,7 +3288,8 @@ Provider, Runtime oder personenbezogene Verarbeitung.
 - [x] strukturelle Ausschlüsse und Negative Authority and Grant Rules
   dokumentieren.
 - [x] Freigabesequenz und weiterhin gesperrte B2-Bausteine festhalten.
-- [ ] ausdrückliche menschliche Ratifizierung von ADR-0060.
+- [x] ausdrückliche menschliche Ratifizierung von ADR-0060 durch
+  `GOV-RATIFICATION-ADR-0060-V1` dokumentieren.
 - [ ] gesonderte institutionelle Implementierungsfreigabe erstellen und
   menschlich bestätigen.
 

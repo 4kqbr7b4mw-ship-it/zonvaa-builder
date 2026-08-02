@@ -1,8 +1,10 @@
 # ADR-0060 – Guardian B2 Authority and Authorization v1
 
-Status: VORGESCHLAGEN – NICHT RATIFIZIERT
+Status: RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN
 
-Datum des Vorschlags: 02.08.2026
+Ratifizierungsdatum: 02.08.2026
+
+Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0060-V1`
 
 ## 1. Kontext und Governance-Grenze
 
@@ -12,15 +14,16 @@ noch Grants. ADR-0060 entscheidet deshalb ausschließlich die Architektur von
 B2 Authority, B2 Grants und deren zustandsloser Evaluation. Sie implementiert
 keinen Vertrag, Validator, Provider, Datenzugriff und keine Runtime.
 
-Diese ADR ist keine institutionelle Implementierungsfreigabe. Verbindliche
+Diese ADR ist trotz Ratifizierung keine institutionelle Implementierungsfreigabe. Verbindliche
 Sequenz:
 
-1. ADR-0060 dokumentieren.
-2. Architektur validieren.
-3. ADR-0060 ausdrücklich menschlich ratifizieren.
-4. Eine gesonderte institutionelle Implementierungsfreigabe erstellen.
-5. Diese Implementierungsfreigabe ausdrücklich menschlich bestätigen.
-6. Einen separaten, scopegebundenen Codex-Implementierungsauftrag erteilen.
+1. ADR-0060 dokumentieren. Abgeschlossen.
+2. Architektur validieren. Abgeschlossen.
+3. ADR-0060 ausdrücklich menschlich ratifizieren. Abgeschlossen und durch
+   `GOV-RATIFICATION-ADR-0060-V1` dokumentiert.
+4. Eine gesonderte institutionelle Implementierungsfreigabe erstellen. Offen.
+5. Diese Implementierungsfreigabe ausdrücklich menschlich bestätigen. Offen.
+6. Einen separaten, scopegebundenen Codex-Implementierungsauftrag erteilen. Offen.
 
 Ratifizierung und Implementierungsfreigabe sind zwei eigenständige menschliche
 Entscheidungen. Kein Schritt folgt stillschweigend aus dem vorherigen.
@@ -264,8 +267,8 @@ Observation, Runtime Audit, Operational Memory, Metrics, Notifications,
 produktive externe Anbindungen, UI, Workflows und Werkzeuge.
 
 ADR-0060 implementiert dafür keine Verträge und formuliert keine
-Implementierungsfreigabe. Nach einer ausdrücklichen menschlichen Ratifizierung
-ist ein gesondertes, menschlich bestätigtes Freigabedokument mit erneut
+Implementierungsfreigabe. Nach der dokumentierten menschlichen Ratifizierung
+ist weiterhin ein gesondertes, menschlich bestätigtes Freigabedokument mit erneut
 ausdrücklich begrenztem Scope erforderlich.
 
 ## 14. Auswirkungen und Nicht-Ziele
@@ -276,5 +279,5 @@ ADR-0047 bis ADR-0059, AAV, UODL und
 
 Nicht Gegenstand sind Klassen, Enums, APIs, Validatoren, Provider, Runtime,
 Persistenz, Datenverarbeitung, Produktfunktion, Freigabe, Ratifizierung oder
-Ausführung. Der Vorschlag ist erst nach Architekturvalidierung und
-ausdrücklicher menschlicher Ratifizierung ratifizierungswirksam.
+Ausführung. Die Ratifizierung bestätigt nur diese Architektur; sie autorisiert
+keine Implementierung.

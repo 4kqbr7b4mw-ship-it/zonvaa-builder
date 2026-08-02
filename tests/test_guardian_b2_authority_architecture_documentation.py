@@ -9,13 +9,13 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0060_is_proposed_without_ratification_or_implementation_approval():
+def test_adr_0060_is_ratified_without_implementation_approval():
     text = read(ADR)
-    assert "Status: VORGESCHLAGEN – NICHT RATIFIZIERT" in text
-    assert "Diese ADR ist keine institutionelle Implementierungsfreigabe" in text
+    assert "Status: RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in text
+    assert "GOV-RATIFICATION-ADR-0060-V1" in text
+    assert "trotz Ratifizierung keine institutionelle Implementierungsfreigabe" in text
     assert "Ratifizierung und Implementierungsfreigabe sind zwei eigenständige" in text
-    assert "ausdrücklicher menschlicher Ratifizierung" in text
-    assert "gesonderte institutionelle Implementierungsfreigabe" in text
+    assert "Eine gesonderte institutionelle Implementierungsfreigabe erstellen. Offen" in text
     assert "separaten, scopegebundenen Codex-Implementierungsauftrag" in text
 
 
@@ -101,7 +101,7 @@ def test_existing_adr_0059_approval_is_not_extended():
     readiness = read(ROOT / "governance/b2-readiness-statement.md")
     assert "- B2 Authority," in approval
     assert "- B2 Authorization Grants," in approval
-    assert "| ADR-0060 B2 Authority and Authorization | VORGESCHLAGEN – NICHT RATIFIZIERT |" in readiness
+    assert "| ADR-0060 B2 Authority and Authorization | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN |" in readiness
     assert "| Institutionelle Implementierungsfreigabe für ADR-0060 | NICHT ERSTELLT |" in readiness
     assert "| B2-Runtime | GESPERRT |" in readiness
 
@@ -109,3 +109,18 @@ def test_existing_adr_0059_approval_is_not_extended():
 def test_no_b2_implementation_files_are_created_by_the_architecture_package():
     assert not (ROOT / "governance/b2_authority.py").exists()
     assert not (ROOT / "governance/b2_authorization.py").exists()
+
+
+def test_ratification_record_is_separate_and_grants_no_implementation_power():
+    text = read(ROOT / "governance/ratification-adr-0060.md")
+    for phrase in (
+        "GOV-RATIFICATION-ADR-0060-V1",
+        "RATIFIZIERUNG DOKUMENTIERT",
+        "Institutionsgründer in konstituierender Funktion",
+        "bestätigt ausschließlich den Architekturinhalt",
+        "keine institutionelle Implementierungsfreigabe",
+        "ADR-0059",
+        "Alle bislang gesperrten B2-Bereiche bleiben gesperrt",
+        "noch nicht gefasster menschlicher Beschluss",
+    ):
+        assert phrase in text
