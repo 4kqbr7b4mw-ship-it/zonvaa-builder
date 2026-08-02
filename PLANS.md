@@ -3015,3 +3015,32 @@ Persistenz, Metrik, Benachrichtigung oder Aktivierung.
   Ausführung keine Abweichung erkannt wurde; es ist keine Garantie.
 - Snapshot und Validator besitzen keine Reaktions-, Retry-, Persistenz-,
   Benachrichtigungs-, Workflow- oder Ausführungsmacht.
+
+# Runtime Observation Governance v1
+
+## Ziel und Grenzen
+
+Die verfassungsrechtliche Grenze zulässiger technischer Systembeobachtung als
+versioniertes, begründungspflichtiges und immutable Observation Profile mit
+vollständig partitioniertem Scope dokumentieren. Ausschließlich
+Systemverhalten; keine Nutzerbeobachtung und keine Observation Runtime,
+Profilbildung, Analyse, Telemetrie, Persistenz oder Aktivierung.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0046 bis ADR-0052 sowie Governance-, Runtime- und Incident-Verträge prüfen.
+- [x] Observation Profile, Scope, Governance Envelope und Snapshot typisieren.
+- [x] Deterministischen Governance- und Versionierungsvalidator ergänzen.
+- [x] Referenzszenarien, Public API, ADR-0053 und Handover ergänzen.
+- [x] Governance-/Guardian-Regression, Gesamtsuite, Doctor, Diff und Handover prüfen.
+
+## Entscheidungen
+
+- Der geschlossene technische Ereigniskatalog wird vollständig und
+  überschneidungsfrei in beobachtet und ausdrücklich nicht beobachtet geteilt.
+- Nutzerverhalten, Nutzerprofile, Nutzerinhalte, Interaktionsmuster und
+  Nutzungsstatistiken bleiben stets verboten und ausdrücklich unbeobachtet.
+- Profile-Versionen werden durch Governance-Akteure bereitgestellt; Runtime,
+  Deterministic Core, Model Layer und Guardian dürfen sie nicht ändern.
+- Validator und Snapshot beobachten nichts und besitzen keine Runtime-,
+  Analyse-, Evidence-, Incident-, Persistenz- oder Ausführungsmacht.

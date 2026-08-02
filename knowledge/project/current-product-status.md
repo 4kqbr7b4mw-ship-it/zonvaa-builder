@@ -41,6 +41,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Capability Invocation Boundary v1
 - Read-only B1 Provider Runtime v1
 - Runtime Incident Evidence v1
+- Runtime Observation Governance v1
 
 ## Aktueller fachlicher Stand
 
@@ -151,6 +152,13 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   rein dokumentierend. No-Incident ist weder Qualitätsurteil noch Garantie;
   es gibt keine automatische Incident-Erkennung, Fehlerbehebung, Retry-Logik,
   Persistenz, Metrik, Benachrichtigung oder Aktivierung.
+- Runtime Observation Governance v1 definiert versionierte,
+  begründungspflichtige Observation Profiles und vollständig partitionierte
+  Scopes ausschließlich für technische Systemereignisse. Nutzerverhalten,
+  Profile, Inhalte, Interaktionsmuster und Nutzungsstatistiken bleiben
+  ausdrücklich unbeobachtet. Validator und read-only Snapshot besitzen keine
+  Nutzerbeobachtung und keine Observation Runtime, Analyse, Telemetrie,
+  Evidence- oder Incident-Erzeugung, Persistenz oder Aktivierung.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen
