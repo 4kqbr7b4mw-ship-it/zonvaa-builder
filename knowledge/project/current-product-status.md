@@ -45,6 +45,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Runtime Audit Architecture v1
 - Operational Memory v1 (Speicherverträge ohne physische Persistenz)
 - Physical Operational Persistence v1 (technologieneutraler Port ohne Adapter)
+- Operational Metrics v1 (bereitgestellte technische Werte ohne Berechnung)
+- Operational Notifications v1 (deklarative Nachweise ohne Zustellung)
 
 ## Aktueller fachlicher Stand
 
@@ -170,11 +172,10 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   nicht beobachtete Bereiche bleiben nicht beurteilbar. Audit prüft nur
   Systemverhalten und erzeugt keine Nutzerprofile, Persistenz, Metriken,
   Benachrichtigungen, Incident-Erkennung oder Runtime-Aktivierung.
-- Eine B2- oder B3-Runtime bleibt gesperrt, bis Runtime Audit Architecture v1
-  und ein späterer, gesondert ratifizierter Operational-Memory-Block mit
-  Persistenz, Metriken und Benachrichtigungen jeweils ratifiziert,
-  implementiert und validiert sind. Diese Gate-Regel autorisiert keine neue
-  Runtime-Macht.
+- Die Gate-Bedingung aus ADR-0054 verlangte Runtime Audit Architecture v1 und
+  einen ratifizierten, implementierten und validierten Operational-Memory-
+  Block. Auch nach Erfüllung dieser Vorbedingungen autorisiert die Gate-Regel
+  keine neue Runtime-Macht.
 - Operational Memory v1 bildet ausschließlich bereits validierte,
   maschinengenerierte Observation-, Runtime-, Incident- und Audit-Nachweise als
   immutable Records und identitätstreue Artefaktbindungen ab. Der geschlossene
@@ -189,10 +190,26 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Referenzen und Versionen. Er ruft keinen Port auf und führt weder Speicherung,
   Backup noch Recovery aus. Eine konkrete Datenbank-, Datei- oder Cloud-
   Anbindung existiert nicht.
-- Löschung, Archivierung, Retention, Replikation, reale Backup-/Recovery-
-  Ausführung, Metriken und Benachrichtigungen bleiben offene, gesondert zu
-  ratifizierende Architekturblöcke. AAV/UODL bleibt die getrennte spätere
-  Hoheitsarchitektur für Nutzerdaten. Das B2-/B3-Gate bleibt unerfüllt.
+- Löschung, Archivierung, Retention, Replikation und reale Backup-/Recovery-
+  Ausführung bleiben offene, gesondert zu ratifizierende Architekturblöcke.
+  AAV/UODL bleibt die getrennte spätere Hoheitsarchitektur für Nutzerdaten.
+- Operational Metrics v1 bindet bereits bereitgestellte technische Werte an
+  validierte Observation-, Audit-, Operational-Memory- und Physical-
+  Persistence-Nachweise. Definitionen sind versioniert und führen nur den
+  geschlossenen technischen Ereigniskatalog. Werte werden weder berechnet noch
+  interpretiert; Nutzeridentitäten, Nutzungshäufigkeiten, Gesprächsthemen,
+  Lebensbereiche und Profilbildung sind strukturell ausgeschlossen.
+- Operational Notifications v1 dokumentiert bereits bereitgestellte
+  betriebliche Benachrichtigungsentscheidungen auf Basis einer validierten
+  Metrik oder eines beobachteten und physisch referenzierten Systemereignisses.
+  Es gibt keine Endnutzeransprache, Textgenerierung, automatische Eskalation
+  oder externe Zustellung.
+- Der aus Operational Memory, Physical Operational Persistence, Operational
+  Metrics und Operational Notifications bestehende Operational-Memory-Block
+  ist auf Vertragsebene ratifiziert, implementiert und validiert. Dies gibt
+  weder B2 noch B3 frei und erlaubt keine B2-/B3-Runtime oder Schreiboperation.
+  Lediglich eine gesonderte Architekturentscheidung über eine mögliche
+  B2-Stufe darf wieder aufgenommen werden.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

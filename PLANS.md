@@ -3118,3 +3118,25 @@ Metriken und Benachrichtigungen bleiben außerhalb dieses Pakets.
 - [x] Fokussierte Vertrags-, Integrations- und Negativtests ergänzen.
 - [x] ADR-0056, Public API, Produktstatus und Handover aktualisieren.
 - [x] Gesamtregression, Doctor, Diff und read-only Handover abschließen.
+
+# Operational Metrics and Notifications v1
+
+## Ziel und Grenzen
+
+Bereits validierte und physisch referenzierte Systemnachweise durch immutable,
+rein nachweisende Metrik- und Benachrichtigungsverträge binden. Weder Werte
+noch Nachrichten werden erzeugt. Nutzerbeobachtung, freie Berechnung, externe
+Zustellung, Eskalation, Zustandsänderung und B2-/B3-Aktivierung bleiben
+ausgeschlossen.
+
+Das Paket umfasst Operational Metrics v1 und Operational Notifications v1.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0046 bis ADR-0056 sowie Observation-, Audit-, Memory- und
+  Persistence-Verträge prüfen.
+- [x] Metric Definition, Observation, Validator und Snapshot implementieren.
+- [x] Notification Policy, Evidence, Validator und Snapshot implementieren.
+- [x] ADR-0057, Public API, Produktstatus und Handover aktualisieren.
+- [x] Fokussierte und negative Referenzszenarien validieren.
+- [x] Regression, Gesamtsuite, Doctor, Diff und read-only Handover abschließen.
