@@ -35,6 +35,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Controlled Orientation Package v1
 - Guardian Personal Preparation Package v1
 - Guardian Professional Decision Boundary Package v1
+- End-to-End Guardian Answer Reference Journey v1
 
 ## Aktueller fachlicher Stand
 
@@ -106,6 +107,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Source-Chain-Bindung. Optionale B1-/B2-Nachweise werden nur referenziert;
   Texte, Dringlichkeit, Entscheidungen und Maßnahmen werden weder erzeugt noch
   interpretiert oder ausgeführt.
+- Die End-to-End Guardian Answer Reference Journey verbindet die bestehenden
+  Classification-, Boundary-, Source-Chain-, Foundation-, B1-, B2- und B3-
+  Nachweise als immutable, deterministisch validierte Referenzreise. Zulässige
+  vollständige und partielle Schutzpfade behalten ihre ursprünglichen Objekte,
+  Quellen und Inhalte; die UI-neutrale Experience projiziert sie ohne
+  Generierung, Interpretation, Priorisierung, Aktivierung oder Zustandsänderung.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

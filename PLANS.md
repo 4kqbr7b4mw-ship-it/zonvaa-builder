@@ -2829,3 +2829,35 @@ Persistenz oder Zustandsänderung.
   Soforthilfehinweis. Dringlichkeit wird weder erkannt noch bewertet.
 - B1- und B2-Envelopes bleiben optionale, bereits validierte Referenzobjekte;
   der B3-Baustein liest oder übernimmt daraus keine Inhalte.
+
+# End-to-End Guardian Answer Reference Journey v1
+
+## Ziel und Grenzen
+
+Den bestehenden Answer-Nachweispfad von Classification und Boundary über
+Source Chains, Foundation, B1, B2 und B3 als immutable Referenzreise und
+UI-neutrale Projektion integrieren. Die Reise dokumentiert ausschließlich
+bereitgestellte Artefakte; sie aktiviert, erzeugt, interpretiert und persistiert
+nichts und ist keine Journey-State-Machine.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Preflight, ADR-0046, ADR-0047 und bestehende B1-/B2-/B3-Verträge prüfen.
+- [x] Journey-Vertrag, typisierte Schritte und kontrollierte Endpunkte ergänzen.
+- [x] Referenz-, Schutz-, Quellen-, Kontext- und Objektidentitätsprüfung ergänzen.
+- [x] UI-neutrale Projektion mit rein darstellenden Aktionen ergänzen.
+- [x] Fokussierte Szenarien, Dokumentation und Handover abschließen.
+- [x] Guardian-Regression, Gesamtsuite, Doctor und Diff-Audit abschließen.
+
+## Entscheidungen
+
+- Da `GuardianAnswerFoundationIntegration` keine eigene ID besitzt, besteht
+  ihre Referenz ausschließlich aus den vorhandenen Classification-, Boundary-
+  und Source-Chain-IDs. Es wird keine Registry- oder Laufzeit-ID eingeführt.
+- B1, B2 und B3 behalten ihre jeweils eigene exakt passende Foundation. Die
+  Journey validiert jede Station separat und bindet die terminale Foundation
+  zusätzlich durch unveränderte Objektidentität.
+- Journey-Schritte wiederholen pro bereitgestellter Schutzstufe ausschließlich
+  die vorhandenen Nachweisstationen. Sie führen keinen Übergang aus.
+- Experience-Aktionen sind reine Sichtoptionen ohne Handler, Zustandsänderung
+  oder Aktivierungswirkung.

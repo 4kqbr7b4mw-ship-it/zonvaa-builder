@@ -171,3 +171,41 @@ keine Inhalte oder Quellen erzeugen und weder Zustände, Rechte, Resolutionen
 noch Freigaben verändern. Provider-Herkunft und Fachprüfstatus bleiben rein
 deklarativ. Diese Grenzen werden durch typisierte Inputs und Schutzverträge,
 nicht durch natürliche Sprachinterpretation, abgesichert.
+
+## End-to-End Guardian Answer Reference Journey v1
+
+Die Referenzreise verbindet die vorhandenen Nachweise in ihrer kontrollierten
+Reihenfolge: Classification, Answer Boundary, Source Chains, Answer Foundation
+und – soweit bereitgestellt – B1 Controlled Orientation, B2 Personal
+Preparation sowie B3 Professional Decision Boundary. Sie ist ein immutable
+Nachweis einer bereits bereitgestellten vollständigen oder partiellen Reise und
+keine ausführende Journey-State-Machine.
+
+Zulässige Endpunkte sind reine B1-Orientierung, B1→B2, direkte B2-Vorbereitung,
+vollständige B1→B2→B3-Reise und direkte B3-Grenze. Weitere monotone Teilfolgen
+werden nur akzeptiert, soweit die bereits bestehenden B1-, B2- und B3-Envelopes
+sie selbst vollständig validieren. Jede Station behält ihre eigene exakt
+passende Classification, Boundary, Source Chains und Foundation. Die terminale
+Foundation bleibt dasselbe Objekt; frühere B1-/B2-Nachweise dürfen nicht durch
+gleich aussehende Kopien ersetzt oder zwischen unabhängigen Reisen vermischt
+werden.
+
+Der Validator erzwingt eindeutige IDs, gemeinsamen Gesprächskontext,
+vollständige Quellenbindungen, streng steigenden Schutz, exakte Schrittfolge,
+passenden Endpunkt sowie einen typisierten finalen Stoppgrund. Er repariert
+keine Referenz, ergänzt keine Zwischenstufe und wählt keine Betriebsart. Ein
+kontrollierter Abbruch ist nur ein bereitgestellter Abschlussnachweis; nach ihm
+ist kein weiterer Schritt zulässig.
+
+Die UI-neutrale `GuardianAnswerExperience` projiziert ausschließlich die
+validierten Originalobjekte: allgemeine Orientierung, persönliche Vorbereitung,
+professionelle Nicht-Bestätigung und Grenze, Tatsachen, offene Fragen, Optionen,
+Unsicherheiten, Prüfthemen, Quellen, Grenzen, Dringlichkeit, Reviewstatus,
+Herkunft und Provenienz. Texte werden weder zusammengefasst noch umformuliert,
+übersetzt, ergänzt, priorisiert oder semantisch geprüft. Die optionalen
+Experience-Aktionen sind reine Sichtoptionen ohne Handler oder Ausführungsmacht.
+
+Es entstehen insbesondere keine Klassifikation, Antwortgenerierung,
+Recherche, Gefahrenerkennung, Triage, Expertenauswahl, Kontaktaufnahme,
+Persistenz, Freigabe, Resolution, Routing, Werkzeug-, Workflow-, Domänen- oder
+Betriebsartaktivierung und keine Änderung eines fachlichen Zustands.
