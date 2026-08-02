@@ -44,6 +44,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Runtime Observation Governance v1
 - Runtime Audit Architecture v1
 - Operational Memory v1 (Speicherverträge ohne physische Persistenz)
+- Physical Operational Persistence v1 (technologieneutraler Port ohne Adapter)
 
 ## Aktueller fachlicher Stand
 
@@ -181,9 +182,15 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Nutzungsmuster oder personenbezogenen Artefakte. Duplikate werden durch
   Artefaktreferenz plus Version bestimmt. Validator und read-only Snapshot
   persistieren, verändern, ergänzen, löschen oder archivieren nichts.
-- Eine kanonische physische Persistenzschnittstelle für Betriebsevidenz ist
-  nicht vorhanden. Datenbank, Dateiablage, Löschung, Archivierung, Retention,
-  Replikation, Metriken und Benachrichtigungen bleiben offene, gesondert zu
+- Physical Operational Persistence v1 definiert den einzigen
+  technologieneutralen Port für `STORE`, `READ` und `EXISTS` sowie immutable
+  physische Persistenz-, Backup- und Recovery-Nachweise. Der Validator bindet
+  ausschließlich dieselben bereits validierten Operational-Memory-Objekte,
+  Referenzen und Versionen. Er ruft keinen Port auf und führt weder Speicherung,
+  Backup noch Recovery aus. Eine konkrete Datenbank-, Datei- oder Cloud-
+  Anbindung existiert nicht.
+- Löschung, Archivierung, Retention, Replikation, reale Backup-/Recovery-
+  Ausführung, Metriken und Benachrichtigungen bleiben offene, gesondert zu
   ratifizierende Architekturblöcke. AAV/UODL bleibt die getrennte spätere
   Hoheitsarchitektur für Nutzerdaten. Das B2-/B3-Gate bleibt unerfüllt.
 - Der nächste Produktbaustein ist noch nicht bestimmt.

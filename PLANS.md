@@ -3099,3 +3099,22 @@ Betriebsevidenz. `KnowledgeManager` validiert ohne Persistenz, die bestehende
 Memory-Klassifikation begründet keinen eigenen Speicher und UODL modelliert nur
 nutzerkontrollierte Referenzen. Operational Memory v1 führt deshalb keine
 Speichertechnologie oder allgemeine Storage-Abstraktion ein.
+
+# Physical Operational Persistence v1
+
+## Ziel und Grenzen
+
+Bereits validierte Operational-Memory-Objekte über einen kanonischen,
+technologieneutralen Port als physisch persistierbar beschreiben. Physische
+Records, Backup- und Recovery-Nachweise sowie ein read-only Snapshot bleiben
+immutable. Datenbank, Dateistruktur, Cloud, Backup- oder Recovery-Ausführung,
+Metriken und Benachrichtigungen bleiben außerhalb dieses Pakets.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-0046 bis ADR-0055 und bestehende Port-/Persistenzmuster prüfen.
+- [x] Kanonischen Persistence Port und physische Verträge implementieren.
+- [x] Deterministischen Persistence Validator und Snapshot implementieren.
+- [x] Fokussierte Vertrags-, Integrations- und Negativtests ergänzen.
+- [x] ADR-0056, Public API, Produktstatus und Handover aktualisieren.
+- [x] Gesamtregression, Doctor, Diff und read-only Handover abschließen.
