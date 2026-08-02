@@ -2801,3 +2801,31 @@ Entscheidung, Runtime, Persistenz oder Zustandsänderung.
 - Der B2-Envelope verlangt die vollständige, exakt gleiche Source-Chain-Menge.
 - Eine optionale B1-Orientierung wird nur als bereits validierter Envelope
   referenziert und niemals kopiert oder in B2-Inhalte umgewandelt.
+# Guardian Professional Decision Boundary Package v1
+
+## Ziel und Grenzen
+
+Einen unveränderlichen B3-Nachweis für eine bereits typisiert verlangte
+professionelle Einzelfallentscheidung ergänzen. Das vollständige fünfteilige
+Auffangmuster und ein bereitgestellter Dringlichkeitsstatus werden ausschließlich
+strukturell geprüft. Keine Entscheidung, Triage, Textgenerierung, Aktivierung,
+Persistenz oder Zustandsänderung.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Ausgangszustand, Preflight, ADRs und B1-/B2-Verträge prüfen.
+- [x] B3-Vertrag, Auffangmuster, Dringlichkeit und Safety ergänzen.
+- [x] Vollständigen Envelope mit optionalen B1-/B2-Nachweisen ergänzen.
+- [x] Fokussierte Tests und Dokumentation ergänzen.
+- [x] Guardian- und vollständige Regression, Doctor, Diff und Handover prüfen.
+
+## Entscheidungen
+
+- Provider-Typ und Fachprüfstatus werden wegen identischer deklarativer
+  Bedeutung aus der kontrollierten B1-Orientierung wiederverwendet.
+- Der sichtbare Nicht-Bestätigungstext bleibt unverändert bereitgestellter
+  Inhalt; ein kleiner Code dokumentiert nur seine Schutzfunktion.
+- Nur `IMMEDIATE_HELP_REQUIRED` verlangt strukturell einen nicht leeren
+  Soforthilfehinweis. Dringlichkeit wird weder erkannt noch bewertet.
+- B1- und B2-Envelopes bleiben optionale, bereits validierte Referenzobjekte;
+  der B3-Baustein liest oder übernimmt daraus keine Inhalte.

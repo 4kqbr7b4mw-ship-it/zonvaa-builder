@@ -107,6 +107,19 @@ from guardian_understanding.personal_preparation import (
     ProfessionalReviewTopicEntry,
     UncertaintyEntry,
 )
+from guardian_understanding.professional_decision_boundary import (
+    B3ProfessionalDecisionBoundaryContract,
+    B3ProfessionalDecisionBoundaryContractValidator,
+    B3ProfessionalDecisionBoundarySafetyValidator,
+    NonConfirmationCode,
+    PersonalPreparationReference,
+    ProfessionalBoundaryCapability,
+    ProfessionalBoundaryReviewTopic,
+    ProfessionalDecisionBoundaryEnvelope,
+    ProfessionalDecisionBoundaryEnvelopeValidator,
+    ProfessionalDecisionBoundaryValidationError,
+    UrgencyStatus,
+)
 
 __all__ = [
     "Contradiction",
@@ -194,4 +207,15 @@ __all__ = [
     "PersonalPreparationValidationError",
     "ProfessionalReviewTopicEntry",
     "UncertaintyEntry",
+    "B3ProfessionalDecisionBoundaryContract",
+    "B3ProfessionalDecisionBoundaryContractValidator",
+    "B3ProfessionalDecisionBoundarySafetyValidator",
+    "NonConfirmationCode",
+    "PersonalPreparationReference",
+    "ProfessionalBoundaryCapability",
+    "ProfessionalBoundaryReviewTopic",
+    "ProfessionalDecisionBoundaryEnvelope",
+    "ProfessionalDecisionBoundaryEnvelopeValidator",
+    "ProfessionalDecisionBoundaryValidationError",
+    "UrgencyStatus",
 ]

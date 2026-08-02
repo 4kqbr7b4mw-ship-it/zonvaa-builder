@@ -34,6 +34,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Answer Foundation Integration v1
 - Guardian Controlled Orientation Package v1
 - Guardian Personal Preparation Package v1
+- Guardian Professional Decision Boundary Package v1
 
 ## Aktueller fachlicher Stand
 
@@ -96,6 +97,15 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Risiken werden nicht erzeugt, interpretiert, priorisiert oder entschieden;
   Provider und Fachprüfstatus bleiben ohne Autorisierungs- oder
   Ausführungsmacht.
+- Das Guardian Professional Decision Boundary Package dokumentiert eine bereits
+  bereitgestellte B3-Reaktion mit fünf getrennten Bestandteilen: sachliche
+  Anerkennung, klare Nicht-Bestätigung, professionelle Grenze, sichere
+  Orientierung oder Vorbereitung und bei deklarierter akuter Gefahr ein
+  bereitgestellter Soforthilfehinweis. Es verlangt exakt B3/B3, eine typisiert
+  verlangte professionelle Einzelfallentscheidung und die vollständige
+  Source-Chain-Bindung. Optionale B1-/B2-Nachweise werden nur referenziert;
+  Texte, Dringlichkeit, Entscheidungen und Maßnahmen werden weder erzeugt noch
+  interpretiert oder ausgeführt.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen

@@ -136,3 +136,38 @@ abschließend bewerten oder Handlungen ausführen und freigeben. Provider-Herkun
 und Fachprüfstatus bleiben rein deklarativ und erzeugen weder Autorisierung noch
 Richtigkeitsbestätigung. Der Baustein besitzt keine Recherche, Runtime,
 Persistenz, Aktivierung oder Zustandsänderungsmacht.
+
+## Guardian Professional Decision Boundary Package v1
+
+Das Paket dokumentiert eine bereits bereitgestellte B3-Reaktion, wenn eine
+konkrete professionelle Einzelfallentscheidung typisiert verlangt wurde. Ein
+vollständiger Nachweis ist nur mit exakt B3-Classification, exakt B3-Boundary,
+`professional_decision_requested = true` und der vollständigen, identischen
+Source-Chain-Menge zulässig. Vorhandene B1-Orientierung oder B2-Vorbereitung
+können optional nur über bereits validierte Envelopes referenziert werden.
+
+Das kontrollierte Auffangmuster hält fünf getrennte bereitgestellte Bestandteile:
+
+1. Bedeutung oder Dringlichkeit sachlich anerkennen,
+2. die konkrete Entscheidung klar nicht bestätigen,
+3. die genaue professionelle Grenze benennen,
+4. sichere allgemeine Orientierung oder persönliche Vorbereitung anbieten,
+5. bei deklarierter akuter Gefahr einen bereitgestellten Soforthilfehinweis führen.
+
+Der sichtbare Nicht-Bestätigungstext wird nicht generiert oder semantisch
+geprüft; ein typisierter Code dokumentiert lediglich seine Schutzfunktion.
+`NOT_DECLARED_URGENT`, `URGENT_PROFESSIONAL_REVIEW` und
+`IMMEDIATE_HELP_REQUIRED` werden vollständig als Eingabe übernommen. Nur der
+letzte Status verlangt strukturell einen nicht leeren Soforthilfehinweis. Daraus
+entstehen keine Gefahrenerkennung, Triage, Rufnummernermittlung, Kontaktaufnahme
+oder sonstige Maßnahme.
+
+B3 darf bereitgestellte Anerkennung, Nicht-Bestätigung, professionelle Grenze,
+allgemeine Orientierung, Vorbereitung, Prüfthemen, Quellenreferenzen und einen
+Soforthilfehinweis führen. Es darf keine Rechts-, Steuer-, Finanz- oder
+Medizinentscheidung treffen, keine Handlung als richtig oder wirksam
+bestätigen, keine Profession auswählen, keinen Termin oder Notruf auslösen,
+keine Inhalte oder Quellen erzeugen und weder Zustände, Rechte, Resolutionen
+noch Freigaben verändern. Provider-Herkunft und Fachprüfstatus bleiben rein
+deklarativ. Diese Grenzen werden durch typisierte Inputs und Schutzverträge,
+nicht durch natürliche Sprachinterpretation, abgesichert.
