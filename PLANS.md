@@ -2950,3 +2950,37 @@ Persistenz oder Audit-Logik.
   bereitgestellt; die reine Erzeugungsfunktion verwendet weder Uhr noch Zufall.
 - `DEGRADED` ist eine deklarierte Kennzeichnung und wird nicht erkannt oder
   berechnet.
+
+# Read-only B1 Provider Runtime v1
+
+## Ziel und Grenzen
+
+Die erste reale ZONVAA-Ausführungsgrenze implementieren: genau einen bereits
+benannten und autorisierten Provider-Adapter nach einem vollständig validierten
+und `ACCEPTED` ADR-0050-Pfad aufrufen. Ausschließlich B1, `READ_ONLY` und nicht
+personenbezogene oder ausdrücklich entpersonalisierte Daten; keine B2-/B3-,
+Schreib-, Tool-, Workflow- oder allgemeine Provider-Runtime.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Preflight, ADR-0046 bis ADR-0050 sowie bestehende Verträge und Tests prüfen.
+- [x] ADR-0051 mit erster realer Macht- und Entpersonalisierungsgrenze ergänzen.
+- [x] Execution Request, engen Adapter-Port und fail-closed Executor ergänzen.
+- [x] Runtime Result, Output Boundary, Evidence, Receipt und Degradation typisieren.
+- [x] Kontrollierte Testintegration und fokussierte Szenarien ergänzen.
+- [x] Governance-/Guardian-Regression, Gesamtsuite, Doctor, Diff und Handover prüfen.
+
+## Entscheidungen
+
+- ADR-0050 bleibt die einzige Invocation-Entscheidungsgrenze; der Executor
+  validiert sie erneut und akzeptiert nur `ACCEPTED`.
+- ADR-0050-`SIMULATION` und `DEGRADED` werden nicht als reale Ausführungsmodi
+  übernommen. ADR-0051 führt ausschließlich `READ_ONLY` aus.
+- Der B1-spezifische Adapter-Port bindet genau einen Provider und eine
+  Capability. Es entstehen keine Providerwahl, Registry, Fallback- oder
+  Retry-Mechanik.
+- Output wird nur strukturell typisiert geprüft und bleibt
+  `PROVIDED_NOT_ACTIVATED`; es erfolgt keine automatische Guardian-Antwort.
+- Das Repository enthält keinen kanonisch autorisierten externen Provider mit
+  sicherer Credential-Grenze. Deshalb bleibt die externe Anbindung blockiert
+  und die Runtime wird mit einem kontrollierten Testadapter validiert.

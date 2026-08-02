@@ -209,3 +209,33 @@ Es entstehen insbesondere keine Klassifikation, Antwortgenerierung,
 Recherche, Gefahrenerkennung, Triage, Expertenauswahl, Kontaktaufnahme,
 Persistenz, Freigabe, Resolution, Routing, Werkzeug-, Workflow-, Domänen- oder
 Betriebsartaktivierung und keine Änderung eines fachlichen Zustands.
+
+## Read-only B1 Provider Runtime v1
+
+ADR-0051 führt die erste eng begrenzte reale Ausführungsmacht ein. Ein Provider
+darf ausschließlich nach einem vollständig validierten und `ACCEPTED`
+ADR-0050-Pfad, mit exakt `B1_GENERAL_ORIENTATION`, exakt `READ_ONLY`, einer
+bereits autorisierten Capability und nicht personenbezogener oder ausdrücklich
+entpersonalisierter Datenbindung genau einmal aufgerufen werden.
+
+Der immutable Execution Request bindet Invocation Request, Decision, Evidence,
+Receipt und Resolution Snapshot sowie Provider, Authorization, Input-Vertrag,
+Kontext, Source Chains, Timeout, Review, Unsicherheit, Provenienz und einen
+strukturellen Output-Vertrag. Der Executor validiert diese Nachweise erneut und
+fail-closed. Fehlende oder widersprüchliche Evidenz führt vor dem Aufruf zu
+einem typisierten Blockierungs- oder Ablehnungsergebnis.
+
+Der enge Provider-Adapter kennt genau eine bereitgestellte Provider-Identität
+und genau eine Capability. Er sucht, vergleicht und ersetzt keinen Provider.
+Providerfehler, Timeout, ungültige Antwort und Output-Boundary-Verletzung
+erzeugen immutable Runtime Result-, Evidence- und Receipt-Nachweise ohne
+Fallback oder Retry. Ein erfolgreiches Ergebnis bleibt
+`PROVIDED_NOT_ACTIVATED` und wird nicht automatisch zur Guardian-Antwort.
+
+Die Output Boundary prüft ausschließlich typisierte B1-Ausgabeart, Provider,
+Capability, erlaubte Felder und Größen. Sie interpretiert keine Texte und führt
+keine fachliche Bewertung durch. Es gibt keine B2- oder B3-Runtime, keine
+Schreiboperation, Persistenz, Audit-Logik, Provider-Auswahl, Workflow-, Tool-
+oder Zustandsaktivierung. Mangels kanonisch autorisiertem externem Provider und
+sicherer Credential-Grenze ist v1 mit einem kontrollierten Testadapter
+validiert; eine externe Provider-Anbindung wurde nicht improvisiert.

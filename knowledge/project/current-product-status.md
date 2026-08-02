@@ -39,6 +39,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Guardian Authority Model v1
 - Guardian Provider Authorization Package v1
 - Guardian Capability Invocation Boundary v1
+- Read-only B1 Provider Runtime v1
 
 ## Aktueller fachlicher Stand
 
@@ -131,6 +132,17 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   vollständigen Authority-/Provider-/Authorization-/Lifecycle-Prüfpfad. Sie
   erzeugt immutable Receipts und read-only Snapshots ohne Persistenz,
   Provider-Ausführung, Capability-Aktivierung oder Runtime.
+- Die Read-only B1 Provider Runtime führt erstmals genau einen bereits
+  benannten und autorisierten Provider-Adapter aus, jedoch ausschließlich nach
+  vollständig validiertem `ACCEPTED`-Invocation-Pfad, exakt für B1 und
+  `READ_ONLY` sowie nur mit nicht personenbezogener oder ausdrücklich
+  entpersonalisierter Datenbindung. Input, Kontext, Source Chains, Output,
+  Ergebnis, Evidence und Receipt bleiben typisiert und immutable. Fehler,
+  Timeout und ungültige Ausgaben degradieren fail-closed ohne Providerwahl,
+  Fallback, Retry oder automatische Guardian-Antwort. Es gibt keine B2- oder
+  B3-Runtime. Da kein kanonisch autorisierter externer Provider mit sicherer
+  Credential-Grenze vorliegt, wurde keine externe Anbindung improvisiert; die
+  Ausführungsgrenze ist mit einem kontrollierten Testadapter validiert.
 - Der nächste Produktbaustein ist noch nicht bestimmt.
 
 ## Bewusste Produktgrenzen
