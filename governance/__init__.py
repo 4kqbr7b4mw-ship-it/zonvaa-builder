@@ -194,6 +194,28 @@ from governance.models import (
 )
 
 __all__ = [
+    "B2_AUTHORIZATION_CONTRACT_VERSION",
+    "REQUIRED_B2_AUTHORITY_BASIS",
+    "B2AAVBinding",
+    "B2AuthorizationDecision",
+    "B2AuthorizationEvaluationEvidence",
+    "B2AuthorizationEvaluator",
+    "B2AuthorizationProvenance",
+    "B2AuthorizationReason",
+    "B2AuthorizationStructureError",
+    "B2Authority",
+    "B2AuthorityClass",
+    "B2AuthorityId",
+    "B2ConstitutionalBasis",
+    "B2D3Consent",
+    "B2EvaluationEvidence",
+    "B2Grant",
+    "B2InstitutionalScope",
+    "B2NegativeGovernanceEvidence",
+    "B2PurposeScope",
+    "B2T4GrantReceipt",
+    "B2UODLBinding",
+    "B2UODLOperation",
     "ALLOWED_B2_DATA_CLASSES",
     "ALLOWED_B2_DATA_FLOWS",
     "ALLOWED_B2_DATA_SOURCES",
@@ -401,10 +423,38 @@ __all__ = [
 ]
 
 
+_B2_AUTHORIZATION_EXPORTS = frozenset(
+    {
+        "B2_AUTHORIZATION_CONTRACT_VERSION",
+        "REQUIRED_B2_AUTHORITY_BASIS",
+        "B2AAVBinding",
+        "B2AuthorizationDecision",
+        "B2AuthorizationEvaluationEvidence",
+        "B2AuthorizationEvaluator",
+        "B2AuthorizationProvenance",
+        "B2AuthorizationReason",
+        "B2AuthorizationStructureError",
+        "B2Authority",
+        "B2AuthorityClass",
+        "B2AuthorityId",
+        "B2ConstitutionalBasis",
+        "B2D3Consent",
+        "B2EvaluationEvidence",
+        "B2Grant",
+        "B2InstitutionalScope",
+        "B2NegativeGovernanceEvidence",
+        "B2PurposeScope",
+        "B2T4GrantReceipt",
+        "B2UODLBinding",
+        "B2UODLOperation",
+    }
+)
+
+
 _B2_DATA_CORRIDOR_EXPORTS = frozenset(
     name
     for name in __all__
-    if name.startswith("B2")
+    if (name.startswith("B2") and name not in _B2_AUTHORIZATION_EXPORTS)
     or name.startswith("ALLOWED_B2_")
     or name.startswith("PROHIBITED_B2_")
     or name in {
@@ -419,6 +469,12 @@ _B2_DATA_CORRIDOR_EXPORTS = frozenset(
 
 def __getattr__(name):
     """Load the AAV/UODL-bound B2 API without creating an import cycle."""
+    if name in _B2_AUTHORIZATION_EXPORTS:
+        from governance import b2_authorization
+
+        value = getattr(b2_authorization, name)
+        globals()[name] = value
+        return value
     if name in _B2_DATA_CORRIDOR_EXPORTS:
         from governance import b2_data_corridor
 

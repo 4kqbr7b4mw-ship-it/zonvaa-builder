@@ -51,6 +51,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
 - Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)
 - Guardian B2 Data Corridor and Consent Boundary v1
+- Guardian B2 Authority and Authorization v1
 
 ## Aktueller fachlicher Stand
 
@@ -259,8 +260,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   ratifizierte Architektur. Die Architektur trennt B2 strukturell von
   B1, definiert immutable Grants ohne Wirksamkeitszustand, die vollständige
   D3-/T4-/AAV-/UODL-Bindung, Purpose-Verengung, einen expliziten
-  Auswertungszeitpunkt und rein punktuelle Evaluation Evidence. Er ist keine
-  fachliche Implementierung. Ratifizierung und begrenzte
+  Auswertungszeitpunkt und rein punktuelle Evaluation Evidence. Der begrenzt
+  freigegebene Vertragsscope ist als eigenständige immutable B2-Typfamilie,
+  zustandslose Evaluation, positive Rekonstruktionsquittung und nicht
+  personenbezogene Negative Governance Evidence implementiert. Grants besitzen
+  keinen Wirksamkeitszustand; D3 ist notwendig, aber niemals hinreichend.
+  Ratifizierung und begrenzte
   Implementierungsfreigabe sind getrennt dokumentiert durch
   `GOV-RATIFICATION-ADR-0060-V1` und
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`. Provider, Invocation, Runtime
@@ -292,7 +297,6 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Kein weiteres B2-Paket ist institutionell freigegeben. Nächster zulässiger
-Schritt ist ausschließlich ein separater Codex-Implementierungsauftrag im
-geschlossenen Scope von `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`.
-B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
+Kein weiteres B2-Paket ist institutionell freigegeben. Eine nächste technische
+B2-Aktivität benötigt eine eigene Architekturentscheidung und institutionelle
+Freigabe. B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

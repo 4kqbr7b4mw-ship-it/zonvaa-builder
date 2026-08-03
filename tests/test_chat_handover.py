@@ -76,6 +76,7 @@ PRODUCT_STATUS = """# Status
 - C1 Governance Consolidation v1 (Dokumentation ohne I4-Neuerfindung)
 - Institution Layer Completion v1 (Governance-Dokumentation ohne B2-Freigabe)
 - Guardian B2 Data Corridor and Consent Boundary v1
+- Guardian B2 Authority and Authorization v1
 
 ## Aktueller fachlicher Stand
 
@@ -84,6 +85,8 @@ PRODUCT_STATUS = """# Status
   validiert.
 - ADR-0060 Guardian B2 Authority and Authorization v1 ist ratifiziert und im
   nicht ausführenden Vertragsscope begrenzt implementierungsfreigegeben.
+- Guardian B2 Authority and Authorization v1 ist im freigegebenen Scope als
+  immutable Typfamilie und zustandslose Evaluation implementiert.
 - Provider, Invocation, Runtime und technische Grant-Ausführung bleiben
   gesperrt.
 - Guardian Accountability & Explanation Layer ist nur als ruhender, nicht
@@ -104,9 +107,9 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Nächster zulässiger Schritt ist ausschließlich ein separater Codex-
-Implementierungsauftrag im geschlossenen Scope von
-GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1.
+Keine weitere B2-Aktivität ist freigegeben. Jeder nächste technische
+B2-Baustein benötigt eine eigene Architekturentscheidung und institutionelle
+Freigabe.
 """
 
 
@@ -192,6 +195,7 @@ def test_handover_contains_canonical_working_method_and_product_status(tmp_path)
     assert "Institution Layer Completion v1" in output
     assert "Gründer-Kenntnisnahme zu ADR-0058 ist dokumentiert" in output
     assert "Guardian B2 Data Corridor and Consent Boundary v1" in output
+    assert "Guardian B2 Authority and Authorization v1" in output
     assert "jede B2-Runtime bleiben gesperrt" in output
     assert "reviewbares Paket" in output
     assert "Ersatzarchitektur" in output
@@ -457,7 +461,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_reports_only_the_approved_adr_0060_scope_as_next_step(tmp_path):
+def test_handover_keeps_every_further_b2_step_behind_a_new_gate(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -466,8 +470,9 @@ def test_handover_reports_only_the_approved_adr_0060_scope_as_next_step(tmp_path
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    assert "separater Codex-" in next_section
-    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1" in next_section
+    assert "Keine weitere B2-Aktivität ist freigegeben" in next_section
+    assert "eigene Architekturentscheidung" in next_section
+    assert "institutionelle" in next_section
     assert "B2 Runtime" not in next_section
 
 

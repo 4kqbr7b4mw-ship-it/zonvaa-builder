@@ -3294,7 +3294,17 @@ Provider, Runtime oder personenbezogene Verarbeitung.
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` dokumentieren.
 - [x] allgemeine Zwei-Abschnitte-Regel
   `GOV-INSTITUTIONAL-DECISION-SCOPE-1` dokumentieren.
-- [ ] separaten Codex-Implementierungsauftrag im freigegebenen Scope erteilen.
+- [x] separaten Codex-Implementierungsauftrag im freigegebenen Scope erteilen.
+- [x] eigenständige immutable B2 Authority und B2 Grants implementieren.
+- [x] D3-, T4-, AAV-, UODL- und Purpose-Scope-Bindungen strukturell schließen.
+- [x] zustandslose Evaluation mit explizitem Auswertungszeitpunkt sowie
+  positive Evaluation Evidence und Negative Governance Evidence implementieren.
+- [x] Negative Authority and Grant Rules, Public API und Verfassungsnegativtests
+  implementieren.
+
+Die Implementierung bleibt vollständig nicht ausführend. Provider, Invocation,
+Runtime, Persistenz, Sessions, Caches und personenbezogene Verarbeitung sind
+nicht Bestandteil des Pakets.
 
 ## Dokumentationsblocker
 

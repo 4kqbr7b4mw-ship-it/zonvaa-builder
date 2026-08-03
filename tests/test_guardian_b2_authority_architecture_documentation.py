@@ -106,9 +106,11 @@ def test_existing_adr_0059_approval_is_not_extended():
     assert "| B2-Runtime | GESPERRT |" in readiness
 
 
-def test_no_b2_implementation_files_are_created_by_the_architecture_package():
+def test_implementation_uses_only_the_approved_non_runtime_module():
     assert not (ROOT / "governance/b2_authority.py").exists()
-    assert not (ROOT / "governance/b2_authorization.py").exists()
+    assert (ROOT / "governance/b2_authorization.py").exists()
+    assert not (ROOT / "governance/b2_runtime.py").exists()
+    assert not (ROOT / "governance/b2_provider.py").exists()
 
 
 def test_ratification_record_is_separate_and_grants_no_implementation_power():
