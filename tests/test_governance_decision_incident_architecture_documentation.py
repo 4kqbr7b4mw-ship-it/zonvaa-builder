@@ -9,11 +9,24 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0064_is_formal_but_unratified_and_unimplemented():
+def test_adr_0064_is_ratified_but_not_approved_or_implemented():
     text = read(ADR)
     assert "ADR-0064 – Governance Decision and Incident Evidence Constitution v1" in text
-    assert "VORGESCHLAGEN – NICHT RATIFIZIERT" in text
-    assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "GOV-RATIFICATION-ADR-0064-V1" in text
+
+
+def test_adr_0064_ratification_record_separates_scope_and_times():
+    text = read(ROOT / "governance/ratification-adr-0064.md")
+    assert "RATIFIZIERUNG DOKUMENTIERT – KEINE IMPLEMENTIERUNGSFREIGABE" in text
+    assert "03.08.2026, 19:34:23 Uhr" in text
+    assert "03.08.2026, 19:34:28 Uhr" in text
+    assert "## Freigegeben" in text
+    assert "## Ausdrücklich nicht freigegeben" in text
+    assert "Änderung des ADR-0059-Nachweisstatus" in text
+    assert "heutige institutionelle Bestätigung von ADR-0059" in text
+    assert "Commit" in text
+    assert "Push" in text
 
 
 def test_decision_record_and_incident_evidence_are_separate():

@@ -5,7 +5,7 @@ Dokument-ID: `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1`
 Status: Maintenance-Review abgeschlossen; zwei Architekturblocker durch
 ratifizierte ADR-0063 architektonisch entschieden, aber nicht implementiert
 
-Governance-Evidenzstatus: durch ADR-0064 vorgeschlagen, aber nicht ratifiziert
+Governance-Evidenzstatus: durch ADR-0064 ratifiziert entschieden, aber nicht implementiert
 
 Stand: 03.08.2026
 
@@ -234,7 +234,7 @@ End-to-End-Geschlossenheit bleibt bis zur Entscheidung der zwei fachlichen
 Mapping-Blocker eingeschränkt. Der Governance-Evidenzblocker zu ADR-0059 und
 zum fehlenden kanonischen Governance-Incident-Zielort bleibt ebenfalls offen.
 
-ADR-0063 ist getrennt ratifiziert, aber nicht implementierungsfreigegeben oder
-implementiert. ADR-0064 bleibt vorgeschlagen und nicht ratifiziert. Capability
-Invocation und Runtime wurden nicht begonnen; es wurde kein Vertrag oder
-ausführendes Modul dafür angelegt.
+ADR-0063 und ADR-0064 sind getrennt ratifiziert, aber nicht
+implementierungsfreigegeben oder implementiert. Capability Invocation und
+Runtime wurden nicht begonnen; es wurde kein Vertrag oder ausführendes Modul
+dafür angelegt.

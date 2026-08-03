@@ -118,10 +118,10 @@ heutige Bestätigung müsste als neue gegenwärtige Entscheidung mit eigenem
 Zeitpunkt dokumentiert werden und dürfte keine rückwirkende Lückenlosigkeit
 behaupten.
 
-ADR-0064 schlägt einen getrennten Governance Decision Record und Governance
-Incident Evidence vor. Der ADR ist nicht ratifiziert, nicht
-implementierungsfreigegeben und derzeit keine verbindliche Prozessregel. Bis
-zu einer gesonderten Entscheidung bleiben
+ADR-0064 ratifiziert die getrennte Architektur für Governance Decision Record
+und Governance Incident Evidence. Der ADR ist nicht
+implementierungsfreigegeben oder implementiert. Bis zu einer gesonderten
+Implementierungsfreigabe bleiben
 ADR-0061-Prozessvorfall und fehlende ADR-0059-Evidenz an ihren bestehenden
 Fundstellen sichtbar; ADR-0052 wird nicht zweckentfremdet.
 

@@ -44,8 +44,9 @@ Exklusive Dateien:
 
 Zugeordneter Scope: ADR-0059-Nachweisstatus, Decision Record, Governance
 Incident Evidence, Zeit- und Evidenztrennung sowie vorgeschlagener kanonischer
-Verwahrort. Status: vorgeschlagen, nicht ratifiziert, nicht
-implementierungsfreigegeben und nicht implementiert.
+Verwahrort. ADR-0064 ist ratifiziert, nicht implementierungsfreigegeben und
+nicht implementiert. Die Ratifizierung ist ein eigenständiges Governance-
+Paket und ändert den Paketschnitt nicht.
 
 Vorgesehene Commit-Message:
 

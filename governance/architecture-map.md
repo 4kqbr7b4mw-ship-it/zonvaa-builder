@@ -93,10 +93,10 @@ implementierungsfreigegeben und nicht implementiert.
 
 ### ADR-0064 – Governance Decision and Incident Evidence Constitution
 
-ADR-0064 formalisiert ausschließlich die vorgeschlagene Governance-Decision-
-und Incident-Evidence-Verfassung. Sie bewahrt den ADR-0059-Nachweisstatus und
-ist vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und
-nicht implementiert.
+ADR-0064 ist durch `GOV-RATIFICATION-ADR-0064-V1` ausschließlich als
+Governance-Decision- und Incident-Evidence-Verfassung ratifiziert. Sie bewahrt
+den ADR-0059-Nachweisstatus und ist nicht implementierungsfreigegeben oder
+implementiert.
 
 ## Ebenengrenze
 

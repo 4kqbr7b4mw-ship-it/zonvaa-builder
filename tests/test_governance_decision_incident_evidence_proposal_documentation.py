@@ -62,7 +62,7 @@ def test_package_b_status_references_are_separate_and_non_binding():
     plans = read(ROOT / "PLANS.md")
     for text in (readiness, status, plans):
         assert "ADR-0064" in text
-        assert "nicht ratifiziert" in text.lower()
+        assert "nicht implementierungsfreigegeben" in text.lower() or "nicht erteilt" in text.lower()
 
 
 def test_manifest_assigns_package_b_and_excludes_current_adr_0059_decision():

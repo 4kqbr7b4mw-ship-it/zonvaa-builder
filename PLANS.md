@@ -3501,8 +3501,10 @@ ist nicht Bestandteil dieses Pakets.
   halten.
 - [x] Decision Record, Incident Evidence und Verwahrort als getrennt
   ratifizierbaren formalen ADR-0064 dokumentieren.
+- [x] menschliche Ratifizierung getrennt dokumentieren, ohne
+  Implementierungsfreigabe, ADR-0059-Bestätigung oder Implementierung.
 
-Nächster zulässiger Schritt für Paket B ist ausschließlich die menschliche
-Ratifizierungsentscheidung zu ADR-0064. Capability Invocation, Runtime und
-produktive Verträge bleiben unabhängig von beiden Paketen unverändert
-gesperrt.
+ADR-0064 ist ratifiziert. Nächster zulässiger Schritt für Paket B wäre
+ausschließlich eine gesonderte institutionelle Implementierungsfreigabe; sie
+ist nicht Bestandteil dieses Pakets. Capability Invocation, Runtime und
+produktive Verträge bleiben unverändert gesperrt.

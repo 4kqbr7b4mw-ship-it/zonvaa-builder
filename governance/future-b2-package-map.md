@@ -32,9 +32,10 @@ implementiert; daraus folgt keine Freigabe eines späteren B2-Pakets.
 
 ### Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 
-ADR-0064 dokumentiert die nur indirekte Ratifikationsevidenz zu ADR-0059 und
-schlägt getrennte kanonische Orte für Governance-Entscheidungen und
-Prozessvorfälle vor. Er erzeugt weder historischen Beschluss noch
+ADR-0064 ratifiziert die Architektur für den unveränderten indirekten
+Nachweisstatus zu ADR-0059 und getrennte kanonische Orte für Governance-
+Entscheidungen und Prozessvorfälle. Er ist nicht implementierungsfreigegeben
+oder implementiert und erzeugt weder historischen Beschluss noch
 Incident-Artefakt.
 
 Beide ADRs sind unabhängig und getrennt ratifizierbar. Keiner autorisiert ein

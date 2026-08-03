@@ -327,8 +327,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Mapping-Fragen – Corridor-`purpose` zu typisiertem `B2PurposeScope` sowie
   `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY` – und ein
   Governance-Evidenzblocker zu ADR-0059 und Governance-Prozessvorfällen.
-  ADR-0063 ist ausschließlich als Architektur ratifiziert; ADR-0064 bleibt
-  vorgeschlagen. Capability Invocation und B2-Runtime sind nicht begonnen.
+  ADR-0063 und ADR-0064 sind ausschließlich als getrennte Architekturen
+  ratifiziert. Capability Invocation und B2-Runtime sind nicht begonnen.
 ### Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
 - Für Purpose wird `B2PurposeScope` als einzige fachliche Wahrheit mit
@@ -347,7 +347,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   heutige Bestätigung muss ihren eigenen gegenwärtigen Zeitpunkt führen und
   darf die Historie nicht rückwirkend legitimieren.
 - Eine allgemeine Governance Decision and Incident Evidence Architecture ist
-  mit ADR-0064 nur vorgeschlagen. Sie bleibt von Runtime Incidents, Operational Memory,
+  mit ADR-0064 ratifiziert, aber nicht implementierungsfreigegeben oder
+  implementiert. Sie bleibt von Runtime Incidents, Operational Memory,
   Überwachung, Sanktion und personenbezogenen Profilen getrennt und besitzt
   keine Sperr-, Autorisierungs- oder Runtime-Wirkung.
 
@@ -368,7 +369,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 Als nächste B2-Aktivität für ADR-0063 wäre ausschließlich eine gesonderte
 institutionelle Implementierungsfreigabe zulässig. Sie wurde nicht erteilt.
 
-Als davon unabhängige Governance-Aktivität ist ausschließlich die menschliche
-Ratifizierungsentscheidung zu ADR-0064 zulässig. Keine Architektur ist
-ratifiziert oder implementierungsfreigegeben. Capability
-Invocation, B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
+Als davon unabhängige Governance-Aktivität wäre ausschließlich eine gesonderte
+institutionelle Implementierungsfreigabe für ADR-0064 zulässig. Sie wurde
+nicht erteilt. Capability Invocation bleibt gesperrt.
+B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

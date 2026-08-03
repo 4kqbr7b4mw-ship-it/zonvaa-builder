@@ -1,6 +1,13 @@
 # ADR-0064 – Governance Decision and Incident Evidence Constitution v1
 
-Status: **VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+
+Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0064-V1`
+
+Die Ratifizierung bestätigt ausschließlich diese Governance-Architektur und
+den dokumentierten ADR-0059-Nachweisstatus. Sie ist keine institutionelle
+Implementierungsfreigabe, erzeugt kein Decision- oder Incident-Artefakt und
+bestätigt ADR-0059 weder rückwirkend noch gegenwärtig.
 
 ## 1. Kontext
 
