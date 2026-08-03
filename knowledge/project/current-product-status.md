@@ -282,6 +282,15 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - `GOV-NO-FABRICATION-1` ist nur ein offener Konsolidierungspunkt und keine
   neue Governance-Regel. Aus beiden Registrierungen folgen weder Runtime, API,
   Erklärungsschicht noch Implementierungsfreigabe.
+- Guardian Life Domain Model ist ausschließlich als offener, nicht geplanter
+  und nicht implementierter Architekturkandidat registriert. Die Registrierung
+  ist eine auf sie begrenzte Ausnahme zu ADR-0046 E6; ADR-0046 und E6 bleiben
+  unverändert. Der Kandidat hält typisierte, jurisdiktionstreue Lebensobjekte,
+  Sprache als reine Darstellung und Wachstum nur entlang realer Journeys fest.
+  Die Vorsorgevollmacht ist der erste registrierte Kernbereich. Aktivierung
+  verlangt produktive B2-Runtime, stabile Conversation-Architektur und einen
+  dokumentierten Aktivierungsbeschluss; daraus folgen keine Runtime, API,
+  Datenbank, juristischen Inhalte, Gesprächsführung oder Implementierungsfreigabe.
 
 ## Bewusste Produktgrenzen
 

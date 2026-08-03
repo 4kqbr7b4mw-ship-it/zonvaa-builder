@@ -17,6 +17,7 @@ ist ausschließlich Guardian B2 Data Corridor and Consent Boundary v1 durch
 | B2 Provider Runtime | genau freigegebene B2-Fähigkeit ausführen | alle vorgelagerten B2-Grenzen und Providerfreigabe | kein B3, kein Routing, kein freier Schreibzugriff | keine automatische Antwort, Providerwahl oder Fallback | Invocation und Provider Authorization; höchstes separates Machtgate |
 | B2 Observation, Audit and User-Owned Storage Integration | nicht-inhaltliche Betriebsnachweise und nutzerhoheitliche Referenzen binden | validierte B2-Runtime-Architektur | Betriebsblock bleibt inhaltsblind | keine Nutzeranalyse oder B2-Inhalte im Operational Memory | `GOV-SYSTEM-BEHAVIOR-ONLY-1`, AAV/UODL; eigene Governance-Freigabe |
 | Guardian Accountability & Explanation Layer | bereits vorhandene Evidenz referenzgebunden lesbar projizieren | produktive B2-Runtime, erste reale Rechenschaftspflichten und dokumentierter Aktivierungsbeschluss | Erklärung liest nur und entscheidet oder weiß nichts | keine zweite Wahrheit, Generierung, Runtime, API oder Evidenzerzeugung | registrierter, nicht geplanter und ausdrücklich ruhender E6-Ausnahmekandidat; keine Freigabe |
+| Guardian Life Domain Model | typisierte, jurisdiktionstreue Lebensobjekte entlang realer Journeys beschreiben | produktive B2-Runtime, stabile Conversation-Architektur und dokumentierter Aktivierungsbeschluss | Sprache bleibt reine Darstellung; Domänenidentität und Rechtsnatur bleiben stabil | keine Vollontologie, Runtime, API, Datenbank, juristischen Inhalte oder Gesprächsführung | registrierter, nicht geplanter und ausdrücklich ruhender E6-Ausnahmekandidat; keine Freigabe |
 
 Nicht Bestandteil dieser Landkarte sind Verträge, Klassen, APIs, Validatoren,
 Runtime-Komponenten, Provider, Persistenzadapter, UI oder Workflowaktivierung.
@@ -25,3 +26,8 @@ Der Kandidat Guardian Accountability & Explanation Layer ist ausschließlich
 registriert. Seine Aufnahme ist eine auf die Registrierung begrenzte Ausnahme
 zu ADR-0046 E6; E6 bleibt unverändert. Der offene Konsolidierungspunkt
 `GOV-NO-FABRICATION-1` ist keine neue Governance-Regel.
+
+Der Kandidat Guardian Life Domain Model ist ausschließlich registriert. Seine
+Aufnahme ist eine auf die Registrierung begrenzte Ausnahme zu ADR-0046 E6;
+ADR-0046 und E6 bleiben unverändert. Die Vorsorgevollmacht ist nur der erste
+registrierte Kernbereich und begründet weder Modell noch Implementierung.

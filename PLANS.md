@@ -3331,3 +3331,26 @@ wurde deshalb nicht in einem erfundenen Logbuch persistiert.
 
 Der Kandidat bleibt ruhend. Er ist kein geplantes Paket und kein zulässiger
 nächster Implementierungsschritt.
+
+# Guardian Life Domain Model – offener Architekturkandidat
+
+## Status und Grenze
+
+- [x] Kandidaten als `Registriert`, `Nicht geplant` und `Nicht implementiert`
+  dokumentieren.
+- [x] ausschließlich die Registrierung als Ausnahme zu ADR-0046 E6 begründen;
+  ADR-0046 und E6 selbst unverändert lassen.
+- [x] typisierte, jurisdiktionstreue Lebensobjekte und Sprache als reine
+  Darstellung dokumentieren.
+- [x] Wachstum ausschließlich entlang realer Lebensbereiche und validierter
+  Journeys festhalten; Universalmodell und Vollontologie ausschließen.
+- [x] Vorsorgevollmacht als ersten registrierten Kernbereich benennen.
+- [x] internationale Rechtsinstitute getrennt halten und Mapping an eigene
+  typisierte Objekte und Evidenz binden.
+- [x] Aktivierung an produktive B2-Runtime, stabile Conversation-Architektur
+  und dokumentierten Aktivierungsbeschluss binden.
+- [x] Runtime, API, Datenbankmodell, juristische Inhalte, Gesprächsführung und
+  Implementierungsaufträge ausdrücklich ausschließen.
+
+Der Kandidat bleibt ruhend. Er ist kein geplantes Paket und kein zulässiger
+nächster Implementierungsschritt.

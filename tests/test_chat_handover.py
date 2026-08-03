@@ -91,6 +91,8 @@ PRODUCT_STATUS = """# Status
   gesperrt.
 - Guardian Accountability & Explanation Layer ist nur als ruhender, nicht
   geplanter Architekturkandidat registriert und erzeugt keine Freigabe.
+- Guardian Life Domain Model ist nur als ruhender, nicht geplanter
+  Architekturkandidat registriert und erzeugt keine Freigabe.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen
