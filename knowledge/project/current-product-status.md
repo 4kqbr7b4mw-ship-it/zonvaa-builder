@@ -327,14 +327,16 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Mapping-Fragen – Corridor-`purpose` zu typisiertem `B2PurposeScope` sowie
   `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY` – und ein
   Governance-Evidenzblocker zu ADR-0059 und Governance-Prozessvorfällen.
-  ADR-0063, Capability Invocation und B2-Runtime sind nicht begonnen.
-### B2 Purpose and UODL Constitution Proposal
+  ADR-0063 formalisiert ausschließlich die vorgeschlagene Purpose-/UODL-
+  Lösung; Capability Invocation und B2-Runtime sind nicht begonnen.
+### Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
 - Für Purpose wird `B2PurposeScope` als einzige fachliche Wahrheit mit
   explizitem Bindungsnachweis bevorzugt; für UODL eine geschlossene typisierte
   Ebenenabbildung von `REFERENCE` zu `REFERENCE_ONLY`. Beide Präferenzen sind
   vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und nicht
-  implementiert.
+  implementiert. ADR-0063 ist formal vorgeschlagen und besitzt keine
+  Ratifizierungs- oder Freigabewirkung.
 
 ### Governance Decision and Incident Evidence Proposal
 
@@ -362,8 +364,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Als nächste B2-Aktivität ist ausschließlich die menschliche Architekturprüfung
-des B2 Purpose and UODL Constitution Proposal zulässig.
+Als nächste B2-Aktivität ist ausschließlich die menschliche
+Ratifizierungsentscheidung zu ADR-0063 zulässig.
 
 Als davon unabhängige Governance-Aktivität ist ausschließlich die menschliche
 Prüfung des Governance Decision and Incident Evidence Proposal zulässig.

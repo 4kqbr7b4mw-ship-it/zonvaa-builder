@@ -2,7 +2,7 @@
 
 Stand: 03.08.2026
 
-Status: ADR-0062 implementiert; offene Entscheidungsvorlagen ohne Freigabewirkung
+Status: ADR-0062 implementiert; ADR-0063 vorgeschlagen ohne Freigabewirkung
 
 ## Bestätigter Stand
 
@@ -63,11 +63,11 @@ Das Maintenance-Review
 `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bleibt die Fundstelle der drei
 offenen Blocker.
 
-### Purpose-/UODL-Entscheidungsvorlage
+### Paket A – ADR-0063
 
-`GOV-B2-PURPOSE-UODL-BINDING-PROPOSAL-V1` macht die zwei fachlichen
-Mapping-Blocker entscheidungsreif, löst sie aber nicht. Nächster zulässiger
-Schritt für Paket A ist ausschließlich seine menschliche Architekturprüfung.
+ADR-0063 macht die zwei fachlichen Mapping-Blocker als formale Architektur
+ratifizierungsreif, löst sie aber nicht. Nächster zulässiger Schritt für Paket
+A ist ausschließlich die menschliche Ratifizierungsentscheidung.
 
 ### Governance-Evidence-Entscheidungsvorlage
 
@@ -99,7 +99,7 @@ jede technische Ausführung bleiben für beide Pakete gesperrt.
 | Freigabe-Commit ADR-0062 auf origin/builder-reset-v2 | ABGESCHLOSSEN |
 | Guardian B2 Provider Authorization v1 | IM NICHT AUSFÜHRENDEN SCOPE IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
 | Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER UND EIN GOVERNANCE-EVIDENZBLOCKER OFFEN |
-| B2 Purpose and UODL Constitution Proposal | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERT |
+| ADR-0063 B2 Purpose and UODL Binding Constitution | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
 | ADR-0059-Ratifikationsnachweis | NUR INDIREKTE GOVERNANCE-EVIDENZ – HEUTIGE BESTÄTIGUNGSENTSCHEIDUNG AUSSTEHEND |
 | Governance Decision and Incident Evidence Proposal | VORGESCHLAGEN – NICHT RATIFIZIERT – KEIN KANONISCHER ZIELORT |
 | Alle weiteren B2-Pakete | GESPERRT |

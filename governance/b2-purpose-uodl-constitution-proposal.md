@@ -20,9 +20,10 @@ die zwei fachlich zusammengehörigen Übersetzungsgrenzen entscheidungsreif:
 Beide Fragen betreffen dieselbe nicht ausführende Bindungsgrenze zwischen
 Datenkorridor und Autorisierung. Deshalb werden sie gemeinsam analysiert,
 aber als getrennte Entscheidungen bewertet. Dieses Dokument ist keine ADR,
-keine Ratifizierung, keine Implementierungsfreigabe und keine Migration.
-ADR-0063 wurde nicht begonnen. Capability Invocation und Runtime bleiben
-ebenfalls nicht begonnen.
+keine Ratifizierung, keine Implementierungsfreigabe und keine Migration. Der
+ratifizierungsreife Inhalt wurde ohne Freigabewirkung in den formalen
+Vorschlag ADR-0063 überführt. Capability Invocation und Runtime bleiben
+weiterhin nicht begonnen.
 
 ## Teil A – Purpose Binding Constitution
 

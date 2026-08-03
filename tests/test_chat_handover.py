@@ -103,8 +103,9 @@ PRODUCT_STATUS = """# Status
 - Das Maintenance-Review
   `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bestätigt die Trennung der
   B2-Verfassungsbausteine und hält zwei ungelöste Mapping-Fragen sichtbar.
-  ADR-0063 wurde nicht begonnen.
-- B2 Purpose and UODL Constitution Proposal macht ausschließlich die beiden
+  ADR-0063 ist ausschließlich vorgeschlagen; Capability Invocation und
+  Runtime wurden nicht begonnen.
+- ADR-0063 B2 Purpose and UODL Binding Constitution macht ausschließlich die beiden
   fachlichen Mapping-Blocker entscheidungsreif. Die Präferenzen sind
   vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und
   nicht implementiert.
@@ -128,11 +129,11 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Ausschließlich die menschliche Architekturprüfung des B2 Purpose and UODL
-Constitution Proposal ist als nächste fachliche B2-Aktivität zulässig.
+Ausschließlich die menschliche Ratifizierungsentscheidung zu ADR-0063 ist als
+nächste fachliche B2-Aktivität zulässig.
 Ausschließlich die davon unabhängige menschliche Governance-Prüfung des
 Governance Decision and Incident Evidence Proposal ist als nächste
-Governance-Aktivität zulässig. Keine Präferenz ist ratifiziert oder
+Governance-Aktivität zulässig. Keine Architektur ist ratifiziert oder
 implementierungsfreigegeben. Capability Invocation, technische Ausführung und
 B2-Runtime bleiben gesperrt.
 """
@@ -496,9 +497,9 @@ def test_handover_exposes_purpose_uodl_proposal_without_execution(tmp_path):
         1,
     )[1]
     normalized = " ".join(next_section.split())
-    assert "menschliche Architekturprüfung" in normalized
-    assert "B2 Purpose and UODL Constitution Proposal" in normalized
-    assert "keine präferenz ist ratifiziert" in normalized.lower()
+    assert "menschliche Ratifizierungsentscheidung" in normalized
+    assert "ADR-0063" in normalized
+    assert "keine architektur ist ratifiziert" in normalized.lower()
     assert "Capability Invocation" in normalized
     assert "technische Ausführung" in normalized
     assert "B2-Runtime bleiben" in normalized
@@ -517,7 +518,7 @@ def test_handover_exposes_governance_evidence_proposal_without_decision(tmp_path
     normalized = " ".join(next_section.split())
     assert "unabhängige menschliche Governance-Prüfung" in normalized
     assert "Governance Decision and Incident Evidence Proposal" in normalized
-    assert "keine präferenz ist ratifiziert" in normalized.lower()
+    assert "keine architektur ist ratifiziert" in normalized.lower()
     assert "Capability Invocation" in normalized
     assert "B2-Runtime bleiben" in normalized
 

@@ -85,11 +85,11 @@ Das Maintenance-Dokument
 Data Corridor bis Provider Authorization. Es ist nur Review-Nachweis, keine
 kanonische Fachregel, ADR, Ratifizierung oder Implementierungsfreigabe.
 
-### Purpose-/UODL-Entscheidungsvorlage
+### ADR-0063 – B2 Purpose and UODL Binding Constitution
 
-`GOV-B2-PURPOSE-UODL-BINDING-PROPOSAL-V1` macht ausschließlich die Purpose-
-und UODL-Mapping-Blocker entscheidungsreif. Die Vorlage ist keine kanonische
-Fachregel, Ratifizierung, Implementierungsfreigabe oder Implementierung.
+ADR-0063 formalisiert ausschließlich die vorgeschlagene Purpose- und UODL-
+Bindungsverfassung. Sie ist vorgeschlagen, nicht ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert.
 
 ### Governance-Evidence-Entscheidungsvorlage
 

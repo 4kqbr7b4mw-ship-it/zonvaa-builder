@@ -3467,10 +3467,11 @@ technische Ausführung bleiben gesperrt.
 - [x] Readiness- und Prozessstatus mechanisch korrigieren, ohne Ratifizierung,
   Freigabe oder produktive Semantik zu verändern.
 
-Das Review ist ausschließlich Maintenance. ADR-0063, Capability Invocation
-und B2-Runtime bleiben nicht begonnen und gesperrt.
+Das Review ist ausschließlich Maintenance. ADR-0063 ist vorgeschlagen und
+besitzt keine Freigabewirkung. Capability Invocation und B2-Runtime bleiben
+nicht begonnen und gesperrt.
 
-# B2 Purpose and UODL Constitution Proposal
+# Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
 - [x] Purpose-Semantik aus ADR-0059 und ADR-0060 vollständig vergleichen.
 - [x] vier Purpose-Varianten nach Halbordnung, Beweisbarkeit, Migration und
@@ -3479,9 +3480,11 @@ und B2-Runtime bleiben nicht begonnen und gesperrt.
   untersuchen und fünf Varianten bewerten.
 - [x] Präferenzen als vorgeschlagen, nicht ratifiziert, nicht
   implementierungsfreigegeben und nicht implementiert dokumentieren.
+- [x] Purpose- und UODL-Bindungsentscheidung als getrennt ratifizierbaren
+  formalen ADR-0063 dokumentieren.
 
-Nächster zulässiger Schritt für Paket A ist ausschließlich seine menschliche
-Architekturprüfung.
+Nächster zulässiger Schritt für Paket A ist ausschließlich die menschliche
+Ratifizierungsentscheidung zu ADR-0063.
 
 # Governance Decision and Incident Evidence Proposal
 

@@ -10,14 +10,15 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_purpose_uodl_proposal_is_non_binding_and_does_not_start_adr_0063():
+def test_purpose_uodl_proposal_is_non_binding_and_points_to_formal_adr_0063():
     text = read(PROPOSAL)
     assert "VORGESCHLAGEN – NICHT RATIFIZIERT" in text
     assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
     assert "Prüffrage Null" in text
     assert "Antwort: **Nein.**" in text
-    assert "ADR-0063 wurde nicht begonnen" in text
-    assert not list((ROOT / "knowledge/adr").glob("ADR-0063*"))
+    assert "formalen" in text
+    assert "Vorschlag ADR-0063" in text
+    assert (ROOT / "knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md").is_file()
 
 
 def test_purpose_proposal_keeps_one_typed_truth_and_forbids_expansion():
@@ -55,14 +56,14 @@ def test_package_a_status_references_are_separate_and_non_binding():
     status = read(ROOT / "knowledge/project/current-product-status.md")
     plans = read(ROOT / "PLANS.md")
     for text in (readiness, status, plans):
-        assert "B2 Purpose and UODL Constitution Proposal" in text
+        assert "ADR-0063" in text
         assert "nicht ratifiziert" in text.lower()
 
 
 def test_manifest_assigns_package_a_and_requires_selective_staging():
     text = read(MANIFEST)
-    assert "## Paket A – B2 Purpose and UODL Constitution Proposal" in text
-    assert "Propose B2 purpose and UODL constitution" in text
+    assert "## Paket A – B2 Purpose and UODL Binding Constitution" in text
+    assert "Document B2 purpose UODL binding architecture" in text
     assert "selektives Hunk- beziehungsweise Abschnitts-Staging" in text
 
 

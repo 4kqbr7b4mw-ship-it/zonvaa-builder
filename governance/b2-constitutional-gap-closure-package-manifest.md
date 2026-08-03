@@ -1,8 +1,8 @@
-# B2 Constitutional Gap Closure v1 – Paketmanifest
+# B2 Constitutional Gap Closure – Formal Architecture – Paketmanifest
 
-Dokument-ID: `GOV-B2-CONSTITUTIONAL-GAP-CLOSURE-MANIFEST-V1`
+Dokument-ID: `GOV-B2-CONSTITUTIONAL-GAP-CLOSURE-MANIFEST-V2`
 
-Status: mechanische Commit-Zuordnung; keine fachliche oder institutionelle Wirkung
+Status: formale Commit-Zuordnung; keine fachliche oder institutionelle Wirkung
 
 Stand: 03.08.2026
 
@@ -14,15 +14,28 @@ Entscheidungsvorlagen machen diese Befunde getrennt prüfbar. Sie verändern
 keine vorgeschlagene fachliche Entscheidung und sind weder ratifiziert noch
 implementierungsfreigegeben oder implementiert.
 
-## Paket A – B2 Purpose and UODL Constitution Proposal
+## Nummerierung
 
-Kanonisches Hauptdokument:
+Die vollständige ADR-Dateiprüfung ergab ADR-0062 als höchste bestehende
+Nummer. Paket A verwendet kollisionsfrei ADR-0063. Die Repository-Reihenfolge
+erzeugt keine fachliche Unterordnung.
 
-- `governance/b2-purpose-uodl-constitution-proposal.md`
+## Paket A – B2 Purpose and UODL Binding Constitution
 
-Exklusiv zugeordneter Test:
+Exklusive Dateien:
 
-- `tests/test_b2_purpose_uodl_constitution_proposal_documentation.py`
+- `knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md`;
+- `governance/b2-purpose-uodl-constitution-proposal.md`;
+- `tests/test_b2_purpose_uodl_binding_architecture_documentation.py`;
+- `tests/test_b2_purpose_uodl_constitution_proposal_documentation.py`;
+- dieses Manifest als neutrale Repository-Orientierung.
+
+Status: vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben
+und nicht implementiert.
+
+Vorgesehene Commit-Message:
+
+`Document B2 purpose UODL binding architecture`
 
 Zugeordneter Scope:
 
@@ -79,7 +92,7 @@ keine Übernahme fachlicher Paket-B-Semantik und erzeugt keine Abhängigkeit.
 
 ## Vorgesehene Commit-Reihenfolge
 
-1. `Propose B2 purpose and UODL constitution`
+1. `Document B2 purpose UODL binding architecture`
 2. `Propose governance decision incident evidence`
 
 Die Reihenfolge ist ausschließlich Repository-Reihenfolge. Sie erzeugt keine

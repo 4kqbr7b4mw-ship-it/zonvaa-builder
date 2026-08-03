@@ -51,11 +51,14 @@ def test_review_records_blockers_without_inventing_resolution():
         assert phrase in text
 
 
-def test_review_contains_test_matrix_and_keeps_adr_0063_unstarted():
+def test_review_contains_test_matrix_and_keeps_execution_unstarted():
     text = read(REVIEW)
     assert "| Kanonische Invariante | ADR | Implementierung | Positiver Test |" in text
-    assert "ADR-0063 wurde nicht begonnen" in text
-    assert not list((ROOT / "knowledge/adr").glob("ADR-0063*"))
+    assert "ADR-0063 formalisiert die vorgeschlagene Purpose- und UODL-Entscheidung" in text
+    assert "Capability" in text and "Runtime wurden nicht begonnen" in text
+    assert (ROOT / "knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md").is_file()
+    assert not list((ROOT / "governance").glob("*b2*capability*invocation*.py"))
+    assert not list((ROOT / "governance").glob("*b2*runtime*.py"))
 
 
 def test_readiness_and_status_reference_review_without_opening_runtime():

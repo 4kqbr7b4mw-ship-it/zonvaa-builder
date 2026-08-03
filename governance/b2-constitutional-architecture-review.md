@@ -2,7 +2,8 @@
 
 Dokument-ID: `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1`
 
-Status: Maintenance-Review abgeschlossen; zwei Architekturblocker offen
+Status: Maintenance-Review abgeschlossen; zwei Architekturblocker durch
+ADR-0063 vorgeschlagen, aber nicht ratifiziert
 
 Governance-Evidenzstatus: ein Governance-Evidenzblocker offen
 
@@ -233,5 +234,7 @@ End-to-End-Geschlossenheit bleibt bis zur Entscheidung der zwei fachlichen
 Mapping-Blocker eingeschränkt. Der Governance-Evidenzblocker zu ADR-0059 und
 zum fehlenden kanonischen Governance-Incident-Zielort bleibt ebenfalls offen.
 
-ADR-0063 wurde nicht begonnen. Es wurde keine ADR-0063-Datei, kein Vertrag und
-keine Vorbereitung für Capability Invocation oder Runtime angelegt.
+ADR-0063 formalisiert die vorgeschlagene Purpose- und UODL-Entscheidung, löst
+die Blocker aber erst nach eigener menschlicher Ratifizierung. Capability
+Invocation und Runtime wurden nicht begonnen; es wurde kein Vertrag oder
+ausführendes Modul dafür angelegt.
