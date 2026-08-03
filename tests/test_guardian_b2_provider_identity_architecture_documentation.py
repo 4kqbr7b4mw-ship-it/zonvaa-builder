@@ -175,7 +175,7 @@ def test_reference_scenarios_use_only_synthetic_typed_values():
     assert "keine Namen, Kontakte oder fachlichen Freitexte" in section
 
 
-def test_adr_and_approval_documents_have_no_implementation_effect():
+def test_adr_and_approval_documents_remain_non_executing_documents():
     text = normalized()
     for phrase in (
         "keine institutionelle Implementierungsfreigabe",
@@ -184,4 +184,3 @@ def test_adr_and_approval_documents_have_no_implementation_effect():
         "Antwort: Nein",
     ):
         assert phrase in text
-    assert not (ROOT / "governance/b2_provider_identity.py").exists()

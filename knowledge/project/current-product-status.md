@@ -302,6 +302,14 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Schema-Versionierung ein und erzeugt weder Authorization, Invocation,
   Runtime, Schlüssel- oder Inhaltszugriff. Die Freigabe implementiert nichts;
   ein separater Codex-Auftrag bleibt erforderlich.
+- Guardian B2 Provider Identity v1 ist implementiert. Die eigenständige
+  immutable Typfamilie führt ausschließlich die fünf ratifizierten geschlossenen
+  Provider Classes, geschlossene Responsibility Areas und Capability-
+  Descriptoren sowie typisierte institutionelle Provenienz mit explizitem
+  Erstellungszeitpunkt. Sie beschreibt keine natürliche Person und besitzt
+  keine Autorisierungs-, Invocation- oder Runtime-Wirkung. B1-Konvertierung,
+  Authority, Grants, Status, Schlüssel, Sessions, Caches, Tokens und
+  personenbezogene Inhalte sind strukturell nicht modellierbar.
 
 ## Bewusste Produktgrenzen
 

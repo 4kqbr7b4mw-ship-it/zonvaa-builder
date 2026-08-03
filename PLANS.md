@@ -3361,6 +3361,24 @@ institutionelle Implementierungsfreigabe
 nicht ausführenden Provider-Identity-Scope gültig. Ein späterer Codex-Auftrag
 bleibt eine getrennte, noch nicht erteilte menschliche Entscheidung.
 
+## Implementierung Guardian B2 Provider Identity v1
+
+- [x] eigenständige immutable `B2ProviderIdentity` und
+  `B2ProviderIdentityId` implementieren.
+- [x] `B2ProviderClass`, `B2ResponsibilityArea` und
+  `B2CapabilityDescriptor` exakt als geschlossene ratifizierte Mengen führen.
+- [x] `B2ProviderProvenance` ausschließlich aus typisierten institutionellen,
+  Governance-, Registrierungs- und nicht personenbezogenen Referenzen sowie
+  explizitem timezone-aware Erstellungszeitpunkt bilden.
+- [x] B1→B2-Konvertierung, natürliche Personen, freie Klassen oder Texte,
+  Authority, Grants, Status, Schlüssel, Sessions, Caches und Tokens
+  strukturell ausschließen.
+- [x] Public API, fokussierte Negativtests, Produktstatus und Handover ergänzen.
+
+Keine Provider Authorization, Invocation oder Runtime, keine technische
+Ausführung und keine personenbezogene Verarbeitung oder Speicherung sind
+Bestandteil dieser Implementierung.
+
 # Guardian Life Domain Model – offener Architekturkandidat
 
 ## Status und Grenze

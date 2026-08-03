@@ -93,9 +93,10 @@ PRODUCT_STATUS = """# Status
   geplanter Architekturkandidat registriert und erzeugt keine Freigabe.
 - Guardian Life Domain Model ist nur als ruhender, nicht geplanter
   Architekturkandidat registriert und erzeugt keine Freigabe.
-- ADR-0061 Guardian B2 Provider Identity v1 ist ratifiziert und ausschließlich
-  für die nicht ausführende Provider Identity implementierungsfreigegeben,
-  aber nicht implementiert.
+- Guardian B2 Provider Identity v1 ist im freigegebenen nicht ausführenden
+  Scope implementiert. Geschlossene Klassen, Verantwortungsbereiche,
+  Capability-Descriptoren und institutionelle Provenienz beschreiben weder
+  natürliche Personen noch Autorisierung, Invocation oder Runtime.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen
