@@ -1,6 +1,12 @@
 # ADR-0064-A1 – Governance Decision and Incident Closed Taxonomies v1
 
-Status: **VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+
+Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0064-A1-V1`
+
+Die Ratifizierung bestätigt ausschließlich diese geschlossenen Taxonomien als
+Architektur. Sie ist keine Implementierungsfreigabe, wendet den gesicherten
+Stash nicht an und nimmt die ADR-0064-Implementierung nicht wieder auf.
 
 ## 1. Bezug zu ADR-0064
 
@@ -343,12 +349,15 @@ Implementierungsgenehmigung und ersetzt die vollständige Neuprüfung nicht.
 
 ## 22. Wiederaufnahmebedingungen
 
-1. gesonderte menschliche Ratifizierung von ADR-0064-A1;
-2. Dokumentation, Commit und Push dieser Ratifizierung;
-3. gesonderte institutionelle Implementierungsfreigabe;
-4. Dokumentation, Commit und Push dieser Freigabe;
-5. separater Implementierungsauftrag;
-6. vollständige Prüfung des gesicherten Stands gegen beide ADRs.
+Die menschliche Ratifizierung ist durch
+`GOV-RATIFICATION-ADR-0064-A1-V1` getrennt dokumentiert. Vor einer technischen
+Wiederaufnahme bleiben erforderlich:
+
+1. Commit und Push der Ratifizierungsdokumentation;
+2. gesonderte institutionelle Implementierungsfreigabe;
+3. Dokumentation, Commit und Push dieser Freigabe;
+4. separater Implementierungsauftrag;
+5. vollständige Prüfung des gesicherten Stands gegen beide ADRs.
 
 ## 23. Prüffrage Null
 
@@ -367,7 +376,9 @@ nicht personenbezogen und ohne ausführende Wirkung.
 Die Ratifizierung muss alle Tabellen und geschlossenen Mengen ausdrücklich als
 abschließend bestätigen. Änderungen, Ergänzungen oder Auslassungen erfordern
 eine neue Architekturprüfung. Die Ratifizierung darf ADR-0059 nicht bestätigen
-und keinen Stash anerkennen.
+und keinen Stash anerkennen. Diese Anforderungen werden durch
+`GOV-RATIFICATION-ADR-0064-A1-V1` erfüllt; daraus folgt keine
+Implementierungsfreigabe.
 
 ## 25. Implementierungsfreigabeanforderungen
 

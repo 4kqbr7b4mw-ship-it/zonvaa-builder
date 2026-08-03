@@ -54,8 +54,9 @@ def test_review_records_blockers_without_inventing_resolution():
 def test_review_contains_test_matrix_and_keeps_execution_unstarted():
     text = " ".join(read(REVIEW).split())
     assert "| Kanonische Invariante | ADR | Implementierung | Positiver Test |" in text
-    assert "ADR-0063 und ADR-0064 sind getrennt ratifiziert" in text
+    assert "ADR-0063, ADR-0064 und die Ergänzung ADR-0064-A1 sind getrennt ratifiziert" in text
     assert "ADR-0064 ist getrennt begrenzt" in text
+    assert "ADR-0064-A1 ist nicht implementierungsfreigegeben und nicht implementiert" in text
     assert "implementiert und validiert" in text
     assert "Capability Invocation und Runtime wurden nicht begonnen" in text
     assert (ROOT / "knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md").is_file()

@@ -137,9 +137,9 @@ Implementierung, Tests/Review sowie getrennte Commit- und Push-Freigaben.
 ADR-0064 hat den Zielort später ratifiziert, ließ aber die für vollständige
 Verträge erforderlichen geschlossenen Typmengen offen. Der deshalb blockierte
 partielle Arbeitsstand ist ausschließlich in einem benannten Stash gesichert.
-ADR-0064-A1 schlägt die fehlenden Taxonomien ohne Ratifizierung,
-Implementierungsfreigabe oder Implementierung vor und verändert die
-historischen Review-Befunde nicht.
+ADR-0064-A1 ratifiziert die fehlenden Taxonomien ausschließlich als
+Architektur, ohne Implementierungsfreigabe, Implementierung oder
+Stash-Anwendung, und verändert die historischen Review-Befunde nicht.
 
 ### 12. Gesperrte Bereiche
 
@@ -241,9 +241,11 @@ End-to-End-Geschlossenheit bleibt bis zur Entscheidung der zwei fachlichen
 Mapping-Blocker eingeschränkt. Der Governance-Evidenzblocker zu ADR-0059 und
 zum fehlenden kanonischen Governance-Incident-Zielort bleibt ebenfalls offen.
 
-ADR-0063 und ADR-0064 sind getrennt ratifiziert. Ausschließlich ADR-0063 ist
-implementiert und validiert. ADR-0064 ist getrennt begrenzt
-implementierungsfreigegeben, aber nicht implementiert. Keine der Freigaben
-erzeugt eine fachliche Unterordnung oder Ausführungswirkung.
+ADR-0063, ADR-0064 und die Ergänzung ADR-0064-A1 sind getrennt ratifiziert.
+Ausschließlich ADR-0063 ist implementiert und validiert. ADR-0064 ist getrennt
+begrenzt implementierungsfreigegeben, aber nicht vollständig implementiert;
+ADR-0064-A1 ist nicht implementierungsfreigegeben und nicht implementiert.
+Keine Ratifizierung oder Freigabe erzeugt eine fachliche Unterordnung,
+Stash-Anwendung oder Ausführungswirkung.
 Capability Invocation und Runtime wurden nicht begonnen; es wurde kein Vertrag
 oder ausführendes Modul dafür angelegt.

@@ -142,8 +142,9 @@ ADR-0064 bleibt fachlich unabhängig.
 Der erste ADR-0064-Implementierungsversuch hat fehlende ratifizierte
 Taxonomien sichtbar gemacht. Sein vollständiger Arbeitsstand ist reversibel in
 einem benannten Stash gesichert und wird nicht angewendet. ADR-0064-A1
-dokumentiert ausschließlich den Vorschlag für diese geschlossenen Typmengen.
-Er ist keine Ratifizierung, keine Implementierungsfreigabe und keine
-Implementierung. Eine Wiederaufnahme verlangt Ratifizierung, deren Commit und
-Push, getrennte Implementierungsfreigabe, deren Commit und Push sowie einen
-neuen Implementierungsauftrag. ADR-0065 bleibt gesperrt.
+dokumentiert die inzwischen durch `GOV-RATIFICATION-ADR-0064-A1-V1`
+ratifizierten geschlossenen Typmengen. Die Ratifizierung ist keine
+Implementierungsfreigabe, keine Implementierung und keine Stash-Anwendung.
+Eine Wiederaufnahme verlangt getrennte Implementierungsfreigabe, deren
+Dokumentation, Commit und Push sowie einen neuen Implementierungsauftrag und
+die vollständige Neuprüfung des Stash. ADR-0065 bleibt gesperrt.

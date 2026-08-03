@@ -10,12 +10,12 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0064_a1_is_proposed_only():
+def test_adr_0064_a1_is_ratified_but_not_approved_or_implemented():
     text = read(ADR)
     normalized = " ".join(text.split())
     assert "ADR-0064-A1 – Governance Decision and Incident Closed Taxonomies v1" in text
-    assert "VORGESCHLAGEN – NICHT RATIFIZIERT" in text
-    assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "GOV-RATIFICATION-ADR-0064-A1-V1" in text
     assert "ADR-0064 bleibt der ratifizierte Haupt-ADR" in normalized
 
 

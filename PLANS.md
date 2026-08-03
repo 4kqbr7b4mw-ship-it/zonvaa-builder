@@ -3529,7 +3529,9 @@ Invocation, Runtime und produktive Verträge bleiben unverändert gesperrt.
   Sanktion, Observation und Runtime ausschließen.
 - [x] Ratifikationsfähigkeit dokumentarisch validieren.
 
-ADR-0064-A1 ist vorgeschlagen, nicht ratifiziert, nicht
-implementierungsfreigegeben und nicht implementiert. Der gesicherte Stash ist
+ADR-0064-A1 ist ratifiziert, nicht implementierungsfreigegeben und nicht
+implementiert. Der gesicherte Stash ist
 keine kanonische Implementierung und darf vor den getrennten menschlichen
-Gates nicht angewendet werden. ADR-0065 bleibt nicht begonnen und gesperrt.
+Gates nicht angewendet werden. Die Ratifizierung wurde durch
+`GOV-RATIFICATION-ADR-0064-A1-V1` getrennt dokumentiert und nimmt die
+Implementierung nicht wieder auf. ADR-0065 bleibt nicht begonnen und gesperrt.
