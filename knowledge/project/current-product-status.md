@@ -327,8 +327,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Mapping-Fragen – Corridor-`purpose` zu typisiertem `B2PurposeScope` sowie
   `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY` – und ein
   Governance-Evidenzblocker zu ADR-0059 und Governance-Prozessvorfällen.
-  ADR-0063 formalisiert ausschließlich die vorgeschlagene Purpose-/UODL-
-  Lösung; Capability Invocation und B2-Runtime sind nicht begonnen.
+  ADR-0063 und ADR-0064 formalisieren ausschließlich vorgeschlagene Lösungen;
+  Capability Invocation und B2-Runtime sind nicht begonnen.
 ### Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
 - Für Purpose wird `B2PurposeScope` als einzige fachliche Wahrheit mit
@@ -338,7 +338,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   implementiert. ADR-0063 ist formal vorgeschlagen und besitzt keine
   Ratifizierungs- oder Freigabewirkung.
 
-### Governance Decision and Incident Evidence Proposal
+### Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 
 - Für ADR-0059 ist ausschließlich indirekte Governance-Evidenz vorhanden. Ein
   eigenständiger Ratifikationsnachweis sowie Datum, Uhrzeit, Zeitzone und Rolle
@@ -346,7 +346,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   heutige Bestätigung muss ihren eigenen gegenwärtigen Zeitpunkt führen und
   darf die Historie nicht rückwirkend legitimieren.
 - Eine allgemeine Governance Decision and Incident Evidence Architecture ist
-  nur vorgeschlagen. Sie bleibt von Runtime Incidents, Operational Memory,
+  mit ADR-0064 nur vorgeschlagen. Sie bleibt von Runtime Incidents, Operational Memory,
   Überwachung, Sanktion und personenbezogenen Profilen getrennt und besitzt
   keine Sperr-, Autorisierungs- oder Runtime-Wirkung.
 
@@ -368,6 +368,6 @@ Als nächste B2-Aktivität ist ausschließlich die menschliche
 Ratifizierungsentscheidung zu ADR-0063 zulässig.
 
 Als davon unabhängige Governance-Aktivität ist ausschließlich die menschliche
-Prüfung des Governance Decision and Incident Evidence Proposal zulässig.
-Keine Präferenz ist ratifiziert oder implementierungsfreigegeben. Capability
+Ratifizierungsentscheidung zu ADR-0064 zulässig. Keine Architektur ist
+ratifiziert oder implementierungsfreigegeben. Capability
 Invocation, B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

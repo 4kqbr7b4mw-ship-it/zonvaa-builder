@@ -3467,9 +3467,9 @@ technische Ausführung bleiben gesperrt.
 - [x] Readiness- und Prozessstatus mechanisch korrigieren, ohne Ratifizierung,
   Freigabe oder produktive Semantik zu verändern.
 
-Das Review ist ausschließlich Maintenance. ADR-0063 ist vorgeschlagen und
-besitzt keine Freigabewirkung. Capability Invocation und B2-Runtime bleiben
-nicht begonnen und gesperrt.
+Das Review ist ausschließlich Maintenance. Die nun vorgeschlagenen ADR-0063
+und ADR-0064 besitzen keine Freigabewirkung. Capability Invocation und
+B2-Runtime bleiben nicht begonnen und gesperrt.
 
 # Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
@@ -3486,7 +3486,7 @@ nicht begonnen und gesperrt.
 Nächster zulässiger Schritt für Paket A ist ausschließlich die menschliche
 Ratifizierungsentscheidung zu ADR-0063.
 
-# Governance Decision and Incident Evidence Proposal
+# Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 
 - [x] ADR-0059-Governance-Evidenz repositoryweit prüfen und exakt als nur
   indirekte Governance-Evidenz klassifizieren.
@@ -3496,7 +3496,10 @@ Ratifizierungsentscheidung zu ADR-0063.
   nicht implementiert dokumentieren.
 - [x] eine heutige ADR-0059-Bestätigung ausdrücklich außerhalb dieses Pakets
   halten.
+- [x] Decision Record, Incident Evidence und Verwahrort als getrennt
+  ratifizierbaren formalen ADR-0064 dokumentieren.
 
-Nächster zulässiger Schritt für Paket B ist ausschließlich seine menschliche
-Governance-Prüfung. ADR-0063, Capability Invocation, Runtime und produktive
-Verträge bleiben unabhängig von beiden Paketen unverändert gesperrt.
+Nächster zulässiger Schritt für Paket B ist ausschließlich die menschliche
+Ratifizierungsentscheidung zu ADR-0064. Capability Invocation, Runtime und
+produktive Verträge bleiben unabhängig von beiden Paketen unverändert
+gesperrt.

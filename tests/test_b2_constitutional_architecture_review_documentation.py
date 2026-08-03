@@ -54,8 +54,8 @@ def test_review_records_blockers_without_inventing_resolution():
 def test_review_contains_test_matrix_and_keeps_execution_unstarted():
     text = read(REVIEW)
     assert "| Kanonische Invariante | ADR | Implementierung | Positiver Test |" in text
-    assert "ADR-0063 formalisiert die vorgeschlagene Purpose- und UODL-Entscheidung" in text
-    assert "Capability" in text and "Runtime wurden nicht begonnen" in text
+    assert "ADR-0063 und ADR-0064 formalisieren die vorgeschlagenen Entscheidungen" in text
+    assert "Capability Invocation und Runtime wurden nicht begonnen" in text
     assert (ROOT / "knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md").is_file()
     assert not list((ROOT / "governance").glob("*b2*capability*invocation*.py"))
     assert not list((ROOT / "governance").glob("*b2*runtime*.py"))

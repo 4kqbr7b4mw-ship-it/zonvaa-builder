@@ -91,12 +91,12 @@ ADR-0063 formalisiert ausschließlich die vorgeschlagene Purpose- und UODL-
 Bindungsverfassung. Sie ist vorgeschlagen, nicht ratifiziert, nicht
 implementierungsfreigegeben und nicht implementiert.
 
-### Governance-Evidence-Entscheidungsvorlage
+### ADR-0064 – Governance Decision and Incident Evidence Constitution
 
-`GOV-DECISION-INCIDENT-EVIDENCE-PROPOSAL-V1` macht ausschließlich den
-fehlenden ADR-0059-Ratifikationsnachweis und den fehlenden kanonischen
-Governance-Incident-Zielort entscheidungsreif. Die Vorlage ist keine
-Governance-Regel, Ratifizierung, Implementierungsfreigabe oder Implementierung.
+ADR-0064 formalisiert ausschließlich die vorgeschlagene Governance-Decision-
+und Incident-Evidence-Verfassung. Sie bewahrt den ADR-0059-Nachweisstatus und
+ist vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und
+nicht implementiert.
 
 ## Ebenengrenze
 

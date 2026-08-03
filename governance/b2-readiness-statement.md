@@ -2,7 +2,7 @@
 
 Stand: 03.08.2026
 
-Status: ADR-0062 implementiert; ADR-0063 vorgeschlagen ohne Freigabewirkung
+Status: ADR-0062 implementiert; ADR-0063 und ADR-0064 vorgeschlagen ohne Freigabewirkung
 
 ## Bestätigter Stand
 
@@ -69,11 +69,12 @@ ADR-0063 macht die zwei fachlichen Mapping-Blocker als formale Architektur
 ratifizierungsreif, löst sie aber nicht. Nächster zulässiger Schritt für Paket
 A ist ausschließlich die menschliche Ratifizierungsentscheidung.
 
-### Governance-Evidence-Entscheidungsvorlage
+### Paket B – ADR-0064
 
-`GOV-DECISION-INCIDENT-EVIDENCE-PROPOSAL-V1` macht den Governance-
-Evidenzblocker entscheidungsreif, löst ihn aber nicht. Nächster zulässiger
-Schritt für Paket B ist ausschließlich seine menschliche Governance-Prüfung.
+ADR-0064 macht den Governance-Evidenzblocker als formale Governance-
+Architektur ratifizierungsreif, löst ihn aber nicht. Nächster zulässiger
+Schritt für Paket B ist ausschließlich die getrennte menschliche
+Ratifizierungsentscheidung.
 
 Ratifizierung, Implementierungsfreigabe, Capability Invocation, B2-Runtime und
 jede technische Ausführung bleiben für beide Pakete gesperrt.
@@ -101,6 +102,6 @@ jede technische Ausführung bleiben für beide Pakete gesperrt.
 | Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER UND EIN GOVERNANCE-EVIDENZBLOCKER OFFEN |
 | ADR-0063 B2 Purpose and UODL Binding Constitution | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
 | ADR-0059-Ratifikationsnachweis | NUR INDIREKTE GOVERNANCE-EVIDENZ – HEUTIGE BESTÄTIGUNGSENTSCHEIDUNG AUSSTEHEND |
-| Governance Decision and Incident Evidence Proposal | VORGESCHLAGEN – NICHT RATIFIZIERT – KEIN KANONISCHER ZIELORT |
+| ADR-0064 Governance Decision and Incident Evidence Constitution | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

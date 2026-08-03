@@ -16,7 +16,7 @@ def test_governance_evidence_proposal_is_non_binding_and_unimplemented():
     assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
     assert "Prüffrage Null" in text
     assert "Antwort: **Nein.**" in text
-    assert "ADR-0063 nicht begonnen" in text
+    assert "formalen Vorschlag ADR-0064" in text
 
 
 def test_adr_0059_evidence_status_is_exact_and_unknowns_stay_unknown():
@@ -61,14 +61,14 @@ def test_package_b_status_references_are_separate_and_non_binding():
     status = read(ROOT / "knowledge/project/current-product-status.md")
     plans = read(ROOT / "PLANS.md")
     for text in (readiness, status, plans):
-        assert "Governance Decision and Incident Evidence Proposal" in text
+        assert "ADR-0064" in text
         assert "nicht ratifiziert" in text.lower()
 
 
 def test_manifest_assigns_package_b_and_excludes_current_adr_0059_decision():
     text = " ".join(read(MANIFEST).split())
-    assert "## Paket B – Governance Decision and Incident Evidence Proposal" in text
-    assert "Propose governance decision incident evidence" in text
+    assert "## Paket B – Governance Decision and Incident Evidence Constitution" in text
+    assert "Document governance decision incident architecture" in text
     assert "drittes, ausschließlich menschlich initiiertes Governance-Paket" in text
     assert "weder gefasst noch dokumentiert" in text
 

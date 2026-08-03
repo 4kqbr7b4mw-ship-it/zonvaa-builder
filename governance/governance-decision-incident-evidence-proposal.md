@@ -124,8 +124,9 @@ Prozessabweichungen abbilden. Der institutionelle Prozess referenziert beide,
 ohne sie selbst zu erzeugen oder auszuwerten.
 
 Diese Präferenz ist **nicht ratifiziert, nicht implementierungsfreigegeben und
-nicht implementiert**. Es wird in diesem Paket keine ADR-Nummer reserviert;
-insbesondere wurde ADR-0063 nicht begonnen.
+nicht implementiert**. Der ratifizierungsreife Inhalt wurde ohne
+Freigabewirkung in den formalen Vorschlag ADR-0064 überführt; Capability
+Invocation und Runtime wurden nicht begonnen.
 
 ## Vorgeschlagenes Governance Incident Evidence
 

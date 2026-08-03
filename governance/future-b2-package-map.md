@@ -30,15 +30,15 @@ ADR-0063 schlägt eine kanonische Purpose-Bindung und eine explizite UODL-
 Ebenenabbildung vor. Der ADR ist nicht ratifiziert, nicht
 implementierungsfreigegeben und nicht implementiert.
 
-### Governance Decision and Incident Evidence Proposal
+### Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 
-`GOV-DECISION-INCIDENT-EVIDENCE-PROPOSAL-V1` dokumentiert die nur indirekte
-Ratifikationsevidenz zu ADR-0059 und schlägt einen getrennten kanonischen Ort
-für Governance-Entscheidungen und Prozessvorfälle vor. Es erzeugt weder
-historischen Beschluss noch Incident-Artefakt.
+ADR-0064 dokumentiert die nur indirekte Ratifikationsevidenz zu ADR-0059 und
+schlägt getrennte kanonische Orte für Governance-Entscheidungen und
+Prozessvorfälle vor. Er erzeugt weder historischen Beschluss noch
+Incident-Artefakt.
 
-Beide Vorlagen sind unabhängig. Keine autorisiert ein Folgepaket. ADR-0063 ist
-vorgeschlagen; Capability Invocation und Runtime bleiben nicht begonnen und
+Beide ADRs sind unabhängig und getrennt ratifizierbar. Keiner autorisiert ein
+Folgepaket. Capability Invocation und Runtime bleiben nicht begonnen und
 gesperrt.
 
 Nicht Bestandteil dieser Landkarte sind Verträge, Klassen, APIs, Validatoren,

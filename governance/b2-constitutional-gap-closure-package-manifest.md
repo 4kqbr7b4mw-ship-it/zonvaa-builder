@@ -6,19 +6,11 @@ Status: formale Commit-Zuordnung; keine fachliche oder institutionelle Wirkung
 
 Stand: 03.08.2026
 
-## Übergeordnetes Review-Ergebnis
-
-`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` weist zwei fachliche
-Mapping-Blocker und einen Governance-Evidenzblocker aus. Die vorliegenden
-Entscheidungsvorlagen machen diese Befunde getrennt prüfbar. Sie verändern
-keine vorgeschlagene fachliche Entscheidung und sind weder ratifiziert noch
-implementierungsfreigegeben oder implementiert.
-
 ## Nummerierung
 
 Die vollständige ADR-Dateiprüfung ergab ADR-0062 als höchste bestehende
-Nummer. Paket A verwendet kollisionsfrei ADR-0063. Die Repository-Reihenfolge
-erzeugt keine fachliche Unterordnung.
+Nummer. Paket A verwendet kollisionsfrei ADR-0063, Paket B kollisionsfrei
+ADR-0064. Die Repository-Reihenfolge erzeugt keine fachliche Unterordnung.
 
 ## Paket A – B2 Purpose and UODL Binding Constitution
 
@@ -30,96 +22,74 @@ Exklusive Dateien:
 - `tests/test_b2_purpose_uodl_constitution_proposal_documentation.py`;
 - dieses Manifest als neutrale Repository-Orientierung.
 
-Status: vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben
-und nicht implementiert.
+Zugeordneter Scope: einzige Purpose-Verfassung `B2PurposeScope`, typisierter
+Purpose-Bindungsnachweis, Halbordnung, fail closed, UODL-Ebenentrennung und
+exakt ein geschlossenes Mapping-Paar. Status: vorgeschlagen, nicht
+ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
 
 Vorgesehene Commit-Message:
 
 `Document B2 purpose UODL binding architecture`
 
-Zugeordneter Scope:
+## Paket B – Governance Decision and Incident Evidence Constitution
 
-- Purpose-Mapping zwischen ADR-0059 und ADR-0060;
-- `B2PurposeScope` als vorgeschlagene einzige fachliche Purpose-Verfassung;
-- gleicher oder engerer Scope und fail-closed bei fehlender Bindung;
-- explizite typisierte Abbildung von `StorageOperation.REFERENCE` zu
-  `B2UODLOperation.REFERENCE_ONLY`;
-- keine String-Konvertierung, Gleichsetzungsannahme oder neue Operation.
+Exklusive Dateien:
 
-## Paket B – Governance Decision and Incident Evidence Proposal
+- `knowledge/adr/ADR-0064-governance-decision-incident-evidence-constitution-v1.md`;
+- `governance/governance-decision-incident-evidence-proposal.md`;
+- `governance/institutional-approval-process.md`;
+- `tests/test_governance_decision_incident_architecture_documentation.py`;
+- `tests/test_governance_decision_incident_evidence_proposal_documentation.py`.
 
-Kanonisches Hauptdokument:
+Zugeordneter Scope: ADR-0059-Nachweisstatus, Decision Record, Governance
+Incident Evidence, Zeit- und Evidenztrennung sowie vorgeschlagener kanonischer
+Verwahrort. Status: vorgeschlagen, nicht ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert.
 
-- `governance/governance-decision-incident-evidence-proposal.md`
+Vorgesehene Commit-Message:
 
-Exklusiv zugeordneter Test:
-
-- `tests/test_governance_decision_incident_evidence_proposal_documentation.py`
-
-Zugeordneter Scope:
-
-- ADR-0059-Nachweisstatus „nur indirekte Governance-Evidenz“;
-- Verbot erfundener oder rückwirkender Ratifikation;
-- Trennung einer heutigen Bestätigung vom historischen Projektverlauf;
-- vorgeschlagene, getrennte Decision Records und Governance Incident Evidence;
-- keine personenbezogene Schuldzuweisung, Profile, Sanktion, Sperr-,
-  Autorisierungs-, Korrektur- oder Legitimierungswirkung.
+`Document governance decision incident architecture`
 
 ## Gemeinsam berührte Dateien und Abschnittsgrenzen
 
-Die folgenden Dateien enthalten getrennte Abschnitte beider Pakete. Sie können
-nicht vollständig dateibasiert einem einzigen Commit zugeordnet werden.
 Später ist selektives Hunk- beziehungsweise Abschnitts-Staging erforderlich.
 
-| Datei | Paket A – zu stageender Abschnitt | Paket B – zu stageender Abschnitt |
+| Datei | Paket A | Paket B |
 |---|---|---|
-| `PLANS.md` | `B2 Purpose and UODL Constitution Proposal` | `Governance Decision and Incident Evidence Proposal` |
-| `governance/architecture-map.md` | Absatz `Purpose-/UODL-Entscheidungsvorlage` | Absatz `Governance-Evidence-Entscheidungsvorlage` |
-| `governance/b2-constitutional-architecture-review.md` | keine neue fachliche Entscheidung; unveränderter Purpose/UODL-Blockerstatus | Zeile `Governance-Evidenzstatus` und abschließender Governance-Evidenzsatz |
-| `governance/b2-readiness-statement.md` | Abschnitt `Purpose-/UODL-Entscheidungsvorlage`, Tabellenzeile und Paket-A-Nächster-Schritt | Abschnitt `Governance-Evidence-Entscheidungsvorlage`, zwei Tabellenzeilen und Paket-B-Nächster-Schritt |
-| `governance/future-b2-package-map.md` | Unterabschnitt `Purpose-/UODL-Bindung` einschließlich neutraler Gap-Closure-Überschrift | Unterabschnitt `Governance Decision and Incident Evidence` |
-| `knowledge/project/current-product-status.md` | Statusabschnitt `B2 Purpose and UODL Constitution Proposal` und Paket-A-Nächster-Schritt | Statusabschnitt `Governance Decision and Incident Evidence Proposal` und Paket-B-Nächster-Schritt |
-| `tests/test_chat_handover.py` | Paket-A-Statusbullet, Paket-A-Nächster-Schritt und zugehörige Assertions | Paket-B-Statusbullet, Paket-B-Nächster-Schritt und zugehörige Assertions |
+| `PLANS.md` | Abschnitt `Paket A – ADR-0063` | Abschnitt `Paket B – ADR-0064` |
+| `governance/architecture-map.md` | Abschnitt `ADR-0063` | Abschnitt `ADR-0064` |
+| `governance/b2-constitutional-architecture-review.md` | Purpose-/UODL-Blocker und ADR-0063-Status | Governance-Evidenzblocker und ADR-0064-Status |
+| `governance/b2-readiness-statement.md` | Paket-A-Abschnitt und ADR-0063-Tabellenzeile | Paket-B-Abschnitt, ADR-0059-Nachweis und ADR-0064-Tabellenzeile |
+| `governance/future-b2-package-map.md` | Paket-A-Unterabschnitt | Paket-B-Unterabschnitt |
+| `knowledge/project/current-product-status.md` | Paket-A-Status und nächster Schritt | Paket-B-Status und nächster Schritt |
+| `tests/test_chat_handover.py` | ADR-0063-Status, nächster Schritt und Assertions | ADR-0064-Status, nächster Schritt und Assertions |
 
-Nur Paket B berührt zusätzlich:
+## Getrennte Ratifikation und Freigabe
 
-- `governance/institutional-approval-process.md`, Abschnitt
-  `Entscheidungsvorlage Governance Decision and Incident Evidence`.
+Beide ADRs sind fachlich unabhängig, getrennt ratifizierbar, getrennt
+implementierungsfreigabefähig und getrennt commitfähig. Keine Entscheidung zu
+einem Paket wirkt auf das andere. Es gibt keine gemeinsame
+Implementierungsfreigabe und keinen gemeinsamen Implementierungsscope.
 
-Das Manifest selbst ist neutrale Paketierungsdokumentation und wird dem ersten
-Commit als Repository-Orientierung zugeordnet. Seine Erwähnung von Paket B ist
-keine Übernahme fachlicher Paket-B-Semantik und erzeugt keine Abhängigkeit.
+Die vorgesehene Commit-Reihenfolge ist Paket A, danach Paket B. Sie ist nur
+Repository-Reihenfolge und erzeugt keine fachliche Abhängigkeit,
+Ratifizierung, Freigabe oder Implementierung.
 
-## Vorgesehene Commit-Reihenfolge
+## ADR-0059-Bestätigung außerhalb beider Pakete
 
-1. `Document B2 purpose UODL binding architecture`
-2. `Propose governance decision incident evidence`
-
-Die Reihenfolge ist ausschließlich Repository-Reihenfolge. Sie erzeugt keine
-fachliche Unterordnung oder inhaltliche Abhängigkeit, ratifiziert nichts und
-erteilt keine Implementierungsfreigabe. Paket B kann fachlich unabhängig von
-Paket A geprüft werden.
-
-## ADR-0059-Bestätigungsentscheidung außerhalb beider Pakete
-
-Eine spätere ADR-0059-Bestätigungsentscheidung wäre ein **drittes,
-ausschließlich menschlich initiiertes Governance-Paket**. Sie benötigt eine
-neue gegenwärtige menschliche Entscheidung, reales Datum, reale Uhrzeit,
-Zeitzone und Entscheidungsrolle, einen eigenen Dokumentationsauftrag, Commit
-und Push. Historischer Projektverlauf und gegenwärtiger Beschluss bleiben
-getrennt.
-
-Diese Bestätigungsentscheidung wird jetzt **weder gefasst noch dokumentiert**.
-Der Nachweisstatus bleibt unverändert: Kategorie 3, nur indirekte
-Governance-Evidenz, ohne eigenständigen historischen Ratifikationsnachweis und
-ohne nachweisbare historische Beschlusszeit oder Entscheidungsrolle.
+Eine mögliche heutige ADR-0059-Bestätigung wäre ein drittes, ausschließlich
+menschlich initiiertes Governance-Paket. Sie wird jetzt weder gefasst noch
+dokumentiert und benötigt später reales Datum, reale Uhrzeit, Zeitzone,
+institutionelle Entscheidungsrolle, eigenen Dokumentationsauftrag, Commit und
+Push. Der historische Nachweisstatus bleibt Kategorie 3: nur indirekte
+Governance-Evidenz.
 
 ## Prüffrage Null
 
-> Kann durch diese mechanische Pakettrennung neue Semantik, stillschweigende
-> Ratifizierung, rückwirkende Legitimierung, Purpose-Erweiterung,
-> UODL-Operation, Autorisierung, Invocation, Runtime-Macht oder ein unerlaubter
-> personenbezogener Zustand entstehen?
+Kann die Pakettrennung neue Semantik, stillschweigende Ratifizierung,
+rückwirkende Legitimierung, Purpose-Erweiterung, UODL-Operation,
+Autorisierung, Invocation, Runtime-Macht oder einen unerlaubten
+personenbezogenen Zustand erzeugen?
 
-Antwort: **Nein.** Das Manifest ordnet ausschließlich bereits vorhandene
-Dokumentationsinhalte und spätere Staging-Grenzen zu.
+Antwort: **Nein.** Das Manifest ordnet ausschließlich Dokumentationsinhalte
+und spätere Staging-Grenzen zu.
