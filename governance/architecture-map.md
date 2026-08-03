@@ -91,6 +91,13 @@ kanonische Fachregel, ADR, Ratifizierung oder Implementierungsfreigabe.
 und UODL-Mapping-Blocker entscheidungsreif. Die Vorlage ist keine kanonische
 Fachregel, Ratifizierung, Implementierungsfreigabe oder Implementierung.
 
+### Governance-Evidence-Entscheidungsvorlage
+
+`GOV-DECISION-INCIDENT-EVIDENCE-PROPOSAL-V1` macht ausschließlich den
+fehlenden ADR-0059-Ratifikationsnachweis und den fehlenden kanonischen
+Governance-Incident-Zielort entscheidungsreif. Die Vorlage ist keine
+Governance-Regel, Ratifizierung, Implementierungsfreigabe oder Implementierung.
+
 ## Ebenengrenze
 
 C1 schützt. Institution garantiert. Authority beschreibt und begrenzt

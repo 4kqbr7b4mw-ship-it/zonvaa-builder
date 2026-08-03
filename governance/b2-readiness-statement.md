@@ -2,7 +2,7 @@
 
 Stand: 03.08.2026
 
-Status: ADR-0062 implementiert; Purpose-/UODL-Entscheidungsvorlage ohne Freigabewirkung
+Status: ADR-0062 implementiert; offene Entscheidungsvorlagen ohne Freigabewirkung
 
 ## Bestätigter Stand
 
@@ -60,8 +60,8 @@ Status: ADR-0062 implementiert; Purpose-/UODL-Entscheidungsvorlage ohne Freigabe
 ## Nächste zulässige Aktivität
 
 Das Maintenance-Review
-`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bleibt die Fundstelle der zwei
-fachlichen Mapping-Blocker.
+`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bleibt die Fundstelle der drei
+offenen Blocker.
 
 ### Purpose-/UODL-Entscheidungsvorlage
 
@@ -69,8 +69,14 @@ fachlichen Mapping-Blocker.
 Mapping-Blocker entscheidungsreif, löst sie aber nicht. Nächster zulässiger
 Schritt für Paket A ist ausschließlich seine menschliche Architekturprüfung.
 
+### Governance-Evidence-Entscheidungsvorlage
+
+`GOV-DECISION-INCIDENT-EVIDENCE-PROPOSAL-V1` macht den Governance-
+Evidenzblocker entscheidungsreif, löst ihn aber nicht. Nächster zulässiger
+Schritt für Paket B ist ausschließlich seine menschliche Governance-Prüfung.
+
 Ratifizierung, Implementierungsfreigabe, Capability Invocation, B2-Runtime und
-jede technische Ausführung bleiben gesperrt.
+jede technische Ausführung bleiben für beide Pakete gesperrt.
 
 ## Statusmodell
 
@@ -92,7 +98,9 @@ jede technische Ausführung bleiben gesperrt.
 | Institutionelle Implementierungsfreigabe für ADR-0062 | GÜLTIG – BEGRENZTER SCOPE |
 | Freigabe-Commit ADR-0062 auf origin/builder-reset-v2 | ABGESCHLOSSEN |
 | Guardian B2 Provider Authorization v1 | IM NICHT AUSFÜHRENDEN SCOPE IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
-| Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER OFFEN |
+| Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER UND EIN GOVERNANCE-EVIDENZBLOCKER OFFEN |
 | B2 Purpose and UODL Constitution Proposal | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERT |
+| ADR-0059-Ratifikationsnachweis | NUR INDIREKTE GOVERNANCE-EVIDENZ – HEUTIGE BESTÄTIGUNGSENTSCHEIDUNG AUSSTEHEND |
+| Governance Decision and Incident Evidence Proposal | VORGESCHLAGEN – NICHT RATIFIZIERT – KEIN KANONISCHER ZIELORT |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

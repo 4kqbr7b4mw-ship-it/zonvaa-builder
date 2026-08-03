@@ -4,6 +4,8 @@ Dokument-ID: `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1`
 
 Status: Maintenance-Review abgeschlossen; zwei Architekturblocker offen
 
+Governance-Evidenzstatus: ein Governance-Evidenzblocker offen
+
 Stand: 03.08.2026
 
 ## Scope und Grenze
@@ -228,7 +230,8 @@ Antwort: **Nein.** Das Paket verändert keine produktiven Verträge oder
 Validatorsemantik. Die B2-Verfassungsgrundlage ist innerhalb ihrer
 nicht ausführenden Grenzen stabil; ihre vollständige semantische
 End-to-End-Geschlossenheit bleibt bis zur Entscheidung der zwei fachlichen
-Mapping-Blocker eingeschränkt.
+Mapping-Blocker eingeschränkt. Der Governance-Evidenzblocker zu ADR-0059 und
+zum fehlenden kanonischen Governance-Incident-Zielort bleibt ebenfalls offen.
 
 ADR-0063 wurde nicht begonnen. Es wurde keine ADR-0063-Datei, kein Vertrag und
 keine Vorbereitung für Capability Invocation oder Runtime angelegt.

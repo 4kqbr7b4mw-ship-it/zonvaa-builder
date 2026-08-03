@@ -108,3 +108,19 @@ nicht ausführende Grundlage. Es ist kein neuer institutioneller Beschluss und
 besitzt keine Freigabewirkung. Für ADR-0059 bleibt der fehlende eigenständige
 Ratifikationsnachweis als historische Dokumentationslücke sichtbar; für
 ADR-0061 bleibt der Prozessvorfall ohne erfundenes Incident-Ledger sichtbar.
+
+## Entscheidungsvorlage Governance Decision and Incident Evidence
+
+`GOV-DECISION-INCIDENT-EVIDENCE-PROPOSAL-V1` klassifiziert den
+ADR-0059-Stand als **nur indirekte Governance-Evidenz**. Datum, Uhrzeit,
+Zeitzone und Rolle einer historischen Ratifikation bleiben unbekannt. Eine
+heutige Bestätigung müsste als neue gegenwärtige Entscheidung mit eigenem
+Zeitpunkt dokumentiert werden und dürfte keine rückwirkende Lückenlosigkeit
+behaupten.
+
+Die ausschließlich hierfür zuständige Vorlage schlägt einen zukünftigen
+getrennten Governance-ADR, Decision Record und Governance Incident Evidence
+vor. Dieser Vorschlag ist nicht ratifiziert und derzeit keine verbindliche
+Prozessregel. Bis zu einer gesonderten Entscheidung bleiben
+ADR-0061-Prozessvorfall und fehlende ADR-0059-Evidenz an ihren bestehenden
+Fundstellen sichtbar; ADR-0052 wird nicht zweckentfremdet.

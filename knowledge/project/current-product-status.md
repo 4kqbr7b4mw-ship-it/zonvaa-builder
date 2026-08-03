@@ -323,11 +323,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bestätigt die strukturelle
   Trennung von Corridor, Authority, Grant, Provider Identity, Provider
   Authorization, Evaluation und Evidence. Produktive Verträge und Public API
-  bleiben unverändert. Offen sind ausschließlich zwei nicht eigenmächtig
-  lösbare Mapping-Fragen: Corridor-`purpose` zu typisiertem `B2PurposeScope`
-  sowie `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY`.
+  bleiben unverändert. Offen sind zwei nicht eigenmächtig lösbare
+  Mapping-Fragen – Corridor-`purpose` zu typisiertem `B2PurposeScope` sowie
+  `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY` – und ein
+  Governance-Evidenzblocker zu ADR-0059 und Governance-Prozessvorfällen.
   ADR-0063, Capability Invocation und B2-Runtime sind nicht begonnen.
-
 ### B2 Purpose and UODL Constitution Proposal
 
 - Für Purpose wird `B2PurposeScope` als einzige fachliche Wahrheit mit
@@ -335,6 +335,18 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Ebenenabbildung von `REFERENCE` zu `REFERENCE_ONLY`. Beide Präferenzen sind
   vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und nicht
   implementiert.
+
+### Governance Decision and Incident Evidence Proposal
+
+- Für ADR-0059 ist ausschließlich indirekte Governance-Evidenz vorhanden. Ein
+  eigenständiger Ratifikationsnachweis sowie Datum, Uhrzeit, Zeitzone und Rolle
+  einer historischen Ratifikation sind nicht nachweisbar. Eine mögliche
+  heutige Bestätigung muss ihren eigenen gegenwärtigen Zeitpunkt führen und
+  darf die Historie nicht rückwirkend legitimieren.
+- Eine allgemeine Governance Decision and Incident Evidence Architecture ist
+  nur vorgeschlagen. Sie bleibt von Runtime Incidents, Operational Memory,
+  Überwachung, Sanktion und personenbezogenen Profilen getrennt und besitzt
+  keine Sperr-, Autorisierungs- oder Runtime-Wirkung.
 
 ## Bewusste Produktgrenzen
 
@@ -352,5 +364,8 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 Als nächste B2-Aktivität ist ausschließlich die menschliche Architekturprüfung
 des B2 Purpose and UODL Constitution Proposal zulässig.
+
+Als davon unabhängige Governance-Aktivität ist ausschließlich die menschliche
+Prüfung des Governance Decision and Incident Evidence Proposal zulässig.
 Keine Präferenz ist ratifiziert oder implementierungsfreigegeben. Capability
 Invocation, B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

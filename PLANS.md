@@ -3482,3 +3482,18 @@ und B2-Runtime bleiben nicht begonnen und gesperrt.
 
 Nächster zulässiger Schritt für Paket A ist ausschließlich seine menschliche
 Architekturprüfung.
+
+# Governance Decision and Incident Evidence Proposal
+
+- [x] ADR-0059-Governance-Evidenz repositoryweit prüfen und exakt als nur
+  indirekte Governance-Evidenz klassifizieren.
+- [x] zukünftige Governance Decision and Incident Evidence strikt von Runtime
+  Incidents, Operational Memory, Sanktion und Überwachung abgrenzen.
+- [x] Vorschlag als nicht ratifiziert, nicht implementierungsfreigegeben und
+  nicht implementiert dokumentieren.
+- [x] eine heutige ADR-0059-Bestätigung ausdrücklich außerhalb dieses Pakets
+  halten.
+
+Nächster zulässiger Schritt für Paket B ist ausschließlich seine menschliche
+Governance-Prüfung. ADR-0063, Capability Invocation, Runtime und produktive
+Verträge bleiben unabhängig von beiden Paketen unverändert gesperrt.

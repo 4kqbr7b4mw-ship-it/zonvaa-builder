@@ -108,6 +108,11 @@ PRODUCT_STATUS = """# Status
   fachlichen Mapping-Blocker entscheidungsreif. Die Präferenzen sind
   vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und
   nicht implementiert.
+- Governance Decision and Incident Evidence Proposal macht ausschließlich den
+  Governance-Evidenzblocker entscheidungsreif. Der Vorschlag ist nicht
+  ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+- Für ADR-0059 ist nur indirekte Governance-Evidenz vorhanden; eine
+  historische Ratifikationszeit und Entscheidungsrolle bleiben unbekannt.
 
 ## Bewusste Produktgrenzen
 
@@ -125,8 +130,11 @@ PRODUCT_STATUS = """# Status
 
 Ausschließlich die menschliche Architekturprüfung des B2 Purpose and UODL
 Constitution Proposal ist als nächste fachliche B2-Aktivität zulässig.
-Keine Präferenz ist ratifiziert oder implementierungsfreigegeben. Capability
-Invocation, technische Ausführung und B2-Runtime bleiben gesperrt.
+Ausschließlich die davon unabhängige menschliche Governance-Prüfung des
+Governance Decision and Incident Evidence Proposal ist als nächste
+Governance-Aktivität zulässig. Keine Präferenz ist ratifiziert oder
+implementierungsfreigegeben. Capability Invocation, technische Ausführung und
+B2-Runtime bleiben gesperrt.
 """
 
 
@@ -495,6 +503,23 @@ def test_handover_exposes_purpose_uodl_proposal_without_execution(tmp_path):
     assert "technische Ausführung" in normalized
     assert "B2-Runtime bleiben" in normalized
     assert "B2 Runtime" not in normalized
+
+
+def test_handover_exposes_governance_evidence_proposal_without_decision(tmp_path):
+    root = repository(tmp_path)
+
+    output = ChatHandover(root).render()
+
+    next_section = output.split(
+        "## Nächster noch nicht begonnener Schritt",
+        1,
+    )[1]
+    normalized = " ".join(next_section.split())
+    assert "unabhängige menschliche Governance-Prüfung" in normalized
+    assert "Governance Decision and Incident Evidence Proposal" in normalized
+    assert "keine präferenz ist ratifiziert" in normalized.lower()
+    assert "Capability Invocation" in normalized
+    assert "B2-Runtime bleiben" in normalized
 
 
 def test_handover_never_presents_v1_as_active_repository(tmp_path):

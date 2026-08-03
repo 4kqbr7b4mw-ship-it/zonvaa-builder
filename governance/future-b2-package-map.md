@@ -30,6 +30,16 @@ Scope implementiert. Kein weiteres B2-Paket ist freigegeben.
 Purpose-Bindung und eine explizite UODL-Ebenenabbildung vor. Beide Teile sind
 nicht ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
 
+### Governance Decision and Incident Evidence Proposal
+
+`GOV-DECISION-INCIDENT-EVIDENCE-PROPOSAL-V1` dokumentiert die nur indirekte
+Ratifikationsevidenz zu ADR-0059 und schlägt einen getrennten kanonischen Ort
+für Governance-Entscheidungen und Prozessvorfälle vor. Es erzeugt weder
+historischen Beschluss noch Incident-Artefakt.
+
+Beide Vorlagen sind unabhängig. Keine autorisiert ein Folgepaket. ADR-0063,
+Capability Invocation und Runtime bleiben nicht begonnen und gesperrt.
+
 Nicht Bestandteil dieser Landkarte sind Verträge, Klassen, APIs, Validatoren,
 Runtime-Komponenten, Provider, Persistenzadapter, UI oder Workflowaktivierung.
 
