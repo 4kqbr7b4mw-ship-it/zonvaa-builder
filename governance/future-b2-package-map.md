@@ -39,8 +39,11 @@ Nachweisstatus zu ADR-0059 und getrennte kanonische Orte für Governance-
 Entscheidungen und Prozessvorfälle. Ausschließlich die ratifizierte nicht
 ausführende Implementierung ist durch
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` begrenzt freigegeben; sie ist noch
-nicht implementiert und erzeugt weder historischen Beschluss noch Incident-
-Artefakt.
+nicht vollständig implementiert und erzeugt weder historischen Beschluss noch
+Incident-Artefakt. Der blockierte partielle Arbeitsstand ist ausschließlich
+reversibel in einem benannten Stash gesichert. ADR-0064-A1 schlägt die
+fehlenden geschlossenen Taxonomien vor, ohne Ratifizierung,
+Implementierungsfreigabe oder Implementierung.
 
 Beide ADRs sind unabhängig und getrennt ratifizierbar. Keiner autorisiert ein
 Folgepaket. Capability Invocation und Runtime bleiben nicht begonnen und

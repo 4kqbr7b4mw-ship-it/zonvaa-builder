@@ -77,7 +77,10 @@ ADR-0064 entscheidet den Governance-Evidenzblocker als ratifizierte
 Governance-Architektur. `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` gibt
 ausschließlich deren nicht ausführende spätere Implementierung frei. Der
 ADR-0059-Nachweisstatus bleibt Kategorie 3; Decision Record, Incident Evidence
-und Verwahrorte bleiben nicht implementiert.
+und Verwahrorte bleiben nicht vollständig implementiert. Der blockierte
+partielle Arbeitsstand ist ausschließlich in einem benannten Stash gesichert.
+ADR-0064-A1 schlägt die fehlenden geschlossenen Taxonomien vor und ist nicht
+ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
 
 Capability Invocation, B2-Runtime und jede technische Ausführung bleiben
 gesperrt. Die ADR-0064-Freigabe erzeugt selbst kein Governance-Artefakt.
@@ -106,5 +109,6 @@ gesperrt. Die ADR-0064-Freigabe erzeugt selbst kein Governance-Artefakt.
 | ADR-0063 B2 Purpose and UODL Binding Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
 | ADR-0059-Ratifikationsnachweis | NUR INDIREKTE GOVERNANCE-EVIDENZ – HEUTIGE BESTÄTIGUNGSENTSCHEIDUNG AUSSTEHEND |
 | ADR-0064 Governance Decision and Incident Evidence Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT |
+| ADR-0064-A1 Closed Taxonomies | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

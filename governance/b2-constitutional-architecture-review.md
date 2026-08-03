@@ -134,6 +134,13 @@ Implementierung, Tests/Review sowie getrennte Commit- und Push-Freigaben.
 - Ein eigenes kanonisches Governance-Incident-Ledger existiert weiterhin nicht;
   ADR-0052 ist ausschließlich Runtime Incidents vorbehalten.
 
+ADR-0064 hat den Zielort später ratifiziert, ließ aber die für vollständige
+Verträge erforderlichen geschlossenen Typmengen offen. Der deshalb blockierte
+partielle Arbeitsstand ist ausschließlich in einem benannten Stash gesichert.
+ADR-0064-A1 schlägt die fehlenden Taxonomien ohne Ratifizierung,
+Implementierungsfreigabe oder Implementierung vor und verändert die
+historischen Review-Befunde nicht.
+
 ### 12. Gesperrte Bereiche
 
 Der gemeinsame Kern bleibt: keine natürliche Person, keine personenbezogene

@@ -48,6 +48,24 @@ Verwahrort. ADR-0064 ist ratifiziert, begrenzt implementierungsfreigegeben und
 nicht implementiert. Ratifizierung und Freigabe sind eigenständige Governance-
 Pakete und ändern den Paketschnitt nicht.
 
+### Recovery-Ergänzung ADR-0064-A1
+
+ADR-0064-A1 ist ein getrennt ratifizierbarer Architekturzusatz zu Paket B. Er
+schließt ausschließlich dessen fehlende geschlossene Taxonomien und ist weder
+neues B2-Paket noch ADR-0065. Der partielle ADR-0064-Arbeitsstand bleibt
+vollständig im benannten Stash und gehört nicht zum Architekturpaket.
+
+Exklusive Dateien:
+
+- `knowledge/adr/ADR-0064-A1-governance-decision-incident-closed-taxonomies-v1.md`;
+- `governance/adr-0064-a1-architecture-validation.md`;
+- `tests/test_adr_0064_a1_closed_taxonomies_architecture_documentation.py`.
+
+Gemeinsame Statusdateien führen ADR-0064-A1 ausschließlich in getrennten
+Abschnitten. Vorgesehene spätere Commit-Message:
+`Document ADR-0064-A1 closed governance taxonomies`. Daraus folgt keine
+Ratifizierung oder Implementierungsfreigabe.
+
 Vorgesehene Commit-Message:
 
 `Document governance decision incident architecture`

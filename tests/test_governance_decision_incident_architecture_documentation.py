@@ -102,3 +102,16 @@ def test_no_governance_incident_implementation_or_silent_governance_rule():
     assert "GOV-NO-FABRICATION-1` bleibt ein offener" in text
     assert "diese ADR ratifiziert ihn nicht" in text
     assert "Antwort: **Nein.**" in text
+
+
+def test_adr_0064_a1_is_separate_and_only_proposed():
+    supplement = " ".join(
+        read(
+            ROOT
+            / "knowledge/adr/ADR-0064-A1-governance-decision-incident-closed-taxonomies-v1.md"
+        ).split()
+    )
+    assert "VORGESCHLAGEN – NICHT RATIFIZIERT" in supplement
+    assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in supplement
+    assert "ADR-0064 bleibt der ratifizierte Haupt-ADR" in supplement
+    assert "ADR-0065" in supplement

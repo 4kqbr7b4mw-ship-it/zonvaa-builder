@@ -136,3 +136,14 @@ gegenwärtiger menschlicher Beschluss dokumentiert. Sie implementiert nichts.
 Ein separater Implementierungsauftrag setzte den nachweisbaren Push ihres
 Freigabe-Commits voraus; Implementierung und Validierung sind abgeschlossen.
 ADR-0064 bleibt fachlich unabhängig.
+
+## Ergänzungsstatus ADR-0064-A1
+
+Der erste ADR-0064-Implementierungsversuch hat fehlende ratifizierte
+Taxonomien sichtbar gemacht. Sein vollständiger Arbeitsstand ist reversibel in
+einem benannten Stash gesichert und wird nicht angewendet. ADR-0064-A1
+dokumentiert ausschließlich den Vorschlag für diese geschlossenen Typmengen.
+Er ist keine Ratifizierung, keine Implementierungsfreigabe und keine
+Implementierung. Eine Wiederaufnahme verlangt Ratifizierung, deren Commit und
+Push, getrennte Implementierungsfreigabe, deren Commit und Push sowie einen
+neuen Implementierungsauftrag. ADR-0065 bleibt gesperrt.

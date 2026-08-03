@@ -354,7 +354,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Eine allgemeine Governance Decision and Incident Evidence Architecture ist
   mit ADR-0064 ratifiziert und durch
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` begrenzt
-  implementierungsfreigegeben, aber nicht implementiert. Sie bleibt von
+  implementierungsfreigegeben, aber wegen fehlender geschlossener Typmengen
+  nicht vollständig implementiert. Der partielle Arbeitsstand ist vollständig
+  und reversibel in einem benannten Stash gesichert und nicht kanonische
+  Implementierung. ADR-0064-A1 schlägt die fehlenden Taxonomien vor; er ist
+  nicht ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+  Die Architektur bleibt von
   Runtime Incidents, Operational Memory,
   Überwachung, Sanktion und personenbezogenen Profilen getrennt und besitzt
   keine Sperr-, Autorisierungs- oder Runtime-Wirkung.
@@ -377,7 +382,8 @@ ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen. Daraus entsteht keine Freigabe für Migration, Capability
 Invocation oder Runtime.
 
-Als davon unabhängige Governance-Aktivität ist ausschließlich ein separater
-Implementierungsauftrag für ADR-0064 nach nachweisbarem Push des Freigabe-
-Commits zulässig. ADR-0065 und Capability Invocation bleiben gesperrt.
+Als davon unabhängige Governance-Aktivität ist ausschließlich die menschliche
+Bewertung und gegebenenfalls getrennte Ratifizierung von ADR-0064-A1 zulässig.
+Vor Ratifizierung und späterer Implementierungsfreigabe darf der gesicherte
+Stash nicht angewendet werden. ADR-0065 und Capability Invocation bleiben gesperrt.
 B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

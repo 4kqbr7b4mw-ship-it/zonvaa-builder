@@ -113,8 +113,12 @@ PRODUCT_STATUS = """# Status
   oder Runtime.
 - ADR-0064 Governance Decision and Incident Evidence Constitution macht ausschließlich den
   Governance-Evidenzblocker entscheidungsreif. Die Architektur ist
-  ratifiziert, begrenzt implementierungsfreigegeben und nicht implementiert.
-  Die Freigabe erzeugt kein Governance-Artefakt und keine technische Macht.
+  ratifiziert und begrenzt implementierungsfreigegeben, wegen fehlender
+  geschlossener Typmengen aber nicht vollständig implementiert. Der partielle
+  Stand liegt ausschließlich in einem benannten Stash. ADR-0064-A1 schlägt die
+  Taxonomien vor und ist nicht ratifiziert, nicht implementierungsfreigegeben
+  und nicht implementiert. Die Freigabe erzeugt kein Governance-Artefakt und
+  keine technische Macht.
 - Für ADR-0059 ist nur indirekte Governance-Evidenz vorhanden; eine
   historische Ratifikationszeit und Entscheidungsrolle bleiben unbekannt.
 
@@ -134,9 +138,10 @@ PRODUCT_STATUS = """# Status
 
 ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen; daraus folgt keine weitere Machtfreigabe.
-Ausschließlich ein separater Implementierungsauftrag für ADR-0064 nach dem
-nachweisbaren Push des Freigabe-Commits wäre als nächste Governance-Aktivität
-zulässig. ADR-0065 und Capability Invocation bleiben gesperrt; technische
+Als nächste Governance-Aktivität ist ausschließlich die menschliche Bewertung
+und gegebenenfalls getrennte Ratifizierung von ADR-0064-A1 zulässig. Der
+gesicherte Stash darf vorher nicht angewendet werden. ADR-0065 und Capability
+Invocation bleiben gesperrt; technische
 Ausführung und B2-Runtime bleiben gesperrt.
 """
 
@@ -508,7 +513,7 @@ def test_handover_exposes_completed_purpose_uodl_without_execution(tmp_path):
     assert "B2 Runtime" not in normalized
 
 
-def test_handover_exposes_approved_governance_evidence_without_implementation(tmp_path):
+def test_handover_exposes_adr_0064_a1_as_next_human_gate(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -518,8 +523,8 @@ def test_handover_exposes_approved_governance_evidence_without_implementation(tm
         1,
     )[1]
     normalized = " ".join(next_section.split())
-    assert "Implementierungsauftrag für ADR-0064" in normalized
-    assert "nachweisbaren Push des Freigabe-Commits" in normalized
+    assert "Ratifizierung von ADR-0064-A1" in normalized
+    assert "Stash darf vorher nicht angewendet werden" in normalized
     assert "ADR-0065" in normalized
     assert "Capability Invocation" in normalized
     assert "B2-Runtime bleiben" in normalized

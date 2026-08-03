@@ -3515,3 +3515,21 @@ ADR-0064 ist ratifiziert und begrenzt implementierungsfreigegeben, aber nicht
 implementiert. Ein separater Implementierungsauftrag ist erst nach dem
 nachweisbaren Push des Freigabe-Commits zulässig. ADR-0065, Capability
 Invocation, Runtime und produktive Verträge bleiben unverändert gesperrt.
+
+# ADR-0064-A1 – Governance Decision and Incident Closed Taxonomies v1
+
+- [x] partiellen ADR-0064-Arbeitsstand einschließlich untracked Dateien in
+  einem benannten Stash sichern und verifizieren.
+- [x] fehlende geschlossene Typmengen aus ADR-0064 ohne Implementierung formal
+  ergänzen.
+- [x] Decision Classes, Rollen, 18 Governance-Schritte, Scope-Verfassung,
+  Evidence, Missing Evidence, Auswirkungen, Korrekturfolge,
+  Dokumentationsstände, Aussageumfänge und Provenienz vorschlagen.
+- [x] freie Scope-Semantik, Personenbezug, rückwirkende Legitimierung,
+  Sanktion, Observation und Runtime ausschließen.
+- [x] Ratifikationsfähigkeit dokumentarisch validieren.
+
+ADR-0064-A1 ist vorgeschlagen, nicht ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert. Der gesicherte Stash ist
+keine kanonische Implementierung und darf vor den getrennten menschlichen
+Gates nicht angewendet werden. ADR-0065 bleibt nicht begonnen und gesperrt.
