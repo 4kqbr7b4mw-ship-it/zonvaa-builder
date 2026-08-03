@@ -93,8 +93,9 @@ PRODUCT_STATUS = """# Status
   geplanter Architekturkandidat registriert und erzeugt keine Freigabe.
 - Guardian Life Domain Model ist nur als ruhender, nicht geplanter
   Architekturkandidat registriert und erzeugt keine Freigabe.
-- ADR-0061 Guardian B2 Provider Identity v1 ist ratifiziert, aber nicht
-  implementierungsfreigegeben und nicht implementiert.
+- ADR-0061 Guardian B2 Provider Identity v1 ist ratifiziert und ausschließlich
+  für die nicht ausführende Provider Identity implementierungsfreigegeben,
+  aber nicht implementiert.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
 
 ## Bewusste Produktgrenzen
@@ -111,9 +112,9 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Keine weitere B2-Aktivität ist freigegeben. Jeder nächste technische
-B2-Baustein benötigt eine eigene Architekturentscheidung und institutionelle
-Freigabe.
+Ausschließlich ein separater Codex-Auftrag im geschlossenen Scope der
+institutionellen ADR-0061-Implementierungsfreigabe ist als nächste
+B2-Aktivität zulässig. Alle anderen B2-Pakete und B2-Runtime bleiben gesperrt.
 """
 
 
@@ -465,7 +466,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_keeps_every_further_b2_step_behind_a_new_gate(tmp_path):
+def test_handover_limits_next_b2_step_to_the_adr_0061_approval(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -474,9 +475,10 @@ def test_handover_keeps_every_further_b2_step_behind_a_new_gate(tmp_path):
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    assert "Keine weitere B2-Aktivität ist freigegeben" in next_section
-    assert "eigene Architekturentscheidung" in next_section
-    assert "institutionelle" in next_section
+    assert "separater Codex-Auftrag" in next_section
+    assert "institutionellen ADR-0061-Implementierungsfreigabe" in next_section
+    assert "Alle anderen B2-Pakete" in next_section
+    assert "B2-Runtime bleiben gesperrt" in next_section
     assert "B2 Runtime" not in next_section
 
 

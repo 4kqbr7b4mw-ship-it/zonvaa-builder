@@ -1,6 +1,10 @@
 # ADR-0061 – Guardian B2 Provider Identity v1
 
-Status: RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN
+Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN
+
+Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0061-V1`
+
+Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1`
 
 ## 1. Kontext und Entscheidungsgrenze
 
@@ -224,14 +228,16 @@ Nicht Gegenstand und nicht freigegeben bleiben:
 
 ## 13. Governance-Sequenz und Nicht-Ziele
 
-ADR-0061 ist ratifiziert, aber nicht implementierungsfreigegeben. Die
-Ratifizierung ist keine institutionelle Implementierungsfreigabe. Eine spätere
-Implementierung verlangt weiterhin getrennt:
+ADR-0061 ist ratifiziert und durch den getrennten Beschluss
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` ausschließlich im beschriebenen
+nicht ausführenden Provider-Identity-Scope implementierungsfreigegeben. Die
+Ratifizierung selbst ist keine institutionelle Implementierungsfreigabe. Eine
+spätere Implementierung verlangt weiterhin getrennt:
 
-1. gesonderte institutionelle Implementierungsfreigabe mit den Abschnitten
-   `Freigegeben` und `Ausdrücklich nicht freigegeben`,
-2. ausdrückliche menschliche Bestätigung dieser Freigabe,
-3. separaten Codex-Implementierungsauftrag.
+1. den gesonderten institutionellen Freigabebeschluss mit den Abschnitten
+   `Freigegeben` und `Ausdrücklich nicht freigegeben` – abgeschlossen,
+2. die ausdrückliche menschliche Bestätigung dieser Freigabe – abgeschlossen,
+3. einen separaten Codex-Implementierungsauftrag – offen.
 
 Diese ADR implementiert keine Klasse, Enum, Value Object, API, Runtime,
 Provider Authorization, Invocation, Verarbeitung oder Speicherung und ändert

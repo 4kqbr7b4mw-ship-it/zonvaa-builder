@@ -56,10 +56,12 @@ bleiben gesperrt.
 
 ## Nächstes institutionelles Gate
 
-Die institutionelle Implementierungsfreigabe für ADR-0061 bleibt der nächste
-eigenständige menschliche Beschluss. Sie wird aus dieser Ratifizierung weder
-abgeleitet noch vorweggenommen. Ein späterer Codex-Auftrag setzt eine gesonderte,
-ausdrücklich bestätigte und scopegebundene Implementierungsfreigabe voraus.
+Zum Zeitpunkt der Ratifizierung blieb die institutionelle
+Implementierungsfreigabe für ADR-0061 der nächste eigenständige menschliche
+Beschluss. Der später getrennt gefasste Beschluss ist unter
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` dokumentiert und wird nicht aus
+diesem Ratifizierungsnachweis abgeleitet. Ein Codex-Auftrag setzt weiterhin
+diese gesonderte, ausdrücklich bestätigte und scopegebundene Freigabe voraus.
 
 ## Rollenbegrenzung
 

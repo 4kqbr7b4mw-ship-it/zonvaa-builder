@@ -62,8 +62,11 @@ automatisch abgeleitet werden.
   nicht autorisierende Provider-Identity-Architektur.
 - Sie ist keine institutionelle Implementierungsfreigabe und trägt keinen
   Codex-Implementierungsauftrag.
-- Die gesonderte institutionelle Implementierungsfreigabe bleibt der nächste
-  eigenständige menschliche Beschluss.
+- Die gesonderte institutionelle Implementierungsfreigabe
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` wurde als eigenständiger
+  menschlicher Beschluss dokumentiert.
+- Erst diese getrennte Bestätigung kann einen separaten, scopegebundenen
+  Codex-Auftrag für die nicht ausführende Provider Identity tragen.
 - ADR-0058, ADR-0059, ADR-0060 und alle bestehenden Sperren bleiben
   unverändert.
 

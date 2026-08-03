@@ -3356,8 +3356,10 @@ Authorization, Invocation, Runtime, Verarbeitung oder Implementierungsfreigabe.
   dokumentieren.
 
 ADR-0061 ist durch `GOV-RATIFICATION-ADR-0061-V1` ratifiziert. Die gesonderte
-institutionelle Implementierungsfreigabe und ein späterer Codex-Auftrag bleiben
-getrennte, noch nicht erteilte menschliche Entscheidungen.
+institutionelle Implementierungsfreigabe
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` ist ausschließlich für den
+nicht ausführenden Provider-Identity-Scope gültig. Ein späterer Codex-Auftrag
+bleibt eine getrennte, noch nicht erteilte menschliche Entscheidung.
 
 # Guardian Life Domain Model – offener Architekturkandidat
 

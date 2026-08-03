@@ -13,12 +13,17 @@ def normalized():
     return " ".join(read(ADR).split())
 
 
-def test_adr_0061_is_ratified_without_implementation_approval():
+def normalized_text(path):
+    return " ".join(read(path).split())
+
+
+def test_adr_0061_is_ratified_with_separate_limited_implementation_approval():
     text = read(ADR)
     assert ADR.exists()
     assert "ADR-0061 – Guardian B2 Provider Identity v1" in text
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in text
+    assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN" in text
     assert "GOV-RATIFICATION-ADR-0061-V1" in text
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1" in text
     assert not (ROOT / "knowledge/adr/ADR-0062-guardian-b2-provider-identity-v1.md").exists()
 
 
@@ -39,7 +44,33 @@ def test_ratification_is_external_scope_limited_and_not_an_implementation_approv
         "nächste eigenständige menschliche Beschluss",
     ):
         assert phrase in normalized_ratification
-    assert not (ROOT / "governance/institutional-implementation-approval-adr-0061.md").exists()
+
+
+def test_implementation_approval_is_scope_limited_non_executing_and_non_personal():
+    approval = normalized_text(
+        ROOT / "governance/institutional-implementation-approval-adr-0061.md"
+    )
+    for phrase in (
+        "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1",
+        "INSTITUTIONELLE IMPLEMENTIERUNGSFREIGABE – GÜLTIG",
+        "03.08.2026, 11:28:19 Uhr Europe/Berlin (CEST)",
+        "GOV-RATIFICATION-ADR-0061-V1",
+        "Ratifizierung und institutionelle Implementierungsfreigabe sind zwei getrennte",
+        "## Freigegeben",
+        "eigenständige B2 Provider Identity",
+        "geschlossenen B2 Provider Classes",
+        "## Ausdrücklich nicht freigegeben",
+        "B2 Provider Authorization",
+        "B2 Capability Invocation",
+        "B2 Runtime",
+        "personenbezogene Verarbeitung",
+        "Key Custody",
+        "Provider Identity besitzt keinerlei Autorisierungswirkung",
+        "niemals natürliche Personen",
+        "strukturell nicht modellierbar",
+        "kein Codex-Implementierungsauftrag",
+    ):
+        assert phrase in approval
 
 
 def test_provider_classes_are_closed_complete_and_non_personal():
@@ -144,7 +175,7 @@ def test_reference_scenarios_use_only_synthetic_typed_values():
     assert "keine Namen, Kontakte oder fachlichen Freitexte" in section
 
 
-def test_adr_has_no_implementation_or_approval_effect():
+def test_adr_and_approval_documents_have_no_implementation_effect():
     text = normalized()
     for phrase in (
         "keine institutionelle Implementierungsfreigabe",

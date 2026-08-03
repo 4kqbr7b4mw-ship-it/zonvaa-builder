@@ -292,14 +292,16 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   dokumentierten Aktivierungsbeschluss; daraus folgen keine Runtime, API,
   Datenbank, juristischen Inhalte, Gesprächsführung oder Implementierungsfreigabe.
 - ADR-0061 Guardian B2 Provider Identity v1 ist durch
-  `GOV-RATIFICATION-ADR-0061-V1` als `RATIFIZIERT – NICHT
-  IMPLEMENTIERUNGSFREIGEGEBEN` dokumentiert. Die Architektur begrenzt v1 auf fünf geschlossene,
+  `GOV-RATIFICATION-ADR-0061-V1` ratifiziert und durch
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` ausschließlich im nicht
+  ausführenden Provider-Identity-Scope implementierungsfreigegeben. Die
+  Architektur begrenzt v1 auf fünf geschlossene,
   nicht personenbezogene Provider Classes, geschlossene Verantwortungs-Codes
   und Capability-Descriptoren sowie institutionelle Provenienzreferenzen mit
   explizitem Zeitpunkt. Sie übernimmt keine freie B1-Semantik, führt keine
   Schema-Versionierung ein und erzeugt weder Authorization, Invocation,
-  Runtime, Schlüssel- oder Inhaltszugriff noch Implementierungsfreigabe. Die
-  gesonderte institutionelle Implementierungsfreigabe bleibt offen.
+  Runtime, Schlüssel- oder Inhaltszugriff. Die Freigabe implementiert nichts;
+  ein separater Codex-Auftrag bleibt erforderlich.
 
 ## Bewusste Produktgrenzen
 
@@ -315,6 +317,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Kein weiteres B2-Paket ist institutionell freigegeben. Eine nächste technische
-B2-Aktivität benötigt eine eigene Architekturentscheidung und institutionelle
-Freigabe. B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
+Als nächste B2-Aktivität ist ausschließlich ein separater Codex-Auftrag im
+geschlossenen Scope von `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1`
+zulässig. Alle anderen B2-Pakete bleiben gesperrt.
+B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
