@@ -124,3 +124,10 @@ implementierungsfreigegeben und derzeit keine verbindliche Prozessregel. Bis
 zu einer gesonderten Entscheidung bleiben
 ADR-0061-Prozessvorfall und fehlende ADR-0059-Evidenz an ihren bestehenden
 Fundstellen sichtbar; ADR-0052 wird nicht zweckentfremdet.
+
+## Ratifizierungsstand ADR-0063
+
+ADR-0063 ist durch `GOV-RATIFICATION-ADR-0063-V1` ausschließlich als
+Architektur ratifiziert. Die Ratifizierung ist keine institutionelle
+Implementierungsfreigabe, keine Implementierung und keine Migration. Eine
+spätere Implementierungsfreigabe bleibt ein eigenständiges menschliches Gate.

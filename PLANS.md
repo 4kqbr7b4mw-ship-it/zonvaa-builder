@@ -3482,9 +3482,12 @@ B2-Runtime bleiben nicht begonnen und gesperrt.
   implementierungsfreigegeben und nicht implementiert dokumentieren.
 - [x] Purpose- und UODL-Bindungsentscheidung als getrennt ratifizierbaren
   formalen ADR-0063 dokumentieren.
+- [x] menschliche Ratifizierung getrennt dokumentieren, ohne
+  Implementierungsfreigabe oder Implementierung.
 
-Nächster zulässiger Schritt für Paket A ist ausschließlich die menschliche
-Ratifizierungsentscheidung zu ADR-0063.
+ADR-0063 ist ratifiziert. Nächster zulässiger Schritt für Paket A wäre
+ausschließlich eine gesonderte institutionelle Implementierungsfreigabe; sie
+ist nicht Bestandteil dieses Pakets.
 
 # Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 

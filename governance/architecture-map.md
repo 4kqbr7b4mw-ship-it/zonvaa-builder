@@ -87,8 +87,8 @@ kanonische Fachregel, ADR, Ratifizierung oder Implementierungsfreigabe.
 
 ### ADR-0063 – B2 Purpose and UODL Binding Constitution
 
-ADR-0063 formalisiert ausschließlich die vorgeschlagene Purpose- und UODL-
-Bindungsverfassung. Sie ist vorgeschlagen, nicht ratifiziert, nicht
+ADR-0063 ist durch `GOV-RATIFICATION-ADR-0063-V1` ausschließlich als Purpose-
+und UODL-Bindungsverfassung ratifiziert. Sie ist nicht
 implementierungsfreigegeben und nicht implementiert.
 
 ### ADR-0064 – Governance Decision and Incident Evidence Constitution
