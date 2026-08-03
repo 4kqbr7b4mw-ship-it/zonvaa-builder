@@ -13,12 +13,13 @@ def normalized():
     return " ".join(read(ADR).split())
 
 
-def test_adr_0062_is_ratified_without_implementation_approval():
+def test_adr_0062_is_ratified_with_separate_limited_implementation_approval():
     text = read(ADR)
     assert "ADR-0062 – Guardian B2 Provider Authorization v1" in text
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in text
+    assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN" in text
     assert "GOV-RATIFICATION-ADR-0062-V1" in text
-    assert "nicht implementierungsfreigegeben" in text
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1" in text
+    assert "weiterhin nicht implementiert" in text
     assert not (ROOT / "knowledge/adr/ADR-0063-guardian-b2-provider-authorization-v1.md").exists()
 
 
@@ -134,5 +135,32 @@ def test_ratification_is_external_scope_limited_and_not_an_implementation_approv
         "keine institutionelle Implementierungsfreigabe",
         "ADR-0058, ADR-0059, ADR-0060 und ADR-0061",
         "nächste eigenständige menschliche Beschluss",
+    ):
+        assert phrase in text
+
+
+def test_implementation_approval_is_closed_non_executing_and_requires_push_gate():
+    approval = read(
+        ROOT / "governance/institutional-implementation-approval-adr-0062.md"
+    )
+    text = " ".join(approval.split())
+    for phrase in (
+        "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1",
+        "INSTITUTIONELLE IMPLEMENTIERUNGSFREIGABE – GÜLTIG",
+        "03.08.2026, 15:15 Uhr Europe/Berlin (CEST, UTC+02:00)",
+        "Repository-Dokumentationszeitpunkt: 03.08.2026, 15:17:10 Uhr",
+        "Beschlusszeitpunkt und Repository-Dokumentationszeitpunkt sind ausdrücklich getrennt",
+        "## Freigegeben",
+        "D3 als aktuell wirksame, notwendige, aber niemals hinreichende",
+        "T4 ausschließlich als historische Quittierung",
+        "UODL Reference Identity",
+        "User Ownership / Reference before Copy",
+        "## Ausdrücklich nicht freigegeben",
+        "Statusfelder wie `valid`, `active`, `revoked`, `expired`, `authorized`, `denied` oder `blocked`",
+        "Implementierung von ADR-0062 in diesem Dokumentationsauftrag",
+        "weiterhin nicht implementiert",
+        "Freigabedokument nachweisbar auf `origin/builder-reset-v2` gepusht",
+        "Prozessvorfall – Implementierungsbeginn vor kanonischem Freigabe-Push",
+        "Prüffrage Null",
     ):
         assert phrase in text

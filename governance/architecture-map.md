@@ -52,8 +52,9 @@ behauptet keine historische C1-Identität.
 - **Abhängige ADRs:** ADR-0051 bis ADR-0062. ADR-0060 ist ratifiziert und im
   begrenzten nicht ausführenden Scope implementiert. ADR-0061 ist ratifiziert
   und ausschließlich für den begrenzten nicht ausführenden Provider-Identity-
-  Scope implementiert. ADR-0062 ist als ratifizierte, nicht
-  implementierungsfreigegebene Provider-Authorization-Architektur dokumentiert.
+  Scope implementiert. ADR-0062 ist ratifiziert und ausschließlich im
+  geschlossenen nicht ausführenden Provider-Authorization-Scope
+  implementierungsfreigegeben, aber nicht implementiert.
 - **Ausgeschlossen:** automatische Autorisierung, Providerwahl,
   Vertrauensbewertung, Capability-Aktivierung, Runtime-Ausführung und ein
   B1→B2-Upgrade.

@@ -1,8 +1,10 @@
 # ADR-0062 – Guardian B2 Provider Authorization v1
 
-Status: RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN
+Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0062-V1`
+
+Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1`
 
 ## 1. Kontext und Entscheidungsgrenze
 
@@ -20,11 +22,11 @@ Grant, keine Einwilligung, keine Provider Identity und keine technische
 Ausführung.
 
 Diese ADR ist durch den eigenständigen menschlichen Beschluss
-`GOV-RATIFICATION-ADR-0062-V1` ratifiziert, aber nicht
-implementierungsfreigegeben. Die Ratifizierung bestätigt ausschließlich den
-Architekturinhalt. Eine spätere institutionelle Implementierungsfreigabe
-bleibt ein getrennter menschlicher Beschluss nach
-`GOV-INSTITUTIONAL-DECISION-SCOPE-1`.
+`GOV-RATIFICATION-ADR-0062-V1` ratifiziert. Die davon getrennte institutionelle
+Implementierungsfreigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` ist
+ausschließlich für den geschlossenen nicht ausführenden ADR-0062-Scope gültig.
+Beide Beschlüsse bleiben nach `GOV-INSTITUTIONAL-DECISION-SCOPE-1` getrennt.
+ADR-0062 ist weiterhin nicht implementiert.
 
 ## 2. Vererbtes bindendes Recht
 
@@ -255,18 +257,19 @@ Nicht Gegenstand und nicht freigegeben bleiben:
 
 ## 13. Governance-Sequenz und Nicht-Ziele
 
-ADR-0062 dokumentiert ausschließlich eine ratifizierte Architektur. Sie ist
-nicht implementierungsfreigegeben und implementiert keine Klasse, Enum, Value
-Object, API oder Produktfunktion. Die bestehende
+ADR-0062 dokumentiert ausschließlich eine ratifizierte und begrenzt
+implementierungsfreigegebene Architektur. Sie implementiert keine Klasse,
+Enum, Value Object, API oder Produktfunktion. Die bestehende
 Implementierungsfreigabe für ADR-0061 wird nicht erweitert.
 
 Jede spätere Arbeit verlangt getrennt:
 
 1. Validierung dieses Architekturvorschlags – abgeschlossen,
 2. ausdrückliche menschliche Ratifizierung von ADR-0062 – abgeschlossen,
-3. gesonderte institutionelle Implementierungsfreigabe – offen,
-4. ausdrückliche menschliche Bestätigung dieser Freigabe – offen,
-5. separaten Codex-Implementierungsauftrag – offen.
+3. gesonderte institutionelle Implementierungsfreigabe – abgeschlossen,
+4. ausdrückliche menschliche Bestätigung dieser Freigabe – abgeschlossen,
+5. nachweisbarer Push des Freigabe-Commits auf `origin/builder-reset-v2` – offen,
+6. separaten Codex-Implementierungsauftrag nach diesem Push – offen.
 
 Keine Stufe impliziert die nächste.
 

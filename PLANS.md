@@ -3431,7 +3431,9 @@ oder Betriebsintegration.
 - [x] Prüffrage Null eindeutig mit Nein beantworten.
 
 ADR-0062 ist durch `GOV-RATIFICATION-ADR-0062-V1` ratifiziert. Die
-Ratifizierung bestätigt ausschließlich den Architekturinhalt und erzeugt keine
-Implementierungsfreigabe. Eine institutionelle Implementierungsfreigabe und
-eine spätere Implementierung benötigen jeweils getrennte menschliche
-Entscheidungen.
+Ratifizierung bestätigt ausschließlich den Architekturinhalt. Die getrennte
+institutionelle Implementierungsfreigabe
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` ist im geschlossenen nicht
+ausführenden Scope gültig. ADR-0062 ist weiterhin nicht implementiert. Vor
+einem separaten Codex-Implementierungsauftrag müssen Freigabe-Commit und
+Freigabe-Push nachweisbar abgeschlossen sein.

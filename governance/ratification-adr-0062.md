@@ -58,11 +58,12 @@ gesperrten B2-Bereiche bleiben gesperrt.
 
 ## Nächstes institutionelles Gate
 
-Die institutionelle Implementierungsfreigabe für ADR-0062 bleibt der nächste
-eigenständige menschliche Beschluss. Sie darf weder aus der Ratifizierung noch
-aus einer früheren ADR-0059-, ADR-0060- oder ADR-0061-Freigabe abgeleitet
-werden. Ein Codex-Implementierungsauftrag setzt weiterhin eine gesonderte,
-ausdrücklich bestätigte und scopegebundene Freigabe voraus.
+Zum Zeitpunkt der Ratifizierung blieb die institutionelle
+Implementierungsfreigabe für ADR-0062 der nächste eigenständige menschliche
+Beschluss. Der später getrennt gefasste Beschluss ist unter
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` dokumentiert und wird nicht aus
+diesem Ratifizierungsnachweis abgeleitet. Ein Codex-Implementierungsauftrag
+setzt zusätzlich den nachweisbaren Push des Freigabe-Commits voraus.
 
 ## Rollenbegrenzung
 

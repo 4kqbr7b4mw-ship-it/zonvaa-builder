@@ -311,8 +311,10 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   freie Klassen, Personen-, Status-, Schlüssel-, Session-, Cache- und
   Tokenfelder sind strukturell ausgeschlossen.
 - ADR-0062 Guardian B2 Provider Authorization v1 ist durch
-  `GOV-RATIFICATION-ADR-0062-V1` ratifiziert, aber nicht
-  implementierungsfreigegeben. Sie wendet ausschließlich
+  `GOV-RATIFICATION-ADR-0062-V1` ratifiziert und durch
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` ausschließlich im geschlossenen
+  nicht ausführenden Scope implementierungsfreigegeben. Sie ist weiterhin
+  nicht implementiert und wendet ausschließlich
   ADR-0060 auf eine unveränderte ADR-0061-Identity an, trennt D3 und T4,
   benennt die sechs berührten UODL-Hooks einzeln und hält Negative Governance
   Evidence ohne automatische Sperrwirkung im rein deklarativen
@@ -333,8 +335,9 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Als nächste B2-Aktivität ist ausschließlich ein gesonderter menschlicher
-Beschluss über eine institutionelle Implementierungsfreigabe für ADR-0062
-zulässig. Eine Provider-Authorization-Implementierung und alle anderen
-B2-Pakete bleiben gesperrt.
+Als nächste B2-Aktivität sind ausschließlich der gesonderte Commit- und danach
+Push-Auftrag für die ADR-0062-Freigabedokumentation zulässig. Erst nach dem
+nachweisbaren Push auf `origin/builder-reset-v2` darf ein separater
+Codex-Implementierungsauftrag erteilt werden. Eine Provider-Authorization-
+Implementierung und alle anderen B2-Pakete bleiben bis dahin gesperrt.
 B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

@@ -84,8 +84,13 @@ keine stillschweigende Freigabe.
 - Die Ratifizierung bestätigt ausschließlich die Anwendung der bestehenden
   ADR-0060-Autorisierungsverfassung auf eine unverändert referenzierte B2
   Provider Identity aus ADR-0061.
-- Sie erzeugt keine neue Autorisierungssemantik und ist keine institutionelle
-  Implementierungsfreigabe.
-- Die institutionelle Implementierungsfreigabe bleibt der nächste
-  eigenständige menschliche Beschluss.
+- Die Ratifizierung erzeugt keine neue Autorisierungssemantik und war keine
+  institutionelle Implementierungsfreigabe.
+- Die gesonderte institutionelle Implementierungsfreigabe
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` wurde als eigenständiger
+  menschlicher Beschluss dokumentiert.
+- Ein separater Codex-Implementierungsauftrag darf erst nach nachweisbarem Push
+  des Freigabe-Commits auf `origin/builder-reset-v2` erteilt werden. Diese
+  zusätzliche Reihenfolge verhindert eine Wiederholung des bei ADR-0061
+  dokumentierten Prozessvorfalls.
 - ADR-0058 bis ADR-0061 und alle bestehenden Sperren bleiben unverändert.
