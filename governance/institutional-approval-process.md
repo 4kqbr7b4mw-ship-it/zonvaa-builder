@@ -54,6 +54,19 @@ automatisch abgeleitet werden.
   ersetzt; es wurde keine Änderung, Freigabe, Implementierung oder Runtime
   daraus abgeleitet.
 
+## Übergangsstand für ADR-0061
+
+- ADR-0061 wurde durch den eigenständigen Beschlussnachweis
+  `GOV-RATIFICATION-ADR-0061-V1` ratifiziert.
+- Die Ratifizierung bestätigt ausschließlich die nicht personenbezogene und
+  nicht autorisierende Provider-Identity-Architektur.
+- Sie ist keine institutionelle Implementierungsfreigabe und trägt keinen
+  Codex-Implementierungsauftrag.
+- Die gesonderte institutionelle Implementierungsfreigabe bleibt der nächste
+  eigenständige menschliche Beschluss.
+- ADR-0058, ADR-0059, ADR-0060 und alle bestehenden Sperren bleiben
+  unverändert.
+
 ## Allgemeine Beschluss-Scope-Regel
 
 Jeder künftige institutionelle Beschluss folgt verbindlich

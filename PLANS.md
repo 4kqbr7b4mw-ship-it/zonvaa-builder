@@ -3355,9 +3355,9 @@ Authorization, Invocation, Runtime, Verarbeitung oder Implementierungsfreigabe.
 - [x] Referenzszenarien, Architekturübersicht, Readiness, Status und Handover
   dokumentieren.
 
-ADR-0061 bleibt `VORGESCHLAGEN – NICHT RATIFIZIERT`. Ratifizierung,
-institutionelle Implementierungsfreigabe und Codex-Auftrag bleiben getrennte
-menschliche Entscheidungen.
+ADR-0061 ist durch `GOV-RATIFICATION-ADR-0061-V1` ratifiziert. Die gesonderte
+institutionelle Implementierungsfreigabe und ein späterer Codex-Auftrag bleiben
+getrennte, noch nicht erteilte menschliche Entscheidungen.
 
 # Guardian Life Domain Model – offener Architekturkandidat
 

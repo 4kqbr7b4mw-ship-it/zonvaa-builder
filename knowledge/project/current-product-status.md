@@ -291,13 +291,15 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   verlangt produktive B2-Runtime, stabile Conversation-Architektur und einen
   dokumentierten Aktivierungsbeschluss; daraus folgen keine Runtime, API,
   Datenbank, juristischen Inhalte, Gesprächsführung oder Implementierungsfreigabe.
-- ADR-0061 Guardian B2 Provider Identity v1 ist als `VORGESCHLAGEN – NICHT
-  RATIFIZIERT` dokumentiert. Die Architektur begrenzt v1 auf fünf geschlossene,
+- ADR-0061 Guardian B2 Provider Identity v1 ist durch
+  `GOV-RATIFICATION-ADR-0061-V1` als `RATIFIZIERT – NICHT
+  IMPLEMENTIERUNGSFREIGEGEBEN` dokumentiert. Die Architektur begrenzt v1 auf fünf geschlossene,
   nicht personenbezogene Provider Classes, geschlossene Verantwortungs-Codes
   und Capability-Descriptoren sowie institutionelle Provenienzreferenzen mit
   explizitem Zeitpunkt. Sie übernimmt keine freie B1-Semantik, führt keine
   Schema-Versionierung ein und erzeugt weder Authorization, Invocation,
-  Runtime, Schlüssel- oder Inhaltszugriff noch Implementierungsfreigabe.
+  Runtime, Schlüssel- oder Inhaltszugriff noch Implementierungsfreigabe. Die
+  gesonderte institutionelle Implementierungsfreigabe bleibt offen.
 
 ## Bewusste Produktgrenzen
 

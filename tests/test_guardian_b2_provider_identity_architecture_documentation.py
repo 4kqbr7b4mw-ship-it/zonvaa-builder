@@ -13,12 +13,33 @@ def normalized():
     return " ".join(read(ADR).split())
 
 
-def test_adr_0061_is_the_next_proposed_unratified_architecture_decision():
+def test_adr_0061_is_ratified_without_implementation_approval():
     text = read(ADR)
     assert ADR.exists()
     assert "ADR-0061 – Guardian B2 Provider Identity v1" in text
-    assert "VORGESCHLAGEN – NICHT RATIFIZIERT" in text
+    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in text
+    assert "GOV-RATIFICATION-ADR-0061-V1" in text
     assert not (ROOT / "knowledge/adr/ADR-0062-guardian-b2-provider-identity-v1.md").exists()
+
+
+def test_ratification_is_external_scope_limited_and_not_an_implementation_approval():
+    ratification = read(ROOT / "governance/ratification-adr-0061.md")
+    normalized_ratification = " ".join(ratification.split())
+    for phrase in (
+        "GOV-RATIFICATION-ADR-0061-V1",
+        "RATIFIZIERUNG DOKUMENTIERT",
+        "03.08.2026, 10:43 Uhr Europe/Berlin",
+        "Zeitpunkt der Auftragsübergabe",
+        "nicht der Zeitpunkt der Repository-Dokumentation",
+        "Institutionsgründer in konstituierender Funktion",
+        "## Freigegeben",
+        "## Ausdrücklich nicht freigegeben",
+        "keine institutionelle Implementierungsfreigabe",
+        "ADR-0058, ADR-0059 und ADR-0060",
+        "nächste eigenständige menschliche Beschluss",
+    ):
+        assert phrase in normalized_ratification
+    assert not (ROOT / "governance/institutional-implementation-approval-adr-0061.md").exists()
 
 
 def test_provider_classes_are_closed_complete_and_non_personal():

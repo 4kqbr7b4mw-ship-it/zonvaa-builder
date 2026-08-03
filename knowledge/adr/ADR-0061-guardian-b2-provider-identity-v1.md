@@ -1,6 +1,6 @@
 # ADR-0061 – Guardian B2 Provider Identity v1
 
-Status: VORGESCHLAGEN – NICHT RATIFIZIERT
+Status: RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN
 
 ## 1. Kontext und Entscheidungsgrenze
 
@@ -10,10 +10,10 @@ Keines dieser Dokumente definiert, wie eine spätere B2-Architektur eine
 nicht personenbezogene Provider-Identität beschreiben dürfte.
 
 ADR-0061 entscheidet deshalb ausschließlich die Architektur eines immutable,
-nicht autorisierenden B2 Provider Identity Model. Sie implementiert keinen
-Vertrag, ratifiziert keine Architektur und erteilt keine institutionelle
-Implementierungsfreigabe. Institutionelle Beschlüsse bleiben durch
-`GOV-INSTITUTIONAL-DECISION-SCOPE-1` begrenzt.
+nicht autorisierenden B2 Provider Identity Model. Die Architektur ist durch
+`GOV-RATIFICATION-ADR-0061-V1` ratifiziert. Sie implementiert keinen Vertrag
+und erteilt keine institutionelle Implementierungsfreigabe. Institutionelle
+Beschlüsse bleiben durch `GOV-INSTITUTIONAL-DECISION-SCOPE-1` begrenzt.
 
 ## 2. Verhältnis zum B1 Provider Identity Model
 
@@ -224,16 +224,14 @@ Nicht Gegenstand und nicht freigegeben bleiben:
 
 ## 13. Governance-Sequenz und Nicht-Ziele
 
-ADR-0061 ist vorgeschlagen und nicht ratifiziert. Sie ist keine
-institutionelle Implementierungsfreigabe. Eine spätere Implementierung
-verlangt getrennt:
+ADR-0061 ist ratifiziert, aber nicht implementierungsfreigegeben. Die
+Ratifizierung ist keine institutionelle Implementierungsfreigabe. Eine spätere
+Implementierung verlangt weiterhin getrennt:
 
-1. Architekturvalidierung,
-2. ausdrückliche menschliche Ratifizierung,
-3. gesonderte institutionelle Implementierungsfreigabe mit den Abschnitten
+1. gesonderte institutionelle Implementierungsfreigabe mit den Abschnitten
    `Freigegeben` und `Ausdrücklich nicht freigegeben`,
-4. ausdrückliche menschliche Bestätigung dieser Freigabe,
-5. separaten Codex-Implementierungsauftrag.
+2. ausdrückliche menschliche Bestätigung dieser Freigabe,
+3. separaten Codex-Implementierungsauftrag.
 
 Diese ADR implementiert keine Klasse, Enum, Value Object, API, Runtime,
 Provider Authorization, Invocation, Verarbeitung oder Speicherung und ändert

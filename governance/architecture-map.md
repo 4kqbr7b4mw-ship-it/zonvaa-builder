@@ -50,8 +50,8 @@ behauptet keine historische C1-Identität.
 - **Bindende Dokumente:** ADR-0030, ADR-0033 sowie ADR-0048, ADR-0049 und
   ADR-0050.
 - **Abhängige ADRs:** ADR-0051 bis ADR-0061. ADR-0060 ist ratifiziert und im
-  begrenzten nicht ausführenden Scope implementiert. ADR-0061 ist vorgeschlagen,
-  nicht ratifiziert und nicht implementierungsfreigegeben.
+  begrenzten nicht ausführenden Scope implementiert. ADR-0061 ist ratifiziert,
+  aber nicht implementierungsfreigegeben und nicht implementiert.
 - **Ausgeschlossen:** automatische Autorisierung, Providerwahl,
   Vertrauensbewertung, Capability-Aktivierung, Runtime-Ausführung und ein
   B1→B2-Upgrade.
