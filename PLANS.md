@@ -3434,6 +3434,21 @@ ADR-0062 ist durch `GOV-RATIFICATION-ADR-0062-V1` ratifiziert. Die
 Ratifizierung bestätigt ausschließlich den Architekturinhalt. Die getrennte
 institutionelle Implementierungsfreigabe
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` ist im geschlossenen nicht
-ausführenden Scope gültig. ADR-0062 ist weiterhin nicht implementiert. Vor
-einem separaten Codex-Implementierungsauftrag müssen Freigabe-Commit und
-Freigabe-Push nachweisbar abgeschlossen sein.
+ausführenden Scope gültig. Freigabe-Commit, Freigabe-Push und der danach
+erteilte separate Implementierungsauftrag sind abgeschlossen. Die Architektur
+ist im nicht ausführenden Scope implementiert; Invocation, Runtime und
+technische Ausführung bleiben gesperrt.
+
+## Implementierungsstand Guardian B2 Authorization Foundation
+
+- [x] immutable Provider-Authorization-Verträge und nicht personenbezogene
+  Provenienz implementieren.
+- [x] ADR-0060-Evaluation mit unveränderter ADR-0061 Provider Identity und
+  ADR-0059 Data Corridor integrieren.
+- [x] D3, T4, AAV und die sechs ratifizierten UODL-Hooks getrennt binden.
+- [x] Evaluation Evidence und Negative Governance Evidence ohne fortwirkende
+  Berechtigungs-, Sperr- oder Ausführungswirkung implementieren.
+- [x] vollständige Referenzkette Data Corridor → Authority → Grant → Provider
+  Identity → Provider Authorization validieren.
+- [x] Runtime, Invocation, interne Zeit- und Zustandsquellen sowie nicht
+  ratifizierte UODL-Operationen strukturell ausschließen.

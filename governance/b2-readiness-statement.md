@@ -2,7 +2,7 @@
 
 Stand: 03.08.2026
 
-Status: ADR-0062 ratifiziert und begrenzt implementierungsfreigegeben
+Status: ADR-0062 im begrenzt freigegebenen, nicht ausführenden Scope implementiert
 
 ## Bestätigter Stand
 
@@ -41,8 +41,8 @@ Status: ADR-0062 ratifiziert und begrenzt implementierungsfreigegeben
   `GOV-RATIFICATION-ADR-0062-V1` ratifiziert. Sie wendet ADR-0060 an, schafft
   keine neue Autorisierungsverfassung und ist durch
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` ausschließlich im geschlossenen
-  nicht ausführenden Scope implementierungsfreigegeben. Sie ist nicht
-  implementiert.
+  nicht ausführenden Scope implementierungsfreigegeben und implementiert. Die
+  Implementierung besitzt keine Invocation-, Runtime- oder Ausführungssemantik.
 
 ## Freigabegrenze
 
@@ -52,20 +52,17 @@ Status: ADR-0062 ratifiziert und begrenzt implementierungsfreigegeben
   benannten ADR-0059-Verträge, Validatoren, Snapshots, Tests und Dokumente
   dürfen implementiert werden.
 - Alle weiteren B2-Pakete bleiben gesperrt.
-- Kein B2-Provider, keine Provider Authorization, Invocation, Runtime, kein
-  Workflow und kein weiterer Produktbaustein ist durch dieses Statement
-  freigegeben.
+- Keine B2 Capability Invocation, Runtime, kein Workflow und kein weiterer
+  Produktbaustein ist durch dieses Statement freigegeben.
 - Der abgeschlossene Betriebsblock erweitert keine B1-Macht und autorisiert
   weder B2 noch B3.
 
 ## Nächste zulässige Aktivität
 
-Nächster zulässiger Schritt ist ausschließlich ein gesonderter Commit- und
-danach Push-Auftrag für diese Governance-Dokumentation. Erst nach nachweisbarem
-Push des Freigabe-Commits auf `origin/builder-reset-v2` darf ein separater
-Codex-Implementierungsauftrag erteilt werden. Bis dahin bleiben Provider-
-Authorization-Implementierung, B2-Runtime, Invocation und jede technische
-Ausführung gesperrt.
+Nächster zulässiger Schritt ist ausschließlich die getrennte Prüfung und
+gegebenenfalls der gesonderte Commit der implementierten, nicht ausführenden
+Provider-Authorization-Grundlage. Capability Invocation, B2-Runtime und jede
+technische Ausführung bleiben gesperrt.
 
 ## Statusmodell
 
@@ -85,7 +82,7 @@ Ausführung gesperrt.
 | Guardian B2 Provider Identity v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
 | ADR-0062 Guardian B2 Provider Authorization | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN |
 | Institutionelle Implementierungsfreigabe für ADR-0062 | GÜLTIG – BEGRENZTER SCOPE |
-| Freigabe-Commit ADR-0062 auf origin/builder-reset-v2 | AUSSTEHEND |
-| Guardian B2 Provider Authorization v1 | NICHT IMPLEMENTIERT |
+| Freigabe-Commit ADR-0062 auf origin/builder-reset-v2 | ABGESCHLOSSEN |
+| Guardian B2 Provider Authorization v1 | IM NICHT AUSFÜHRENDEN SCOPE IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

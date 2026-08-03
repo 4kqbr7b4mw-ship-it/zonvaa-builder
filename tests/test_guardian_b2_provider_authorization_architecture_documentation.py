@@ -13,13 +13,14 @@ def normalized():
     return " ".join(read(ADR).split())
 
 
-def test_adr_0062_is_ratified_with_separate_limited_implementation_approval():
+def test_adr_0062_is_ratified_approved_and_implemented_without_execution_power():
     text = read(ADR)
     assert "ADR-0062 – Guardian B2 Provider Authorization v1" in text
     assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN" in text
     assert "GOV-RATIFICATION-ADR-0062-V1" in text
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1" in text
-    assert "weiterhin nicht implementiert" in text
+    assert "im institutionell freigegebenen" in text
+    assert "weder\nInvocation, Runtime noch technische Ausführung" in text
     assert not (ROOT / "knowledge/adr/ADR-0063-guardian-b2-provider-authorization-v1.md").exists()
 
 
@@ -164,3 +165,10 @@ def test_implementation_approval_is_closed_non_executing_and_requires_push_gate(
         "Prüffrage Null",
     ):
         assert phrase in text
+
+
+def test_implementation_sequence_is_complete_without_authorizing_runtime():
+    text = normalized()
+    assert "Freigabe-Commits auf `origin/builder-reset-v2` – abgeschlossen" in text
+    assert "Codex-Implementierungsauftrag nach diesem Push – abgeschlossen" in text
+    assert "Keine Stufe impliziert die nächste" in text

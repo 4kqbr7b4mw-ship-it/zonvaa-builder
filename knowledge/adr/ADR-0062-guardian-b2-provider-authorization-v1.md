@@ -26,7 +26,9 @@ Diese ADR ist durch den eigenständigen menschlichen Beschluss
 Implementierungsfreigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` ist
 ausschließlich für den geschlossenen nicht ausführenden ADR-0062-Scope gültig.
 Beide Beschlüsse bleiben nach `GOV-INSTITUTIONAL-DECISION-SCOPE-1` getrennt.
-ADR-0062 ist weiterhin nicht implementiert.
+Die ratifizierte Architektur ist im institutionell freigegebenen,
+nicht ausführenden Scope implementiert. Die Implementierung erzeugt weder
+Invocation, Runtime noch technische Ausführung.
 
 ## 2. Vererbtes bindendes Recht
 
@@ -268,8 +270,8 @@ Jede spätere Arbeit verlangt getrennt:
 2. ausdrückliche menschliche Ratifizierung von ADR-0062 – abgeschlossen,
 3. gesonderte institutionelle Implementierungsfreigabe – abgeschlossen,
 4. ausdrückliche menschliche Bestätigung dieser Freigabe – abgeschlossen,
-5. nachweisbarer Push des Freigabe-Commits auf `origin/builder-reset-v2` – offen,
-6. separaten Codex-Implementierungsauftrag nach diesem Push – offen.
+5. nachweisbarer Push des Freigabe-Commits auf `origin/builder-reset-v2` – abgeschlossen,
+6. separaten Codex-Implementierungsauftrag nach diesem Push – abgeschlossen.
 
 Keine Stufe impliziert die nächste.
 

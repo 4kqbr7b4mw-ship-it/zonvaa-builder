@@ -98,8 +98,8 @@ PRODUCT_STATUS = """# Status
   Capability-Descriptoren und institutionelle Provenienz beschreiben weder
   natürliche Personen noch Autorisierung, Invocation oder Runtime.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
-- ADR-0062 Guardian B2 Provider Authorization v1 ist ratifiziert und begrenzt
-  implementierungsfreigegeben, aber nicht implementiert.
+- ADR-0062 Guardian B2 Provider Authorization v1 ist ratifiziert, begrenzt
+  implementierungsfreigegeben und im nicht ausführenden Scope implementiert.
 
 ## Bewusste Produktgrenzen
 
@@ -115,10 +115,10 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Ausschließlich Commit und Push der ADR-0062-Freigabedokumentation sind als
-nächste B2-Aktivität zulässig. Erst nach nachweisbarem Freigabe-Push darf ein
-separater Codex-Implementierungsauftrag erteilt werden. Provider-Authorization-
-Implementierung, Invocation und B2-Runtime bleiben bis dahin gesperrt.
+Ausschließlich die getrennte Prüfung und gegebenenfalls der gesonderte Commit
+der implementierten Provider-Authorization-Grundlage sind als nächste
+B2-Aktivität zulässig. Capability Invocation, technische Ausführung und
+B2-Runtime bleiben gesperrt.
 """
 
 
@@ -470,7 +470,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_requires_adr_0062_approval_push_before_implementation(tmp_path):
+def test_handover_exposes_implemented_foundation_but_keeps_execution_blocked(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -479,11 +479,10 @@ def test_handover_requires_adr_0062_approval_push_before_implementation(tmp_path
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    normalized_next_section = " ".join(next_section.split()).replace("- ", "-")
-    assert "Commit und Push" in next_section
-    assert "nachweisbarem Freigabe-Push" in next_section
-    assert "separater Codex-Implementierungsauftrag" in next_section
-    assert "Provider-Authorization-Implementierung" in normalized_next_section
+    assert "gesonderte Commit" in next_section
+    assert "Provider-Authorization-Grundlage" in next_section
+    assert "Capability Invocation" in next_section
+    assert "technische Ausführung" in next_section
     assert "B2-Runtime bleiben" in next_section
     assert "B2 Runtime" not in next_section
 

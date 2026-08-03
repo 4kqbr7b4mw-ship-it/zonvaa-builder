@@ -54,7 +54,7 @@ behauptet keine historische C1-Identität.
   und ausschließlich für den begrenzten nicht ausführenden Provider-Identity-
   Scope implementiert. ADR-0062 ist ratifiziert und ausschließlich im
   geschlossenen nicht ausführenden Provider-Authorization-Scope
-  implementierungsfreigegeben, aber nicht implementiert.
+  implementierungsfreigegeben und im nicht ausführenden Scope implementiert.
 - **Ausgeschlossen:** automatische Autorisierung, Providerwahl,
   Vertrauensbewertung, Capability-Aktivierung, Runtime-Ausführung und ein
   B1→B2-Upgrade.

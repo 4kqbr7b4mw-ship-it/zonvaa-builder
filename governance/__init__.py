@@ -238,6 +238,19 @@ __all__ = [
     "B2ProviderProvenance",
     "B2RegistrationBasisReference",
     "B2ResponsibilityArea",
+    "B2_PROVIDER_AUTHORIZATION_CONTRACT_VERSION",
+    "B2AuthorizationFoundation",
+    "B2AuthorizationFoundationValidator",
+    "B2ProviderAuthorization",
+    "B2ProviderAuthorizationEvaluationEvidence",
+    "B2ProviderAuthorizationEvaluator",
+    "B2ProviderAuthorizationEvidence",
+    "B2ProviderAuthorizationId",
+    "B2ProviderAuthorizationNegativeGovernanceEvidence",
+    "B2ProviderAuthorizationProvenance",
+    "B2ProviderAuthorizationReason",
+    "B2ProviderAuthorizationValidationError",
+    "B2ProviderAuthorizationValidator",
     "ALLOWED_B2_DATA_CLASSES",
     "ALLOWED_B2_DATA_FLOWS",
     "ALLOWED_B2_DATA_SOURCES",
@@ -473,10 +486,33 @@ _B2_AUTHORIZATION_EXPORTS = frozenset(
 )
 
 
+_B2_PROVIDER_AUTHORIZATION_EXPORTS = frozenset(
+    {
+        "B2_PROVIDER_AUTHORIZATION_CONTRACT_VERSION",
+        "B2AuthorizationFoundation",
+        "B2AuthorizationFoundationValidator",
+        "B2ProviderAuthorization",
+        "B2ProviderAuthorizationEvaluationEvidence",
+        "B2ProviderAuthorizationEvaluator",
+        "B2ProviderAuthorizationEvidence",
+        "B2ProviderAuthorizationId",
+        "B2ProviderAuthorizationNegativeGovernanceEvidence",
+        "B2ProviderAuthorizationProvenance",
+        "B2ProviderAuthorizationReason",
+        "B2ProviderAuthorizationValidationError",
+        "B2ProviderAuthorizationValidator",
+    }
+)
+
+
 _B2_DATA_CORRIDOR_EXPORTS = frozenset(
     name
     for name in __all__
-    if (name.startswith("B2") and name not in _B2_AUTHORIZATION_EXPORTS)
+    if (
+        name.startswith("B2")
+        and name not in _B2_AUTHORIZATION_EXPORTS
+        and name not in _B2_PROVIDER_AUTHORIZATION_EXPORTS
+    )
     or name.startswith("ALLOWED_B2_")
     or name.startswith("PROHIBITED_B2_")
     or name in {
@@ -495,6 +531,12 @@ def __getattr__(name):
         from governance import b2_authorization
 
         value = getattr(b2_authorization, name)
+        globals()[name] = value
+        return value
+    if name in _B2_PROVIDER_AUTHORIZATION_EXPORTS:
+        from governance import b2_provider_authorization
+
+        value = getattr(b2_provider_authorization, name)
         globals()[name] = value
         return value
     if name in _B2_DATA_CORRIDOR_EXPORTS:
