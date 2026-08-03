@@ -107,7 +107,7 @@ PRODUCT_STATUS = """# Status
   ratifiziert. Capability Invocation und Runtime wurden nicht begonnen.
 - ADR-0063 B2 Purpose and UODL Binding Constitution macht ausschließlich die beiden
   fachlichen Mapping-Blocker entscheidungsreif. Die Präferenzen sind
-  ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+  ratifiziert, begrenzt implementierungsfreigegeben und nicht implementiert.
 - ADR-0064 Governance Decision and Incident Evidence Constitution macht ausschließlich den
   Governance-Evidenzblocker entscheidungsreif. Die Architektur ist
   ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
@@ -128,9 +128,9 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Ausschließlich eine gesonderte institutionelle Implementierungsfreigabe für
-ADR-0063 wäre als nächste fachliche B2-Aktivität zulässig; sie wurde nicht
-erteilt.
+Ausschließlich ein separater Implementierungsauftrag für ADR-0063 wäre nach
+dem nachweisbaren Push des Freigabe-Commits als nächste fachliche B2-Aktivität
+zulässig.
 Ausschließlich eine davon unabhängige gesonderte institutionelle
 Implementierungsfreigabe für ADR-0064 wäre als nächste Governance-Aktivität
 zulässig; sie wurde nicht erteilt. Capability Invocation,
@@ -496,9 +496,9 @@ def test_handover_exposes_purpose_uodl_proposal_without_execution(tmp_path):
         1,
     )[1]
     normalized = " ".join(next_section.split())
-    assert "gesonderte institutionelle Implementierungsfreigabe" in normalized
+    assert "separater Implementierungsauftrag" in normalized
     assert "ADR-0063" in normalized
-    assert "sie wurde nicht erteilt" in normalized.lower()
+    assert "nachweisbaren Push des Freigabe-Commits" in normalized
     assert "Capability Invocation" in normalized
     assert "technische Ausführung" in normalized
     assert "B2-Runtime bleiben" in normalized

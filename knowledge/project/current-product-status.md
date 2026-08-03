@@ -336,8 +336,9 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Ebenenabbildung von `REFERENCE` zu `REFERENCE_ONLY`. Beide Präferenzen sind
   vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und nicht
   implementiert. ADR-0063 ist durch `GOV-RATIFICATION-ADR-0063-V1`
-  ausschließlich als Architektur ratifiziert. Eine Implementierungsfreigabe
-  wurde nicht erteilt.
+  ausschließlich als Architektur ratifiziert. Die davon getrennte Freigabe
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` erlaubt den ratifizierten
+  nicht ausführenden Implementierungsscope. Implementiert wurde er noch nicht.
 
 ### Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 
@@ -366,8 +367,9 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Als nächste B2-Aktivität für ADR-0063 wäre ausschließlich eine gesonderte
-institutionelle Implementierungsfreigabe zulässig. Sie wurde nicht erteilt.
+Als nächste B2-Aktivität für ADR-0063 ist ausschließlich ein separater
+Implementierungsauftrag nach dem nachweisbaren Push des Freigabe-Commits
+zulässig.
 
 Als davon unabhängige Governance-Aktivität wäre ausschließlich eine gesonderte
 institutionelle Implementierungsfreigabe für ADR-0064 zulässig. Sie wurde

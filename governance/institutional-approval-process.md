@@ -128,6 +128,9 @@ Fundstellen sichtbar; ADR-0052 wird nicht zweckentfremdet.
 ## Ratifizierungsstand ADR-0063
 
 ADR-0063 ist durch `GOV-RATIFICATION-ADR-0063-V1` ausschließlich als
-Architektur ratifiziert. Die Ratifizierung ist keine institutionelle
-Implementierungsfreigabe, keine Implementierung und keine Migration. Eine
-spätere Implementierungsfreigabe bleibt ein eigenständiges menschliches Gate.
+Architektur ratifiziert. Die davon getrennte institutionelle
+Implementierungsfreigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` ist als
+gegenwärtiger menschlicher Beschluss dokumentiert. Sie implementiert nichts.
+Ein separater Implementierungsauftrag setzt den nachweisbaren Push ihres
+Freigabe-Commits voraus. ADR-0064 bleibt unabhängig und nicht
+implementierungsfreigegeben.

@@ -234,7 +234,7 @@ End-to-End-Geschlossenheit bleibt bis zur Entscheidung der zwei fachlichen
 Mapping-Blocker eingeschränkt. Der Governance-Evidenzblocker zu ADR-0059 und
 zum fehlenden kanonischen Governance-Incident-Zielort bleibt ebenfalls offen.
 
-ADR-0063 und ADR-0064 sind getrennt ratifiziert, aber nicht
-implementierungsfreigegeben oder implementiert. Capability Invocation und
-Runtime wurden nicht begonnen; es wurde kein Vertrag oder ausführendes Modul
-dafür angelegt.
+ADR-0063 und ADR-0064 sind getrennt ratifiziert. Ausschließlich ADR-0063 ist
+begrenzt implementierungsfreigegeben; beide bleiben nicht implementiert.
+Capability Invocation und Runtime wurden nicht begonnen; es wurde kein Vertrag
+oder ausführendes Modul dafür angelegt.

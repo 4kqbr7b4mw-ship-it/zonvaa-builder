@@ -3484,10 +3484,12 @@ B2-Runtime bleiben nicht begonnen und gesperrt.
   formalen ADR-0063 dokumentieren.
 - [x] menschliche Ratifizierung getrennt dokumentieren, ohne
   Implementierungsfreigabe oder Implementierung.
+- [x] institutionelle Implementierungsfreigabe als gegenwärtigen, getrennten
+  Beschluss dokumentieren, ohne Implementierung.
 
-ADR-0063 ist ratifiziert. Nächster zulässiger Schritt für Paket A wäre
-ausschließlich eine gesonderte institutionelle Implementierungsfreigabe; sie
-ist nicht Bestandteil dieses Pakets.
+ADR-0063 ist ratifiziert und begrenzt implementierungsfreigegeben, aber nicht
+implementiert. Ein Implementierungsauftrag darf erst nach nachweisbarem Push
+des Freigabe-Commits erteilt werden.
 
 # Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 

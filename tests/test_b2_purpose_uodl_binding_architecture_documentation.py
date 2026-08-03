@@ -9,11 +9,26 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0063_is_ratified_but_not_approved_or_implemented():
+def test_adr_0063_is_ratified_and_approved_but_not_implemented():
     text = read(ADR)
     assert "ADR-0063 – B2 Purpose and UODL Binding Constitution v1" in text
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT" in text
     assert "GOV-RATIFICATION-ADR-0063-V1" in text
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1" in text
+
+
+def test_adr_0063_implementation_approval_is_current_scoped_and_non_executing():
+    text = read(ROOT / "governance/institutional-implementation-approval-adr-0063.md")
+    assert "INSTITUTIONELLE IMPLEMENTIERUNGSFREIGABE – GÜLTIG" in text
+    assert "03.08.2026, 20:00:35 Uhr" in text
+    assert "03.08.2026, 20:00:39 Uhr" in text
+    assert "Keine frühere Gutachterbewertung" in text
+    assert "nicht rückwirkend" in text
+    assert "## Freigegeben" in text
+    assert "## Ausdrücklich nicht freigegeben" in text
+    assert "ADR-0064 bleibt fachlich unabhängig, ratifiziert, aber nicht" in text
+    assert "kein Implementierungsauftrag" in text
+    assert "nach nachweisbarem Push" in text
 
 
 def test_adr_0063_ratification_record_separates_scope_and_times():

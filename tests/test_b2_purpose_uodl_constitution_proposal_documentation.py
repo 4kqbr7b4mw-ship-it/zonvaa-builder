@@ -57,7 +57,7 @@ def test_package_a_status_references_are_separate_and_non_binding():
     plans = read(ROOT / "PLANS.md")
     for text in (readiness, status, plans):
         assert "ADR-0063" in text
-        assert "nicht implementierungsfreigegeben" in text.lower() or "nicht erteilt" in text.lower()
+        assert "implementierungsfreigegeben" in text.lower()
 
 
 def test_manifest_assigns_package_a_and_requires_selective_staging():

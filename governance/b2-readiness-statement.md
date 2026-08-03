@@ -2,7 +2,7 @@
 
 Stand: 03.08.2026
 
-Status: ADR-0063 und ADR-0064 ratifiziert ohne Implementierungsfreigabe
+Status: ADR-0063 begrenzt implementierungsfreigegeben; ADR-0064 ohne Implementierungsfreigabe
 
 ## Bestätigter Stand
 
@@ -66,8 +66,9 @@ offenen Blocker.
 ### Paket A – ADR-0063
 
 ADR-0063 entscheidet die zwei fachlichen Mapping-Blocker als ratifizierte
-Architektur. Eine Implementierungsfreigabe wurde nicht erteilt; Purpose-
-Bindung, UODL-Mapping und Migration bleiben nicht implementiert.
+Architektur. `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` gibt ausschließlich
+deren begrenzte spätere Implementierung frei. Purpose-Bindung, UODL-Mapping
+und Migration bleiben nicht implementiert.
 
 ### Paket B – ADR-0064
 
@@ -99,7 +100,7 @@ jede technische Ausführung bleiben für beide Pakete gesperrt.
 | Freigabe-Commit ADR-0062 auf origin/builder-reset-v2 | ABGESCHLOSSEN |
 | Guardian B2 Provider Authorization v1 | IM NICHT AUSFÜHRENDEN SCOPE IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
 | Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER UND EIN GOVERNANCE-EVIDENZBLOCKER OFFEN |
-| ADR-0063 B2 Purpose and UODL Binding Constitution | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
+| ADR-0063 B2 Purpose and UODL Binding Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT |
 | ADR-0059-Ratifikationsnachweis | NUR INDIREKTE GOVERNANCE-EVIDENZ – HEUTIGE BESTÄTIGUNGSENTSCHEIDUNG AUSSTEHEND |
 | ADR-0064 Governance Decision and Incident Evidence Constitution | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
 | Alle weiteren B2-Pakete | GESPERRT |

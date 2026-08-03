@@ -1,12 +1,14 @@
 # ADR-0063 – B2 Purpose and UODL Binding Constitution v1
 
-Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0063-V1`
 
-Die Ratifizierung bestätigt ausschließlich diese Architektur. Sie ist keine
-institutionelle Implementierungsfreigabe und implementiert weder Purpose-
-Bindung noch UODL-Mapping oder Migration.
+Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1`
+
+Ratifizierung und institutionelle Implementierungsfreigabe sind getrennte
+menschliche Beschlüsse. Die Freigabe implementiert weder Purpose-Bindung noch
+UODL-Mapping oder Migration und besitzt keine Ausführungswirkung.
 
 ## 1. Kontext
 
