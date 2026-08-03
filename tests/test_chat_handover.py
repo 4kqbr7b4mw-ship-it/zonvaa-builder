@@ -104,6 +104,10 @@ PRODUCT_STATUS = """# Status
   `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bestätigt die Trennung der
   B2-Verfassungsbausteine und hält zwei ungelöste Mapping-Fragen sichtbar.
   ADR-0063 wurde nicht begonnen.
+- B2 Purpose and UODL Constitution Proposal macht ausschließlich die beiden
+  fachlichen Mapping-Blocker entscheidungsreif. Die Präferenzen sind
+  vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und
+  nicht implementiert.
 
 ## Bewusste Produktgrenzen
 
@@ -119,10 +123,10 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Ausschließlich die getrennte Prüfung und gegebenenfalls ein gesonderter
-Commit-Auftrag für das Maintenance-Review sind als nächste B2-Aktivität
-zulässig. Capability Invocation, technische Ausführung und B2-Runtime bleiben
-gesperrt.
+Ausschließlich die menschliche Architekturprüfung des B2 Purpose and UODL
+Constitution Proposal ist als nächste fachliche B2-Aktivität zulässig.
+Keine Präferenz ist ratifiziert oder implementierungsfreigegeben. Capability
+Invocation, technische Ausführung und B2-Runtime bleiben gesperrt.
 """
 
 
@@ -474,7 +478,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_exposes_review_but_keeps_execution_blocked(tmp_path):
+def test_handover_exposes_purpose_uodl_proposal_without_execution(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -483,12 +487,14 @@ def test_handover_exposes_review_but_keeps_execution_blocked(tmp_path):
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    assert "gesonderter" in next_section
-    assert "Maintenance-Review" in next_section
-    assert "Capability Invocation" in next_section
-    assert "technische Ausführung" in next_section
-    assert "B2-Runtime bleiben" in next_section
-    assert "B2 Runtime" not in next_section
+    normalized = " ".join(next_section.split())
+    assert "menschliche Architekturprüfung" in normalized
+    assert "B2 Purpose and UODL Constitution Proposal" in normalized
+    assert "keine präferenz ist ratifiziert" in normalized.lower()
+    assert "Capability Invocation" in normalized
+    assert "technische Ausführung" in normalized
+    assert "B2-Runtime bleiben" in normalized
+    assert "B2 Runtime" not in normalized
 
 
 def test_handover_never_presents_v1_as_active_repository(tmp_path):

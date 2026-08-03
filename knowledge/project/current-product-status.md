@@ -328,6 +328,14 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   sowie `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY`.
   ADR-0063, Capability Invocation und B2-Runtime sind nicht begonnen.
 
+### B2 Purpose and UODL Constitution Proposal
+
+- Für Purpose wird `B2PurposeScope` als einzige fachliche Wahrheit mit
+  explizitem Bindungsnachweis bevorzugt; für UODL eine geschlossene typisierte
+  Ebenenabbildung von `REFERENCE` zu `REFERENCE_ONLY`. Beide Präferenzen sind
+  vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und nicht
+  implementiert.
+
 ## Bewusste Produktgrenzen
 
 - Keine automatische Semantik
@@ -342,7 +350,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Als nächste B2-Aktivität ist ausschließlich die getrennte Prüfung und
-gegebenenfalls ein gesonderter Commit-Auftrag für das Maintenance-Review
-zulässig. Capability Invocation bleibt gesperrt.
-B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
+Als nächste B2-Aktivität ist ausschließlich die menschliche Architekturprüfung
+des B2 Purpose and UODL Constitution Proposal zulässig.
+Keine Präferenz ist ratifiziert oder implementierungsfreigegeben. Capability
+Invocation, B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

@@ -2,7 +2,7 @@
 
 Stand: 03.08.2026
 
-Status: ADR-0062 im begrenzt freigegebenen, nicht ausführenden Scope implementiert
+Status: ADR-0062 implementiert; Purpose-/UODL-Entscheidungsvorlage ohne Freigabewirkung
 
 ## Bestätigter Stand
 
@@ -60,11 +60,17 @@ Status: ADR-0062 im begrenzt freigegebenen, nicht ausführenden Scope implementi
 ## Nächste zulässige Aktivität
 
 Das Maintenance-Review
-`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` prüft die bestehende Grundlage ohne
-Freigabewirkung. Nächster zulässiger Schritt ist ausschließlich dessen
-getrennte Prüfung und gegebenenfalls ein gesonderter Commit-Auftrag.
-Capability Invocation, B2-Runtime und jede technische Ausführung bleiben
-gesperrt.
+`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bleibt die Fundstelle der zwei
+fachlichen Mapping-Blocker.
+
+### Purpose-/UODL-Entscheidungsvorlage
+
+`GOV-B2-PURPOSE-UODL-BINDING-PROPOSAL-V1` macht die zwei fachlichen
+Mapping-Blocker entscheidungsreif, löst sie aber nicht. Nächster zulässiger
+Schritt für Paket A ist ausschließlich seine menschliche Architekturprüfung.
+
+Ratifizierung, Implementierungsfreigabe, Capability Invocation, B2-Runtime und
+jede technische Ausführung bleiben gesperrt.
 
 ## Statusmodell
 
@@ -87,5 +93,6 @@ gesperrt.
 | Freigabe-Commit ADR-0062 auf origin/builder-reset-v2 | ABGESCHLOSSEN |
 | Guardian B2 Provider Authorization v1 | IM NICHT AUSFÜHRENDEN SCOPE IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
 | Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER OFFEN |
+| B2 Purpose and UODL Constitution Proposal | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERT |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

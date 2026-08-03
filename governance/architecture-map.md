@@ -85,6 +85,12 @@ Das Maintenance-Dokument
 Data Corridor bis Provider Authorization. Es ist nur Review-Nachweis, keine
 kanonische Fachregel, ADR, Ratifizierung oder Implementierungsfreigabe.
 
+### Purpose-/UODL-Entscheidungsvorlage
+
+`GOV-B2-PURPOSE-UODL-BINDING-PROPOSAL-V1` macht ausschließlich die Purpose-
+und UODL-Mapping-Blocker entscheidungsreif. Die Vorlage ist keine kanonische
+Fachregel, Ratifizierung, Implementierungsfreigabe oder Implementierung.
+
 ## Ebenengrenze
 
 C1 schützt. Institution garantiert. Authority beschreibt und begrenzt

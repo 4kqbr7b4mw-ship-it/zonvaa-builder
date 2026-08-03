@@ -22,6 +22,14 @@ Scope implementiert. Kein weiteres B2-Paket ist freigegeben.
 | Guardian Accountability & Explanation Layer | bereits vorhandene Evidenz referenzgebunden lesbar projizieren | produktive B2-Runtime, erste reale Rechenschaftspflichten und dokumentierter Aktivierungsbeschluss | Erklärung liest nur und entscheidet oder weiß nichts | keine zweite Wahrheit, Generierung, Runtime, API oder Evidenzerzeugung | registrierter, nicht geplanter und ausdrücklich ruhender E6-Ausnahmekandidat; keine Freigabe |
 | Guardian Life Domain Model | typisierte, jurisdiktionstreue Lebensobjekte entlang realer Journeys beschreiben | produktive B2-Runtime, stabile Conversation-Architektur und dokumentierter Aktivierungsbeschluss | Sprache bleibt reine Darstellung; Domänenidentität und Rechtsnatur bleiben stabil | keine Vollontologie, Runtime, API, Datenbank, juristischen Inhalte oder Gesprächsführung | registrierter, nicht geplanter und ausdrücklich ruhender E6-Ausnahmekandidat; keine Freigabe |
 
+## Offene Verfassungslücken vor weiteren B2-Paketen
+
+### B2 Purpose and UODL Constitution Proposal
+
+`GOV-B2-PURPOSE-UODL-BINDING-PROPOSAL-V1` schlägt eine kanonische
+Purpose-Bindung und eine explizite UODL-Ebenenabbildung vor. Beide Teile sind
+nicht ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+
 Nicht Bestandteil dieser Landkarte sind Verträge, Klassen, APIs, Validatoren,
 Runtime-Komponenten, Provider, Persistenzadapter, UI oder Workflowaktivierung.
 

@@ -3469,3 +3469,16 @@ technische Ausführung bleiben gesperrt.
 
 Das Review ist ausschließlich Maintenance. ADR-0063, Capability Invocation
 und B2-Runtime bleiben nicht begonnen und gesperrt.
+
+# B2 Purpose and UODL Constitution Proposal
+
+- [x] Purpose-Semantik aus ADR-0059 und ADR-0060 vollständig vergleichen.
+- [x] vier Purpose-Varianten nach Halbordnung, Beweisbarkeit, Migration und
+  Parallelverfassungsrisiko bewerten.
+- [x] UODL-`REFERENCE` und `REFERENCE_ONLY` ohne stillschweigende Gleichsetzung
+  untersuchen und fünf Varianten bewerten.
+- [x] Präferenzen als vorgeschlagen, nicht ratifiziert, nicht
+  implementierungsfreigegeben und nicht implementiert dokumentieren.
+
+Nächster zulässiger Schritt für Paket A ist ausschließlich seine menschliche
+Architekturprüfung.
