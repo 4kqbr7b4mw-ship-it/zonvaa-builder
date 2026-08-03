@@ -98,6 +98,8 @@ PRODUCT_STATUS = """# Status
   Capability-Descriptoren und institutionelle Provenienz beschreiben weder
   natürliche Personen noch Autorisierung, Invocation oder Runtime.
 - Alle weiteren B2-Pakete und jede B2-Runtime bleiben gesperrt.
+- ADR-0062 Guardian B2 Provider Authorization v1 ist ratifiziert, aber nicht
+  implementierungsfreigegeben.
 
 ## Bewusste Produktgrenzen
 
@@ -113,9 +115,10 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Ausschließlich ein separater Codex-Auftrag im geschlossenen Scope der
-institutionellen ADR-0061-Implementierungsfreigabe ist als nächste
-B2-Aktivität zulässig. Alle anderen B2-Pakete und B2-Runtime bleiben gesperrt.
+Ausschließlich ein gesonderter menschlicher Beschluss über eine institutionelle
+Implementierungsfreigabe für ADR-0062 ist als nächste B2-Aktivität zulässig.
+Provider-Authorization-Implementierung, Invocation und B2-Runtime bleiben
+gesperrt.
 """
 
 
@@ -467,7 +470,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_limits_next_b2_step_to_the_adr_0061_approval(tmp_path):
+def test_handover_limits_next_b2_step_to_adr_0062_implementation_approval(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -476,10 +479,10 @@ def test_handover_limits_next_b2_step_to_the_adr_0061_approval(tmp_path):
         "## Nächster noch nicht begonnener Schritt",
         1,
     )[1]
-    assert "separater Codex-Auftrag" in next_section
-    assert "institutionellen ADR-0061-Implementierungsfreigabe" in next_section
-    assert "Alle anderen B2-Pakete" in next_section
-    assert "B2-Runtime bleiben gesperrt" in next_section
+    assert "gesonderter menschlicher Beschluss" in next_section
+    assert "Implementierungsfreigabe für ADR-0062" in next_section
+    assert "Provider-Authorization-Implementierung" in next_section
+    assert "B2-Runtime bleiben" in next_section
     assert "B2 Runtime" not in next_section
 
 

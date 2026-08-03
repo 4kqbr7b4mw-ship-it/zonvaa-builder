@@ -3401,3 +3401,37 @@ Bestandteil dieser Implementierung.
 
 Der Kandidat bleibt ruhend. Er ist kein geplantes Paket und kein zulässiger
 nächster Implementierungsschritt.
+
+# ADR-0062 – Guardian B2 Provider Authorization v1
+
+## Ziel und Grenzen
+
+Die Anwendung der bestehenden ADR-0060-Autorisierungsverfassung auf eine
+unveränderte, nicht personenbezogene ADR-0061 Provider Identity ausschließlich
+als vorgeschlagene Architektur dokumentieren. Keine Implementierung,
+Ratifizierung, Implementierungsfreigabe, Invocation, Runtime, Verarbeitung
+oder Betriebsintegration.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] Provider Authorization ausdrücklich als Anwendung von ADR-0060 und nicht
+  als neue Autorisierungsverfassung festlegen.
+- [x] Provider Identity ausschließlich per unveränderter Referenz binden und
+  natürliche Personen ausschließen.
+- [x] D3 und T4 als notwendige, getrennte und nicht austauschbare Nachweise
+  klären.
+- [x] sämtliche sechs berührten UODL-Hooks einzeln benennen und auf
+  `REFERENCE_ONLY` begrenzen.
+- [x] Negative Governance Evidence auf deklarativen Beobachtungsumfang ohne
+  Sperr-, Sanktions- oder Entscheidungswirkung begrenzen.
+- [x] expliziten Auswertungszeitpunkt, zustandslose Rekonstruktion und eigene
+  nicht selbstbestätigende Provenienz festlegen.
+- [x] Invocation, Runtime, technische Ausführung und den gesamten Betriebsblock
+  ausdrücklich sperren.
+- [x] Prüffrage Null eindeutig mit Nein beantworten.
+
+ADR-0062 ist durch `GOV-RATIFICATION-ADR-0062-V1` ratifiziert. Die
+Ratifizierung bestätigt ausschließlich den Architekturinhalt und erzeugt keine
+Implementierungsfreigabe. Eine institutionelle Implementierungsfreigabe und
+eine spätere Implementierung benötigen jeweils getrennte menschliche
+Entscheidungen.

@@ -76,3 +76,16 @@ Jeder künftige institutionelle Beschluss folgt verbindlich
 `GOV-INSTITUTIONAL-DECISION-SCOPE-1` und enthält getrennte Abschnitte
 `Freigegeben` sowie `Ausdrücklich nicht freigegeben`. Eine fehlende Nennung ist
 keine stillschweigende Freigabe.
+
+## Übergangsstand für ADR-0062
+
+- ADR-0062 wurde durch den eigenständigen Beschlussnachweis
+  `GOV-RATIFICATION-ADR-0062-V1` ratifiziert.
+- Die Ratifizierung bestätigt ausschließlich die Anwendung der bestehenden
+  ADR-0060-Autorisierungsverfassung auf eine unverändert referenzierte B2
+  Provider Identity aus ADR-0061.
+- Sie erzeugt keine neue Autorisierungssemantik und ist keine institutionelle
+  Implementierungsfreigabe.
+- Die institutionelle Implementierungsfreigabe bleibt der nächste
+  eigenständige menschliche Beschluss.
+- ADR-0058 bis ADR-0061 und alle bestehenden Sperren bleiben unverändert.
