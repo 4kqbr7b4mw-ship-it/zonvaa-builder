@@ -113,7 +113,8 @@ PRODUCT_STATUS = """# Status
   oder Runtime.
 - ADR-0064 Governance Decision and Incident Evidence Constitution macht ausschließlich den
   Governance-Evidenzblocker entscheidungsreif. Die Architektur ist
-  ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+  ratifiziert, begrenzt implementierungsfreigegeben und nicht implementiert.
+  Die Freigabe erzeugt kein Governance-Artefakt und keine technische Macht.
 - Für ADR-0059 ist nur indirekte Governance-Evidenz vorhanden; eine
   historische Ratifikationszeit und Entscheidungsrolle bleiben unbekannt.
 
@@ -131,13 +132,12 @@ PRODUCT_STATUS = """# Status
 
 ## Nächster noch nicht begonnener Schritt
 
-Ausschließlich eine getrennte Commit- und danach Push-Freigabe für die
-implementierte und validierte ADR-0063-Bindung ist als nächster Repository-
-Schritt zulässig.
-Ausschließlich eine davon unabhängige gesonderte institutionelle
-Implementierungsfreigabe für ADR-0064 wäre als nächste Governance-Aktivität
-zulässig; sie wurde nicht erteilt. Capability Invocation,
-technische Ausführung und B2-Runtime bleiben gesperrt.
+ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
+abgeschlossen; daraus folgt keine weitere Machtfreigabe.
+Ausschließlich ein separater Implementierungsauftrag für ADR-0064 nach dem
+nachweisbaren Push des Freigabe-Commits wäre als nächste Governance-Aktivität
+zulässig. ADR-0065 und Capability Invocation bleiben gesperrt; technische
+Ausführung und B2-Runtime bleiben gesperrt.
 """
 
 
@@ -489,7 +489,7 @@ def test_handover_uses_only_read_only_git_commands(tmp_path):
     )
 
 
-def test_handover_exposes_implemented_purpose_uodl_without_execution(tmp_path):
+def test_handover_exposes_completed_purpose_uodl_without_execution(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -499,16 +499,16 @@ def test_handover_exposes_implemented_purpose_uodl_without_execution(tmp_path):
         1,
     )[1]
     normalized = " ".join(next_section.split())
-    assert "Commit- und danach Push-Freigabe" in normalized
+    assert "Implementierungscommit und Push vollständig abgeschlossen" in normalized
     assert "ADR-0063" in normalized
-    assert "implementierte und validierte" in normalized
+    assert "vollständig abgeschlossen" in normalized
     assert "Capability Invocation" in normalized
     assert "technische Ausführung" in normalized
     assert "B2-Runtime bleiben" in normalized
     assert "B2 Runtime" not in normalized
 
 
-def test_handover_exposes_governance_evidence_proposal_without_decision(tmp_path):
+def test_handover_exposes_approved_governance_evidence_without_implementation(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -518,8 +518,9 @@ def test_handover_exposes_governance_evidence_proposal_without_decision(tmp_path
         1,
     )[1]
     normalized = " ".join(next_section.split())
-    assert "Implementierungsfreigabe für ADR-0064" in normalized
-    assert "sie wurde nicht erteilt" in normalized.lower()
+    assert "Implementierungsauftrag für ADR-0064" in normalized
+    assert "nachweisbaren Push des Freigabe-Commits" in normalized
+    assert "ADR-0065" in normalized
     assert "Capability Invocation" in normalized
     assert "B2-Runtime bleiben" in normalized
 

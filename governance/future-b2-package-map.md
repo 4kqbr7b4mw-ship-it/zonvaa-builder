@@ -36,9 +36,11 @@ B2-Pakets. Migration bleibt nicht freigegeben und nicht implementiert.
 
 ADR-0064 ratifiziert die Architektur für den unveränderten indirekten
 Nachweisstatus zu ADR-0059 und getrennte kanonische Orte für Governance-
-Entscheidungen und Prozessvorfälle. Er ist nicht implementierungsfreigegeben
-oder implementiert und erzeugt weder historischen Beschluss noch
-Incident-Artefakt.
+Entscheidungen und Prozessvorfälle. Ausschließlich die ratifizierte nicht
+ausführende Implementierung ist durch
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` begrenzt freigegeben; sie ist noch
+nicht implementiert und erzeugt weder historischen Beschluss noch Incident-
+Artefakt.
 
 Beide ADRs sind unabhängig und getrennt ratifizierbar. Keiner autorisiert ein
 Folgepaket. Capability Invocation und Runtime bleiben nicht begonnen und

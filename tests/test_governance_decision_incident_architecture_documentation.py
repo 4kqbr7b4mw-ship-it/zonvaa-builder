@@ -9,11 +9,27 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0064_is_ratified_but_not_approved_or_implemented():
+def test_adr_0064_is_ratified_approved_but_not_implemented():
     text = read(ADR)
     assert "ADR-0064 – Governance Decision and Incident Evidence Constitution v1" in text
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT" in text
     assert "GOV-RATIFICATION-ADR-0064-V1" in text
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1" in text
+
+
+def test_adr_0064_implementation_approval_is_scoped_and_non_executing():
+    text = read(ROOT / "governance/institutional-implementation-approval-adr-0064.md")
+    normalized = " ".join(text.split())
+    assert "INSTITUTIONELLE IMPLEMENTIERUNGSFREIGABE – GÜLTIG" in text
+    assert "03.08.2026, 20:36:55 Uhr" in text
+    assert "03.08.2026, 20:37:16 Uhr" in text
+    assert "## Freigegeben" in text
+    assert "## Ausdrücklich nicht freigegeben" in text
+    assert "weiterhin nicht implementiert" in text
+    assert "keinen Governance Decision Record" in normalized
+    assert "keine Governance Incident Evidence" in normalized
+    assert "ADR-0065" in text
+    assert "nach nachweisbarem Push" in text
 
 
 def test_adr_0064_ratification_record_separates_scope_and_times():
@@ -75,7 +91,7 @@ def test_canonical_locations_are_proposed_and_separate_from_runtime():
     text = read(ADR)
     assert "governance/decisions/" in text
     assert "governance/incidents/" in text
-    assert "erst durch Ratifizierung kanonisch" in text
+    assert "ratifizierten Verwahrorte sind kanonisch" in text
     assert "ADR-0052 Runtime Incidents" in text
     assert "Operational Memory" in text
 

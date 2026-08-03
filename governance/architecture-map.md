@@ -99,8 +99,10 @@ Capability Invocation und Runtime bleiben ausgeschlossen.
 
 ADR-0064 ist durch `GOV-RATIFICATION-ADR-0064-V1` ausschließlich als
 Governance-Decision- und Incident-Evidence-Verfassung ratifiziert. Sie bewahrt
-den ADR-0059-Nachweisstatus und ist nicht implementierungsfreigegeben oder
-implementiert.
+den ADR-0059-Nachweisstatus. Die getrennte Freigabe
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` erlaubt ausschließlich die
+ratifizierte nicht ausführende Implementierung; ADR-0064 ist weiterhin nicht
+implementiert. ADR-0065, Capability Invocation und Runtime bleiben gesperrt.
 
 ## Ebenengrenze
 

@@ -1,8 +1,10 @@
 # ADR-0064 – Governance Decision and Incident Evidence Constitution v1
 
-Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0064-V1`
+
+Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1`
 
 Die Ratifizierung bestätigt ausschließlich diese Governance-Architektur und
 den dokumentierten ADR-0059-Nachweisstatus. Sie ist keine institutionelle
@@ -182,8 +184,8 @@ Vorgeschlagen werden getrennte kanonische Dokumentationsbereiche:
 - unterstützende Evidenz verbleibt an ihrem vorhandenen kanonischen Ort und
   wird ausschließlich referenziert.
 
-Diese ADR legt keine Verzeichnisse, Datenbank, Sammlung oder Runtime an. Der
-Verwahrort wird erst durch Ratifizierung kanonisch und bleibt strikt von
+Diese ADR legt keine Verzeichnisse, Datenbank, Sammlung oder Runtime an. Die
+ratifizierten Verwahrorte sind kanonisch und bleiben strikt von
 ADR-0052 Runtime Incidents, Operational Memory sowie Nutzer- oder
 Mitarbeiterakten getrennt.
 
@@ -230,8 +232,8 @@ wären eigener Dokumentationsauftrag, Commit und Push.
 
 ## 22. Ausdrücklich ausgeschlossene Wirkungen
 
-Diese ADR ist keine Ratifizierung, Implementierungsfreigabe oder
-Implementierung. Sie erzeugt keine automatische Sammlung, Entscheidung,
+Diese ADR und ihre gesonderte Implementierungsfreigabe sind keine
+Implementierung. Sie erzeugen keine automatische Sammlung, Entscheidung,
 Korrektur, Sanktion, Sperre, Autorisierung, Runtime, Observation, Audit,
 Operational Memory, Metrics, Notifications, personenbezogene Verarbeitung
 oder Überwachung.
@@ -243,12 +245,14 @@ fehlende Evidenz, Verwahrort, sämtliche Negativregeln und den unveränderten
 ADR-0059-Nachweisstatus ausdrücklich bestätigen. Sie darf keine heutige
 ADR-0059-Bestätigung enthalten.
 
-## 24. Implementierungsfreigabeanforderungen
+## 24. Implementierungsfreigabe
 
-Eine spätere Implementierungsfreigabe muss separat erfolgen und nach
-`GOV-INSTITUTIONAL-DECISION-SCOPE-1` Freigegebenes und ausdrücklich nicht
-Freigegebenes getrennt nennen. Sie darf keine automatische Sammlung,
-Workflow-Engine oder bestehende Incident-Architektur erweitern.
+Die getrennte Implementierungsfreigabe
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` ist gültig. Sie begrenzt eine
+spätere Implementierung auf die ratifizierten immutable Verträge,
+geschlossenen Typen, Validatoren, Exporte, Tests und kanonische
+Dokumentationsanpassungen. Sie erlaubt keine automatische Sammlung,
+Workflow-Engine oder Erweiterung bestehender Incident-Architektur.
 
 ## 25. Test- und Evidenzanforderungen
 
@@ -260,8 +264,9 @@ Rekonstruktion erhalten bleiben.
 
 ## 26. Konsequenzen und Risiken
 
-Die Architektur schafft nach Ratifizierung einen eindeutigen, nichttechnischen
-Zielort, ohne Runtime-Incident- oder Betriebsarchitektur zu vermischen. Das
+Die Architektur schafft einen eindeutigen, nichttechnischen Zielort, ohne
+Runtime-Incident- oder Betriebsarchitektur zu vermischen. Das
 Risiko einer Verwendung als Mitarbeiterakte oder automatische Sanktion wird
-strukturell ausgeschlossen. Bis zur Ratifizierung bleiben Zielort und Verträge
-nur vorgeschlagen; bestehende Fundstellen bleiben maßgeblich.
+strukturell ausgeschlossen. Bis zu einem separaten Implementierungsauftrag
+bleiben Zielort und Verträge nicht implementiert; bestehende Fundstellen
+bleiben maßgeblich.

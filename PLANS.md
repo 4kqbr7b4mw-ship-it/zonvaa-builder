@@ -3508,8 +3508,10 @@ Operationen, Capability Invocation und Runtime bleiben ausgeschlossen.
   ratifizierbaren formalen ADR-0064 dokumentieren.
 - [x] menschliche Ratifizierung getrennt dokumentieren, ohne
   Implementierungsfreigabe, ADR-0059-Bestätigung oder Implementierung.
+- [x] institutionelle Implementierungsfreigabe als gegenwärtigen, getrennten
+  Beschluss dokumentieren, ohne Implementierung oder ADR-0059-Bestätigung.
 
-ADR-0064 ist ratifiziert. Nächster zulässiger Schritt für Paket B wäre
-ausschließlich eine gesonderte institutionelle Implementierungsfreigabe; sie
-ist nicht Bestandteil dieses Pakets. Capability Invocation, Runtime und
-produktive Verträge bleiben unverändert gesperrt.
+ADR-0064 ist ratifiziert und begrenzt implementierungsfreigegeben, aber nicht
+implementiert. Ein separater Implementierungsauftrag ist erst nach dem
+nachweisbaren Push des Freigabe-Commits zulässig. ADR-0065, Capability
+Invocation, Runtime und produktive Verträge bleiben unverändert gesperrt.

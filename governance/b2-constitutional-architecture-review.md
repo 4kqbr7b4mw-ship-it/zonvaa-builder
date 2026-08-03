@@ -235,7 +235,8 @@ Mapping-Blocker eingeschränkt. Der Governance-Evidenzblocker zu ADR-0059 und
 zum fehlenden kanonischen Governance-Incident-Zielort bleibt ebenfalls offen.
 
 ADR-0063 und ADR-0064 sind getrennt ratifiziert. Ausschließlich ADR-0063 ist
-begrenzt implementierungsfreigegeben, implementiert und validiert. ADR-0064
-bleibt nicht implementierungsfreigegeben und nicht implementiert.
+implementiert und validiert. ADR-0064 ist getrennt begrenzt
+implementierungsfreigegeben, aber nicht implementiert. Keine der Freigaben
+erzeugt eine fachliche Unterordnung oder Ausführungswirkung.
 Capability Invocation und Runtime wurden nicht begonnen; es wurde kein Vertrag
 oder ausführendes Modul dafür angelegt.

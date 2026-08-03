@@ -352,8 +352,10 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   heutige Bestätigung muss ihren eigenen gegenwärtigen Zeitpunkt führen und
   darf die Historie nicht rückwirkend legitimieren.
 - Eine allgemeine Governance Decision and Incident Evidence Architecture ist
-  mit ADR-0064 ratifiziert, aber nicht implementierungsfreigegeben oder
-  implementiert. Sie bleibt von Runtime Incidents, Operational Memory,
+  mit ADR-0064 ratifiziert und durch
+  `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` begrenzt
+  implementierungsfreigegeben, aber nicht implementiert. Sie bleibt von
+  Runtime Incidents, Operational Memory,
   Überwachung, Sanktion und personenbezogenen Profilen getrennt und besitzt
   keine Sperr-, Autorisierungs- oder Runtime-Wirkung.
 
@@ -371,11 +373,11 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-ADR-0063 benötigt als nächsten Repository-Schritt ausschließlich eine getrennte
-Commit- und danach Push-Freigabe. Daraus entsteht keine Freigabe für Migration,
-Capability Invocation oder Runtime.
+ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
+abgeschlossen. Daraus entsteht keine Freigabe für Migration, Capability
+Invocation oder Runtime.
 
-Als davon unabhängige Governance-Aktivität wäre ausschließlich eine gesonderte
-institutionelle Implementierungsfreigabe für ADR-0064 zulässig. Sie wurde
-nicht erteilt. Capability Invocation bleibt gesperrt.
+Als davon unabhängige Governance-Aktivität ist ausschließlich ein separater
+Implementierungsauftrag für ADR-0064 nach nachweisbarem Push des Freigabe-
+Commits zulässig. ADR-0065 und Capability Invocation bleiben gesperrt.
 B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

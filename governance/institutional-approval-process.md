@@ -119,11 +119,13 @@ Zeitpunkt dokumentiert werden und dürfte keine rückwirkende Lückenlosigkeit
 behaupten.
 
 ADR-0064 ratifiziert die getrennte Architektur für Governance Decision Record
-und Governance Incident Evidence. Der ADR ist nicht
-implementierungsfreigegeben oder implementiert. Bis zu einer gesonderten
-Implementierungsfreigabe bleiben
-ADR-0061-Prozessvorfall und fehlende ADR-0059-Evidenz an ihren bestehenden
-Fundstellen sichtbar; ADR-0052 wird nicht zweckentfremdet.
+und Governance Incident Evidence. Die gesonderte institutionelle
+Implementierungsfreigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` ist als
+gegenwärtiger menschlicher Beschluss dokumentiert; sie implementiert nichts.
+Ein separater Implementierungsauftrag setzt den nachweisbaren Push ihres
+Freigabe-Commits voraus. Bis zur Implementierung bleiben ADR-0061-
+Prozessvorfall und fehlende ADR-0059-Evidenz an ihren bestehenden Fundstellen
+sichtbar; ADR-0052 wird nicht zweckentfremdet. ADR-0065 bleibt gesperrt.
 
 ## Ratifizierungsstand ADR-0063
 
@@ -131,6 +133,6 @@ ADR-0063 ist durch `GOV-RATIFICATION-ADR-0063-V1` ausschließlich als
 Architektur ratifiziert. Die davon getrennte institutionelle
 Implementierungsfreigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` ist als
 gegenwärtiger menschlicher Beschluss dokumentiert. Sie implementiert nichts.
-Ein separater Implementierungsauftrag setzt den nachweisbaren Push ihres
-Freigabe-Commits voraus. ADR-0064 bleibt unabhängig und nicht
-implementierungsfreigegeben.
+Ein separater Implementierungsauftrag setzte den nachweisbaren Push ihres
+Freigabe-Commits voraus; Implementierung und Validierung sind abgeschlossen.
+ADR-0064 bleibt fachlich unabhängig.

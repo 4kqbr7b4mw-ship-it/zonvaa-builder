@@ -56,13 +56,14 @@ def test_decision_and_documentation_times_are_separate():
     assert "Erfassungszeitpunkt darf ihn nicht ersetzen" in text
 
 
-def test_package_b_status_references_are_separate_and_non_binding():
+def test_package_b_status_references_are_approved_but_not_implemented():
     readiness = read(ROOT / "governance/b2-readiness-statement.md")
     status = read(ROOT / "knowledge/project/current-product-status.md")
     plans = read(ROOT / "PLANS.md")
     for text in (readiness, status, plans):
         assert "ADR-0064" in text
-        assert "nicht implementierungsfreigegeben" in text.lower() or "nicht erteilt" in text.lower()
+        assert "implementierungsfreigegeben" in text.lower()
+        assert "nicht implementiert" in text.lower()
 
 
 def test_manifest_assigns_package_b_and_excludes_current_adr_0059_decision():
