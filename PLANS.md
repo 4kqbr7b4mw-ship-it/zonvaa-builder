@@ -3452,3 +3452,20 @@ technische Ausführung bleiben gesperrt.
   Identity → Provider Authorization validieren.
 - [x] Runtime, Invocation, interne Zeit- und Zustandsquellen sowie nicht
   ratifizierte UODL-Operationen strukturell ausschließen.
+
+# Architektur-Review B2-Verfassung – ADR-0059 bis ADR-0062
+
+- [x] Begriffe, Negativregeln, Validatorwiederverwendung, Evidence, Provenienz,
+  UODL, Public API und Ebenentrennung prüfen.
+- [x] vollständige Governance-Sequenz einschließlich ADR-0061-Prozessvorfall
+  und historischer Dokumentationslücken erfassen.
+- [x] Invarianten auf Implementierung sowie positive und negative Tests
+  abbilden.
+- [x] zwei nicht eigenmächtig lösbare Mapping-Fragen dokumentieren:
+  Corridor-`purpose` zu `B2PurposeScope` sowie `REFERENCE` zu
+  `REFERENCE_ONLY`.
+- [x] Readiness- und Prozessstatus mechanisch korrigieren, ohne Ratifizierung,
+  Freigabe oder produktive Semantik zu verändern.
+
+Das Review ist ausschließlich Maintenance. ADR-0063, Capability Invocation
+und B2-Runtime bleiben nicht begonnen und gesperrt.

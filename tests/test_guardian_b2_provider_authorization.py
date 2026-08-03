@@ -482,6 +482,47 @@ def test_provider_identity_mismatch_is_negative_without_mutation():
     assert values["authorization"] is original
 
 
+def test_provider_authorization_preserves_identity_semantics_and_identity():
+    identity = provider_identity()
+    responsibility_areas = identity.responsibility_areas
+    capability_descriptors = identity.capability_descriptors
+    authorization = provider_authorization(identity=identity)
+
+    result = B2ProviderAuthorizationValidator().validate(
+        authorization,
+        identity,
+        grant(),
+        corridor_package(),
+    )
+
+    assert result.provider_identity_reference is identity.identity_id
+    assert identity.responsibility_areas is responsibility_areas
+    assert identity.capability_descriptors is capability_descriptors
+    assert "provider_identity" not in {item.name for item in fields(result)}
+
+
+def test_provenance_cannot_replace_evaluation_evidence():
+    identity = provider_identity()
+    item = grant()
+    corridor = corridor_package()
+    valid = provider_authorization(identity, item, corridor)
+    invalid = B2ProviderAuthorization(
+        authorization_id=valid.authorization_id,
+        provider_identity=identity,
+        grant=item,
+        data_corridor=corridor,
+        evaluation_evidence_reference=valid.evaluation_evidence_reference,
+        evaluated_at=valid.evaluated_at,
+        provenance=replace(
+            valid.provenance,
+            evaluation_evidence_reference="b2-evidence:unrelated",
+        ),
+    )
+    result = evaluate(authorization=invalid)
+    assert result.decision is B2AuthorizationDecision.DENIED
+    assert B2ProviderAuthorizationReason.PROVENANCE_BINDING_MISMATCH in result.reasons
+
+
 def test_corridor_grant_aav_and_uodl_references_must_match():
     values = evaluation_inputs()
     other_grant = B2Grant(

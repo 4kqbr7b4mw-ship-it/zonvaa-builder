@@ -48,8 +48,8 @@ automatisch abgeleitet werden.
 - Das eigene institutionelle Implementierungsfreigabedokument
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` wurde gesondert erstellt und
   menschlich bestätigt.
-- Erst diese getrennte Bestätigung kann nun einen separaten, scopegebundenen
-  Codex-Auftrag tragen.
+- Der getrennte scopegebundene Codex-Auftrag, Implementierung, Review, Commit
+  und Push sind abgeschlossen.
 - Der bisherige gestoppte Implementierungsauftrag hat diese Schritte nicht
   ersetzt; es wurde keine Änderung, Freigabe, Implementierung oder Runtime
   daraus abgeleitet.
@@ -65,8 +65,14 @@ automatisch abgeleitet werden.
 - Die gesonderte institutionelle Implementierungsfreigabe
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` wurde als eigenständiger
   menschlicher Beschluss dokumentiert.
-- Erst diese getrennte Bestätigung kann einen separaten, scopegebundenen
-  Codex-Auftrag für die nicht ausführende Provider Identity tragen.
+- Der erste lokale Implementierungsbeginn erfolgte vor dem kanonischen Push des
+  Freigabe-Commits. Dieser bekannte Prozessvorfall wird nicht rückwirkend als
+  governancekonform umgedeutet.
+- Nach dem Freigabe-Push wurde ein neuer Implementierungsauftrag erteilt, der
+  Arbeitsstand vollständig geprüft und erst danach separat committed und
+  gepusht.
+- Ein eigenständiger kanonischer Governance-Incident-Zielort existiert nicht;
+  der Vorfall bleibt in diesem Ablauf und der ADR-0062-Freigabe referenziert.
 - ADR-0058, ADR-0059, ADR-0060 und alle bestehenden Sperren bleiben
   unverändert.
 
@@ -89,8 +95,16 @@ keine stillschweigende Freigabe.
 - Die gesonderte institutionelle Implementierungsfreigabe
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` wurde als eigenständiger
   menschlicher Beschluss dokumentiert.
-- Ein separater Codex-Implementierungsauftrag darf erst nach nachweisbarem Push
-  des Freigabe-Commits auf `origin/builder-reset-v2` erteilt werden. Diese
-  zusätzliche Reihenfolge verhindert eine Wiederholung des bei ADR-0061
-  dokumentierten Prozessvorfalls.
+- Freigabe-Push, separater Codex-Implementierungsauftrag, Implementierung,
+  Review sowie getrennte Commit- und Push-Freigaben sind abgeschlossen. Die
+  Reihenfolge verhinderte eine Wiederholung des bei ADR-0061 dokumentierten
+  Prozessvorfalls.
 - ADR-0058 bis ADR-0061 und alle bestehenden Sperren bleiben unverändert.
+
+## Maintenance-Review ADR-0059 bis ADR-0062
+
+`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` prüft die abgeschlossene
+nicht ausführende Grundlage. Es ist kein neuer institutioneller Beschluss und
+besitzt keine Freigabewirkung. Für ADR-0059 bleibt der fehlende eigenständige
+Ratifikationsnachweis als historische Dokumentationslücke sichtbar; für
+ADR-0061 bleibt der Prozessvorfall ohne erfundenes Incident-Ledger sichtbar.

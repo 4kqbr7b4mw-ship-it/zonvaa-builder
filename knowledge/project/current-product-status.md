@@ -319,6 +319,14 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Evidence ohne automatische Sperrwirkung im rein deklarativen
   Beobachtungsumfang. Sie implementiert und autorisiert weder Invocation,
   Runtime, Verarbeitung noch Betriebsintegration.
+- Das Maintenance-Review
+  `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bestätigt die strukturelle
+  Trennung von Corridor, Authority, Grant, Provider Identity, Provider
+  Authorization, Evaluation und Evidence. Produktive Verträge und Public API
+  bleiben unverändert. Offen sind ausschließlich zwei nicht eigenmächtig
+  lösbare Mapping-Fragen: Corridor-`purpose` zu typisiertem `B2PurposeScope`
+  sowie `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY`.
+  ADR-0063, Capability Invocation und B2-Runtime sind nicht begonnen.
 
 ## Bewusste Produktgrenzen
 
@@ -335,6 +343,6 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 ## Nächster noch nicht begonnener Schritt
 
 Als nächste B2-Aktivität ist ausschließlich die getrennte Prüfung und
-gegebenenfalls der gesonderte Commit der implementierten, nicht ausführenden
-Provider-Authorization-Grundlage zulässig. Capability Invocation bleibt
-gesperrt. B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
+gegebenenfalls ein gesonderter Commit-Auftrag für das Maintenance-Review
+zulässig. Capability Invocation bleibt gesperrt.
+B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

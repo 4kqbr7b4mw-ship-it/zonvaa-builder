@@ -80,6 +80,11 @@ Institutionelle Beschlüsse werden zusätzlich durch
 `GOV-INSTITUTIONAL-DECISION-SCOPE-1` begrenzt und müssen `Freigegeben` sowie
 `Ausdrücklich nicht freigegeben` getrennt dokumentieren.
 
+Das Maintenance-Dokument
+`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` prüft die bestehende Kette von
+Data Corridor bis Provider Authorization. Es ist nur Review-Nachweis, keine
+kanonische Fachregel, ADR, Ratifizierung oder Implementierungsfreigabe.
+
 ## Ebenengrenze
 
 C1 schützt. Institution garantiert. Authority beschreibt und begrenzt

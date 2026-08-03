@@ -47,11 +47,11 @@ Status: ADR-0062 im begrenzt freigegebenen, nicht ausführenden Scope implementi
 ## Freigabegrenze
 
 - Keine B2-Runtime ist autorisiert.
-- Ausschließlich die in
-  `governance/institutional-implementation-approval-adr-0059.md` abschließend
-  benannten ADR-0059-Verträge, Validatoren, Snapshots, Tests und Dokumente
-  dürfen implementiert werden.
-- Alle weiteren B2-Pakete bleiben gesperrt.
+- Ausschließlich die jeweils getrennt ratifizierten und institutionell
+  freigegebenen nicht ausführenden Scopes aus ADR-0059 bis ADR-0062 sind
+  implementiert. Keine dieser Freigaben erweitert eine andere.
+- Als weitere B2-Pakete gelten hier alle Pakete über ADR-0062 hinaus. Alle
+  weiteren B2-Pakete bleiben gesperrt.
 - Keine B2 Capability Invocation, Runtime, kein Workflow und kein weiterer
   Produktbaustein ist durch dieses Statement freigegeben.
 - Der abgeschlossene Betriebsblock erweitert keine B1-Macht und autorisiert
@@ -59,10 +59,12 @@ Status: ADR-0062 im begrenzt freigegebenen, nicht ausführenden Scope implementi
 
 ## Nächste zulässige Aktivität
 
-Nächster zulässiger Schritt ist ausschließlich die getrennte Prüfung und
-gegebenenfalls der gesonderte Commit der implementierten, nicht ausführenden
-Provider-Authorization-Grundlage. Capability Invocation, B2-Runtime und jede
-technische Ausführung bleiben gesperrt.
+Das Maintenance-Review
+`GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` prüft die bestehende Grundlage ohne
+Freigabewirkung. Nächster zulässiger Schritt ist ausschließlich dessen
+getrennte Prüfung und gegebenenfalls ein gesonderter Commit-Auftrag.
+Capability Invocation, B2-Runtime und jede technische Ausführung bleiben
+gesperrt.
 
 ## Statusmodell
 
@@ -84,5 +86,6 @@ technische Ausführung bleiben gesperrt.
 | Institutionelle Implementierungsfreigabe für ADR-0062 | GÜLTIG – BEGRENZTER SCOPE |
 | Freigabe-Commit ADR-0062 auf origin/builder-reset-v2 | ABGESCHLOSSEN |
 | Guardian B2 Provider Authorization v1 | IM NICHT AUSFÜHRENDEN SCOPE IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
+| Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER OFFEN |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |
