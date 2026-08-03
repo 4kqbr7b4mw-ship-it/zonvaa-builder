@@ -104,14 +104,15 @@ def test_no_governance_incident_implementation_or_silent_governance_rule():
     assert "Antwort: **Nein.**" in text
 
 
-def test_adr_0064_a1_is_separately_ratified_without_implementation_approval():
+def test_adr_0064_a1_is_separately_ratified_and_approved_without_implementation():
     supplement = " ".join(
         read(
             ROOT
             / "knowledge/adr/ADR-0064-A1-governance-decision-incident-closed-taxonomies-v1.md"
         ).split()
     )
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in supplement
+    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in supplement
     assert "GOV-RATIFICATION-ADR-0064-A1-V1" in supplement
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1" in supplement
     assert "ADR-0064 bleibt der ratifizierte Haupt-ADR" in supplement
     assert "ADR-0065" in supplement

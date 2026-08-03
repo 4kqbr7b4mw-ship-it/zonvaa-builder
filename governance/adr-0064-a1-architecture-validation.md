@@ -2,7 +2,11 @@
 
 Dokument-ID: `GOV-ADR-0064-A1-ARCHITECTURE-VALIDATION-V1`
 
-Status: **VORSCHLAG VALIDIERT – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **ARCHITEKTUR VALIDIERT – RATIFIZIERT – IMPLEMENTIERUNG FREIGEGEBEN – NICHT IMPLEMENTIERT**
+
+Ratifizierung und Implementierungsfreigabe sind getrennte spätere Beschlüsse.
+Sie ändern dieses Validierungsergebnis nicht, wenden den Stash nicht an und
+implementieren nichts.
 
 ## Geprüfter Scope
 

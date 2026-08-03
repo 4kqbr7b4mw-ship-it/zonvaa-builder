@@ -104,9 +104,9 @@ den ADR-0059-Nachweisstatus. Die getrennte Freigabe
 ratifizierte nicht ausführende Implementierung. Deren partieller, wegen
 fehlender geschlossener Typmengen blockierter Arbeitsstand ist reversibel im
 Stash gesichert und nicht kanonisch implementiert. ADR-0064-A1 ratifiziert
-diese Typmengen ausschließlich als Architektur; er ist nicht
-implementierungsfreigegeben und nicht implementiert. Die Ratifizierung wendet
-den Stash nicht an. ADR-0065, Capability
+diese Typmengen ausschließlich als Architektur. Die getrennte Freigabe
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1` ist gültig; ADR-0064-A1 ist
+weiterhin nicht implementiert und der Stash bleibt unangewendet. ADR-0065, Capability
 Invocation und Runtime bleiben gesperrt.
 
 ## Ebenengrenze

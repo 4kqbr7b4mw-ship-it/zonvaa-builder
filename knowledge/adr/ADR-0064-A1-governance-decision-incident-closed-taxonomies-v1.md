@@ -1,12 +1,15 @@
 # ADR-0064-A1 – Governance Decision and Incident Closed Taxonomies v1
 
-Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0064-A1-V1`
 
-Die Ratifizierung bestätigt ausschließlich diese geschlossenen Taxonomien als
-Architektur. Sie ist keine Implementierungsfreigabe, wendet den gesicherten
-Stash nicht an und nimmt die ADR-0064-Implementierung nicht wieder auf.
+Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1`
+
+Die Ratifizierung und die davon getrennte Implementierungsfreigabe bestätigen
+ausschließlich diese geschlossenen Taxonomien. Die Freigabe implementiert
+nichts, wendet den gesicherten Stash nicht an und nimmt die ADR-0064-
+Implementierung in ihrem Dokumentationsauftrag nicht wieder auf.
 
 ## 1. Bezug zu ADR-0064
 

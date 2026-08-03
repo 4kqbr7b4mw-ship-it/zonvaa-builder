@@ -116,8 +116,8 @@ PRODUCT_STATUS = """# Status
   ratifiziert und begrenzt implementierungsfreigegeben, wegen fehlender
   geschlossener Typmengen aber nicht vollständig implementiert. Der partielle
   Stand liegt ausschließlich in einem benannten Stash. ADR-0064-A1 ratifiziert
-  die Taxonomien ausschließlich als Architektur und ist nicht
-  implementierungsfreigegeben und nicht implementiert. Der Stash bleibt
+  die Taxonomien ausschließlich als Architektur und ist getrennt
+  implementierungsfreigegeben, aber nicht implementiert. Der Stash bleibt
   unangewendet. Die Freigabe erzeugt kein Governance-Artefakt und
   keine technische Macht.
 - Für ADR-0059 ist nur indirekte Governance-Evidenz vorhanden; eine
@@ -139,10 +139,10 @@ PRODUCT_STATUS = """# Status
 
 ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen; daraus folgt keine weitere Machtfreigabe.
-Als nächste Governance-Aktivität wäre ausschließlich eine gesonderte
-institutionelle Implementierungsfreigabe für ADR-0064-A1 zulässig. Der
-gesicherte Stash darf vor deren Dokumentation, Commit, Push und separatem
-Implementierungsauftrag nicht angewendet werden. ADR-0065 und Capability
+Als nächste Governance-Aktivität ist nach Commit und nachweisbarem Push der
+ADR-0064-A1-Implementierungsfreigabe ausschließlich ein separater
+Implementierungsauftrag mit vollständiger Neuprüfung des Stash zulässig. Der
+gesicherte Stash darf vorher nicht angewendet werden. ADR-0065 und Capability
 Invocation bleiben gesperrt; technische
 Ausführung und B2-Runtime bleiben gesperrt.
 """
@@ -515,7 +515,7 @@ def test_handover_exposes_completed_purpose_uodl_without_execution(tmp_path):
     assert "B2 Runtime" not in normalized
 
 
-def test_handover_exposes_adr_0064_a1_implementation_approval_as_next_gate(tmp_path):
+def test_handover_exposes_post_push_implementation_order_as_next_gate(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -525,7 +525,10 @@ def test_handover_exposes_adr_0064_a1_implementation_approval_as_next_gate(tmp_p
         1,
     )[1]
     normalized = " ".join(next_section.split())
-    assert "Implementierungsfreigabe für ADR-0064-A1" in normalized
+    assert "ADR-0064-A1-Implementierungsfreigabe" in normalized
+    assert "nachweisbarem Push" in normalized
+    assert "separater Implementierungsauftrag" in normalized
+    assert "vollständiger Neuprüfung" in normalized
     assert "Stash" in normalized
     assert "nicht angewendet werden" in normalized
     assert "ADR-0065" in normalized

@@ -10,12 +10,13 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0064_a1_is_ratified_but_not_approved_or_implemented():
+def test_adr_0064_a1_is_ratified_and_approved_but_not_implemented():
     text = read(ADR)
     normalized = " ".join(text.split())
     assert "ADR-0064-A1 – Governance Decision and Incident Closed Taxonomies v1" in text
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
     assert "GOV-RATIFICATION-ADR-0064-A1-V1" in text
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1" in text
     assert "ADR-0064 bleibt der ratifizierte Haupt-ADR" in normalized
 
 
@@ -124,7 +125,8 @@ def test_stash_is_not_implementation_or_approval():
 
 def test_validation_is_non_executing_and_null_question_is_no():
     text = read(VALIDATION)
-    assert "VORSCHLAG VALIDIERT – NICHT RATIFIZIERT" in text
+    assert "ARCHITEKTUR VALIDIERT – RATIFIZIERT – IMPLEMENTIERUNG FREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "wenden den Stash nicht an" in text
     assert "nicht angewendet" in text
     assert "Antwort: **Nein.**" in text
     assert "ADR-0065 bleibt nicht begonnen und gesperrt" in text

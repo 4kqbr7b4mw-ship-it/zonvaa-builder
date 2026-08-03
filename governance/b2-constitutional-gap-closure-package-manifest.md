@@ -52,7 +52,7 @@ Pakete und ändern den Paketschnitt nicht.
 
 ADR-0064-A1 ist ein getrennt ratifizierter Architekturzusatz zu Paket B. Er
 schließt ausschließlich dessen fehlende geschlossene Taxonomien und ist weder
-neues B2-Paket noch ADR-0065. Er ist nicht implementierungsfreigegeben und
+neues B2-Paket noch ADR-0065. Er ist getrennt implementierungsfreigegeben und
 nicht implementiert. Der partielle ADR-0064-Arbeitsstand bleibt
 vollständig im benannten Stash und gehört nicht zum Architekturpaket.
 
@@ -66,7 +66,8 @@ Gemeinsame Statusdateien führen ADR-0064-A1 ausschließlich in getrennten
 Abschnitten. Vorgesehene spätere Commit-Message:
 `Document ADR-0064-A1 closed governance taxonomies`. Architekturcommit und
 Ratifizierung bleiben getrennte Governance-Akte; daraus folgt keine
-Implementierungsfreigabe oder Stash-Anwendung.
+Stash-Anwendung. Die spätere Implementierungsfreigabe bleibt wiederum ein
+getrenntes Dokumentations-, Commit- und Push-Paket.
 
 Vorgesehene Commit-Message:
 

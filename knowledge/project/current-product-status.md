@@ -358,8 +358,9 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   nicht vollständig implementiert. Der partielle Arbeitsstand ist vollständig
   und reversibel in einem benannten Stash gesichert und nicht kanonische
   Implementierung. ADR-0064-A1 ratifiziert die fehlenden Taxonomien
-  ausschließlich als Architektur; er ist nicht implementierungsfreigegeben und
-  nicht implementiert. Der Stash bleibt unangewendet.
+  ausschließlich als Architektur und ist getrennt institutionell
+  implementierungsfreigegeben, aber nicht implementiert. Der Stash bleibt
+  unangewendet.
   Die Architektur bleibt von
   Runtime Incidents, Operational Memory,
   Überwachung, Sanktion und personenbezogenen Profilen getrennt und besitzt
@@ -383,9 +384,9 @@ ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen. Daraus entsteht keine Freigabe für Migration, Capability
 Invocation oder Runtime.
 
-Als davon unabhängige Governance-Aktivität wäre ausschließlich eine gesonderte
-institutionelle Implementierungsfreigabe für ADR-0064-A1 zulässig. Vor deren
-Dokumentation, Commit, Push und separatem Implementierungsauftrag darf der
-gesicherte Stash nicht angewendet werden. ADR-0065 und Capability Invocation
-bleiben gesperrt.
+Als davon unabhängige Governance-Aktivität ist nach Commit und nachweisbarem
+Push der gesonderten ADR-0064-A1-Implementierungsfreigabe ausschließlich ein
+separater Implementierungsauftrag mit vollständiger Neuprüfung des Stash
+zulässig. Bis dahin darf der gesicherte Stash nicht angewendet werden.
+ADR-0065 und Capability Invocation bleiben gesperrt.
 B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

@@ -66,11 +66,12 @@ def test_stash_identity_and_recovery_sequence_are_documented():
         assert phrase in text
 
 
-def test_adr_status_is_ratified_but_not_approved_or_implemented():
+def test_ratification_remains_separate_from_later_implementation_approval():
     text = read(ADR)
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    ratification = read(RATIFICATION)
+    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
     assert "GOV-RATIFICATION-ADR-0064-A1-V1" in text
-    assert "keine Implementierungsfreigabe" in text
+    assert "KEINE IMPLEMENTIERUNGSFREIGABE" in ratification
     assert "Stash nicht an" in text
 
 

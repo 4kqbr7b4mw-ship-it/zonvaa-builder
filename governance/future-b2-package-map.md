@@ -43,7 +43,9 @@ nicht vollständig implementiert und erzeugt weder historischen Beschluss noch
 Incident-Artefakt. Der blockierte partielle Arbeitsstand ist ausschließlich
 reversibel in einem benannten Stash gesichert. ADR-0064-A1 ratifiziert die
 fehlenden geschlossenen Taxonomien ausschließlich als Architektur, ohne
-Implementierungsfreigabe, Implementierung oder Stash-Anwendung.
+Implementierung oder Stash-Anwendung. Die getrennte institutionelle
+Implementierungsfreigabe ist gültig; ein Implementierungsauftrag bleibt bis
+zu Commit und Push der Freigabe gesperrt.
 
 Beide ADRs sind unabhängig und getrennt ratifizierbar. Keiner autorisiert ein
 Folgepaket. Capability Invocation und Runtime bleiben nicht begonnen und
