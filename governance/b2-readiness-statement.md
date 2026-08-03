@@ -31,6 +31,9 @@ Status: ADR-0060 ratifiziert und begrenzt implementierungsfreigegeben
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` erlaubt ausschließlich die
   nicht ausführenden Authority-, Grant-, Evaluation- und Evidence-Verträge aus
   ADR-0060. Alle späteren B2-Machtstufen bleiben gesperrt.
+- ADR-0061 Guardian B2 Provider Identity v1 ist ausschließlich als
+  Architekturentscheidung vorgeschlagen. Sie ist nicht ratifiziert, nicht
+  implementierungsfreigegeben und implementiert keine Provider Identity.
 
 ## Freigabegrenze
 
@@ -40,16 +43,19 @@ Status: ADR-0060 ratifiziert und begrenzt implementierungsfreigegeben
   benannten ADR-0059-Verträge, Validatoren, Snapshots, Tests und Dokumente
   dürfen implementiert werden.
 - Alle weiteren B2-Pakete bleiben gesperrt.
-- Kein B2-Provider, Grant, Invocation, Workflow oder Produktbaustein ist durch
-  dieses Statement freigegeben.
+- Kein B2-Provider, keine Provider Authorization, Invocation, Runtime, kein
+  Workflow und kein weiterer Produktbaustein ist durch dieses Statement
+  freigegeben.
 - Der abgeschlossene Betriebsblock erweitert keine B1-Macht und autorisiert
   weder B2 noch B3.
 
 ## Nächste zulässige Aktivität
 
-Nächster zulässiger Schritt ist ausschließlich ein separater Codex-Auftrag im
-geschlossenen Scope von `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`.
-B2-Runtime, Provider, Invocation und jede technische Grant-Ausführung bleiben
+Nächster zulässiger Schritt für ADR-0061 ist ausschließlich die menschliche
+Architekturprüfung und gegebenenfalls eine ausdrückliche Ratifizierungsentscheidung.
+Eine Implementierung verlangt danach eine gesonderte institutionelle
+Implementierungsfreigabe und einen separaten Codex-Auftrag. B2-Runtime,
+Provider Authorization, Invocation und jede technische Grant-Ausführung bleiben
 gesperrt.
 
 ## Statusmodell
@@ -65,5 +71,7 @@ gesperrt.
 | B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |
 | ADR-0060 B2 Authority and Authorization | RATIFIZIERT |
 | Institutionelle Implementierungsfreigabe für ADR-0060 | GÜLTIG – BEGRENZTER SCOPE |
+| ADR-0061 Guardian B2 Provider Identity | VORGESCHLAGEN – NICHT RATIFIZIERT |
+| Institutionelle Implementierungsfreigabe für ADR-0061 | NICHT ERTEILT |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

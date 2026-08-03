@@ -3332,6 +3332,33 @@ wurde deshalb nicht in einem erfundenen Logbuch persistiert.
 Der Kandidat bleibt ruhend. Er ist kein geplantes Paket und kein zulässiger
 nächster Implementierungsschritt.
 
+# ADR-0061 – Guardian B2 Provider Identity v1
+
+## Ziel und Grenzen
+
+Die eigenständige, nicht personenbezogene B2 Provider Identity ausschließlich
+als vorgeschlagene Architekturentscheidung dokumentieren. Keine Klasse, API,
+Authorization, Invocation, Runtime, Verarbeitung oder Implementierungsfreigabe.
+
+## Arbeitsschritte und Fortschritt
+
+- [x] ADR-Nummerierung und bestehendes B1 Provider Identity Model prüfen.
+- [x] fünf Provider Classes für v1 als vollständige geschlossene Menge festlegen.
+- [x] Professional Role Unit ausdrücklich von natürlichen Personen trennen.
+- [x] Verantwortungsbereiche und Capability-Descriptoren ohne Freitext schließen.
+- [x] institutionelle, nicht personenbezogene Provenienz mit explizitem
+  Erstellungszeitpunkt definieren.
+- [x] keine neue Schema-Versionierung einführen; vorhandene deklarative
+  Vorgängerreferenzkonvention übernehmen.
+- [x] B1→B2-Konvertierung, Authorization, Invocation, Runtime, Schlüssel- und
+  Inhaltszugriff strukturell ausschließen.
+- [x] Referenzszenarien, Architekturübersicht, Readiness, Status und Handover
+  dokumentieren.
+
+ADR-0061 bleibt `VORGESCHLAGEN – NICHT RATIFIZIERT`. Ratifizierung,
+institutionelle Implementierungsfreigabe und Codex-Auftrag bleiben getrennte
+menschliche Entscheidungen.
+
 # Guardian Life Domain Model – offener Architekturkandidat
 
 ## Status und Grenze
