@@ -322,11 +322,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Das Maintenance-Review
   `GOV-B2-CONSTITUTIONAL-REVIEW-0059-0062-V1` bestätigt die strukturelle
   Trennung von Corridor, Authority, Grant, Provider Identity, Provider
-  Authorization, Evaluation und Evidence. Produktive Verträge und Public API
-  bleiben unverändert. Offen sind zwei nicht eigenmächtig lösbare
-  Mapping-Fragen – Corridor-`purpose` zu typisiertem `B2PurposeScope` sowie
-  `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY` – und ein
-  Governance-Evidenzblocker zu ADR-0059 und Governance-Prozessvorfällen.
+  Authorization, Evaluation und Evidence. Die zwei damaligen Mapping-Blocker
+  – Corridor-`purpose` zu typisiertem `B2PurposeScope` sowie
+  `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY` – sind durch
+  ADR-0063 geschlossen. Der Governance-Evidenzblocker zu ADR-0059 und
+  Governance-Prozessvorfällen bleibt ausschließlich durch ADR-0064
+  architektonisch entschieden und nicht implementiert.
   ADR-0063 und ADR-0064 sind ausschließlich als getrennte Architekturen
   ratifiziert. Capability Invocation und B2-Runtime sind nicht begonnen.
 ### Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
@@ -338,7 +339,10 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   implementiert. ADR-0063 ist durch `GOV-RATIFICATION-ADR-0063-V1`
   ausschließlich als Architektur ratifiziert. Die davon getrennte Freigabe
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` erlaubt den ratifizierten
-  nicht ausführenden Implementierungsscope. Implementiert wurde er noch nicht.
+  nicht ausführenden Implementierungsscope. Dieser ist mit immutable Purpose-
+  Bindung, UODL-Mapping, getrennter Evidence, zustandslosen Validatoren und
+  einer Referenzintegration implementiert und validiert. Bestehende freie
+  Purpose-Werte werden nicht migriert.
 
 ### Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 
@@ -367,9 +371,9 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 
 ## Nächster noch nicht begonnener Schritt
 
-Als nächste B2-Aktivität für ADR-0063 ist ausschließlich ein separater
-Implementierungsauftrag nach dem nachweisbaren Push des Freigabe-Commits
-zulässig.
+ADR-0063 benötigt als nächsten Repository-Schritt ausschließlich eine getrennte
+Commit- und danach Push-Freigabe. Daraus entsteht keine Freigabe für Migration,
+Capability Invocation oder Runtime.
 
 Als davon unabhängige Governance-Aktivität wäre ausschließlich eine gesonderte
 institutionelle Implementierungsfreigabe für ADR-0064 zulässig. Sie wurde

@@ -28,8 +28,9 @@ Scope implementiert. Kein weiteres B2-Paket ist freigegeben.
 
 ADR-0063 ratifiziert eine kanonische Purpose-Bindung und eine explizite UODL-
 Ebenenabbildung. Ausschließlich dieser nicht ausführende Scope ist durch
-`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` begrenzt freigegeben, aber nicht
-implementiert; daraus folgt keine Freigabe eines späteren B2-Pakets.
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` begrenzt freigegeben,
+implementiert und validiert; daraus folgt keine Freigabe eines späteren
+B2-Pakets. Migration bleibt nicht freigegeben und nicht implementiert.
 
 ### Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 

@@ -55,7 +55,8 @@ def test_review_contains_test_matrix_and_keeps_execution_unstarted():
     text = " ".join(read(REVIEW).split())
     assert "| Kanonische Invariante | ADR | Implementierung | Positiver Test |" in text
     assert "ADR-0063 und ADR-0064 sind getrennt ratifiziert" in text
-    assert "Ausschließlich ADR-0063 ist begrenzt implementierungsfreigegeben" in text
+    assert "Ausschließlich ADR-0063 ist" in text
+    assert "implementiert und validiert" in text
     assert "Capability Invocation und Runtime wurden nicht begonnen" in text
     assert (ROOT / "knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md").is_file()
     assert not list((ROOT / "governance").glob("*b2*capability*invocation*.py"))

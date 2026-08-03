@@ -90,7 +90,10 @@ kanonische Fachregel, ADR, Ratifizierung oder Implementierungsfreigabe.
 ADR-0063 ist durch `GOV-RATIFICATION-ADR-0063-V1` ausschließlich als Purpose-
 und UODL-Bindungsverfassung ratifiziert. Die getrennte Freigabe
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` erlaubt ausschließlich den
-ratifizierten nicht ausführenden Scope. ADR-0063 ist nicht implementiert.
+ratifizierten nicht ausführenden Scope. Dieser ist durch immutable Purpose-
+Bindung, UODL-Mapping, getrennte Evidence und zustandslose Validatoren in
+`governance/b2_purpose_uodl_binding.py` implementiert und validiert. Migration,
+Capability Invocation und Runtime bleiben ausgeschlossen.
 
 ### ADR-0064 – Governance Decision and Incident Evidence Constitution
 

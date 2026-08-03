@@ -12,9 +12,11 @@ def read(path):
 def test_adr_0063_is_ratified_and_approved_but_not_implemented():
     text = read(ADR)
     assert "ADR-0063 – B2 Purpose and UODL Binding Constitution v1" in text
-    assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT" in text
     assert "GOV-RATIFICATION-ADR-0063-V1" in text
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1" in text
+    assert "governance/b2_purpose_uodl_binding.py" in text
+    assert "keinen Migrationspfad" in text
 
 
 def test_adr_0063_implementation_approval_is_current_scoped_and_non_executing():

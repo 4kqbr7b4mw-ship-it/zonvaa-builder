@@ -228,6 +228,26 @@ __all__ = [
     "B2T4GrantReceipt",
     "B2UODLBinding",
     "B2UODLOperation",
+    "B2_PURPOSE_UODL_BINDING_CONTRACT_VERSION",
+    "B2BindingEvaluationOutcome",
+    "B2BindingObservationScope",
+    "B2BindingProvenance",
+    "B2CorridorPurposeReference",
+    "B2PurposeBinding",
+    "B2PurposeBindingEvidence",
+    "B2PurposeBindingId",
+    "B2PurposeBindingRule",
+    "B2PurposeBindingValidator",
+    "B2PurposeComparisonRelation",
+    "B2PurposeUODLBindingFoundation",
+    "B2PurposeUODLBindingFoundationValidator",
+    "B2PurposeUODLBindingValidationError",
+    "B2UODLLayerRelation",
+    "B2UODLMapping",
+    "B2UODLMappingEvidence",
+    "B2UODLMappingId",
+    "B2UODLMappingValidator",
+    "B2UODLPairRule",
     "B2CapabilityDescriptor",
     "B2GovernanceDecisionId",
     "B2InstitutionalSourceId",
@@ -505,6 +525,32 @@ _B2_PROVIDER_AUTHORIZATION_EXPORTS = frozenset(
 )
 
 
+_B2_PURPOSE_UODL_BINDING_EXPORTS = frozenset(
+    {
+        "B2_PURPOSE_UODL_BINDING_CONTRACT_VERSION",
+        "B2BindingEvaluationOutcome",
+        "B2BindingObservationScope",
+        "B2BindingProvenance",
+        "B2CorridorPurposeReference",
+        "B2PurposeBinding",
+        "B2PurposeBindingEvidence",
+        "B2PurposeBindingId",
+        "B2PurposeBindingRule",
+        "B2PurposeBindingValidator",
+        "B2PurposeComparisonRelation",
+        "B2PurposeUODLBindingFoundation",
+        "B2PurposeUODLBindingFoundationValidator",
+        "B2PurposeUODLBindingValidationError",
+        "B2UODLLayerRelation",
+        "B2UODLMapping",
+        "B2UODLMappingEvidence",
+        "B2UODLMappingId",
+        "B2UODLMappingValidator",
+        "B2UODLPairRule",
+    }
+)
+
+
 _B2_DATA_CORRIDOR_EXPORTS = frozenset(
     name
     for name in __all__
@@ -512,6 +558,7 @@ _B2_DATA_CORRIDOR_EXPORTS = frozenset(
         name.startswith("B2")
         and name not in _B2_AUTHORIZATION_EXPORTS
         and name not in _B2_PROVIDER_AUTHORIZATION_EXPORTS
+        and name not in _B2_PURPOSE_UODL_BINDING_EXPORTS
     )
     or name.startswith("ALLOWED_B2_")
     or name.startswith("PROHIBITED_B2_")
@@ -537,6 +584,12 @@ def __getattr__(name):
         from governance import b2_provider_authorization
 
         value = getattr(b2_provider_authorization, name)
+        globals()[name] = value
+        return value
+    if name in _B2_PURPOSE_UODL_BINDING_EXPORTS:
+        from governance import b2_purpose_uodl_binding
+
+        value = getattr(b2_purpose_uodl_binding, name)
         globals()[name] = value
         return value
     if name in _B2_DATA_CORRIDOR_EXPORTS:

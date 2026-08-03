@@ -25,7 +25,7 @@ Exklusive Dateien:
 Zugeordneter Scope: einzige Purpose-Verfassung `B2PurposeScope`, typisierter
 Purpose-Bindungsnachweis, Halbordnung, fail closed, UODL-Ebenentrennung und
 exakt ein geschlossenes Mapping-Paar. ADR-0063 ist ratifiziert, begrenzt
-implementierungsfreigegeben und nicht implementiert. Ratifizierung und
+implementierungsfreigegeben, implementiert und validiert. Ratifizierung und
 Freigabe sind eigenständige Governance-Pakete und ändern den Paketschnitt nicht.
 
 Vorgesehene Commit-Message:

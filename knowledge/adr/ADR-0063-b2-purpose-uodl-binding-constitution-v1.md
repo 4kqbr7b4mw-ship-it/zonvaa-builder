@@ -1,6 +1,6 @@
 # ADR-0063 – B2 Purpose and UODL Binding Constitution v1
 
-Status: **RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0063-V1`
 
@@ -188,18 +188,19 @@ unbekannte Werte, keine Textinterpretation oder Ähnlichkeitszuordnung, eine
 eigene Implementierungsfreigabe, eigene Tests und nachvollziehbare
 Migrations-Evidence.
 
-## 18. Offene institutionelle Entscheidungen
+## 18. Institutioneller Stand
 
-Offen sind die menschliche Ratifizierung dieses ADR sowie – davon getrennt –
-eine mögliche institutionelle Implementierungsfreigabe. Eine Migration wäre
-ein weiterer gesonderter Beschluss. Keine dieser Entscheidungen wird hier
-gefällt.
+Ratifizierung und begrenzte Implementierungsfreigabe sind kanonisch
+dokumentiert. Eine Migration wäre ein weiterer gesonderter Beschluss und ist
+weder freigegeben noch implementiert.
 
 ## 19. Implementierungsgrenze
 
-Diese ADR implementiert keinen Vertrag, Validator, Mapper, Adapter oder
-Migrationspfad. Ein späterer Codex-Auftrag darf erst nach Ratifizierung,
-gesonderter Implementierungsfreigabe und deren kanonischem Push erfolgen.
+Die Implementierung liegt in `governance/b2_purpose_uodl_binding.py`. Sie
+enthält immutable Purpose-Bindungs- und UODL-Mapping-Verträge, getrennte
+Evidence-Strukturen, zustandslose Validatoren sowie eine Referenzintegration
+um die unveränderte ADR-0062-Foundation. Sie enthält keinen Migrationspfad,
+keine Invocation und keine Runtime.
 
 ## 20. Ratifikationsanforderungen
 
@@ -224,9 +225,10 @@ und Runtime-Wirkung. Objektidentität und Determinismus sind nachzuweisen.
 
 ## 23. Konsequenzen
 
-Die End-to-End-Verfassung erhält eine beweisbare Bindungsstelle ohne zweite
-Purpose- oder UODL-Wahrheit. Bis zur Ratifizierung bleiben beide Review-Blocker
-offen und alle produktiven Verträge unverändert.
+Die End-to-End-Verfassung besitzt eine beweisbare Bindungsstelle ohne zweite
+Purpose- oder UODL-Wahrheit. Die zwei Review-Blocker sind technisch
+geschlossen; die Verträge aus ADR-0059 bis ADR-0062 bleiben semantisch
+unverändert.
 
 ## 24. Risiken
 

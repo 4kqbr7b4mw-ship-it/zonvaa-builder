@@ -3486,10 +3486,13 @@ B2-Runtime bleiben nicht begonnen und gesperrt.
   Implementierungsfreigabe oder Implementierung.
 - [x] institutionelle Implementierungsfreigabe als gegenwärtigen, getrennten
   Beschluss dokumentieren, ohne Implementierung.
+- [x] immutable Purpose-Bindung, UODL-Mapping, getrennte Evidence,
+  zustandslose Validatoren und die ADR-0059-bis-ADR-0063-Referenzintegration
+  implementieren und validieren.
 
-ADR-0063 ist ratifiziert und begrenzt implementierungsfreigegeben, aber nicht
-implementiert. Ein Implementierungsauftrag darf erst nach nachweisbarem Push
-des Freigabe-Commits erteilt werden.
+ADR-0063 ist ratifiziert, begrenzt implementierungsfreigegeben, implementiert
+und validiert. Migration, zusätzliche Purpose Scopes, zusätzliche UODL-
+Operationen, Capability Invocation und Runtime bleiben ausgeschlossen.
 
 # Paket B – ADR-0064 Governance Decision and Incident Evidence Constitution
 
