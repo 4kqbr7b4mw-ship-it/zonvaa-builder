@@ -44,17 +44,19 @@ Exklusive Dateien:
 
 Zugeordneter Scope: ADR-0059-Nachweisstatus, Decision Record, Governance
 Incident Evidence, Zeit- und Evidenztrennung sowie vorgeschlagener kanonischer
-Verwahrort. ADR-0064 ist ratifiziert, begrenzt implementierungsfreigegeben und
-nicht implementiert. Ratifizierung und Freigabe sind eigenständige Governance-
-Pakete und ändern den Paketschnitt nicht.
+Verwahrort. ADR-0064 ist ratifiziert, begrenzt implementierungsfreigegeben,
+gemeinsam mit ADR-0064-A1 vollständig implementiert und validiert.
+Ratifizierung und Freigabe sind
+eigenständige Governance-Pakete und ändern den Paketschnitt nicht.
 
 ### Recovery-Ergänzung ADR-0064-A1
 
 ADR-0064-A1 ist ein getrennt ratifizierter Architekturzusatz zu Paket B. Er
 schließt ausschließlich dessen fehlende geschlossene Taxonomien und ist weder
-neues B2-Paket noch ADR-0065. Er ist getrennt implementierungsfreigegeben und
-nicht implementiert. Der partielle ADR-0064-Arbeitsstand bleibt
-vollständig im benannten Stash und gehört nicht zum Architekturpaket.
+neues B2-Paket noch ADR-0065. Er ist getrennt implementierungsfreigegeben,
+implementiert und validiert. Der partielle ADR-0064-Arbeitsstand wurde
+kontrolliert angewendet und neu geprüft; der unveränderte Stash bleibt
+Recovery-Evidence und gehört nicht zum kanonischen Implementierungspaket.
 
 Exklusive Dateien:
 

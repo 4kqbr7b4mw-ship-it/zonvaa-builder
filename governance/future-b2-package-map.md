@@ -39,13 +39,11 @@ Nachweisstatus zu ADR-0059 und getrennte kanonische Orte für Governance-
 Entscheidungen und Prozessvorfälle. Ausschließlich die ratifizierte nicht
 ausführende Implementierung ist durch
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` begrenzt freigegeben; sie ist noch
-nicht vollständig implementiert und erzeugt weder historischen Beschluss noch
-Incident-Artefakt. Der blockierte partielle Arbeitsstand ist ausschließlich
-reversibel in einem benannten Stash gesichert. ADR-0064-A1 ratifiziert die
-fehlenden geschlossenen Taxonomien ausschließlich als Architektur, ohne
-Implementierung oder Stash-Anwendung. Die getrennte institutionelle
-Implementierungsfreigabe ist gültig; ein Implementierungsauftrag bleibt bis
-zu Commit und Push der Freigabe gesperrt.
+vollständig implementiert und validiert. ADR-0064-A1 liefert die getrennt
+ratifizierten geschlossenen Taxonomien. Vollständige Records, Validatoren und
+Public API bleiben rein dokumentierend; es wurde weder ein historischer
+Beschluss noch ein Incident-Artefakt erzeugt. Der kontrolliert angewendete und
+neu geprüfte Recovery-Stash bleibt unverändert erhalten.
 
 Beide ADRs sind unabhängig und getrennt ratifizierbar. Keiner autorisiert ein
 Folgepaket. Capability Invocation und Runtime bleiben nicht begonnen und

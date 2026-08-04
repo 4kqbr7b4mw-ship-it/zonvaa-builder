@@ -122,10 +122,11 @@ ADR-0064 ratifiziert die getrennte Architektur für Governance Decision Record
 und Governance Incident Evidence. Die gesonderte institutionelle
 Implementierungsfreigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` ist als
 gegenwärtiger menschlicher Beschluss dokumentiert; sie implementiert nichts.
-Ein separater Implementierungsauftrag setzt den nachweisbaren Push ihres
-Freigabe-Commits voraus. Bis zur Implementierung bleiben ADR-0061-
-Prozessvorfall und fehlende ADR-0059-Evidenz an ihren bestehenden Fundstellen
-sichtbar; ADR-0052 wird nicht zweckentfremdet. ADR-0065 bleibt gesperrt.
+Der separate Implementierungsauftrag folgte nach dem nachweisbaren Push der
+Freigabe-Commits. ADR-0064 und ADR-0064-A1 sind vollständig implementiert und
+validiert; ADR-0061-Prozessvorfall und fehlende ADR-0059-Evidenz bleiben ohne
+rückwirkende Umdeutung sichtbar. ADR-0052 wird nicht zweckentfremdet.
+ADR-0065 bleibt gesperrt.
 
 ## Ratifizierungsstand ADR-0063
 
@@ -140,13 +141,13 @@ ADR-0064 bleibt fachlich unabhängig.
 ## Ergänzungsstatus ADR-0064-A1
 
 Der erste ADR-0064-Implementierungsversuch hat fehlende ratifizierte
-Taxonomien sichtbar gemacht. Sein vollständiger Arbeitsstand ist reversibel in
-einem benannten Stash gesichert und wird nicht angewendet. ADR-0064-A1
+Taxonomien sichtbar gemacht. Sein vollständiger Arbeitsstand wurde reversibel
+in einem benannten Stash gesichert. ADR-0064-A1
 dokumentiert die inzwischen durch `GOV-RATIFICATION-ADR-0064-A1-V1`
 ratifizierten geschlossenen Typmengen. Die Ratifizierung ist keine
 Implementierungsfreigabe, keine Implementierung und keine Stash-Anwendung. Die
 getrennte Freigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1` ist als
-gegenwärtiger menschlicher Beschluss dokumentiert und implementiert nichts.
-Eine Wiederaufnahme verlangt Commit und Push dieser Freigabe, einen neuen
-Implementierungsauftrag und die vollständige Neuprüfung des Stash. ADR-0065
-bleibt gesperrt.
+gegenwärtiger menschlicher Beschluss dokumentiert. Nach Commit und Push wurde
+ein neuer Implementierungsauftrag erteilt, der Stash kontrolliert angewendet
+und vollständig gegen beide ADRs neu geprüft. Er bleibt unverändert als
+Recovery-Evidence erhalten. ADR-0065 bleibt gesperrt.

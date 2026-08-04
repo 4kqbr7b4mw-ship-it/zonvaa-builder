@@ -2,7 +2,7 @@
 
 Stand: 03.08.2026
 
-Status: ADR-0063 implementiert und validiert; ADR-0064 begrenzt implementierungsfreigegeben
+Status: ADR-0063, ADR-0064 und ADR-0064-A1 implementiert und validiert
 
 ## Bestätigter Stand
 
@@ -77,12 +77,11 @@ ADR-0064 entscheidet den Governance-Evidenzblocker als ratifizierte
 Governance-Architektur. `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` gibt
 ausschließlich deren nicht ausführende spätere Implementierung frei. Der
 ADR-0059-Nachweisstatus bleibt Kategorie 3; Decision Record, Incident Evidence
-und Verwahrorte bleiben nicht vollständig implementiert. Der blockierte
-partielle Arbeitsstand ist ausschließlich in einem benannten Stash gesichert.
-ADR-0064-A1 ratifiziert die fehlenden geschlossenen Taxonomien ausschließlich
-als Architektur und ist getrennt institutionell implementierungsfreigegeben,
-aber nicht implementiert. Der Stash bleibt unangewendet; ein Auftrag ist erst
-nach Commit und Push der Freigabe zulässig.
+und Verwahrorte sind gemeinsam mit ADR-0064-A1 vollständig implementiert und
+validiert. Die geschlossenen Taxonomien, vollständigen Records, Evidence-
+Grenzen und zustandslosen Validatoren besitzen keine automatische Wirkung. Der
+Recovery-Stash wurde kontrolliert angewendet und neu geprüft, bleibt mit
+unveränderter OID erhalten.
 
 Capability Invocation, B2-Runtime und jede technische Ausführung bleiben
 gesperrt. Die ADR-0064-Freigabe erzeugt selbst kein Governance-Artefakt.
@@ -110,7 +109,7 @@ gesperrt. Die ADR-0064-Freigabe erzeugt selbst kein Governance-Artefakt.
 | Architektur-Review ADR-0059 bis ADR-0062 | MAINTENANCE-REVIEW ABGESCHLOSSEN – ZWEI ARCHITEKTURBLOCKER UND EIN GOVERNANCE-EVIDENZBLOCKER OFFEN |
 | ADR-0063 B2 Purpose and UODL Binding Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
 | ADR-0059-Ratifikationsnachweis | NUR INDIREKTE GOVERNANCE-EVIDENZ – HEUTIGE BESTÄTIGUNGSENTSCHEIDUNG AUSSTEHEND |
-| ADR-0064 Governance Decision and Incident Evidence Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT |
-| ADR-0064-A1 Closed Taxonomies | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT |
+| ADR-0064 Governance Decision and Incident Evidence Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
+| ADR-0064-A1 Closed Taxonomies | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
 | Alle weiteren B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

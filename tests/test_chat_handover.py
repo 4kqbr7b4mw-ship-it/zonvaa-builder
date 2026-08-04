@@ -113,13 +113,11 @@ PRODUCT_STATUS = """# Status
   oder Runtime.
 - ADR-0064 Governance Decision and Incident Evidence Constitution macht ausschließlich den
   Governance-Evidenzblocker entscheidungsreif. Die Architektur ist
-  ratifiziert und begrenzt implementierungsfreigegeben, wegen fehlender
-  geschlossener Typmengen aber nicht vollständig implementiert. Der partielle
-  Stand liegt ausschließlich in einem benannten Stash. ADR-0064-A1 ratifiziert
-  die Taxonomien ausschließlich als Architektur und ist getrennt
-  implementierungsfreigegeben, aber nicht implementiert. Der Stash bleibt
-  unangewendet. Die Freigabe erzeugt kein Governance-Artefakt und
-  keine technische Macht.
+  ratifiziert und begrenzt implementierungsfreigegeben. Gemeinsam mit der
+  getrennt ratifizierten ADR-0064-A1 sind geschlossene Taxonomien, vollständige
+  Decision- und Incident-Verträge, Validatoren und Public API implementiert
+  und validiert. Der Recovery-Stash wurde kontrolliert angewendet, vollständig
+  neu geprüft und unverändert erhalten. Es entsteht keine technische Macht.
 - Für ADR-0059 ist nur indirekte Governance-Evidenz vorhanden; eine
   historische Ratifikationszeit und Entscheidungsrolle bleiben unbekannt.
 
@@ -139,11 +137,9 @@ PRODUCT_STATUS = """# Status
 
 ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen; daraus folgt keine weitere Machtfreigabe.
-Als nächste Governance-Aktivität ist nach Commit und nachweisbarem Push der
-ADR-0064-A1-Implementierungsfreigabe ausschließlich ein separater
-Implementierungsauftrag mit vollständiger Neuprüfung des Stash zulässig. Der
-gesicherte Stash darf vorher nicht angewendet werden. ADR-0065 und Capability
-Invocation bleiben gesperrt; technische
+ADR-0064/A1 ist lokal vollständig umgesetzt und validiert; Commit und Push
+bleiben getrennte spätere Gates. ADR-0065 und Capability Invocation bleiben
+gesperrt; technische
 Ausführung und B2-Runtime bleiben gesperrt.
 """
 
@@ -515,7 +511,7 @@ def test_handover_exposes_completed_purpose_uodl_without_execution(tmp_path):
     assert "B2 Runtime" not in normalized
 
 
-def test_handover_exposes_post_push_implementation_order_as_next_gate(tmp_path):
+def test_handover_exposes_completed_governance_evidence_and_next_git_gates(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -525,12 +521,9 @@ def test_handover_exposes_post_push_implementation_order_as_next_gate(tmp_path):
         1,
     )[1]
     normalized = " ".join(next_section.split())
-    assert "ADR-0064-A1-Implementierungsfreigabe" in normalized
-    assert "nachweisbarem Push" in normalized
-    assert "separater Implementierungsauftrag" in normalized
-    assert "vollständiger Neuprüfung" in normalized
-    assert "Stash" in normalized
-    assert "nicht angewendet werden" in normalized
+    assert "ADR-0064/A1" in normalized
+    assert "vollständig umgesetzt" in normalized
+    assert "Commit und Push" in normalized
     assert "ADR-0065" in normalized
     assert "Capability Invocation" in normalized
     assert "B2-Runtime bleiben" in normalized

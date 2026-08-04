@@ -101,13 +101,14 @@ ADR-0064 ist durch `GOV-RATIFICATION-ADR-0064-V1` ausschließlich als
 Governance-Decision- und Incident-Evidence-Verfassung ratifiziert. Sie bewahrt
 den ADR-0059-Nachweisstatus. Die getrennte Freigabe
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` erlaubt ausschließlich die
-ratifizierte nicht ausführende Implementierung. Deren partieller, wegen
-fehlender geschlossener Typmengen blockierter Arbeitsstand ist reversibel im
-Stash gesichert und nicht kanonisch implementiert. ADR-0064-A1 ratifiziert
-diese Typmengen ausschließlich als Architektur. Die getrennte Freigabe
-`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1` ist gültig; ADR-0064-A1 ist
-weiterhin nicht implementiert und der Stash bleibt unangewendet. ADR-0065, Capability
-Invocation und Runtime bleiben gesperrt.
+ratifizierte nicht ausführende Implementierung. ADR-0064-A1 ergänzt die
+geschlossenen Taxonomien und ist getrennt ratifiziert sowie
+implementierungsfreigegeben. Beide Architekturen sind mit immutable Decision-
+und Incident-Verträgen, zustandslosen Validatoren, Public API und den leeren
+kanonischen Dokumentationsorten implementiert und validiert. Der Recovery-
+Stash wurde kontrolliert angewendet und vollständig neu geprüft, bleibt aber
+unverändert erhalten. ADR-0065, Capability Invocation und Runtime bleiben
+gesperrt.
 
 ## Ebenengrenze
 

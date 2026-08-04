@@ -326,10 +326,10 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   – Corridor-`purpose` zu typisiertem `B2PurposeScope` sowie
   `StorageOperation.REFERENCE` zu `B2UODLOperation.REFERENCE_ONLY` – sind durch
   ADR-0063 geschlossen. Der Governance-Evidenzblocker zu ADR-0059 und
-  Governance-Prozessvorfällen bleibt ausschließlich durch ADR-0064
-  architektonisch entschieden und nicht implementiert.
-  ADR-0063 und ADR-0064 sind ausschließlich als getrennte Architekturen
-  ratifiziert. Capability Invocation und B2-Runtime sind nicht begonnen.
+  Governance-Prozessvorfällen ist durch ADR-0064 und ADR-0064-A1 mit
+  geschlossenen, nicht ausführenden Verträgen implementiert und validiert.
+  ADR-0063, ADR-0064 und ADR-0064-A1 bleiben getrennte ratifizierte
+  Architekturen. Capability Invocation und B2-Runtime sind nicht begonnen.
 ### Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
 - Für Purpose wird `B2PurposeScope` als einzige fachliche Wahrheit mit
@@ -354,14 +354,12 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
 - Eine allgemeine Governance Decision and Incident Evidence Architecture ist
   mit ADR-0064 ratifiziert und durch
   `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1` begrenzt
-  implementierungsfreigegeben, aber wegen fehlender geschlossener Typmengen
-  nicht vollständig implementiert. Der partielle Arbeitsstand ist vollständig
-  und reversibel in einem benannten Stash gesichert und nicht kanonische
-  Implementierung. ADR-0064-A1 ratifiziert die fehlenden Taxonomien
-  ausschließlich als Architektur und ist getrennt institutionell
-  implementierungsfreigegeben, aber nicht implementiert. Der Stash bleibt
-  unangewendet.
-  Die Architektur bleibt von
+  implementierungsfreigegeben und gemeinsam mit der getrennt ratifizierten und
+  implementierungsfreigegebenen Ergänzung ADR-0064-A1 vollständig
+  implementiert und validiert. Geschlossene Taxonomien, immutable Decision-
+  und Incident-Verträge, Evidence, Missing Evidence, Provenienz, Scope,
+  Zeittrennung, zustandslose Validatoren und Public API sind vollständig. Es
+  wurden keine historischen Records erzeugt. Die Architektur bleibt von
   Runtime Incidents, Operational Memory,
   Überwachung, Sanktion und personenbezogenen Profilen getrennt und besitzt
   keine Sperr-, Autorisierungs- oder Runtime-Wirkung.
@@ -384,9 +382,7 @@ ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen. Daraus entsteht keine Freigabe für Migration, Capability
 Invocation oder Runtime.
 
-Als davon unabhängige Governance-Aktivität ist nach Commit und nachweisbarem
-Push der gesonderten ADR-0064-A1-Implementierungsfreigabe ausschließlich ein
-separater Implementierungsauftrag mit vollständiger Neuprüfung des Stash
-zulässig. Bis dahin darf der gesicherte Stash nicht angewendet werden.
-ADR-0065 und Capability Invocation bleiben gesperrt.
+ADR-0064/A1 ist lokal vollständig umgesetzt und validiert; Commit und Push
+bleiben getrennte spätere Gates. ADR-0065 und Capability Invocation bleiben
+gesperrt.
 B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

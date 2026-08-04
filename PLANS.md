@@ -3510,31 +3510,31 @@ Operationen, Capability Invocation und Runtime bleiben ausgeschlossen.
   Implementierungsfreigabe, ADR-0059-Bestätigung oder Implementierung.
 - [x] institutionelle Implementierungsfreigabe als gegenwärtigen, getrennten
   Beschluss dokumentieren, ohne Implementierung oder ADR-0059-Bestätigung.
+- [x] unmittelbar ratifizierte Incident-Klassen, Zeit-, ID- und
+  Evidenzprimitiven sowie leere kanonische Verwahrorte implementieren.
+- [x] fehlende geschlossene Typmengen als Architekturblocker dokumentieren;
+  keine Decision- oder Incident-Records improvisieren.
 
-ADR-0064 ist ratifiziert und begrenzt implementierungsfreigegeben, aber nicht
-implementiert. Ein separater Implementierungsauftrag ist erst nach dem
-nachweisbaren Push des Freigabe-Commits zulässig. ADR-0065, Capability
-Invocation, Runtime und produktive Verträge bleiben unverändert gesperrt.
+ADR-0064 und ADR-0064-A1 sind ratifiziert, institutionell
+implementierungsfreigegeben, vollständig implementiert und validiert. Der
+gesicherte partielle Stand wurde kontrolliert angewendet, Datei für Datei neu
+geprüft und an die geschlossenen Taxonomien angepasst; der Stash bleibt als
+unveränderte Recovery-Evidence erhalten. Es entstanden weder historische
+Records noch automatische Entscheidungen, Observation oder Runtime. ADR-0065,
+Capability Invocation und Runtime bleiben unverändert gesperrt.
 
 # ADR-0064-A1 – Governance Decision and Incident Closed Taxonomies v1
 
 - [x] partiellen ADR-0064-Arbeitsstand einschließlich untracked Dateien in
   einem benannten Stash sichern und verifizieren.
-- [x] fehlende geschlossene Typmengen aus ADR-0064 ohne Implementierung formal
-  ergänzen.
+- [x] fehlende geschlossene Typmengen aus ADR-0064 formal ergänzen,
+  ratifizieren und getrennt implementierungsfreigeben.
 - [x] Decision Classes, Rollen, 18 Governance-Schritte, Scope-Verfassung,
   Evidence, Missing Evidence, Auswirkungen, Korrekturfolge,
-  Dokumentationsstände, Aussageumfänge und Provenienz vorschlagen.
+  Dokumentationsstände, Aussageumfänge und Provenienz implementieren.
+- [x] vollständige Decision- und Incident-Verträge sowie zustandslose
+  Validatoren und Public API bereitstellen.
 - [x] freie Scope-Semantik, Personenbezug, rückwirkende Legitimierung,
-  Sanktion, Observation und Runtime ausschließen.
-- [x] Ratifikationsfähigkeit dokumentarisch validieren.
-
-ADR-0064-A1 ist ratifiziert und institutionell implementierungsfreigegeben,
-aber nicht implementiert. Der gesicherte Stash ist
-keine kanonische Implementierung und darf vor den getrennten menschlichen
-Gates nicht angewendet werden. Die Ratifizierung wurde durch
-`GOV-RATIFICATION-ADR-0064-A1-V1` getrennt dokumentiert und nimmt die
-Implementierung nicht wieder auf. Die davon getrennte Freigabe
-`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1` erlaubt erst nach eigenem
-Commit, Push und separatem Auftrag die vollständige Neuprüfung des Stash.
-ADR-0065 bleibt nicht begonnen und gesperrt.
+  Sanktion, Observation und Runtime strukturell ausschließen.
+- [x] den Stash kontrolliert anwenden, vollständig neu prüfen und unverändert
+  als Recovery-Evidence erhalten.

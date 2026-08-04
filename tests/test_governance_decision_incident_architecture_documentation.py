@@ -9,10 +9,13 @@ def read(path):
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0064_is_ratified_approved_but_not_implemented():
+def test_adr_0064_is_ratified_approved_implemented_and_validated():
     text = read(ADR)
     assert "ADR-0064 – Governance Decision and Incident Evidence Constitution v1" in text
-    assert "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert (
+        "RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – "
+        "IMPLEMENTIERT UND VALIDIERT"
+    ) in text
     assert "GOV-RATIFICATION-ADR-0064-V1" in text
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1" in text
 
@@ -96,22 +99,30 @@ def test_canonical_locations_are_proposed_and_separate_from_runtime():
     assert "Operational Memory" in text
 
 
-def test_no_governance_incident_implementation_or_silent_governance_rule():
-    assert not list((ROOT / "governance").glob("*governance*incident*.py"))
+def test_complete_implementation_is_bounded_by_both_ratified_adrs():
+    module = ROOT / "governance/governance_decision_incident_evidence.py"
+    recovery = ROOT / "governance/adr-0064-implementation-blockers.md"
+    assert module.is_file()
+    assert recovery.is_file()
+    source = read(module)
+    assert "class GovernanceIncidentClass" in source
+    assert "class GovernanceDecisionRecord" in source
+    assert "class GovernanceIncidentEvidence" in source
+    assert "class GovernanceDecisionClass" in source
     text = read(ADR)
     assert "GOV-NO-FABRICATION-1` bleibt ein offener" in text
     assert "diese ADR ratifiziert ihn nicht" in text
     assert "Antwort: **Nein.**" in text
 
 
-def test_adr_0064_a1_is_separately_ratified_and_approved_without_implementation():
+def test_adr_0064_a1_is_separately_ratified_approved_and_implemented():
     supplement = " ".join(
         read(
             ROOT
             / "knowledge/adr/ADR-0064-A1-governance-decision-incident-closed-taxonomies-v1.md"
         ).split()
     )
-    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in supplement
+    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT" in supplement
     assert "GOV-RATIFICATION-ADR-0064-A1-V1" in supplement
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1" in supplement
     assert "ADR-0064 bleibt der ratifizierte Haupt-ADR" in supplement

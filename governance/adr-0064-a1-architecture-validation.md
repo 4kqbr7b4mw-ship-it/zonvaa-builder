@@ -2,11 +2,11 @@
 
 Dokument-ID: `GOV-ADR-0064-A1-ARCHITECTURE-VALIDATION-V1`
 
-Status: **ARCHITEKTUR VALIDIERT – RATIFIZIERT – IMPLEMENTIERUNG FREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **ARCHITEKTUR VALIDIERT – RATIFIZIERT – IMPLEMENTIERUNG FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT**
 
-Ratifizierung und Implementierungsfreigabe sind getrennte spätere Beschlüsse.
-Sie ändern dieses Validierungsergebnis nicht, wenden den Stash nicht an und
-implementieren nichts.
+Ratifizierung, Implementierungsfreigabe und Implementierungsauftrag blieben
+getrennte Schritte. Der Implementierungsauftrag hat den Stash kontrolliert
+angewendet und jede Komponente neu gegen beide ADRs geprüft.
 
 ## Geprüfter Scope
 
@@ -56,6 +56,6 @@ Antwort: **Nein.**
 
 ## Ergebnis
 
-ADR-0064-A1 ist ratifizierungsfähig. Diese Validierung ist keine
-Ratifizierung, keine Implementierungsfreigabe und keine Implementierung.
-ADR-0065 bleibt nicht begonnen und gesperrt.
+ADR-0064-A1 ist implementiert und validiert. Diese Validierung erzeugt keine
+Entscheidung oder technische Wirkung. ADR-0065 bleibt nicht begonnen und
+gesperrt.

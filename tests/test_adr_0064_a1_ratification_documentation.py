@@ -69,10 +69,11 @@ def test_stash_identity_and_recovery_sequence_are_documented():
 def test_ratification_remains_separate_from_later_implementation_approval():
     text = read(ADR)
     ratification = read(RATIFICATION)
-    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT" in text
     assert "GOV-RATIFICATION-ADR-0064-A1-V1" in text
     assert "KEINE IMPLEMENTIERUNGSFREIGABE" in ratification
-    assert "Stash nicht an" in text
+    assert "Stash an" in ratification
+    assert "übernimmt keine Primitive" in ratification
 
 
 def test_ratification_has_no_personal_or_executing_power():
@@ -90,7 +91,9 @@ def test_ratification_has_no_personal_or_executing_power():
     assert "Prüffrage Null bleibt verbindlich" in text
 
 
-def test_no_productive_python_implementation_exists_in_worktree():
-    assert not (ROOT / "governance/governance_decision_incident_evidence.py").exists()
-    assert not (ROOT / "governance/decisions").exists()
-    assert not (ROOT / "governance/incidents").exists()
+def test_ratification_document_did_not_itself_create_productive_implementation():
+    text = read(RATIFICATION)
+    assert "keine implementierung" in text.lower()
+    assert (ROOT / "governance/governance_decision_incident_evidence.py").is_file()
+    assert tuple((ROOT / "governance/decisions").iterdir()) == (ROOT / "governance/decisions/README.md",)
+    assert tuple((ROOT / "governance/incidents").iterdir()) == (ROOT / "governance/incidents/README.md",)

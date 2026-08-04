@@ -248,6 +248,55 @@ __all__ = [
     "B2UODLMappingId",
     "B2UODLMappingValidator",
     "B2UODLPairRule",
+    "GOVERNANCE_DECISION_INCIDENT_CONTRACT_VERSION",
+    "GOVERNANCE_DECISION_RECORD_DIRECTORY",
+    "GOVERNANCE_INCIDENT_EVIDENCE_DIRECTORY",
+    "GovernanceCanonicalArtifactReference",
+    "GovernanceCorrectionAction",
+    "GovernanceCorrectionStep",
+    "GovernanceCorrectionStepState",
+    "GovernanceCustodyReferenceValidator",
+    "GovernanceDecisionClass",
+    "GovernanceDecisionId",
+    "GovernanceDecisionRecord",
+    "GovernanceDecisionRecordValidator",
+    "GovernanceDeviationCode",
+    "GovernanceDocumentationState",
+    "GovernanceEvidencePrimitiveValidator",
+    "GovernanceEvidenceReference",
+    "GovernanceEvidenceType",
+    "GovernanceEvidenceValidator",
+    "GovernanceHistoricalTimeState",
+    "GovernanceImpactCode",
+    "GovernanceIncidentClass",
+    "GovernanceIncidentEvidence",
+    "GovernanceIncidentEvidenceValidator",
+    "GovernanceIncidentClassificationValidator",
+    "GovernanceIncidentId",
+    "GovernanceInstitutionalRole",
+    "GovernanceKnownTime",
+    "GovernanceOpenDecisionQuestion",
+    "GovernanceOpenDecisionQuestionValidator",
+    "GovernanceOpenQuestionClass",
+    "GovernanceProvenance",
+    "GovernanceProvenanceArtifactClass",
+    "GovernanceProvenanceContext",
+    "GovernanceProvenanceId",
+    "GovernanceProvenanceValidator",
+    "GovernanceRoleDecisionValidator",
+    "GovernanceScopeEntry",
+    "GovernanceScopeType",
+    "GovernanceScopeValidator",
+    "GovernanceSectionReference",
+    "GovernanceStatementScope",
+    "GovernanceStep",
+    "GovernanceStepSequenceValidator",
+    "GovernanceSubjectReference",
+    "GovernanceTimeValidator",
+    "MissingGovernanceEvidence",
+    "MissingGovernanceEvidenceStatus",
+    "MissingGovernanceEvidenceType",
+    "MissingGovernanceEvidenceValidator",
     "B2CapabilityDescriptor",
     "B2GovernanceDecisionId",
     "B2InstitutionalSourceId",
@@ -551,6 +600,61 @@ _B2_PURPOSE_UODL_BINDING_EXPORTS = frozenset(
 )
 
 
+_GOVERNANCE_DECISION_INCIDENT_EXPORTS = frozenset(
+    {
+        "GOVERNANCE_DECISION_INCIDENT_CONTRACT_VERSION",
+        "GOVERNANCE_DECISION_RECORD_DIRECTORY",
+        "GOVERNANCE_INCIDENT_EVIDENCE_DIRECTORY",
+        "GovernanceCanonicalArtifactReference",
+        "GovernanceCorrectionAction",
+        "GovernanceCorrectionStep",
+        "GovernanceCorrectionStepState",
+        "GovernanceCustodyReferenceValidator",
+        "GovernanceDecisionClass",
+        "GovernanceDecisionId",
+        "GovernanceDecisionRecord",
+        "GovernanceDecisionRecordValidator",
+        "GovernanceDeviationCode",
+        "GovernanceDocumentationState",
+        "GovernanceEvidencePrimitiveValidator",
+        "GovernanceEvidenceReference",
+        "GovernanceEvidenceType",
+        "GovernanceEvidenceValidator",
+        "GovernanceHistoricalTimeState",
+        "GovernanceImpactCode",
+        "GovernanceIncidentClass",
+        "GovernanceIncidentEvidence",
+        "GovernanceIncidentEvidenceValidator",
+        "GovernanceIncidentClassificationValidator",
+        "GovernanceIncidentId",
+        "GovernanceInstitutionalRole",
+        "GovernanceKnownTime",
+        "GovernanceOpenDecisionQuestion",
+        "GovernanceOpenDecisionQuestionValidator",
+        "GovernanceOpenQuestionClass",
+        "GovernanceProvenance",
+        "GovernanceProvenanceArtifactClass",
+        "GovernanceProvenanceContext",
+        "GovernanceProvenanceId",
+        "GovernanceProvenanceValidator",
+        "GovernanceRoleDecisionValidator",
+        "GovernanceScopeEntry",
+        "GovernanceScopeType",
+        "GovernanceScopeValidator",
+        "GovernanceSectionReference",
+        "GovernanceStatementScope",
+        "GovernanceStep",
+        "GovernanceStepSequenceValidator",
+        "GovernanceSubjectReference",
+        "GovernanceTimeValidator",
+        "MissingGovernanceEvidence",
+        "MissingGovernanceEvidenceStatus",
+        "MissingGovernanceEvidenceType",
+        "MissingGovernanceEvidenceValidator",
+    }
+)
+
+
 _B2_DATA_CORRIDOR_EXPORTS = frozenset(
     name
     for name in __all__
@@ -559,6 +663,7 @@ _B2_DATA_CORRIDOR_EXPORTS = frozenset(
         and name not in _B2_AUTHORIZATION_EXPORTS
         and name not in _B2_PROVIDER_AUTHORIZATION_EXPORTS
         and name not in _B2_PURPOSE_UODL_BINDING_EXPORTS
+        and name not in _GOVERNANCE_DECISION_INCIDENT_EXPORTS
     )
     or name.startswith("ALLOWED_B2_")
     or name.startswith("PROHIBITED_B2_")
@@ -590,6 +695,12 @@ def __getattr__(name):
         from governance import b2_purpose_uodl_binding
 
         value = getattr(b2_purpose_uodl_binding, name)
+        globals()[name] = value
+        return value
+    if name in _GOVERNANCE_DECISION_INCIDENT_EXPORTS:
+        from governance import governance_decision_incident_evidence
+
+        value = getattr(governance_decision_incident_evidence, name)
         globals()[name] = value
         return value
     if name in _B2_DATA_CORRIDOR_EXPORTS:

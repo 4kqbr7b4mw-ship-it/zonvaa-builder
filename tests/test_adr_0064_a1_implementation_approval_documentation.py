@@ -67,12 +67,12 @@ def test_stash_identity_and_noncanonical_status_are_exact():
     assert "nicht kanonischer" in text
 
 
-def test_adr_status_is_approved_but_not_implemented():
+def test_adr_status_records_the_later_separate_implementation():
     text = " ".join(read(ADR).split())
-    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT" in text
     assert "GOV-RATIFICATION-ADR-0064-A1-V1" in text
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1" in text
-    assert "Freigabe implementiert nichts" in text
+    assert "NOCH NICHT IMPLEMENTIERT" in read(APPROVAL)
 
 
 def test_approval_excludes_power_personal_data_and_adr_0065():
@@ -91,7 +91,9 @@ def test_approval_excludes_power_personal_data_and_adr_0065():
         assert phrase in text
 
 
-def test_no_productive_python_implementation_exists_in_worktree():
-    assert not (ROOT / "governance/governance_decision_incident_evidence.py").exists()
-    assert not (ROOT / "governance/decisions").exists()
-    assert not (ROOT / "governance/incidents").exists()
+def test_approval_document_did_not_itself_create_productive_implementation():
+    text = read(APPROVAL)
+    assert "NOCH NICHT IMPLEMENTIERT" in text
+    assert (ROOT / "governance/governance_decision_incident_evidence.py").is_file()
+    assert tuple((ROOT / "governance/decisions").iterdir()) == (ROOT / "governance/decisions/README.md",)
+    assert tuple((ROOT / "governance/incidents").iterdir()) == (ROOT / "governance/incidents/README.md",)

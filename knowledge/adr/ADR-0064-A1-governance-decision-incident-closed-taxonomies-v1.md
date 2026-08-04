@@ -1,15 +1,15 @@
 # ADR-0064-A1 – Governance Decision and Incident Closed Taxonomies v1
 
-Status: **RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – INSTITUTIONELL IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0064-A1-V1`
 
 Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-A1-V1`
 
 Die Ratifizierung und die davon getrennte Implementierungsfreigabe bestätigen
-ausschließlich diese geschlossenen Taxonomien. Die Freigabe implementiert
-nichts, wendet den gesicherten Stash nicht an und nimmt die ADR-0064-
-Implementierung in ihrem Dokumentationsauftrag nicht wieder auf.
+ausschließlich diese geschlossenen Taxonomien. Der danach getrennt erteilte
+Implementierungsauftrag hat sie ohne zusätzliche Klasse, Rolle oder Wirkung
+umgesetzt und den gesicherten Stash vollständig neu geprüft.
 
 ## 1. Bezug zu ADR-0064
 
@@ -397,11 +397,18 @@ Rollenmatrix, 18-Schritt-Sequenz, Scope-Disjunktheit, Evidence-Grenzen,
 Missing-Evidence-Status, Zeittrennung, Beziehungen, Immutability und sämtliche
 Negative Rules. Public API und Verwahrorte bleiben getrennt zu prüfen.
 
-## 27. Ausdrücklich nicht freigegeben
+## 27. Implementierungsstand
 
-Nicht freigegeben sind Ratifizierung, Implementierungsfreigabe,
-Implementierung, Stash-Anwendung, Migration, historische Decision oder
-Incident Records, ADR-0059-Bestätigung, neue Incident-Klassen, freie Semantik,
+Alle in dieser Ergänzung ratifizierten Typmengen, Beziehungen und
+Negativgrenzen sind in der gemeinsamen ADR-0064-Implementierung vollständig
+typisiert, immutable und zustandslos umgesetzt und validiert. Der Recovery-
+Stash bleibt unverändert erhalten. Keine historische Entscheidung oder
+Incident Evidence wurde erzeugt; ADR-0059 bleibt Kategorie 3.
+
+## 28. Ausdrücklich nicht freigegeben
+
+Nicht freigegeben sind Migration, historische Decision oder Incident Records,
+ADR-0059-Bestätigung, neue Incident-Klassen, freie Semantik,
 natürliche Personen, Sanktion, Sperre, automatische Entscheidungen,
 Observation, Audit, Operational Memory, Capability Invocation, Runtime,
 ADR-0065, Commit und Push.

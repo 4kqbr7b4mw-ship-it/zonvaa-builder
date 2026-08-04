@@ -1,10 +1,12 @@
 # ADR-0064 – Governance Decision and Incident Evidence Constitution v1
 
-Status: **RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0064-V1`
 
 Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0064-V1`
+
+Recovery- und Implementierungsnachweis: `GOV-ADR-0064-IMPLEMENTATION-RECOVERY-V1`
 
 Die Ratifizierung bestätigt ausschließlich diese Governance-Architektur und
 den dokumentierten ADR-0059-Nachweisstatus. Sie ist keine institutionelle
@@ -267,6 +269,20 @@ Rekonstruktion erhalten bleiben.
 Die Architektur schafft einen eindeutigen, nichttechnischen Zielort, ohne
 Runtime-Incident- oder Betriebsarchitektur zu vermischen. Das
 Risiko einer Verwendung als Mitarbeiterakte oder automatische Sanktion wird
-strukturell ausgeschlossen. Bis zu einem separaten Implementierungsauftrag
-bleiben Zielort und Verträge nicht implementiert; bestehende Fundstellen
-bleiben maßgeblich.
+strukturell ausgeschlossen. Zielorte und Verträge sind ausschließlich als
+nicht ausführende, immutable Governance-Evidenzgrundlage implementiert.
+
+## 27. Implementierungsstand
+
+ADR-0064 und die Ergänzung ADR-0064-A1 sind vollständig in
+`governance/governance_decision_incident_evidence.py` implementiert und
+validiert. Enthalten sind die elf Incident-Klassen, `UNBEKANNT`, alle
+ratifizierten geschlossenen Taxonomien, immutable Decision Records und
+Incident Evidence, Scope-, Evidence-, Missing-Evidence-, Zeit-, Provenienz-
+und Fragenverträge sowie deterministische zustandslose Validatoren. Die
+kanonischen Dokumentationsorte enthalten keine historischen Records.
+
+Der gesicherte partielle Arbeitsstand wurde kontrolliert angewendet, jede
+Komponente gegen ADR-0064 und ADR-0064-A1 neu geprüft und erforderlichenfalls
+angepasst oder ersetzt. Der Stash bleibt unverändert als Recovery-Evidence
+erhalten; seine Anwendung war keine automatische Übernahme oder Genehmigung.

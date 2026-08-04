@@ -56,14 +56,15 @@ def test_decision_and_documentation_times_are_separate():
     assert "Erfassungszeitpunkt darf ihn nicht ersetzen" in text
 
 
-def test_package_b_status_references_are_approved_but_not_implemented():
+def test_package_b_status_references_are_approved_implemented_and_validated():
     readiness = read(ROOT / "governance/b2-readiness-statement.md")
     status = read(ROOT / "knowledge/project/current-product-status.md")
     plans = read(ROOT / "PLANS.md")
     for text in (readiness, status, plans):
         assert "ADR-0064" in text
         assert "implementierungsfreigegeben" in text.lower()
-        assert "nicht implementiert" in text.lower()
+        assert "implementiert" in text.lower()
+        assert "validiert" in text.lower()
 
 
 def test_manifest_assigns_package_b_and_excludes_current_adr_0059_decision():
@@ -74,5 +75,11 @@ def test_manifest_assigns_package_b_and_excludes_current_adr_0059_decision():
     assert "weder gefasst noch dokumentiert" in text
 
 
-def test_no_governance_incident_implementation_module_was_added():
-    assert not list((ROOT / "governance").glob("*governance*incident*.py"))
+def test_complete_implementation_follows_the_later_ratified_contract_types():
+    module = ROOT / "governance/governance_decision_incident_evidence.py"
+    assert module.is_file()
+    source = read(module)
+    assert "class GovernanceIncidentClass" in source
+    assert "class GovernanceDecisionRecord" in source
+    assert "class GovernanceIncidentEvidence" in source
+    assert "class GovernanceDecisionClass" in source
