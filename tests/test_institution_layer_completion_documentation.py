@@ -143,7 +143,7 @@ def test_b2_readiness_allows_only_adr_0059_and_keeps_runtime_blocked():
         "| Ordentliche Vertrauensratsbestätigung | AUSSTEHEND |",
         "| Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |",
         "| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |",
-        "| ADR-0065 Guardian B2 Capability Invocation Constitution | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |",
+        "| ADR-0065 Guardian B2 Capability Invocation Constitution | RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |",
         "| Alle nachgelagerten B2-Pakete | GESPERRT |",
         "| B2-Runtime | GESPERRT |",
     ):

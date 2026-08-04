@@ -2,7 +2,7 @@
 
 Dokument-ID: `GOV-ADR-0065-ARCHITECTURE-VALIDATION-V1`
 
-Status: **ARCHITEKTUR VALIDIERT – ADR RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **ARCHITEKTUR VALIDIERT – ADR RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
 
 ## Validierter Gegenstand
 
@@ -68,9 +68,11 @@ Antwort: **Nein.**
 ## Gate
 
 ADR-0065 ist architektonisch validiert und durch
-`GOV-RATIFICATION-ADR-0065-V1` ratifiziert. Die Ratifizierung ist keine
-institutionelle Implementierungsfreigabe und keine Implementierung. Runtime
-bleibt ein getrenntes, weiterhin gesperrtes und nicht begonnenes Gate.
+`GOV-RATIFICATION-ADR-0065-V1` ratifiziert. Die getrennte Freigabe
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1` erlaubt ausschließlich eine
+spätere Implementierung dieses nicht ausführenden Scopes und ist selbst keine
+Implementierung. Runtime bleibt ein getrenntes, weiterhin gesperrtes und nicht
+begonnenes Gate.
 
 ## Paketschnitt
 

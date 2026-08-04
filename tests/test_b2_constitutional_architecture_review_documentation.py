@@ -61,8 +61,9 @@ def test_review_contains_test_matrix_and_keeps_execution_unstarted():
     assert "automatische Entscheidung" in text
     assert "ADR-0065-Architektur dokumentiert und getrennt" in text
     assert "GOV-RATIFICATION-ADR-0065-V1" in text
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1" in text
     assert "kein produktiver Vertrag, Validator oder ausführendes Modul" in text
-    assert "nicht implementierungsfreigegeben" in text
+    assert "implementierungsfreigegeben, aber nicht implementiert" in text
     assert "Runtime bleibt gesperrt" in text
     assert (ROOT / "knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md").is_file()
     assert not list((ROOT / "governance").glob("*b2*capability*invocation*.py"))

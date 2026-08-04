@@ -65,11 +65,11 @@ def test_authorization_invocation_and_runtime_remain_separate():
     assert "Resolution Snapshot beendet ausschließlich" in text
 
 
-def test_ratification_updates_adr_without_claiming_implementation():
+def test_ratification_remains_referenced_after_later_approval_without_implementation():
     text = read(ADR)
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
     assert "GOV-RATIFICATION-ADR-0065-V1" in text
-    assert "keine institutionelle Implementierungsfreigabe" in text
+    assert "keine\nImplementierung" in text
 
 
 def test_historical_stash_remains_independent_and_unchanged():

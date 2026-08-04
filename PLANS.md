@@ -3562,12 +3562,12 @@ Autorisierung, kein Aufruf und keine technische Ausführung.
   Prüffrage Null dokumentieren.
 - [x] gegenwärtige menschliche Ratifizierung getrennt dokumentieren, ohne
   Implementierungsfreigabe oder Implementierung.
-- [ ] institutionelle Implementierungsfreigabe; nicht Bestandteil dieses
-  Pakets.
-- [ ] Implementierung; nicht begonnen und nicht freigegeben.
+- [x] institutionelle Implementierungsfreigabe als gegenwärtigen, getrennten
+  Beschluss dokumentieren, ohne Implementierung.
+- [ ] Implementierung; nicht begonnen.
 
-ADR-0065 ist ratifiziert, nicht implementierungsfreigegeben und nicht
-implementiert. B2 Runtime, technische
+ADR-0065 ist ratifiziert und institutionell implementierungsfreigegeben, aber
+weiterhin nicht implementiert. B2 Runtime und technische
 Ausführung und personenbezogene Verarbeitung bleiben gesperrt. Der historische
 ADR-0064-Recovery-Stash bleibt unverändert und ist keine Grundlage für dieses
 Paket.

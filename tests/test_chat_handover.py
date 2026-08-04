@@ -105,8 +105,8 @@ PRODUCT_STATUS = """# Status
   B2-Verfassungsbausteine. Die zwei damaligen Mapping-Fragen sind durch die
   implementierte und validierte ADR-0063-Bindung geschlossen.
   ADR-0063 und ADR-0064 sind ausschließlich als getrennte Architekturen
-  ratifiziert. Capability Invocation ist ausschließlich als ratifizierte,
-  nicht implementierungsfreigegebene und nicht implementierte ADR-0065-
+  ratifiziert. Capability Invocation ist ausschließlich als ratifizierte und
+  begrenzt implementierungsfreigegebene, aber nicht implementierte ADR-0065-
   Architektur dokumentiert; Runtime wurde nicht begonnen.
 - ADR-0063 B2 Purpose and UODL Binding Constitution macht ausschließlich die beiden
   fachlichen Mapping-Blocker entscheidungsreif. Die Präferenzen sind
@@ -142,8 +142,8 @@ abgeschlossen; daraus folgt keine weitere Machtfreigabe.
 ADR-0064/A1 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen.
 ADR-0065 Guardian B2 Capability Invocation Constitution v1 ist ausschließlich
-als Architektur ratifiziert, nicht implementierungsfreigegeben und nicht
-implementiert. Jeder Prüfpfad endet im
+als Architektur ratifiziert und begrenzt implementierungsfreigegeben, aber
+nicht implementiert. Jeder Prüfpfad endet im
   kontrollierten Stopp; technische Ausführung und B2-Runtime bleiben gesperrt.
 """
 
@@ -515,7 +515,7 @@ def test_handover_exposes_completed_purpose_uodl_without_execution(tmp_path):
     assert "B2 Runtime" not in normalized
 
 
-def test_handover_exposes_completed_governance_evidence_and_ratified_adr_0065(tmp_path):
+def test_handover_exposes_completed_governance_evidence_and_approved_adr_0065(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -529,8 +529,7 @@ def test_handover_exposes_completed_governance_evidence_and_ratified_adr_0065(tm
     assert "einschließlich Implementierungscommit und Push vollständig abgeschlossen" in normalized
     assert "ADR-0065" in normalized
     assert "Capability Invocation" in normalized
-    assert "als Architektur ratifiziert" in normalized
-    assert "nicht implementierungsfreigegeben" in normalized
+    assert "als Architektur ratifiziert und begrenzt implementierungsfreigegeben" in normalized
     assert "nicht implementiert" in normalized
     assert "kontrollierten Stopp" in normalized
     assert "B2-Runtime bleiben" in normalized
