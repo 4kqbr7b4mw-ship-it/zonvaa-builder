@@ -154,14 +154,14 @@ Recovery-Evidence erhalten. ADR-0065 bleibt gesperrt.
 
 ## Architekturstatus ADR-0065
 
-ADR-0065 liegt ausschließlich als Architekturvorschlag für eine nicht
-ausführende B2 Capability Invocation Constitution vor. Das Paket erteilt keine
-Ratifizierung und keine institutionelle Implementierungsfreigabe. Vor jeder
-Implementierung sind weiterhin getrennt erforderlich:
+ADR-0065 ist durch `GOV-RATIFICATION-ADR-0065-V1` ausschließlich als nicht
+ausführende B2 Capability Invocation Constitution ratifiziert. Die
+Ratifizierung erteilt keine institutionelle Implementierungsfreigabe. Vor
+jeder Implementierung sind weiterhin getrennt erforderlich:
 
 1. Architekturvalidierung – mit dem Vorschlag dokumentiert;
-2. gegenwärtige menschliche Ratifizierung – offen;
-3. Dokumentation, Commit und Push der Ratifizierung – offen;
+2. gegenwärtige menschliche Ratifizierung – abgeschlossen und dokumentiert;
+3. Commit und Push der Ratifizierung – offen;
 4. getrennte institutionelle Implementierungsfreigabe – offen;
 5. Dokumentation, Commit und Push dieser Freigabe – offen;
 6. separater begrenzter Implementierungsauftrag – offen.

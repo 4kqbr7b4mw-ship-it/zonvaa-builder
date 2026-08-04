@@ -3560,13 +3560,14 @@ Autorisierung, kein Aufruf und keine technische Ausführung.
   jeden Ausgang mit `CONTROLLED_STOP` und `NO_EXECUTION_OCCURRED` beenden.
 - [x] Runtime Air Gap, Halbordnung, fail-closed Regeln, Negativgrenzen und
   Prüffrage Null dokumentieren.
-- [ ] menschliche Ratifizierung; nicht Bestandteil dieses Pakets.
+- [x] gegenwärtige menschliche Ratifizierung getrennt dokumentieren, ohne
+  Implementierungsfreigabe oder Implementierung.
 - [ ] institutionelle Implementierungsfreigabe; nicht Bestandteil dieses
   Pakets.
 - [ ] Implementierung; nicht begonnen und nicht freigegeben.
 
-ADR-0065 ist vorgeschlagen, nicht ratifiziert, nicht
-implementierungsfreigegeben und nicht implementiert. B2 Runtime, technische
+ADR-0065 ist ratifiziert, nicht implementierungsfreigegeben und nicht
+implementiert. B2 Runtime, technische
 Ausführung und personenbezogene Verarbeitung bleiben gesperrt. Der historische
 ADR-0064-Recovery-Stash bleibt unverändert und ist keine Grundlage für dieses
 Paket.

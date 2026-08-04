@@ -329,9 +329,9 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   Governance-Prozessvorfällen ist durch ADR-0064 und ADR-0064-A1 mit
   geschlossenen, nicht ausführenden Verträgen implementiert und validiert.
   ADR-0063, ADR-0064 und ADR-0064-A1 bleiben getrennte ratifizierte
-  Architekturen. Capability Invocation ist ausschließlich als nicht
-  ratifizierter ADR-0065-Architekturvorschlag dokumentiert; B2-Runtime ist
-  nicht begonnen.
+  Architekturen. Capability Invocation ist ausschließlich als ratifizierte,
+  nicht implementierungsfreigegebene und nicht implementierte ADR-0065-
+  Architektur dokumentiert; B2-Runtime ist nicht begonnen.
 ### Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
 - Für Purpose wird `B2PurposeScope` als einzige fachliche Wahrheit mit
@@ -389,8 +389,8 @@ abgeschlossen. Der historische Recovery-Stash bleibt unverändert erhalten und
 ist für ADR-0065 fachlich irrelevant.
 
 ADR-0065 Guardian B2 Capability Invocation Constitution v1 ist ausschließlich
-als Architektur vorgeschlagen, nicht ratifiziert, nicht
-implementierungsfreigegeben und nicht implementiert. Die vorgeschlagenen
+als Architektur ratifiziert, nicht implementierungsfreigegeben und nicht
+implementiert. Die ratifizierten
 Request-, Decision-, Evidence-, Receipt- und Resolution-Snapshot-Verträge
 enden zwingend im kontrollierten Stopp und erzeugen keine Autorisierung oder
 Ausführung. B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.

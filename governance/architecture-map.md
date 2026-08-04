@@ -112,8 +112,9 @@ bis zu einem eigenen Architekturakt gesperrt.
 
 ### ADR-0065 – Guardian B2 Capability Invocation Constitution
 
-ADR-0065 liegt ausschließlich als vorgeschlagene, nicht ratifizierte, nicht
-implementierungsfreigegebene und nicht implementierte Architektur vor. Sie
+ADR-0065 ist durch `GOV-RATIFICATION-ADR-0065-V1` ausschließlich als
+nicht ausführende Capability-Invocation-Architektur ratifiziert. Sie ist nicht
+implementierungsfreigegeben und nicht implementiert. Sie
 referenziert die unveränderten ADR-0059-bis-ADR-0063-Verträge in einer
 eigenständigen B2-Request–Decision–Evidence–Receipt–Snapshot-Familie. Jeder
 Prüfpfad endet mit `CONTROLLED_STOP` und `NO_EXECUTION_OCCURRED`. Die

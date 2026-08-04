@@ -1,6 +1,13 @@
 # ADR-0065 – Guardian B2 Capability Invocation Constitution v1
 
-Status: **VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+
+Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0065-V1`
+
+Die Ratifizierung bestätigt ausschließlich die dokumentierte Architektur. Sie
+ist keine institutionelle Implementierungsfreigabe, implementiert nichts und
+erzeugt keine Invocation-, Provider-, Tool-, API-, Agent-, MCP-, Runtime- oder
+technische Ausführungswirkung.
 
 ## 1. Kontext
 
@@ -411,8 +418,8 @@ dahin sicherstellen, dass kein produktives ADR-0065-Modul existiert.
 
 Offen bleiben ausschließlich:
 
-1. menschliche Ratifizierung dieses Vorschlags;
-2. danach eine getrennte institutionelle Implementierungsfreigabe;
+1. getrennte institutionelle Implementierungsfreigabe;
+2. danach deren Dokumentation, Commit und Push;
 3. danach ein separater Implementierungsauftrag;
 4. eine mögliche spätere Runtime-Architektur als neuer, derzeit nicht
    begonnener und gesperrter Verfassungsakt.

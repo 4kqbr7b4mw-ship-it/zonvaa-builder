@@ -3,7 +3,7 @@
 Stand: 03.08.2026
 
 Status: ADR-0063, ADR-0064 und ADR-0064-A1 implementiert und validiert;
-ADR-0065 ausschließlich vorgeschlagen
+ADR-0065 ratifiziert, nicht implementierungsfreigegeben und nicht implementiert
 
 ## Bestätigter Stand
 
@@ -89,13 +89,13 @@ gesperrt. Die ADR-0064-Freigabe erzeugt selbst kein Governance-Artefakt.
 
 ### Paket C – ADR-0065
 
-ADR-0065 dokumentiert ausschließlich die vorgeschlagene nicht ausführende
+ADR-0065 dokumentiert ausschließlich die ratifizierte nicht ausführende
 B2 Capability Invocation Constitution. Request, Capability Binding, Decision,
 Evidence, Receipt und Resolution Snapshot bleiben eine eigenständige
 B2-Typfamilie. Invocation Intent verwendet nur vorhandenen ADR-0061-Descriptor
 und `B2PurposeScope`; es entsteht keine zweite Capability- oder Purpose-
 Verfassung. Jeder Ausgang endet kontrolliert ohne Ausführung. ADR-0065 ist
-nicht ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
 B2 Runtime, technische Ausführung und personenbezogene Verarbeitung bleiben
 gesperrt.
 
@@ -124,6 +124,6 @@ gesperrt.
 | ADR-0059-Ratifikationsnachweis | NUR INDIREKTE GOVERNANCE-EVIDENZ – HEUTIGE BESTÄTIGUNGSENTSCHEIDUNG AUSSTEHEND |
 | ADR-0064 Governance Decision and Incident Evidence Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
 | ADR-0064-A1 Closed Taxonomies | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
-| ADR-0065 Guardian B2 Capability Invocation Constitution | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
+| ADR-0065 Guardian B2 Capability Invocation Constitution | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
 | Alle nachgelagerten B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |

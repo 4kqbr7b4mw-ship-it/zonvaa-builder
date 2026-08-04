@@ -248,7 +248,7 @@ den Governance-Evidenzblocker ausschließlich mit nicht ausführenden,
 evidenzgebundenen Verträgen. Keine Freigabe oder Implementierung erzeugt eine
 fachliche Unterordnung, automatische Entscheidung oder Ausführungswirkung.
 Die damals nicht begonnene Capability Invocation ist nun ausschließlich als
-ADR-0065-Architekturvorschlag dokumentiert. Es wurde kein produktiver Vertrag,
-Validator oder ausführendes Modul angelegt. ADR-0065 ist nicht ratifiziert,
-nicht implementierungsfreigegeben und nicht implementiert; Runtime bleibt
-gesperrt.
+ADR-0065-Architektur dokumentiert und getrennt durch
+`GOV-RATIFICATION-ADR-0065-V1` ratifiziert. Es wurde kein produktiver Vertrag,
+Validator oder ausführendes Modul angelegt. ADR-0065 ist nicht
+implementierungsfreigegeben und nicht implementiert; Runtime bleibt gesperrt.

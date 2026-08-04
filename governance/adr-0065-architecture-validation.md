@@ -2,7 +2,7 @@
 
 Dokument-ID: `GOV-ADR-0065-ARCHITECTURE-VALIDATION-V1`
 
-Status: **VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **ARCHITEKTUR VALIDIERT – ADR RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
 
 ## Validierter Gegenstand
 
@@ -67,9 +67,9 @@ Antwort: **Nein.**
 
 ## Gate
 
-ADR-0065 ist architektonisch entscheidungsreif, aber ausschließlich
-vorgeschlagen. Ratifizierung, institutionelle Implementierungsfreigabe,
-Implementierung, Commit und Push sind nicht Bestandteil dieses Pakets. Runtime
+ADR-0065 ist architektonisch validiert und durch
+`GOV-RATIFICATION-ADR-0065-V1` ratifiziert. Die Ratifizierung ist keine
+institutionelle Implementierungsfreigabe und keine Implementierung. Runtime
 bleibt ein getrenntes, weiterhin gesperrtes und nicht begonnenes Gate.
 
 ## Paketschnitt

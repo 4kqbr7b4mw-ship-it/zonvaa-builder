@@ -10,16 +10,17 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0065_is_only_a_proposed_architecture():
+def test_adr_0065_is_ratified_but_not_approved_or_implemented():
     content = text(ADR)
     assert ADR.is_file()
     for marker in (
-        "VORGESCHLAGEN",
-        "NICHT RATIFIZIERT",
+        "RATIFIZIERT",
         "NICHT IMPLEMENTIERUNGSFREIGEGEBEN",
         "NICHT IMPLEMENTIERT",
+        "GOV-RATIFICATION-ADR-0065-V1",
     ):
         assert marker in content
+    assert "keine institutionelle Implementierungsfreigabe" in content
     assert "kontrollierten Stopp" in content
     assert "kein\nAufruf, Befehl, technischer Zugriff" in content
 
@@ -111,6 +112,8 @@ def test_validation_answers_zero_question_with_no():
     assert "kontrollierten\nStopp" in content
     assert "Antwort: **Nein.**" in content
     assert "kein produktiver Vertrag, Validator, Export, Adapter" in content
+    assert "ADR RATIFIZIERT" in content
+    assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in content
 
 
 def test_no_productive_adr_0065_module_exists():
