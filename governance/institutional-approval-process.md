@@ -167,8 +167,9 @@ Runtime-Freigabe. B2 Runtime und technische Ausführung bleiben gesperrt.
 
 ADR-0066 ist ausschließlich als deklaratorische Runtime-Air-Gap-Verfassung
 durch `GOV-RATIFICATION-ADR-0066-V1` ratifiziert, nicht
-implementiert und durch `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
-ausschließlich dokumentarisch implementierungsfreigegeben. Weder
+technisch implementiert und durch `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
+ausschließlich dokumentarisch implementierungsfreigegeben. Der freigegebene
+dokumentarische Scope ist deklaratorisch vollendet und validiert. Weder
 Ratifizierung noch Freigabe eröffnet eine Runtime-Diskussion. Selbst
 vollständig dokumentierte
 Diskussionsvoraussetzungen lösen nichts automatisch aus; erforderlich bliebe
@@ -177,8 +178,7 @@ Beschluss wäre weder Runtime-Ratifizierung noch Implementierungsfreigabe oder
 technische Ausführung. ADR-0067 ist nicht begonnen.
 
 ADR-0066 sieht dauerhaft keine produktive technische Komponente vor. Die
-Freigabe erlaubt nur eine spätere deklaratorische Vollendung durch kanonische
-Dokumentationspflege und dokumentarische Regressionstests. Ein separater
-Vollendungsauftrag ist erst nach Commit und nachweisbarem Push der Freigabe
-zulässig. Modul, Validator, statische Air-Gap-Analyse und Runtime Readiness
-bleiben ausgeschlossen.
+Vollendung besteht nur aus kanonischer Dokumentationspflege und
+dokumentarischen Regressionstests. Modul, Validator, statische Air-Gap-Analyse
+und Runtime Readiness bleiben ausgeschlossen. Commit und Push der
+deklaratorischen Vollendung sind getrennte, noch nicht erfolgte Gates.

@@ -3574,7 +3574,7 @@ Ausführung und personenbezogene Verarbeitung bleiben gesperrt. Der historische
 ADR-0064-Recovery-Stash bleibt unverändert und ist keine Grundlage für dieses
 Paket.
 
-# Aktiver Plan: ADR-0066 – Guardian B2 Runtime Air Gap Constitution v1
+# Abgeschlossener Plan: ADR-0066 – Guardian B2 Runtime Air Gap Constitution v1
 
 ## Ziel und Grenzen
 
@@ -3599,11 +3599,17 @@ keine technische Komponente, Implementierung oder Runtime-Vorbereitung vor.
   Accountability-Grenzen dokumentieren.
 - [x] fokussierte und vollständige Dokumentationsregression, Doctor, Handover
   und Diff-Prüfung abschließen.
+- [x] deklaratorische Vollendung nach nachweisbarem Push der ausschließlich
+  dokumentarischen Implementierungsfreigabe konsolidieren und die Abwesenheit
+  jeder technischen ADR-0066-Komponente durch Regressionstests nachweisen.
 
 Die gegenwärtige menschliche Ratifizierung ist getrennt durch
-`GOV-RATIFICATION-ADR-0066-V1` dokumentiert. ADR-0066 ist damit ratifiziert,
-Die getrennte Freigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1` erlaubt
-ausschließlich eine spätere deklaratorische Vollendung durch
-Dokumentationspflege und dokumentarische Regressionstests. ADR-0066 ist noch
-nicht implementiert. Technische Komponenten bleiben dauerhaft ausgeschlossen.
-Runtime existiert nicht und bleibt gesperrt. ADR-0067 ist nicht begonnen.
+`GOV-RATIFICATION-ADR-0066-V1` dokumentiert. Die getrennte Freigabe
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1` erlaubte ausschließlich diese
+deklaratorische Vollendung durch Dokumentationspflege und dokumentarische
+Regressionstests. ADR-0066 ist deklaratorisch vollendet und validiert, ohne
+produktive technische Komponente. Der Runtime Air Gap ist keine Software.
+ADR-0065 bleibt allein kanonisch für Invocation und Controlled Stop; ADR-0066
+bleibt allein kanonisch für Übergangsverbot und menschliche Diskussionsgates.
+Runtime existiert nicht und bleibt vollständig gesperrt. ADR-0067 ist nicht
+begonnen. Commit und Push dieser Vollendung sind noch nicht erfolgt.

@@ -75,9 +75,11 @@ def test_separate_completion_order_is_required():
     assert "selbst keine Vollendung oder Implementierung" in content
 
 
-def test_current_status_is_approved_but_not_implemented():
+def test_current_status_is_approved_and_declaratively_completed():
     content = text(ADR)
-    assert "RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in content
+    assert "RATIFIZIERT – AUSSCHLIESSLICH DOKUMENTARISCH IMPLEMENTIERUNGSFREIGEGEBEN" in content
+    assert "DEKLARATORISCH VOLLENDET UND VALIDIERT" in content
+    assert "OHNE PRODUKTIVE TECHNISCHE KOMPONENTE" in content
     assert "AUSSCHLIESSLICH DOKUMENTARISCH" in content
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1" in content
 

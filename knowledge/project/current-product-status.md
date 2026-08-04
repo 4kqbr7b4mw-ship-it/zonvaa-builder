@@ -397,8 +397,10 @@ Ausführung. B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
 
 ADR-0066 Guardian B2 Runtime Air Gap Constitution v1 ist ausschließlich als
 deklaratorische Architektur durch `GOV-RATIFICATION-ADR-0066-V1` ratifiziert,
-nicht implementiert und durch `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
-ausschließlich dokumentarisch implementierungsfreigegeben. Der eigenständige Zweck
+nicht technisch implementiert und durch
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1` ausschließlich dokumentarisch
+implementierungsfreigegeben. Der freigegebene dokumentarische Scope ist
+deklaratorisch vollendet und validiert. Der eigenständige Zweck
 ist auf das vollständige Verbot jedes Invocation→Runtime-Übergangs und die
 menschlichen Voraussetzungen vor einer möglichen späteren
 Architekturdiskussion begrenzt. Es gibt kein Modul, keinen Validator, Adapter,
@@ -406,8 +408,8 @@ Bridge, Gateway, Runtime Request oder Readiness Contract. Runtime ist kein
 nächster Zustand, existiert nicht und bleibt gesperrt. ADR-0067 ist nicht
 begonnen. Der historische Recovery-Stash bleibt unverändert und fachlich
 unabhängig.
-Die spätere deklaratorische Vollendung darf dauerhaft nur kanonische
-Dokumentationspflege und dokumentarische Regressionstests umfassen; produktive
-Module, Validatoren, statische Air-Gap-Analyse und Runtime Readiness bleiben
-ausgeschlossen. Ein separater Vollendungsauftrag setzt Commit und
-nachweisbaren Push der Freigabe voraus.
+Die Vollendung besteht dauerhaft nur aus kanonischer Dokumentationspflege und
+dokumentarischen Regressionstests; produktive Module, Validatoren, statische
+Air-Gap-Analyse und Runtime Readiness bleiben ausgeschlossen. Der Runtime Air
+Gap ist keine Software; ADR-0066 besitzt keine produktive technische
+Komponente. Commit und Push dieser Vollendung sind noch nicht erfolgt.

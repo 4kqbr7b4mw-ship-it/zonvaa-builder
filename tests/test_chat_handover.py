@@ -535,7 +535,7 @@ def test_handover_exposes_completed_governance_evidence_and_approved_adr_0065(tm
     assert "B2-Runtime bleiben" in normalized
 
 
-def test_handover_exposes_ratified_adr_0066_without_runtime_transition():
+def test_handover_exposes_declaratively_completed_adr_0066_without_runtime_transition():
     output = ChatHandover(PROJECT_ROOT).render()
     next_section = output.split(
         "## Nächster noch nicht begonnener Schritt",
@@ -546,7 +546,8 @@ def test_handover_exposes_ratified_adr_0066_without_runtime_transition():
     assert "deklaratorische Architektur" in normalized
     assert "ratifiziert" in normalized
     assert "ausschließlich dokumentarisch implementierungsfreigegeben" in normalized
-    assert "nicht implementiert" in normalized
+    assert "deklaratorisch vollendet und validiert" in normalized
+    assert "keine produktive technische Komponente" in normalized
     assert "kein Modul, keinen Validator, Adapter, Bridge, Gateway" in normalized
     assert "Runtime ist kein nächster Zustand" in normalized
     assert "ADR-0067 ist nicht begonnen" in normalized

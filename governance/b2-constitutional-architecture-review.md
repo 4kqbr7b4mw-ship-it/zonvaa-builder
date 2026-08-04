@@ -260,17 +260,17 @@ gesperrt.
 
 ADR-0066 ist als eigenständige rein deklaratorische Ergänzung durch
 `GOV-RATIFICATION-ADR-0066-V1` ratifiziert, nicht
-implementiert und durch `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
-ausschließlich dokumentarisch implementierungsfreigegeben.
+technisch implementiert und durch `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
+ausschließlich dokumentarisch implementierungsfreigegeben. Der freigegebene
+dokumentarische Scope ist deklaratorisch vollendet und validiert.
 ADR-0065 bleibt die einzige kanonische Invocation-Verfassung. Der neue
 Vorschlag dokumentiert ausschließlich, dass nach dem kontrollierten Stopp kein
 technischer oder impliziter Übergang existiert und eine hypothetische Runtime
 nur durch einen neuen menschlichen Verfassungsakt überhaupt diskutiert werden
 dürfte. Die Future B2 Package Map nahm bislang mit „B2 Provider Runtime“ und
 einer Invocation-Abhängigkeit einen nicht ratifizierten Folgeschritt vorweg;
-diese Planungssemantik wird entfernt. Es entsteht keine technische Komponente,
-Runtime Readiness, Ratifizierung, Freigabe oder Implementierung.
-Ratifizierung und Freigabe ändern diese technische Abwesenheit nicht und
-erlauben keine produktive Komponente. Die spätere deklaratorische Vollendung
-ist dauerhaft auf Dokumentationspflege und dokumentarische Regressionstests
-begrenzt.
+diese Planungssemantik ist entfernt. Es entsteht keine technische Komponente
+oder Runtime Readiness. Ratifizierung, Freigabe und deklaratorische Vollendung
+ändern diese technische Abwesenheit nicht und erlauben keine produktive
+Komponente. ADR-0065 bleibt allein kanonisch für Invocation und Controlled
+Stop.

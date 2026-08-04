@@ -10,20 +10,23 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0066_is_ratified_and_documentation_only_approved():
+def test_adr_0066_is_declaratively_completed_and_validated():
     content = text(ADR)
     normalized = " ".join(content.split())
     assert ADR.is_file()
     for marker in (
         "RATIFIZIERT",
         "IMPLEMENTIERUNGSFREIGEGEBEN",
-        "NICHT IMPLEMENTIERT",
+        "DEKLARATORISCH VOLLENDET UND VALIDIERT",
+        "OHNE PRODUKTIVE TECHNISCHE KOMPONENTE",
         "GOV-RATIFICATION-ADR-0066-V1",
         "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1",
     ):
         assert marker in content
-    assert "Nicht eröffnet ist eine Runtime-Architekturdiskussion" in normalized
+    assert "Weiterhin nicht eröffnet ist eine Runtime-Architekturdiskussion" in normalized
     assert "sieht dauerhaft keine produktive technische Komponente vor" in normalized
+    assert "Runtime Air Gap ist keine Software" in normalized
+    assert "noch nicht committed und noch nicht gepusht" in normalized
 
 
 def test_adr_0066_has_an_independent_declarative_purpose():
@@ -63,6 +66,37 @@ def test_no_technical_component_is_planned():
         ROOT / "governance/runtime_air_gap_validator.py",
     )
     assert all(not path.exists() for path in forbidden)
+
+
+def test_repository_has_no_productive_adr_0066_runtime_component_or_export():
+    governance = ROOT / "governance"
+    forbidden_names = (
+        "b2_runtime_air_gap.py",
+        "runtime_air_gap_validator.py",
+        "runtime_air_gap_evaluator.py",
+        "runtime_air_gap_service.py",
+        "runtime_bridge.py",
+        "runtime_adapter.py",
+        "runtime_gateway.py",
+        "runtime_readiness.py",
+        "runtime_request.py",
+        "runtime_command.py",
+    )
+    assert all(not (governance / name).exists() for name in forbidden_names)
+    public_api = text(governance / "__init__.py")
+    for forbidden_export in (
+        "RuntimeAirGap",
+        "RuntimeReadiness",
+        "RuntimeBridge",
+        "RuntimeAdapter",
+        "RuntimeGateway",
+        "RuntimeRequest",
+        "RuntimeCommand",
+        "RuntimeToken",
+        "ExecutionToken",
+        "RuntimeHandle",
+    ):
+        assert forbidden_export not in public_api
 
 
 def test_no_implicit_runtime_continuation_or_readiness():
@@ -132,7 +166,8 @@ def test_validation_answers_zero_question_with_no():
     assert "ADR RATIFIZIERT" in content
     assert "GOV-RATIFICATION-ADR-0066-V1" in content
     assert "IMPLEMENTIERUNGSFREIGEGEBEN" in content
-    assert "NICHT IMPLEMENTIERT" in content
+    assert "DEKLARATORISCH VOLLENDET" in content
+    assert "OHNE PRODUKTIVE TECHNISCHE KOMPONENTE" in content
     assert "keine technische Air-Gap-Schicht" in content
     assert "Antwort: **Nein.**" in content
     assert "kein produktives ADR-0066-Python-Modul" in content
@@ -159,10 +194,25 @@ def test_canonical_status_documents_keep_adr_0066_declarative():
         normalized = " ".join(content.lower().split())
         assert "ADR-0066" in content
         assert "ratifiziert" in normalized
-        assert "nicht implement" in normalized
+        assert "deklaratorisch vollendet" in normalized
+        assert "technische komponente" in normalized
     readiness = text(ROOT / "governance/b2-readiness-statement.md")
     assert "Runtime ist kein nächster Zustand" in readiness
     assert "ADR-0067 | NICHT BEGONNEN" in readiness
+
+
+def test_end_sequence_has_no_documented_technical_receiver():
+    paths = (
+        ADR,
+        ROOT / "governance/architecture-map.md",
+        ROOT / "governance/future-b2-package-map.md",
+    )
+    for path in paths:
+        normalized = " ".join(text(path).split())
+        assert "B2 Invocation Resolution Snapshot → CONTROLLED_STOP → ENDE" in normalized
+    package_map = text(ROOT / "governance/future-b2-package-map.md")
+    assert "| B2 Provider Runtime |" not in package_map
+    assert "automatische Aktivierung" in package_map
 
 
 def test_future_map_removes_runtime_as_a_follow_on_package():

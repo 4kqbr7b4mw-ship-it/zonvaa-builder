@@ -85,10 +85,11 @@ def test_runtime_and_registered_candidates_remain_closed():
 
 def test_adr_status_preserves_ratification_and_separate_approval():
     content = text(ADR)
-    assert "RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in content
+    assert "RATIFIZIERT – AUSSCHLIESSLICH DOKUMENTARISCH IMPLEMENTIERUNGSFREIGEGEBEN" in content
+    assert "DEKLARATORISCH VOLLENDET UND VALIDIERT" in content
     assert "GOV-RATIFICATION-ADR-0066-V1" in content
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1" in content
-    assert "implementiert nichts" in content
+    assert "Runtime Air Gap ist keine Software" in " ".join(content.split())
 
 
 def test_no_productive_adr_0066_component_exists():

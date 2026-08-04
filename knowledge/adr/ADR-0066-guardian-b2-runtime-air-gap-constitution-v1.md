@@ -1,6 +1,6 @@
 # ADR-0066 – Guardian B2 Runtime Air Gap Constitution v1
 
-Status: **RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT – AUSSCHLIESSLICH DOKUMENTARISCH**
+Status: **RATIFIZIERT – AUSSCHLIESSLICH DOKUMENTARISCH IMPLEMENTIERUNGSFREIGEGEBEN – DEKLARATORISCH VOLLENDET UND VALIDIERT – OHNE PRODUKTIVE TECHNISCHE KOMPONENTE**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0066-V1`
 
@@ -8,12 +8,15 @@ Implementierungsfreigabe:
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
 
 Die Ratifizierung bestätigt ausschließlich diese deklaratorische Architektur.
-Die getrennte institutionelle Implementierungsfreigabe erlaubt ausschließlich
-eine spätere deklaratorische Vollendung durch kanonische Dokumentationspflege,
-Handover und dokumentarische Regressionstests. Sie implementiert nichts und
+Die getrennte institutionelle Implementierungsfreigabe erlaubte ausschließlich
+die nun dokumentarisch umgesetzte, deklaratorische Vollendung durch kanonische
+Dokumentationspflege, Handover und dokumentarische Regressionstests. Der
+Runtime Air Gap ist keine Software. Seine Vollendung ist allein der kanonische
+Nachweis, dass keine technische Verbindung vorgesehen oder vorhanden ist. Sie
 eröffnet keine Runtime-Diskussion. ADR-0066 sieht dauerhaft keine produktive
 technische Komponente vor; Modul, Validator, statische Air-Gap-Analyse und
-Runtime Readiness bleiben ausgeschlossen.
+Runtime Readiness bleiben ausgeschlossen. Diese Vollendung ist noch nicht
+committed und noch nicht gepusht.
 
 ## 1. Kontext
 
@@ -90,6 +93,13 @@ Runtime ist keine Unterstufe, Fortsetzung, Ausführungsphase oder Betriebsart
 von Invocation. Sie könnte ausschließlich durch eine neue menschliche
 Architekturentscheidung entstehen. Request und positive Decision erzeugen
 weder Anspruch noch Vermutung auf spätere Ausführung.
+
+Die kanonische Endfolge lautet vollständig:
+
+`B2 Invocation Resolution Snapshot → CONTROLLED_STOP → ENDE`
+
+Danach existiert keine technische Empfangsstelle, Transition, Continuation,
+kein Handoff und kein nächster technischer Zustand.
 
 ## 8. Keine technische Komponente
 
@@ -323,10 +333,11 @@ Accountability-Nichtaktivierung und Prüffrage Null nachweisen.
 
 ## 30. Offene institutionelle Entscheidungen
 
-Offen ist ausschließlich der separate deklaratorische Vollendungsauftrag nach
-Commit und nachweisbarem Push der institutionellen Implementierungsfreigabe.
-Nicht eröffnet ist eine Runtime-Architekturdiskussion. Es gibt keinen Runtime-
-ADR und keinen ADR-0067.
+Der separate deklaratorische Vollendungsauftrag ist dokumentarisch umgesetzt.
+Weiterhin nicht eröffnet ist eine Runtime-Architekturdiskussion. Auch die
+vollständige Erfüllung aller menschlichen Diskussionsgates löst nichts aus;
+hierfür wäre ein neuer ausdrücklicher institutioneller Beschluss erforderlich.
+Es gibt keinen Runtime-ADR und keinen ADR-0067.
 
 ## 31. Konsequenzen
 

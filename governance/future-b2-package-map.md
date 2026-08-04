@@ -17,7 +17,7 @@ Scope implementiert. Kein weiteres B2-Paket ist freigegeben.
 | B2 Provider Identity | geschlossene nicht personenbezogene Provider-Klassen, Verantwortungs-Codes, Capability-Descriptoren und Provenienz festlegen | ADR-0058 bis ADR-0060; ratifizierte ADR-0061 und `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` | Identität beschreibt nur und autorisiert oder aktiviert nichts | keine Person, Authorization, Invocation, Runtime, Schlüssel- oder Inhaltszugriff | im begrenzten nicht ausführenden Scope implementiert; keine weitere Machtstufe freigegeben |
 | B2 Provider Authorization | ADR-0060 punktuell auf eine unveränderte institutionelle oder fachliche B2 Provider Identity anwenden | implementierte ADR-0060- und ADR-0061-Verträge; ratifizierte ADR-0062 und `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1` | keine neue Autorisierungsverfassung, Invocation oder Ausführung | keine Person, Statusfelder, Providerwahl, Runtime oder Betriebsintegration | im begrenzt freigegebenen, nicht ausführenden Scope implementiert; Freigabe-Push und separater Implementierungsauftrag sind abgeschlossen |
 | B2 Capability Invocation Constitution | einen vollständig gebundenen B2-Aufrufwunsch nicht ausführend prüfen | implementierte ADR-0059 bis ADR-0064-A1; ratifizierte und begrenzt implementierungsfreigegebene ADR-0065 | jeder Ausgang endet `CONTROLLED_STOP`; keine Provider-Ausführung | keine Auswahl, Autorisierung, Tool-, Agent-, MCP-, API- oder Runtime-Wirkung | ADR-0050 nur als mechanisches B1-Vorbild; ADR-0065 ist implementiert und validiert |
-| B2 Runtime Air Gap Constitution | vollständige Abwesenheit jedes Invocation→Runtime-Übergangs deklarieren | abgeschlossene ADR-0059 bis ADR-0065; ratifizierte und dokumentarisch implementierungsfreigegebene ADR-0066 | kein nächster technischer Zustand; Runtime nicht ableitbar oder erreichbar | kein Modul, Validator, Adapter, Bridge, Runtime Request, Readiness Contract oder technische Vorbereitung | ADR-0065 bleibt kanonisch für Invocation; ADR-0066 ist nicht implementiert |
+| B2 Runtime Air Gap Constitution | vollständige Abwesenheit jedes Invocation→Runtime-Übergangs deklarieren | abgeschlossene ADR-0059 bis ADR-0065; ratifizierte und dokumentarisch implementierungsfreigegebene ADR-0066 | kein nächster technischer Zustand; Runtime nicht ableitbar oder erreichbar | kein Modul, Validator, Adapter, Bridge, Runtime Request, Readiness Contract oder technische Vorbereitung | ADR-0065 bleibt kanonisch für Invocation; ADR-0066 ist deklaratorisch vollendet und validiert |
 | Guardian Accountability & Explanation Layer | bereits vorhandene Evidenz referenzgebunden lesbar projizieren | produktive B2-Runtime, erste reale Rechenschaftspflichten und dokumentierter Aktivierungsbeschluss | Erklärung liest nur und entscheidet oder weiß nichts | keine zweite Wahrheit, Generierung, Runtime, API oder Evidenzerzeugung | registrierter, nicht geplanter und ausdrücklich ruhender E6-Ausnahmekandidat; keine Freigabe |
 | Guardian Life Domain Model | typisierte, jurisdiktionstreue Lebensobjekte entlang realer Journeys beschreiben | produktive B2-Runtime, stabile Conversation-Architektur und dokumentierter Aktivierungsbeschluss | Sprache bleibt reine Darstellung; Domänenidentität und Rechtsnatur bleiben stabil | keine Vollontologie, Runtime, API, Datenbank, juristischen Inhalte oder Gesprächsführung | registrierter, nicht geplanter und ausdrücklich ruhender E6-Ausnahmekandidat; keine Freigabe |
 
@@ -63,7 +63,7 @@ und validiert. Runtime und technische Ausführung bleiben gesperrt.
 ADR-0066 ist durch `GOV-RATIFICATION-ADR-0066-V1` als rein deklaratorische
 Ergänzung ratifiziert und durch
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1` ausschließlich dokumentarisch
-implementierungsfreigegeben, aber nicht implementiert. Er definiert
+implementierungsfreigegeben, deklaratorisch vollendet und validiert. Er definiert
 keine Runtime und keinen Übergang, sondern ausschließlich dessen Abwesenheit,
 die Eigenständigkeit jeder hypothetischen späteren Runtime-Verfassung und die
 institutionellen Voraussetzungen vor einer möglichen Architekturdiskussion.
@@ -71,8 +71,10 @@ Die frühere nicht ratifizierte Zeile „B2 Provider Runtime“ mit Invocation-
 Abhängigkeit wird nicht fortgeführt, weil sie einen technischen Folgeschritt
 vorwegnahm. Es gibt keine Runtime Readiness, keine automatische Aktivierung und
 keine technische Komponente.
-Die spätere deklaratorische Vollendung darf ausschließlich kanonische
-Dokumentationspflege und dokumentarische Regressionstests umfassen.
+Die deklaratorische Vollendung umfasst ausschließlich kanonische
+Dokumentationspflege und dokumentarische Regressionstests. Sie erzeugt keinen
+technischen Folgeschritt. Die Endfolge bleibt `B2 Invocation Resolution
+Snapshot → CONTROLLED_STOP → ENDE`.
 
 Nicht Bestandteil dieser Landkarte sind Verträge, Klassen, APIs, Validatoren,
 Runtime-Komponenten, Provider, Persistenzadapter, UI oder Workflowaktivierung.
