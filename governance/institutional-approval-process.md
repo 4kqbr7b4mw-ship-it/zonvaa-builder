@@ -156,17 +156,20 @@ Recovery-Evidence erhalten. ADR-0065 bleibt gesperrt.
 
 ADR-0065 ist durch `GOV-RATIFICATION-ADR-0065-V1` ausschließlich als nicht
 ausführende B2 Capability Invocation Constitution ratifiziert. Die getrennte
-Freigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1` erlaubt ausschließlich
-die spätere Implementierung dieses ratifizierten Scopes und ist selbst keine
-Implementierung. Vor jeder Implementierung sind weiterhin getrennt erforderlich:
+Freigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1` erlaubte ausschließlich
+die Implementierung dieses ratifizierten Scopes und war selbst keine
+Implementierung. Ratifizierung, Freigabe, Implementierungsauftrag,
+Implementierung, Review, Commit und Push sind getrennt abgeschlossen. Keine
+Stufe impliziert die nächste. Eine positive Invocation Decision ist keine
+Runtime-Freigabe. B2 Runtime und technische Ausführung bleiben gesperrt.
 
-1. Architekturvalidierung – mit dem Vorschlag dokumentiert;
-2. gegenwärtige menschliche Ratifizierung – abgeschlossen und dokumentiert;
-3. Commit und Push der Ratifizierung – offen;
-4. getrennte institutionelle Implementierungsfreigabe – abgeschlossen und dokumentiert;
-5. Commit und Push dieser Freigabe – offen;
-6. separater begrenzter Implementierungsauftrag – erteilt und umgesetzt.
+## Architekturstatus ADR-0066
 
-Keine Stufe impliziert die nächste. Eine positive Invocation Decision wäre
-selbst nach späterer Implementierung keine Runtime-Freigabe. B2 Runtime und
-technische Ausführung bleiben eigene gesperrte Machtgates.
+ADR-0066 ist ausschließlich als deklaratorische Runtime-Air-Gap-Verfassung
+vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und nicht
+implementiert. Der Vorschlag selbst eröffnet
+keine Runtime-Diskussion. Selbst vollständig dokumentierte
+Diskussionsvoraussetzungen lösen nichts automatisch aus; erforderlich bliebe
+ein eigener gegenwärtiger menschlicher institutioneller Beschluss. Ein solcher
+Beschluss wäre weder Runtime-Ratifizierung noch Implementierungsfreigabe oder
+technische Ausführung. ADR-0067 ist nicht begonnen.

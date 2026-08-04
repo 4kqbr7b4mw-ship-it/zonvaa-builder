@@ -3572,4 +3572,34 @@ nun im ausschließlich nicht ausführenden Scope implementiert und validiert.
 B2 Runtime und technische
 Ausführung und personenbezogene Verarbeitung bleiben gesperrt. Der historische
 ADR-0064-Recovery-Stash bleibt unverändert und ist keine Grundlage für dieses
-Paket. ADR-0066 bleibt nicht begonnen und gesperrt.
+Paket.
+
+# Aktiver Plan: ADR-0066 – Guardian B2 Runtime Air Gap Constitution v1
+
+## Ziel und Grenzen
+
+ADR-0066 dokumentiert ausschließlich die verfassungsrechtliche Abwesenheit
+jedes technischen, strukturellen oder impliziten Übergangs zwischen der
+abgeschlossenen ADR-0065-Invocation und einer hypothetischen Runtime. Er sieht
+keine technische Komponente, Implementierung oder Runtime-Vorbereitung vor.
+
+## Architekturentscheidungen
+
+- [x] Repositoryweit nach einem vorbereiteten Invocation→Runtime-Übergang
+  suchen und die nicht kanonische Planungsvorwegnahme in der Future B2 Package
+  Map dokumentieren.
+- [x] ADR-0065 als alleinige Invocation-Verfassung bewahren und den
+  eigenständigen Zweck von ADR-0066 auf Übergangsverbot und Diskussionsgates
+  begrenzen.
+- [x] vier Architekturvarianten bewerten und den deklaratorischen ADR ohne
+  technische Komponenten wählen.
+- [x] Runtime-Diskussionsvoraussetzungen ohne Readiness-, Aktivierungs- oder
+  Runtime-Semantik schließen.
+- [x] Datenblindheit, Key-Custody-, Inhaltszugriffs-, Governance- und
+  Accountability-Grenzen dokumentieren.
+- [x] fokussierte und vollständige Dokumentationsregression, Doctor, Handover
+  und Diff-Prüfung abschließen.
+
+ADR-0066 ist vorgeschlagen, nicht ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert. Runtime existiert nicht
+und bleibt gesperrt. ADR-0067 ist nicht begonnen.

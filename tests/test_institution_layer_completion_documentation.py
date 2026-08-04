@@ -144,6 +144,7 @@ def test_b2_readiness_allows_only_adr_0059_and_keeps_runtime_blocked():
         "| Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |",
         "| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |",
         "| ADR-0065 Guardian B2 Capability Invocation Constitution | RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |",
+        "| ADR-0066 Guardian B2 Runtime Air Gap Constitution | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |",
         "| Alle nachgelagerten B2-Pakete | GESPERRT |",
         "| B2-Runtime | GESPERRT |",
     ):
@@ -158,9 +159,10 @@ def test_future_package_map_is_non_executing_and_individually_gated():
         "B2 Data Corridor and Consent Boundary",
         "B2 Depersonalization and Privacy Boundary",
         "B2 Capability Invocation Constitution",
-        "B2 Provider Runtime",
-        "B2 Observation, Audit and User-Owned Storage Integration",
+        "B2 Runtime Air Gap Constitution",
     ):
         assert package in package_map
     assert "Jedes Paket benötigt eine eigene Architekturentscheidung" in package_map
     assert "Nicht Bestandteil dieser Landkarte sind Verträge, Klassen, APIs" in package_map
+    assert "Die frühere nicht ratifizierte Zeile „B2 Provider Runtime“" in package_map
+    assert "keine Runtime Readiness" in package_map

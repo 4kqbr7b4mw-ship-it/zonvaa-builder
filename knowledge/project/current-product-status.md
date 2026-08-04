@@ -394,4 +394,14 @@ implementiert und validiert. Die ratifizierten
 Request-, Decision-, Evidence-, Receipt- und Resolution-Snapshot-Verträge
 enden zwingend im kontrollierten Stopp und erzeugen keine Autorisierung oder
 Ausführung. B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
-ADR-0066 ist nicht begonnen.
+
+ADR-0066 Guardian B2 Runtime Air Gap Constitution v1 ist ausschließlich als
+deklaratorische Architektur vorgeschlagen, nicht ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert. Der eigenständige Zweck
+ist auf das vollständige Verbot jedes Invocation→Runtime-Übergangs und die
+menschlichen Voraussetzungen vor einer möglichen späteren
+Architekturdiskussion begrenzt. Es gibt kein Modul, keinen Validator, Adapter,
+Bridge, Gateway, Runtime Request oder Readiness Contract. Runtime ist kein
+nächster Zustand, existiert nicht und bleibt gesperrt. ADR-0067 ist nicht
+begonnen. Der historische Recovery-Stash bleibt unverändert und fachlich
+unabhängig.

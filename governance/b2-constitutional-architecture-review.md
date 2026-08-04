@@ -255,3 +255,16 @@ ADR-0065-Moduls angelegt. ADR-0065 ist durch
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1` begrenzt
 implementierungsfreigegeben, implementiert und validiert; Runtime bleibt
 gesperrt.
+
+## ADR-0066 Runtime-Air-Gap-Ergänzung
+
+ADR-0066 ist als eigenständige rein deklaratorische Ergänzung vorgeschlagen,
+nicht ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+ADR-0065 bleibt die einzige kanonische Invocation-Verfassung. Der neue
+Vorschlag dokumentiert ausschließlich, dass nach dem kontrollierten Stopp kein
+technischer oder impliziter Übergang existiert und eine hypothetische Runtime
+nur durch einen neuen menschlichen Verfassungsakt überhaupt diskutiert werden
+dürfte. Die Future B2 Package Map nahm bislang mit „B2 Provider Runtime“ und
+einer Invocation-Abhängigkeit einen nicht ratifizierten Folgeschritt vorweg;
+diese Planungssemantik wird entfernt. Es entsteht keine technische Komponente,
+Runtime Readiness, Ratifizierung, Freigabe oder Implementierung.
