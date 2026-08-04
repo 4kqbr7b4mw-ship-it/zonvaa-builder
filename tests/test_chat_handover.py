@@ -535,7 +535,7 @@ def test_handover_exposes_completed_governance_evidence_and_approved_adr_0065(tm
     assert "B2-Runtime bleiben" in normalized
 
 
-def test_handover_exposes_proposed_adr_0066_without_runtime_transition():
+def test_handover_exposes_ratified_adr_0066_without_runtime_transition():
     output = ChatHandover(PROJECT_ROOT).render()
     next_section = output.split(
         "## Nächster noch nicht begonnener Schritt",
@@ -543,8 +543,8 @@ def test_handover_exposes_proposed_adr_0066_without_runtime_transition():
     )[1]
     normalized = " ".join(next_section.split())
     assert "ADR-0066 Guardian B2 Runtime Air Gap Constitution v1" in normalized
-    assert "deklaratorische Architektur vorgeschlagen" in normalized
-    assert "nicht ratifiziert" in normalized
+    assert "deklaratorische Architektur" in normalized
+    assert "ratifiziert" in normalized
     assert "nicht implementierungsfreigegeben" in normalized
     assert "nicht implementiert" in normalized
     assert "kein Modul, keinen Validator, Adapter, Bridge, Gateway" in normalized

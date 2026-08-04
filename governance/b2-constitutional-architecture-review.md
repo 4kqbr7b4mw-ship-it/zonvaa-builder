@@ -258,8 +258,9 @@ gesperrt.
 
 ## ADR-0066 Runtime-Air-Gap-Ergänzung
 
-ADR-0066 ist als eigenständige rein deklaratorische Ergänzung vorgeschlagen,
-nicht ratifiziert, nicht implementierungsfreigegeben und nicht implementiert.
+ADR-0066 ist als eigenständige rein deklaratorische Ergänzung durch
+`GOV-RATIFICATION-ADR-0066-V1` ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert.
 ADR-0065 bleibt die einzige kanonische Invocation-Verfassung. Der neue
 Vorschlag dokumentiert ausschließlich, dass nach dem kontrollierten Stopp kein
 technischer oder impliziter Übergang existiert und eine hypothetische Runtime
@@ -268,3 +269,6 @@ dürfte. Die Future B2 Package Map nahm bislang mit „B2 Provider Runtime“ un
 einer Invocation-Abhängigkeit einen nicht ratifizierten Folgeschritt vorweg;
 diese Planungssemantik wird entfernt. Es entsteht keine technische Komponente,
 Runtime Readiness, Ratifizierung, Freigabe oder Implementierung.
+Die Ratifizierung ändert diese technische Abwesenheit nicht und erlaubt keine
+produktive Komponente. Eine mögliche spätere Freigabe wäre dauerhaft auf
+Dokumentationspflege und dokumentarische Regressionstests begrenzt.

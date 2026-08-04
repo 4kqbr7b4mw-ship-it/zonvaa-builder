@@ -1,6 +1,15 @@
 # ADR-0066 – Guardian B2 Runtime Air Gap Constitution v1
 
-Status: **VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+
+Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0066-V1`
+
+Die Ratifizierung bestätigt ausschließlich diese deklaratorische Architektur.
+Sie ist keine Implementierungsfreigabe, implementiert nichts und eröffnet
+keine Runtime-Diskussion. ADR-0066 sieht dauerhaft keine produktive technische
+Komponente vor. Eine mögliche spätere institutionelle Freigabe dürfte nur
+kanonische Dokumentationspflege und dokumentarische Regressionstests umfassen,
+niemals Modul, Validator, statische Air-Gap-Analyse oder Runtime Readiness.
 
 ## 1. Kontext
 
@@ -310,9 +319,11 @@ Accountability-Nichtaktivierung und Prüffrage Null nachweisen.
 
 ## 30. Offene institutionelle Entscheidungen
 
-Offen sind Ratifizierung oder Ablehnung dieses Vorschlags. Nicht eröffnet ist
-eine Runtime-Architekturdiskussion. Es gibt keine Implementierungsfreigabe,
-keinen Runtime-ADR und keinen ADR-0067.
+Offen ist ausschließlich eine mögliche spätere institutionelle Entscheidung
+über Dokumentationspflege und dokumentarische Regressionstests innerhalb der
+dauerhaft nicht technischen Grenze. Nicht eröffnet ist eine Runtime-
+Architekturdiskussion. Es gibt keine Implementierungsfreigabe, keinen Runtime-
+ADR und keinen ADR-0067.
 
 ## 31. Konsequenzen
 

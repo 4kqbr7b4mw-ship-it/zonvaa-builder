@@ -10,18 +10,18 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0066_is_proposed_only():
+def test_adr_0066_is_ratified_without_approval_or_implementation():
     content = text(ADR)
     assert ADR.is_file()
     for marker in (
-        "VORGESCHLAGEN",
-        "NICHT RATIFIZIERT",
+        "RATIFIZIERT",
         "NICHT IMPLEMENTIERUNGSFREIGEGEBEN",
         "NICHT IMPLEMENTIERT",
+        "GOV-RATIFICATION-ADR-0066-V1",
     ):
         assert marker in content
-    assert "Offen sind Ratifizierung oder Ablehnung" in content
-    assert "Nicht eröffnet ist\neine Runtime-Architekturdiskussion" in content
+    assert "Nicht eröffnet ist eine Runtime-\nArchitekturdiskussion" in content
+    assert "sieht dauerhaft keine produktive technische\nKomponente vor" in content
 
 
 def test_adr_0066_has_an_independent_declarative_purpose():
@@ -127,8 +127,8 @@ def test_four_variants_and_choice_are_documented():
 def test_validation_answers_zero_question_with_no():
     content = text(VALIDATION)
     assert "GOV-ADR-0066-ARCHITECTURE-VALIDATION-V1" in content
-    assert "VORGESCHLAGEN" in content
-    assert "NICHT RATIFIZIERT" in content
+    assert "ADR RATIFIZIERT" in content
+    assert "GOV-RATIFICATION-ADR-0066-V1" in content
     assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in content
     assert "NICHT IMPLEMENTIERT" in content
     assert "keine technische Air-Gap-Schicht" in content
@@ -155,7 +155,7 @@ def test_canonical_status_documents_keep_adr_0066_declarative():
     for path in paths:
         content = text(path)
         assert "ADR-0066" in content
-        assert "nicht ratifiziert" in content.lower()
+        assert "ratifiziert" in content.lower()
         assert "nicht implement" in content.lower()
     readiness = text(ROOT / "governance/b2-readiness-statement.md")
     assert "Runtime ist kein nächster Zustand" in readiness

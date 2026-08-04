@@ -3600,6 +3600,10 @@ keine technische Komponente, Implementierung oder Runtime-Vorbereitung vor.
 - [x] fokussierte und vollständige Dokumentationsregression, Doctor, Handover
   und Diff-Prüfung abschließen.
 
-ADR-0066 ist vorgeschlagen, nicht ratifiziert, nicht
-implementierungsfreigegeben und nicht implementiert. Runtime existiert nicht
-und bleibt gesperrt. ADR-0067 ist nicht begonnen.
+Die gegenwärtige menschliche Ratifizierung ist getrennt durch
+`GOV-RATIFICATION-ADR-0066-V1` dokumentiert. ADR-0066 ist damit ratifiziert,
+aber nicht implementierungsfreigegeben und nicht implementiert. Dauerhaft sind
+nur Dokumentationspflege und dokumentarische Regressionstests als möglicher
+späterer Freigabescope vorgesehen; technische Komponenten bleiben
+ausgeschlossen. Runtime existiert nicht und bleibt gesperrt. ADR-0067 ist
+nicht begonnen.

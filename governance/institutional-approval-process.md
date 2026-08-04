@@ -166,10 +166,16 @@ Runtime-Freigabe. B2 Runtime und technische Ausführung bleiben gesperrt.
 ## Architekturstatus ADR-0066
 
 ADR-0066 ist ausschließlich als deklaratorische Runtime-Air-Gap-Verfassung
-vorgeschlagen, nicht ratifiziert, nicht implementierungsfreigegeben und nicht
-implementiert. Der Vorschlag selbst eröffnet
+durch `GOV-RATIFICATION-ADR-0066-V1` ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert. Die Ratifizierung eröffnet
 keine Runtime-Diskussion. Selbst vollständig dokumentierte
 Diskussionsvoraussetzungen lösen nichts automatisch aus; erforderlich bliebe
 ein eigener gegenwärtiger menschlicher institutioneller Beschluss. Ein solcher
 Beschluss wäre weder Runtime-Ratifizierung noch Implementierungsfreigabe oder
 technische Ausführung. ADR-0067 ist nicht begonnen.
+
+ADR-0066 sieht dauerhaft keine produktive technische Komponente vor. Eine
+mögliche spätere institutionelle Freigabe könnte nur kanonische
+Dokumentationspflege und dokumentarische Regressionstests umfassen; Modul,
+Validator, statische Air-Gap-Analyse und Runtime Readiness bleiben
+ausgeschlossen.
