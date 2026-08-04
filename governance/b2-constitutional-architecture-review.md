@@ -247,5 +247,8 @@ implementierungsfreigegeben, implementiert und validiert. ADR-0064/A1 schließt
 den Governance-Evidenzblocker ausschließlich mit nicht ausführenden,
 evidenzgebundenen Verträgen. Keine Freigabe oder Implementierung erzeugt eine
 fachliche Unterordnung, automatische Entscheidung oder Ausführungswirkung.
-Capability Invocation und Runtime wurden nicht begonnen; es wurde kein Vertrag
-oder ausführendes Modul dafür angelegt.
+Die damals nicht begonnene Capability Invocation ist nun ausschließlich als
+ADR-0065-Architekturvorschlag dokumentiert. Es wurde kein produktiver Vertrag,
+Validator oder ausführendes Modul angelegt. ADR-0065 ist nicht ratifiziert,
+nicht implementierungsfreigegeben und nicht implementiert; Runtime bleibt
+gesperrt.

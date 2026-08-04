@@ -143,7 +143,8 @@ def test_b2_readiness_allows_only_adr_0059_and_keeps_runtime_blocked():
         "| Ordentliche Vertrauensratsbestätigung | AUSSTEHEND |",
         "| Institutionelle Implementierungsfreigabe für ADR-0059 | ERTEILT |",
         "| B2 Data Corridor and Consent Boundary v1 | IMPLEMENTIERT UND VALIDIERUNG ABGESCHLOSSEN |",
-        "| Alle weiteren B2-Pakete | GESPERRT |",
+        "| ADR-0065 Guardian B2 Capability Invocation Constitution | VORGESCHLAGEN – NICHT RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |",
+        "| Alle nachgelagerten B2-Pakete | GESPERRT |",
         "| B2-Runtime | GESPERRT |",
     ):
         assert row in readiness
@@ -156,7 +157,7 @@ def test_future_package_map_is_non_executing_and_individually_gated():
         "B2 Authority and Authorization",
         "B2 Data Corridor and Consent Boundary",
         "B2 Depersonalization and Privacy Boundary",
-        "B2 Invocation Boundary",
+        "B2 Capability Invocation Constitution",
         "B2 Provider Runtime",
         "B2 Observation, Audit and User-Owned Storage Integration",
     ):

@@ -108,7 +108,18 @@ und Incident-Verträgen, zustandslosen Validatoren, Public API und den leeren
 kanonischen Dokumentationsorten implementiert und validiert. Der Recovery-
 Stash wurde kontrolliert angewendet und vollständig neu geprüft, bleibt aber
 unverändert erhalten. ADR-0065, Capability Invocation und Runtime bleiben
-gesperrt.
+bis zu einem eigenen Architekturakt gesperrt.
+
+### ADR-0065 – Guardian B2 Capability Invocation Constitution
+
+ADR-0065 liegt ausschließlich als vorgeschlagene, nicht ratifizierte, nicht
+implementierungsfreigegebene und nicht implementierte Architektur vor. Sie
+referenziert die unveränderten ADR-0059-bis-ADR-0063-Verträge in einer
+eigenständigen B2-Request–Decision–Evidence–Receipt–Snapshot-Familie. Jeder
+Prüfpfad endet mit `CONTROLLED_STOP` und `NO_EXECUTION_OCCURRED`. Die
+Architektur enthält keine neue Autorisierung, keine B1→B2-Konvertierung, keine
+Providerwahl und keinerlei Runtime-, Tool-, Agent-, MCP-, API- oder
+Ausführungswirkung. B2 Runtime bleibt ein getrenntes gesperrtes Gate.
 
 ## Ebenengrenze
 

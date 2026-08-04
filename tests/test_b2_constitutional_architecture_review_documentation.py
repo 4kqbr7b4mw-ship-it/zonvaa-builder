@@ -59,7 +59,10 @@ def test_review_contains_test_matrix_and_keeps_execution_unstarted():
     assert "implementiert und validiert" in text
     assert "nicht ausführenden, evidenzgebundenen Verträgen" in text
     assert "automatische Entscheidung" in text
-    assert "Capability Invocation und Runtime wurden nicht begonnen" in text
+    assert "ausschließlich als ADR-0065-Architekturvorschlag dokumentiert" in text
+    assert "kein produktiver Vertrag, Validator oder ausführendes Modul" in text
+    assert "nicht ratifiziert" in text
+    assert "Runtime bleibt gesperrt" in text
     assert (ROOT / "knowledge/adr/ADR-0063-b2-purpose-uodl-binding-constitution-v1.md").is_file()
     assert not list((ROOT / "governance").glob("*b2*capability*invocation*.py"))
     assert not list((ROOT / "governance").glob("*b2*runtime*.py"))

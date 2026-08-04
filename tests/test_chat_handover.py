@@ -105,7 +105,9 @@ PRODUCT_STATUS = """# Status
   B2-Verfassungsbausteine. Die zwei damaligen Mapping-Fragen sind durch die
   implementierte und validierte ADR-0063-Bindung geschlossen.
   ADR-0063 und ADR-0064 sind ausschließlich als getrennte Architekturen
-  ratifiziert. Capability Invocation und Runtime wurden nicht begonnen.
+  ratifiziert. Capability Invocation ist ausschließlich als nicht
+  ratifizierter ADR-0065-Architekturvorschlag dokumentiert; Runtime wurde nicht
+  begonnen.
 - ADR-0063 B2 Purpose and UODL Binding Constitution macht ausschließlich die beiden
   fachlichen Mapping-Blocker entscheidungsreif. Die Präferenzen sind
   ratifiziert, begrenzt implementierungsfreigegeben, implementiert und
@@ -137,10 +139,12 @@ PRODUCT_STATUS = """# Status
 
 ADR-0063 ist einschließlich Implementierungscommit und Push vollständig
 abgeschlossen; daraus folgt keine weitere Machtfreigabe.
-ADR-0064/A1 ist lokal vollständig umgesetzt und validiert; Commit und Push
-bleiben getrennte spätere Gates. ADR-0065 und Capability Invocation bleiben
-gesperrt; technische
-Ausführung und B2-Runtime bleiben gesperrt.
+ADR-0064/A1 ist einschließlich Implementierungscommit und Push vollständig
+abgeschlossen.
+ADR-0065 Guardian B2 Capability Invocation Constitution v1 ist ausschließlich
+als Architektur vorgeschlagen, nicht ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert. Jeder Prüfpfad endet im
+  kontrollierten Stopp; technische Ausführung und B2-Runtime bleiben gesperrt.
 """
 
 
@@ -511,7 +515,7 @@ def test_handover_exposes_completed_purpose_uodl_without_execution(tmp_path):
     assert "B2 Runtime" not in normalized
 
 
-def test_handover_exposes_completed_governance_evidence_and_next_git_gates(tmp_path):
+def test_handover_exposes_completed_governance_evidence_and_proposed_adr_0065(tmp_path):
     root = repository(tmp_path)
 
     output = ChatHandover(root).render()
@@ -522,10 +526,13 @@ def test_handover_exposes_completed_governance_evidence_and_next_git_gates(tmp_p
     )[1]
     normalized = " ".join(next_section.split())
     assert "ADR-0064/A1" in normalized
-    assert "vollständig umgesetzt" in normalized
-    assert "Commit und Push" in normalized
+    assert "einschließlich Implementierungscommit und Push vollständig abgeschlossen" in normalized
     assert "ADR-0065" in normalized
     assert "Capability Invocation" in normalized
+    assert "als Architektur vorgeschlagen" in normalized
+    assert "nicht ratifiziert" in normalized
+    assert "nicht implementierungsfreigegeben" in normalized
+    assert "kontrollierten Stopp" in normalized
     assert "B2-Runtime bleiben" in normalized
 
 

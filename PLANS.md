@@ -3538,3 +3538,35 @@ Capability Invocation und Runtime bleiben unverändert gesperrt.
   Sanktion, Observation und Runtime strukturell ausschließen.
 - [x] den Stash kontrolliert anwenden, vollständig neu prüfen und unverändert
   als Recovery-Evidence erhalten.
+
+# Aktiver Plan: ADR-0065 – Guardian B2 Capability Invocation Constitution v1
+
+## Ziel und Grenzen
+
+ADR-0065 dokumentiert ausschließlich den letzten kontrollierten,
+nicht ausführenden Machtübergang vor einer weiterhin gesperrten B2 Runtime.
+Capability Invocation ist eine immutable prüfbare Aufrufabsicht, keine
+Autorisierung, kein Aufruf und keine technische Ausführung.
+
+## Architekturentscheidungen
+
+- [x] ADR-0050 als tatsächliche B1 Capability Invocation Boundary vollständig
+  abgrenzen; keine B1→B2-Konvertierung.
+- [x] getrennte B2-Verträge für Request, Capability Binding, Decision,
+  Evidence, Receipt und Resolution Snapshot vorschlagen.
+- [x] Invocation Intent ohne zweite Taxonomie als geschlossene Paarung aus
+  ADR-0061-Capability-Descriptor und `B2PurposeScope` bestimmen.
+- [x] positive Prüfung ausschließlich als nicht ausführende Resolution und
+  jeden Ausgang mit `CONTROLLED_STOP` und `NO_EXECUTION_OCCURRED` beenden.
+- [x] Runtime Air Gap, Halbordnung, fail-closed Regeln, Negativgrenzen und
+  Prüffrage Null dokumentieren.
+- [ ] menschliche Ratifizierung; nicht Bestandteil dieses Pakets.
+- [ ] institutionelle Implementierungsfreigabe; nicht Bestandteil dieses
+  Pakets.
+- [ ] Implementierung; nicht begonnen und nicht freigegeben.
+
+ADR-0065 ist vorgeschlagen, nicht ratifiziert, nicht
+implementierungsfreigegeben und nicht implementiert. B2 Runtime, technische
+Ausführung und personenbezogene Verarbeitung bleiben gesperrt. Der historische
+ADR-0064-Recovery-Stash bleibt unverändert und ist keine Grundlage für dieses
+Paket.
