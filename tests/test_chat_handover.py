@@ -545,7 +545,7 @@ def test_handover_exposes_ratified_adr_0066_without_runtime_transition():
     assert "ADR-0066 Guardian B2 Runtime Air Gap Constitution v1" in normalized
     assert "deklaratorische Architektur" in normalized
     assert "ratifiziert" in normalized
-    assert "nicht implementierungsfreigegeben" in normalized
+    assert "ausschließlich dokumentarisch implementierungsfreigegeben" in normalized
     assert "nicht implementiert" in normalized
     assert "kein Modul, keinen Validator, Adapter, Bridge, Gateway" in normalized
     assert "Runtime ist kein nächster Zustand" in normalized

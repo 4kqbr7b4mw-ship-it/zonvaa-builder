@@ -83,11 +83,11 @@ def test_runtime_and_registered_candidates_remain_closed():
     assert "registrierte ruhende Kandidaten" in content
 
 
-def test_adr_status_matches_ratification_only():
+def test_adr_status_preserves_ratification_and_separate_approval():
     content = text(ADR)
-    assert "RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in content
+    assert "RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in content
     assert "GOV-RATIFICATION-ADR-0066-V1" in content
-    assert "keine Implementierungsfreigabe" in content
+    assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1" in content
     assert "implementiert nichts" in content
 
 

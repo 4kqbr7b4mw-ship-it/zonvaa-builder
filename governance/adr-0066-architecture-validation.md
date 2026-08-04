@@ -2,9 +2,12 @@
 
 Dokument-ID: `GOV-ADR-0066-ARCHITECTURE-VALIDATION-V1`
 
-Status: **ARCHITEKTUR VALIDIERT – ADR RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **ARCHITEKTUR VALIDIERT – ADR RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT – AUSSCHLIESSLICH DOKUMENTARISCH**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0066-V1`
+
+Implementierungsfreigabe:
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
 
 ## Validierter Gegenstand
 
@@ -65,12 +68,12 @@ Antwort: **Nein.** Es existiert ausschließlich Dokumentation und deren Tests.
 
 ## Gate
 
-ADR-0066 ist ratifiziert, nicht implementierungsfreigegeben und nicht
-implementiert. Die Ratifizierung bestätigt nur die deklaratorische
-Architektur. Sie eröffnet keine Runtime-Diskussion. Eine spätere Freigabe
-könnte nur Dokumentationspflege und dokumentarische Regressionstests umfassen;
-produktive Module, Validatoren, statische Air-Gap-Analyse und Runtime Readiness
-bleiben dauerhaft ausgeschlossen. ADR-0067 ist nicht begonnen.
+ADR-0066 ist ratifiziert und ausschließlich dokumentarisch
+implementierungsfreigegeben, aber nicht implementiert. Die getrennte Freigabe
+erlaubt nur Dokumentationspflege und dokumentarische Regressionstests und
+eröffnet keine Runtime-Diskussion. Produktive Module, Validatoren, statische
+Air-Gap-Analyse und Runtime Readiness bleiben dauerhaft ausgeschlossen.
+ADR-0067 ist nicht begonnen.
 
 ## Paketschnitt
 

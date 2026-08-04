@@ -1,15 +1,19 @@
 # ADR-0066 – Guardian B2 Runtime Air Gap Constitution v1
 
-Status: **RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT – AUSSCHLIESSLICH DOKUMENTARISCH**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0066-V1`
 
+Implementierungsfreigabe:
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
+
 Die Ratifizierung bestätigt ausschließlich diese deklaratorische Architektur.
-Sie ist keine Implementierungsfreigabe, implementiert nichts und eröffnet
-keine Runtime-Diskussion. ADR-0066 sieht dauerhaft keine produktive technische
-Komponente vor. Eine mögliche spätere institutionelle Freigabe dürfte nur
-kanonische Dokumentationspflege und dokumentarische Regressionstests umfassen,
-niemals Modul, Validator, statische Air-Gap-Analyse oder Runtime Readiness.
+Die getrennte institutionelle Implementierungsfreigabe erlaubt ausschließlich
+eine spätere deklaratorische Vollendung durch kanonische Dokumentationspflege,
+Handover und dokumentarische Regressionstests. Sie implementiert nichts und
+eröffnet keine Runtime-Diskussion. ADR-0066 sieht dauerhaft keine produktive
+technische Komponente vor; Modul, Validator, statische Air-Gap-Analyse und
+Runtime Readiness bleiben ausgeschlossen.
 
 ## 1. Kontext
 
@@ -319,10 +323,9 @@ Accountability-Nichtaktivierung und Prüffrage Null nachweisen.
 
 ## 30. Offene institutionelle Entscheidungen
 
-Offen ist ausschließlich eine mögliche spätere institutionelle Entscheidung
-über Dokumentationspflege und dokumentarische Regressionstests innerhalb der
-dauerhaft nicht technischen Grenze. Nicht eröffnet ist eine Runtime-
-Architekturdiskussion. Es gibt keine Implementierungsfreigabe, keinen Runtime-
+Offen ist ausschließlich der separate deklaratorische Vollendungsauftrag nach
+Commit und nachweisbarem Push der institutionellen Implementierungsfreigabe.
+Nicht eröffnet ist eine Runtime-Architekturdiskussion. Es gibt keinen Runtime-
 ADR und keinen ADR-0067.
 
 ## 31. Konsequenzen

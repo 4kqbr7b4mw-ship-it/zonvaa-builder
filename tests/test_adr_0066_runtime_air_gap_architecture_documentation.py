@@ -10,18 +10,20 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0066_is_ratified_without_approval_or_implementation():
+def test_adr_0066_is_ratified_and_documentation_only_approved():
     content = text(ADR)
+    normalized = " ".join(content.split())
     assert ADR.is_file()
     for marker in (
         "RATIFIZIERT",
-        "NICHT IMPLEMENTIERUNGSFREIGEGEBEN",
+        "IMPLEMENTIERUNGSFREIGEGEBEN",
         "NICHT IMPLEMENTIERT",
         "GOV-RATIFICATION-ADR-0066-V1",
+        "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1",
     ):
         assert marker in content
-    assert "Nicht eröffnet ist eine Runtime-\nArchitekturdiskussion" in content
-    assert "sieht dauerhaft keine produktive technische\nKomponente vor" in content
+    assert "Nicht eröffnet ist eine Runtime-Architekturdiskussion" in normalized
+    assert "sieht dauerhaft keine produktive technische Komponente vor" in normalized
 
 
 def test_adr_0066_has_an_independent_declarative_purpose():
@@ -129,7 +131,7 @@ def test_validation_answers_zero_question_with_no():
     assert "GOV-ADR-0066-ARCHITECTURE-VALIDATION-V1" in content
     assert "ADR RATIFIZIERT" in content
     assert "GOV-RATIFICATION-ADR-0066-V1" in content
-    assert "NICHT IMPLEMENTIERUNGSFREIGEGEBEN" in content
+    assert "IMPLEMENTIERUNGSFREIGEGEBEN" in content
     assert "NICHT IMPLEMENTIERT" in content
     assert "keine technische Air-Gap-Schicht" in content
     assert "Antwort: **Nein.**" in content
@@ -154,9 +156,10 @@ def test_canonical_status_documents_keep_adr_0066_declarative():
     )
     for path in paths:
         content = text(path)
+        normalized = " ".join(content.lower().split())
         assert "ADR-0066" in content
-        assert "ratifiziert" in content.lower()
-        assert "nicht implement" in content.lower()
+        assert "ratifiziert" in normalized
+        assert "nicht implement" in normalized
     readiness = text(ROOT / "governance/b2-readiness-statement.md")
     assert "Runtime ist kein nächster Zustand" in readiness
     assert "ADR-0067 | NICHT BEGONNEN" in readiness

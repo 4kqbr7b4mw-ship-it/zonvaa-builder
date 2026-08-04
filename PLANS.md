@@ -3602,8 +3602,8 @@ keine technische Komponente, Implementierung oder Runtime-Vorbereitung vor.
 
 Die gegenwärtige menschliche Ratifizierung ist getrennt durch
 `GOV-RATIFICATION-ADR-0066-V1` dokumentiert. ADR-0066 ist damit ratifiziert,
-aber nicht implementierungsfreigegeben und nicht implementiert. Dauerhaft sind
-nur Dokumentationspflege und dokumentarische Regressionstests als möglicher
-späterer Freigabescope vorgesehen; technische Komponenten bleiben
-ausgeschlossen. Runtime existiert nicht und bleibt gesperrt. ADR-0067 ist
-nicht begonnen.
+Die getrennte Freigabe `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1` erlaubt
+ausschließlich eine spätere deklaratorische Vollendung durch
+Dokumentationspflege und dokumentarische Regressionstests. ADR-0066 ist noch
+nicht implementiert. Technische Komponenten bleiben dauerhaft ausgeschlossen.
+Runtime existiert nicht und bleibt gesperrt. ADR-0067 ist nicht begonnen.

@@ -104,11 +104,12 @@ gesperrt.
 ADR-0066 dokumentiert ausschließlich die vollständige Abwesenheit jedes
 technischen, strukturellen oder impliziten Übergangs von Capability Invocation
 zu einer hypothetischen Runtime. ADR-0065 bleibt kanonisch für Invocation.
-ADR-0066 ist durch `GOV-RATIFICATION-ADR-0066-V1` ratifiziert, nicht
-implementierungsfreigegeben und nicht implementiert. Er sieht dauerhaft kein Modul,
-keinen Validator, Adapter, Bridge, Gateway, Runtime Request oder Readiness
-Contract vor. Runtime ist kein nächster Zustand; technische Ausführung und
-personenbezogene Verarbeitung bleiben gesperrt.
+ADR-0066 ist durch `GOV-RATIFICATION-ADR-0066-V1` ratifiziert und durch
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1` ausschließlich dokumentarisch
+implementierungsfreigegeben, aber nicht implementiert. Er sieht dauerhaft
+kein Modul, keinen Validator, Adapter, Bridge, Gateway, Runtime Request oder
+Readiness Contract vor. Runtime ist kein nächster Zustand; technische
+Ausführung und personenbezogene Verarbeitung bleiben gesperrt.
 
 ## Statusmodell
 
@@ -136,7 +137,7 @@ personenbezogene Verarbeitung bleiben gesperrt.
 | ADR-0064 Governance Decision and Incident Evidence Constitution | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
 | ADR-0064-A1 Closed Taxonomies | RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
 | ADR-0065 Guardian B2 Capability Invocation Constitution | RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT |
-| ADR-0066 Guardian B2 Runtime Air Gap Constitution | RATIFIZIERT – NICHT IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
+| ADR-0066 Guardian B2 Runtime Air Gap Constitution | RATIFIZIERT – AUSSCHLIESSLICH DOKUMENTARISCH IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT |
 | ADR-0067 | NICHT BEGONNEN |
 | Alle nachgelagerten B2-Pakete | GESPERRT |
 | B2-Runtime | GESPERRT |
