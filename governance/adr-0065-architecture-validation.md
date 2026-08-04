@@ -2,13 +2,15 @@
 
 Dokument-ID: `GOV-ADR-0065-ARCHITECTURE-VALIDATION-V1`
 
-Status: **ARCHITEKTUR VALIDIERT – ADR RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **ARCHITEKTUR VALIDIERT – ADR RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT**
 
 ## Validierter Gegenstand
 
-Validiert wird ausschließlich die vorgeschlagene Architektur aus ADR-0065.
-Es wurde kein produktiver Vertrag, Validator, Export, Adapter oder Runtime-
-Baustein angelegt. ADR-0059 bis ADR-0064-A1 bleiben unverändert.
+Validiert werden Architektur und deren begrenzte Implementierung aus ADR-0065.
+Das eigenständige Modul `governance/b2_capability_invocation.py` enthält nur
+immutable Verträge, zustandslose Validatoren und die nicht ausführende
+Foundation. Es wurde kein Adapter oder Runtime-Baustein angelegt. ADR-0059 bis
+ADR-0064-A1 bleiben unverändert.
 
 ## Variantenbefund
 
@@ -70,9 +72,9 @@ Antwort: **Nein.**
 ADR-0065 ist architektonisch validiert und durch
 `GOV-RATIFICATION-ADR-0065-V1` ratifiziert. Die getrennte Freigabe
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1` erlaubt ausschließlich eine
-spätere Implementierung dieses nicht ausführenden Scopes und ist selbst keine
-Implementierung. Runtime bleibt ein getrenntes, weiterhin gesperrtes und nicht
-begonnenes Gate.
+Implementierung dieses nicht ausführenden Scopes. Diese Implementierung ist
+abgeschlossen und validiert. Runtime bleibt ein getrenntes, weiterhin
+gesperrtes und nicht begonnenes Gate.
 
 ## Paketschnitt
 
@@ -83,8 +85,7 @@ dieses Validierungsdokument und
 `PLANS.md`, Architekturkarte, B2 Readiness, Future Package Map,
 institutioneller Prozess, B2 Constitutional Review, Produktstatus und
 Handover-Test werden ausschließlich mit getrennten ADR-0065-Statusabschnitten
-aktualisiert. Diese Zuordnung erzeugt weder Ratifizierung noch
-Implementierungsfreigabe oder Implementierung.
+aktualisiert. Diese Zuordnung erzeugt keine Runtime- oder Ausführungsfreigabe.
 
 Der Recovery-Stash `ADR-0064 partial implementation blocked before closed
 taxonomies` ist nach Abschluss von ADR-0064/A1 fachlich überholt, bleibt aber

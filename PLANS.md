@@ -3564,10 +3564,12 @@ Autorisierung, kein Aufruf und keine technische Ausführung.
   Implementierungsfreigabe oder Implementierung.
 - [x] institutionelle Implementierungsfreigabe als gegenwärtigen, getrennten
   Beschluss dokumentieren, ohne Implementierung.
-- [ ] Implementierung; nicht begonnen.
+- [x] immutable Vertragsfamilie, zustandslose Evaluation, Public API und
+  fokussierte Negativgrenzen implementieren und validieren.
 
 ADR-0065 ist ratifiziert und institutionell implementierungsfreigegeben, aber
-weiterhin nicht implementiert. B2 Runtime und technische
+nun im ausschließlich nicht ausführenden Scope implementiert und validiert.
+B2 Runtime und technische
 Ausführung und personenbezogene Verarbeitung bleiben gesperrt. Der historische
 ADR-0064-Recovery-Stash bleibt unverändert und ist keine Grundlage für dieses
-Paket.
+Paket. ADR-0066 bleibt nicht begonnen und gesperrt.

@@ -10,18 +10,18 @@ def text(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def test_adr_0065_is_ratified_and_approved_but_not_implemented():
+def test_adr_0065_is_ratified_approved_implemented_and_validated():
     content = text(ADR)
     assert ADR.is_file()
     for marker in (
         "RATIFIZIERT",
         "IMPLEMENTIERUNGSFREIGEGEBEN",
-        "NICHT IMPLEMENTIERT",
+        "IMPLEMENTIERT UND VALIDIERT",
         "GOV-RATIFICATION-ADR-0065-V1",
         "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1",
     ):
         assert marker in content
-    assert "keine\nImplementierung" in content
+    assert "governance/b2_capability_invocation.py" in content
     assert "kontrollierten Stopp" in content
     assert "kein\nAufruf, Befehl, technischer Zugriff" in content
 
@@ -112,16 +112,17 @@ def test_validation_answers_zero_question_with_no():
     assert "Runtime Air Gap" in content
     assert "kontrollierten\nStopp" in content
     assert "Antwort: **Nein.**" in content
-    assert "kein produktiver Vertrag, Validator, Export, Adapter" in content
+    assert "kein Adapter oder Runtime-Baustein" in content
     assert "ADR RATIFIZIERT" in content
     assert "IMPLEMENTIERUNGSFREIGEGEBEN" in content
-    assert "NICHT IMPLEMENTIERT" in content
+    assert "IMPLEMENTIERT UND VALIDIERT" in content
 
 
-def test_no_productive_adr_0065_module_exists():
+def test_only_the_non_executing_adr_0065_module_exists():
+    assert (ROOT / "governance/b2_capability_invocation.py").is_file()
     forbidden = (
-        ROOT / "governance/b2_capability_invocation.py",
         ROOT / "governance/adr_0065.py",
         ROOT / "guardian_b2/capability_invocation.py",
+        ROOT / "governance/b2_capability_invocation_runtime.py",
     )
     assert all(not path.exists() for path in forbidden)

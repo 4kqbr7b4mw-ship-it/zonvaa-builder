@@ -62,9 +62,9 @@ def test_approval_has_no_technical_effect_and_requires_later_order():
     assert "Diese Freigabe ist\nselbst keine Implementierung" in text
 
 
-def test_adr_status_is_approved_but_not_implemented():
+def test_adr_status_records_later_implementation_without_expanding_approval():
     text = read(ADR)
-    assert "RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT" in text
+    assert "RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT" in text
     assert "GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1" in text
     assert "keine Implementierung" in text
 
@@ -77,10 +77,11 @@ def test_stash_remains_independent_and_unchanged():
     assert "wendet ihn nicht\nan" in text
 
 
-def test_no_productive_adr_0065_module_was_created():
+def test_no_runtime_adr_0065_module_was_created():
+    assert (ROOT / "governance/b2_capability_invocation.py").is_file()
     forbidden = (
-        ROOT / "governance/b2_capability_invocation.py",
         ROOT / "governance/adr_0065.py",
         ROOT / "guardian_b2/capability_invocation.py",
+        ROOT / "governance/b2_capability_invocation_runtime.py",
     )
     assert all(not path.exists() for path in forbidden)

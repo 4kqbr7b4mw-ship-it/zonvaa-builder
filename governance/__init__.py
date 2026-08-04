@@ -248,6 +248,29 @@ __all__ = [
     "B2UODLMappingId",
     "B2UODLMappingValidator",
     "B2UODLPairRule",
+    "B2_CAPABILITY_INVOCATION_CONTRACT_VERSION",
+    "B2CapabilityInvocationAssertion",
+    "B2CapabilityInvocationBinding",
+    "B2CapabilityInvocationBindingId",
+    "B2CapabilityInvocationDecision",
+    "B2CapabilityInvocationDecisionId",
+    "B2CapabilityInvocationDecisionResult",
+    "B2CapabilityInvocationEvaluator",
+    "B2CapabilityInvocationEvidence",
+    "B2CapabilityInvocationEvidenceId",
+    "B2CapabilityInvocationFoundation",
+    "B2CapabilityInvocationFoundationValidator",
+    "B2CapabilityInvocationIntent",
+    "B2CapabilityInvocationObservationScope",
+    "B2CapabilityInvocationReceipt",
+    "B2CapabilityInvocationReceiptId",
+    "B2CapabilityInvocationRequest",
+    "B2CapabilityInvocationRequestId",
+    "B2CapabilityInvocationResolutionSnapshot",
+    "B2CapabilityInvocationResolutionSnapshotId",
+    "B2CapabilityInvocationValidationError",
+    "B2CapabilityInvocationValidator",
+    "B2CapabilityInvocationViolation",
     "GOVERNANCE_DECISION_INCIDENT_CONTRACT_VERSION",
     "GOVERNANCE_DECISION_RECORD_DIRECTORY",
     "GOVERNANCE_INCIDENT_EVIDENCE_DIRECTORY",
@@ -600,6 +623,35 @@ _B2_PURPOSE_UODL_BINDING_EXPORTS = frozenset(
 )
 
 
+_B2_CAPABILITY_INVOCATION_EXPORTS = frozenset(
+    {
+        "B2_CAPABILITY_INVOCATION_CONTRACT_VERSION",
+        "B2CapabilityInvocationAssertion",
+        "B2CapabilityInvocationBinding",
+        "B2CapabilityInvocationBindingId",
+        "B2CapabilityInvocationDecision",
+        "B2CapabilityInvocationDecisionId",
+        "B2CapabilityInvocationDecisionResult",
+        "B2CapabilityInvocationEvaluator",
+        "B2CapabilityInvocationEvidence",
+        "B2CapabilityInvocationEvidenceId",
+        "B2CapabilityInvocationFoundation",
+        "B2CapabilityInvocationFoundationValidator",
+        "B2CapabilityInvocationIntent",
+        "B2CapabilityInvocationObservationScope",
+        "B2CapabilityInvocationReceipt",
+        "B2CapabilityInvocationReceiptId",
+        "B2CapabilityInvocationRequest",
+        "B2CapabilityInvocationRequestId",
+        "B2CapabilityInvocationResolutionSnapshot",
+        "B2CapabilityInvocationResolutionSnapshotId",
+        "B2CapabilityInvocationValidationError",
+        "B2CapabilityInvocationValidator",
+        "B2CapabilityInvocationViolation",
+    }
+)
+
+
 _GOVERNANCE_DECISION_INCIDENT_EXPORTS = frozenset(
     {
         "GOVERNANCE_DECISION_INCIDENT_CONTRACT_VERSION",
@@ -663,6 +715,7 @@ _B2_DATA_CORRIDOR_EXPORTS = frozenset(
         and name not in _B2_AUTHORIZATION_EXPORTS
         and name not in _B2_PROVIDER_AUTHORIZATION_EXPORTS
         and name not in _B2_PURPOSE_UODL_BINDING_EXPORTS
+        and name not in _B2_CAPABILITY_INVOCATION_EXPORTS
         and name not in _GOVERNANCE_DECISION_INCIDENT_EXPORTS
     )
     or name.startswith("ALLOWED_B2_")
@@ -695,6 +748,12 @@ def __getattr__(name):
         from governance import b2_purpose_uodl_binding
 
         value = getattr(b2_purpose_uodl_binding, name)
+        globals()[name] = value
+        return value
+    if name in _B2_CAPABILITY_INVOCATION_EXPORTS:
+        from governance import b2_capability_invocation
+
+        value = getattr(b2_capability_invocation, name)
         globals()[name] = value
         return value
     if name in _GOVERNANCE_DECISION_INCIDENT_EXPORTS:

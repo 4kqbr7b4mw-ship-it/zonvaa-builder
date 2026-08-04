@@ -250,6 +250,8 @@ fachliche Unterordnung, automatische Entscheidung oder Ausführungswirkung.
 Die damals nicht begonnene Capability Invocation ist nun ausschließlich als
 ADR-0065-Architektur dokumentiert und getrennt durch
 `GOV-RATIFICATION-ADR-0065-V1` ratifiziert. Es wurde kein produktiver Vertrag,
-Validator oder ausführendes Modul angelegt. ADR-0065 ist durch
+Validator oder ausführendes Modul außerhalb des begrenzt freigegebenen
+ADR-0065-Moduls angelegt. ADR-0065 ist durch
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1` begrenzt
-implementierungsfreigegeben, aber nicht implementiert; Runtime bleibt gesperrt.
+implementierungsfreigegeben, implementiert und validiert; Runtime bleibt
+gesperrt.

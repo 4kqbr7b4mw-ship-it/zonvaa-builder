@@ -1,6 +1,6 @@
 # ADR-0065 – Guardian B2 Capability Invocation Constitution v1
 
-Status: **RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – NICHT IMPLEMENTIERT**
+Status: **RATIFIZIERT – IMPLEMENTIERUNGSFREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT**
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0065-V1`
 
@@ -15,6 +15,13 @@ Die institutionelle Implementierungsfreigabe erlaubt ausschließlich eine
 spätere Implementierung dieser ratifizierten Architektur. Sie ist keine
 Implementierung und erzeugt selbst keine Autorisierung, Capability-Ausführung,
 Runtime oder technische Macht. Der Runtime Air Gap bleibt verbindlich.
+
+Implementiert ist ausschließlich die nicht ausführende Vertragsfamilie in
+`governance/b2_capability_invocation.py`: typisierte IDs, Capability Binding,
+Intent-Paarung, Request, die zwei geschlossenen Decision-Ergebnisse, normale
+Evidence für positive und negative Prüfung, Receipt, Resolution Snapshot,
+zustandslose Validatoren und die immutable Foundation-Integration. Alle Pfade
+enden mit `NO_EXECUTION_OCCURRED` und `CONTROLLED_STOP`.
 
 ## 1. Kontext
 
@@ -389,9 +396,8 @@ Incident. B1-Verträge werden nicht nach B2 konvertiert.
 
 ## 29. Ausdrücklich nicht freigegebene Bereiche
 
-Nicht freigegeben sind Ratifizierung, institutionelle Implementierungsfreigabe,
-Implementierung, produktive Verträge oder Validatoren, Provider-, Tool-, API-,
-Agent-, MCP- oder Runtime-Aufruf, technische Ausführung, natürliche Personen,
+Nicht freigegeben sind Provider-, Tool-, API-, Agent-, MCP- oder Runtime-
+Aufruf, technische Ausführung, natürliche Personen,
 personenbezogene Verarbeitung oder Speicherung, Inhaltszugriff, Sessions,
 Caches, Tokens, Permissions, Schlüsselmaterial, Key Custody, Observation,
 Runtime Audit, Operational Memory, Metrics, Notifications, neue Provider-
@@ -415,19 +421,19 @@ Implementierungsauftrag zulässig ist. Fehlende Nennung ist Nichtfreigabe.
 
 ## 32. Test- und Evidenzanforderungen
 
-Spätere Implementierungstests müssen positive und negative Referenzketten,
+Die Implementierungstests weisen positive und negative Referenzketten,
 Identität, Halbordnung, fail closed, timezone-aware Zeit, Determinismus,
 Immutability, Nichtausführung, Public API, B1/B2-Trennung, Runtime Air Gap und
-alle verbotenen Felder und Methoden nachweisen. Architekturtests müssen bis
-dahin sicherstellen, dass kein produktives ADR-0065-Modul existiert.
+alle verbotenen Felder und Methoden nach. Architekturtests stellen sicher, dass
+außer dem nicht ausführenden ADR-0065-Modul kein Runtime- oder Adaptermodul
+existiert.
 
 ## 33. Offene institutionelle Entscheidungen
 
 Offen bleiben ausschließlich:
 
-1. Commit und nachweisbarer Push der getrennten Implementierungsfreigabe;
-2. danach ein separater Implementierungsauftrag;
-3. eine mögliche spätere Runtime-Architektur als neuer, derzeit nicht
+1. eigener Commit und Push der validierten ADR-0065-Implementierung;
+2. eine mögliche spätere Runtime-Architektur als neuer, derzeit nicht
    begonnener und gesperrter Verfassungsakt.
 
 Keine Reihenfolge oder Repository-Dokumentation impliziert das nächste Gate.

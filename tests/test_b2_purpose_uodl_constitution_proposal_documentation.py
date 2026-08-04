@@ -67,16 +67,18 @@ def test_manifest_assigns_package_a_and_requires_selective_staging():
     assert "selektives Hunk- beziehungsweise Abschnitts-Staging" in text
 
 
-def test_no_purpose_uodl_or_b2_execution_module_was_added():
+def test_no_purpose_uodl_mapping_or_b2_runtime_module_was_added():
     governance = ROOT / "governance"
     forbidden_patterns = (
         "*purpose*mapping*.py",
         "*uodl*mapping*.py",
-        "*b2*capability*invocation*.py",
         "*b2*runtime*.py",
     )
     assert not [
         path
         for pattern in forbidden_patterns
         for path in governance.glob(pattern)
+    ]
+    assert list(governance.glob("*b2*capability*invocation*.py")) == [
+        governance / "b2_capability_invocation.py"
     ]

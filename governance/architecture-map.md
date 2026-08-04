@@ -115,7 +115,9 @@ bis zu einem eigenen Architekturakt gesperrt.
 ADR-0065 ist durch `GOV-RATIFICATION-ADR-0065-V1` ausschließlich als
 nicht ausführende Capability-Invocation-Architektur ratifiziert und durch
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1` begrenzt
-implementierungsfreigegeben. Sie ist weiterhin nicht implementiert. Sie
+implementierungsfreigegeben. Die eigenständige immutable Vertragsfamilie,
+zustandslose Evaluation, Evidence, Receipt, Resolution Snapshot und Foundation
+sind implementiert und validiert. Sie
 referenziert die unveränderten ADR-0059-bis-ADR-0063-Verträge in einer
 eigenständigen B2-Request–Decision–Evidence–Receipt–Snapshot-Familie. Jeder
 Prüfpfad endet mit `CONTROLLED_STOP` und `NO_EXECUTION_OCCURRED`. Die

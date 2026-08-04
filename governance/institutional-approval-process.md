@@ -165,7 +165,7 @@ Implementierung. Vor jeder Implementierung sind weiterhin getrennt erforderlich:
 3. Commit und Push der Ratifizierung – offen;
 4. getrennte institutionelle Implementierungsfreigabe – abgeschlossen und dokumentiert;
 5. Commit und Push dieser Freigabe – offen;
-6. separater begrenzter Implementierungsauftrag – offen.
+6. separater begrenzter Implementierungsauftrag – erteilt und umgesetzt.
 
 Keine Stufe impliziert die nächste. Eine positive Invocation Decision wäre
 selbst nach späterer Implementierung keine Runtime-Freigabe. B2 Runtime und

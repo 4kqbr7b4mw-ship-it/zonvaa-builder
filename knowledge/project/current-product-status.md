@@ -330,7 +330,7 @@ read-only Chat-Übergabe ermittelt sie zur Laufzeit.
   geschlossenen, nicht ausführenden Verträgen implementiert und validiert.
   ADR-0063, ADR-0064 und ADR-0064-A1 bleiben getrennte ratifizierte
   Architekturen. Capability Invocation ist ausschließlich als ratifizierte und
-  begrenzt implementierungsfreigegebene, aber nicht implementierte ADR-0065-
+  begrenzt implementierungsfreigegebene, implementierte und validierte ADR-0065-
   Architektur dokumentiert; B2-Runtime ist nicht begonnen.
 ### Paket A – ADR-0063 B2 Purpose and UODL Binding Constitution
 
@@ -389,8 +389,9 @@ abgeschlossen. Der historische Recovery-Stash bleibt unverändert erhalten und
 ist für ADR-0065 fachlich irrelevant.
 
 ADR-0065 Guardian B2 Capability Invocation Constitution v1 ist ausschließlich
-als Architektur ratifiziert und begrenzt implementierungsfreigegeben, aber
-nicht implementiert. Die ratifizierten
+als Architektur ratifiziert, begrenzt implementierungsfreigegeben,
+implementiert und validiert. Die ratifizierten
 Request-, Decision-, Evidence-, Receipt- und Resolution-Snapshot-Verträge
 enden zwingend im kontrollierten Stopp und erzeugen keine Autorisierung oder
 Ausführung. B2-Runtime und alle späteren B2-Machtstufen bleiben gesperrt.
+ADR-0066 ist nicht begonnen.
