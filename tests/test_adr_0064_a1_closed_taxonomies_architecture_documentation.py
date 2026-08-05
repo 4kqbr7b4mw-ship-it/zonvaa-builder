@@ -142,6 +142,7 @@ def test_productive_contract_and_empty_documentation_locations_exist():
         "README.md",
         "GOV-B2-NORMATIVE-STATUS-CONSOLIDATION-APPROVAL-V1.md",
         "GOV-NO-FABRICATION-REFERENCE-CONSOLIDATION-APPROVAL-V1.md",
+        "GOV-POST-CONSOLIDATION-REFERENCE-INTEGRITY-MAINTENANCE-APPROVAL-V1.md",
     }
     assert tuple((ROOT / "governance/incidents").iterdir()) == (ROOT / "governance/incidents/README.md",)
 
