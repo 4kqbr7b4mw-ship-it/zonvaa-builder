@@ -180,5 +180,17 @@ technische Ausführung. ADR-0067 ist nicht begonnen.
 ADR-0066 sieht dauerhaft keine produktive technische Komponente vor. Die
 Vollendung besteht nur aus kanonischer Dokumentationspflege und
 dokumentarischen Regressionstests. Modul, Validator, statische Air-Gap-Analyse
-und Runtime Readiness bleiben ausgeschlossen. Commit und Push der
-deklaratorischen Vollendung sind getrennte, noch nicht erfolgte Gates.
+und Runtime Readiness bleiben ausgeschlossen.
+
+Historischer damaliger Gate-Zustand: Zum Zeitpunkt der dokumentarischen
+Implementierungsfreigabe waren Commit und Push der deklaratorischen Vollendung
+getrennte, noch nicht erfolgte Gates. Diese Aussage bleibt als damaliger
+Prozessstand erhalten und wird nicht rückwirkend umgedeutet.
+
+Gegenwärtiger nachweisbarer Abschlussstatus: Die deklaratorische Vollendung
+wurde mit Commit `f77a9529e127ed9fddd088320ce465bf4bbc6e0c` abgeschlossen; dieser
+Commit ist im aktuellen `origin/builder-reset-v2` enthalten. Damit sind
+Dokumentationspflege, Regressionstests, Commit und Push abgeschlossen. Dieser
+heutige Repository-Nachweis legitimiert keinen früheren Gate-Zustand
+rückwirkend und erzeugt weder Runtime, Runtime Readiness noch technische
+Ausführung.

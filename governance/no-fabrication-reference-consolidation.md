@@ -27,9 +27,37 @@ Geltungsbereich und Wirkung ist ausschließlich der referenzierte primäre
 Regelinhaber zuständig. Unterstützende Artefakte erzeugen keine zusätzliche
 materielle Zuständigkeit.
 
-`GOV-NO-FABRICATION-1` bezeichnet in diesem Dokument ausschließlich die
-Referenzkonsolidierung. Die Bezeichnung ist keine geltende Governance-Regel,
-keine Verfassungsfamilie, keine materielle Norm und keine Taxonomie.
+`GOV-NO-FABRICATION-1` bleibt der historische Arbeitstitel des offenen
+Konsolidierungskandidaten aus
+`governance/guardian-accountability-explanation-candidate.md`. Die im
+Bezugsbeschluss enthaltenen Verwendungen dieser Bezeichnung dokumentieren den
+damaligen Konsolidierungsgegenstand; sie sind nicht die Dokument-ID dieses
+Referenzartefakts und werden nicht rückwirkend umbenannt.
+
+Dieses abgeschlossene Referenzartefakt wird ausschließlich durch die
+Dokument-ID `GOV-NO-FABRICATION-REFERENCE-CONSOLIDATION-V1` bezeichnet. Es ist
+keine geltende Governance-Regel, keine Verfassungsfamilie, keine materielle
+Norm und keine Taxonomie. Seine Existenz aktiviert den historischen Kandidaten
+nicht.
+
+## 1a. Historische Scope-Ziele und realisierte Repository-Artefakte
+
+Der Bezugsbeschluss
+`GOV-NO-FABRICATION-REFERENCE-CONSOLIDATION-APPROVAL-V1` bleibt als
+historischer Decision Record unverändert. Seine maschinenlesbaren
+Scope-Zielreferenzen bezeichneten den damals freigegebenen Dokumentationsscope.
+Für die heutige Repository-Navigation gilt ausschließlich folgende
+dokumentarische Zuordnung:
+
+| Historische Scope-Zielreferenz | Tatsächlich realisiertes Repository-Artefakt | Aussageumfang |
+| --- | --- | --- |
+| `governance/no-fabrication-reference-map` | `governance/no-fabrication-reference-consolidation.md` | Referenzübersicht, bestehende Regelinhaber und Geltungsbereiche, vorhandene technische Durchsetzung, bewusste technische Grenzen sowie Nicht-Wirkung |
+| `tests/no-fabrication-reference-consolidation-documentation` | `tests/test_no_fabrication_reference_consolidation_documentation.py` | fokussierte Dokumentationstests der Referenz- und Nicht-Wirkungsgrenze |
+| `governance-candidate:GOV-NO-FABRICATION-1` | `governance/guardian-accountability-explanation-candidate.md` | historischer offener Kandidatenbezug; keine Identität mit dem abgeschlossenen Referenzartefakt |
+
+Die Zuordnung ist Navigationshilfe und Repository-Evidenz. Sie ersetzt oder
+ändert keine historische Scope-Referenz, erweitert keinen freigegebenen Scope
+und erzeugt weder Vorrang noch materielle Zuständigkeit.
 
 ## 2. Vier registrierte Referenzbereiche
 

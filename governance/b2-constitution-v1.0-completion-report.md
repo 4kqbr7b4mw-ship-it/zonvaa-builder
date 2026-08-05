@@ -40,7 +40,7 @@ Runtime-Aussage oder automatische Folgeverfassung ein.
 
 | ADR | Zweck | Aktueller Status | Implementierung und Validierung | Wesentliche Evidenz |
 | --- | --- | --- | --- | --- |
-| ADR-0059 | B2 Data Corridor und Consent Boundary | ratifiziert und implementiert | implementiert und validiert | `knowledge/adr/ADR-0059-guardian-b2-data-corridor-and-consent-boundary.md`, `governance/b2_data_corridor.py`, Commit `77539c727b488dba345b1e1c516e4ed2f895964c`; direkter historischer Ratifizierungsnachweis bleibt Kategorie 3 |
+| ADR-0059 | B2 Data Corridor und Consent Boundary | ratifiziert und implementiert | implementiert und validiert | `knowledge/adr/ADR-0059-guardian-b2-data-corridor-consent-boundary-v1.md`, `governance/b2_data_corridor.py`, Commit `77539c727b488dba345b1e1c516e4ed2f895964c`; direkter historischer Ratifizierungsnachweis bleibt Kategorie 3 |
 | ADR-0060 | B2 Authority und Grant/Authorization | ratifiziert, freigegeben, implementiert und validiert | vollständig nachgewiesen | `knowledge/adr/ADR-0060-guardian-b2-authority-authorization-v1.md`, `governance/b2_authorization.py`, Commit `ebc050d1ebb9e15f828f918b1d9cd2ff8c970b0f` |
 | ADR-0061 | B2 Provider Identity und Capability Descriptor | ratifiziert, freigegeben, implementiert und validiert | vollständig nachgewiesen | `knowledge/adr/ADR-0061-guardian-b2-provider-identity-v1.md`, `governance/b2_provider_identity.py`, Commit `1c4fc5566c2b5c05bcf0065da01268d2b7870654` |
 | ADR-0062 | B2 Provider Authorization | ratifiziert, freigegeben, implementiert und validiert | vollständig nachgewiesen | `knowledge/adr/ADR-0062-guardian-b2-provider-authorization-v1.md`, `governance/b2_provider_authorization.py`, Commit `5ca8bf8452e240917f547e3975f5c15c4a78b73d` |
@@ -177,9 +177,14 @@ verändert.
 
 ## 10. Ruhende Architekturkandidaten
 
-Folgende Kandidaten bleiben ausschließlich registriert und ruhend:
+Das Inventar dieses Berichts ist auf die in
+`governance/future-b2-package-map.md` und
+`knowledge/project/current-product-status.md` registrierten ruhenden
+Architekturkandidaten begrenzt. Danach bleiben ausschließlich registriert und
+ruhend:
 
 - Guardian Accountability & Explanation
+- Guardian Life Domain Model
 - Guardian Key Custody / Key Master
 
 Sie sind nicht aktiviert, nicht als Folgepaket eingeplant und nicht

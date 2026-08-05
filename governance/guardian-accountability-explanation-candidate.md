@@ -72,6 +72,20 @@ Arbeitshypothese:
 Diese Registrierung ratifiziert, konsolidiert oder aktiviert keine neue
 Governance-Regel. `GOV-NO-FABRICATION-1` ist weder bindend noch freigegeben.
 
+### Historische Bezeichnungs- und Referenztrennung
+
+`GOV-NO-FABRICATION-1` bleibt unverändert der historische Arbeitstitel dieses
+offenen Konsolidierungskandidaten. Er ist keine Dokument-ID und bezeichnet
+nicht das später abgeschlossene Referenzartefakt.
+
+Das davon getrennte, rein dokumentarische Referenzartefakt besitzt
+ausschließlich die Dokument-ID
+`GOV-NO-FABRICATION-REFERENCE-CONSOLIDATION-V1` und liegt unter
+`governance/no-fabrication-reference-consolidation.md`. Seine Fertigstellung
+aktiviert den historischen Kandidaten nicht. Diese Klarstellung erhält die
+frühere Kandidatenbezeichnung und führt weder eine Umbenennung noch eine neue
+Regel, Taxonomie, Priorität oder materielle Wirkung ein.
+
 ## Aktivierungsbedingungen
 
 Der Architekturkandidat darf erst aktiviert werden, wenn alle folgenden
