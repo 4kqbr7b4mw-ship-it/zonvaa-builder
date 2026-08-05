@@ -1,6 +1,6 @@
 # ADR-0060 – Guardian B2 Authority and Authorization v1
 
-Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN
+Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT
 
 Ratifizierungsdatum: 02.08.2026
 
@@ -8,13 +8,35 @@ Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0060-V1`
 
 Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`
 
+## Normativer Zeitstand und Evidenz
+
+- **Ursprünglicher Entscheidungsinhalt:** ADR-0060 entschied ausschließlich
+  die nicht ausführende Architektur; der Architekturakt selbst implementierte
+  keinen Vertrag und erteilte keine Implementierungsfreigabe.
+- **Historischer damaliger Governance-Zustand:** Nach Ratifizierung und
+  Implementierungsfreigabe war der separate Implementierungsauftrag zunächst
+  offen. Diese Vorstufe bleibt als damaliger Gate-Zustand sichtbar und wird
+  nicht rückwirkend umgedeutet.
+- **Gegenwärtiger normativer Status:** ADR-0060 ist ratifiziert, begrenzt
+  implementierungsfreigegeben, implementiert und validiert. Runtime und
+  technische Grant-Ausführung bleiben ausgeschlossen.
+- **Implementierungs- und Validierungsevidenz:**
+  `governance/b2_authorization.py` sowie die zugehörigen fokussierten
+  Authorization- und Dokumentationstests; Implementierungs-Commit
+  `ebc050d1ebb9e15f828f918b1d9cd2ff8c970b0f`.
+- **Commit- und Push-Evidenz:** Der Implementierungs-Commit ist im aktuellen
+  `origin/builder-reset-v2` enthalten. Diese heutige Repository-Evidenz
+  ersetzt keinen historischen Beschluss- oder Pushzeitpunkt.
+
 ## 1. Kontext und Governance-Grenze
 
 ADR-0058 verlangt für B2 eine eigenständige Verfassungsstufe. ADR-0059
 definiert den vorgeschalteten Datenkorridor, autorisiert aber weder Authority
-noch Grants. ADR-0060 entscheidet deshalb ausschließlich die Architektur von
-B2 Authority, B2 Grants und deren zustandsloser Evaluation. Sie implementiert
-keinen Vertrag, Validator, Provider, Datenzugriff und keine Runtime.
+noch Grants. ADR-0060 entschied deshalb ursprünglich ausschließlich die
+Architektur von B2 Authority, B2 Grants und deren zustandsloser Evaluation.
+Der damalige Architekturakt implementierte keinen Vertrag, Validator,
+Provider, Datenzugriff und keine Runtime. Der gegenwärtige Implementierungsstand
+ist im Abschnitt „Normativer Zeitstand und Evidenz“ getrennt dokumentiert.
 
 Diese ADR ist trotz Ratifizierung keine institutionelle Implementierungsfreigabe. Verbindliche
 Sequenz:
@@ -27,7 +49,9 @@ Sequenz:
    Abgeschlossen durch `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1`.
 5. Diese Implementierungsfreigabe ausdrücklich menschlich bestätigen.
    Abgeschlossen durch den getrennten externen Beschluss.
-6. Einen separaten, scopegebundenen Codex-Implementierungsauftrag erteilen. Offen.
+6. Einen separaten, scopegebundenen Codex-Implementierungsauftrag erteilen.
+   Zum damaligen Dokumentationszeitstand offen; inzwischen getrennt erteilt
+   und durch den Implementierungs-Commit nachweisbar abgeschlossen.
 
 Ratifizierung und Implementierungsfreigabe sind zwei eigenständige menschliche
 Entscheidungen. Kein Schritt folgt stillschweigend aus dem vorherigen.
@@ -270,8 +294,8 @@ B2 Grants, personenbezogene Verarbeitung oder Speicherung, Sessions, Caches,
 Observation, Runtime Audit, Operational Memory, Metrics, Notifications,
 produktive externe Anbindungen, UI, Workflows und Werkzeuge.
 
-ADR-0060 implementiert dafür keine Verträge und formuliert keine
-Implementierungsfreigabe. Nach der dokumentierten menschlichen Ratifizierung
+Der ursprüngliche ADR-0060-Architekturakt implementierte dafür keine Verträge
+und formulierte keine Implementierungsfreigabe. Nach der dokumentierten menschlichen Ratifizierung
 ist das gesonderte, menschlich bestätigte Freigabedokument
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0060-V1` mit erneut ausdrücklich
 begrenztem Scope maßgeblich. Es ersetzt keinen separaten Codex-Auftrag.
@@ -282,7 +306,8 @@ ADR-0047 bis ADR-0059, AAV, UODL und
 `GOV-SYSTEM-BEHAVIOR-ONLY-1` bleiben unverändert. Insbesondere wird
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0059-V1` weder erweitert noch ersetzt.
 
-Nicht Gegenstand sind Klassen, Enums, APIs, Validatoren, Provider, Runtime,
-Persistenz, Datenverarbeitung, Produktfunktion, Freigabe, Ratifizierung oder
-Ausführung. Die Ratifizierung bestätigt nur diese Architektur; sie autorisiert
-keine Implementierung.
+Nicht Gegenstand des ursprünglichen Architekturentscheids waren Klassen,
+Enums, APIs, Validatoren, Provider, Runtime, Persistenz, Datenverarbeitung,
+Produktfunktion, Freigabe, Ratifizierung oder Ausführung. Die Ratifizierung
+bestätigte nur diese Architektur; die später getrennt erteilte und
+dokumentierte Implementierungsfreigabe blieb erforderlich.

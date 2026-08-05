@@ -6,6 +6,27 @@ Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0063-V1`
 
 Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1`
 
+## Normativer Zeitstand und Evidenz
+
+- **Ursprünglicher Entscheidungsinhalt:** ADR-0063 spezifizierte die später zu
+  implementierenden Purpose-Bindungs- und UODL-Mapping-Verträge. Ratifizierung
+  und Implementierungsfreigabe waren getrennte, damals noch zu erfüllende
+  Gates.
+- **Historischer damaliger Governance-Zustand:** Die Abschnitte zu
+  Ratifikations- und Implementierungsfreigabeanforderungen dokumentieren die
+  Gate-Anforderungen vor deren Erfüllung. Sie bleiben historische
+  Entscheidungsanforderungen und werden nicht rückwirkend umgedeutet.
+- **Gegenwärtiger normativer Status:** ADR-0063 ist ratifiziert, begrenzt
+  implementierungsfreigegeben, implementiert und validiert. Migration bleibt
+  ausdrücklich weder freigegeben noch implementiert.
+- **Implementierungs- und Validierungsevidenz:**
+  `governance/b2_purpose_uodl_binding.py` und die zugehörigen Purpose-/UODL-
+  sowie Dokumentationstests; Implementierungs-Commit
+  `1b61f66f38c195be57cc96f693124ca8bc0fa013`.
+- **Commit- und Push-Evidenz:** Der Implementierungs-Commit ist im aktuellen
+  `origin/builder-reset-v2` enthalten. Die Repository-Evidenz ersetzt weder
+  Ratifikation noch Implementierungsfreigabe.
+
 Ratifizierung und institutionelle Implementierungsfreigabe sind getrennte
 menschliche Beschlüsse. Die Freigabe implementiert weder Purpose-Bindung noch
 UODL-Mapping oder Migration und besitzt keine Ausführungswirkung.
@@ -44,7 +65,8 @@ Diese ADR ergänzt die Bindungsarchitektur. Sie ändert keine bestehende ADR.
 - **Kanonischer Purpose:** ein `B2PurposeScope` nach ADR-0060.
 - **Corridor-Purpose-Darstellung:** bestehender syntaktischer Wert aus
   ADR-0059; ohne Bindungsnachweis nicht fachlich autoritativ.
-- **Purpose-Bindungsnachweis:** spätere immutable Evidenz einer expliziten
+- **Purpose-Bindungsnachweis:** im ursprünglichen Entscheidungsinhalt als
+  spätere immutable Evidenz einer expliziten
   Bindung an genau einen kanonischen Scope.
 - **Corridor-Operation:** `StorageOperation.REFERENCE` auf ADR-0059-Ebene.
 - **B2-UODL-Operation:** `B2UODLOperation.REFERENCE_ONLY` auf
@@ -69,8 +91,8 @@ Provenienz oder Validatorannahmen ersetzen keine fehlende Purpose-Bindung.
 
 ## 7. Purpose-Bindungsnachweis
 
-Ein später implementierbarer immutable Vertrag muss ausschließlich typisiert
-enthalten:
+Der ursprüngliche Entscheidungsinhalt verlangte für den später implementierten
+immutable Vertrag ausschließlich folgende typisierte Inhalte:
 
 - Bindungs-ID;
 - Corridor-Referenz;
@@ -102,13 +124,13 @@ sind weder identisch noch austauschbar.
 
 ## 10. UODL-Mapping
 
-Das einzige vorgeschlagene zulässige Paar lautet:
+Das einzige ratifizierte und implementierte zulässige Paar lautet:
 
 - Corridor-Operation: `StorageOperation.REFERENCE`;
 - B2-UODL-Operation: `B2UODLOperation.REFERENCE_ONLY`.
 
-Ein später implementierbarer immutable Vertrag muss ausschließlich typisiert
-enthalten:
+Der ursprüngliche Entscheidungsinhalt verlangte für den später implementierten
+immutable Vertrag ausschließlich folgende typisierte Inhalte:
 
 - Mapping-ID;
 - Corridor-Operation;
@@ -163,21 +185,24 @@ erzeugt werden?
 Antwort: **Nein.** Alle Übergänge sind geschlossen typisiert, explizit und
 fail closed; diese ADR besitzt keine Ausführungswirkung.
 
-## 15. Ausdrücklich nicht freigegebene Bereiche
+## 15. Historischer Ausschluss am Architekturzeitstand
 
-Nicht freigegeben sind Implementierung, Migration, Änderung produktiver
-Verträge oder Validatoren, Ratifizierung, institutionelle
-Implementierungsfreigabe, personenbezogene Verarbeitung oder Speicherung,
+Zum damaligen Architekturzeitstand waren Implementierung, Migration, Änderung
+produktiver Verträge oder Validatoren, Ratifizierung und institutionelle
+Implementierungsfreigabe nicht freigegeben. Gegenwärtig sind Ratifizierung,
+begrenzte Implementierungsfreigabe und Implementierung getrennt abgeschlossen;
+weiterhin nicht freigegeben bleiben Migration, personenbezogene Verarbeitung oder Speicherung,
 Inhaltszugriff, neue UODL-Operationen, Provider-Aufruf, Capability Invocation,
 Runtime, Tools, Sessions, Caches, Tokens, Schlüsselverwaltung, Observation,
 Audit, Operational Memory, Metrics, Notifications und externe Integration.
 
 ## 16. Auswirkungen auf ADR-0059 bis ADR-0062
 
-ADR-0059 bis ADR-0062 bleiben unverändert. Bei späterer Ratifizierung würde
-ADR-0063 ausschließlich ihre offene Purpose- und UODL-Bindungsgrenze
-ergänzen. Sie erweitert weder Corridor, Authority, Grant, Provider Identity
-noch Provider Authorization.
+ADR-0059 bis ADR-0062 bleiben unverändert. Zum historischen Vorschlagszeitpunkt
+war vorgesehen, dass eine spätere Ratifizierung ausschließlich ihre offene
+Purpose- und UODL-Bindungsgrenze ergänzt. Diese Ratifizierung ist inzwischen
+getrennt erfolgt; ADR-0063 erweitert weiterhin weder Corridor, Authority,
+Grant, Provider Identity noch Provider Authorization.
 
 ## 17. Migrationsfragen
 
@@ -202,18 +227,22 @@ Evidence-Strukturen, zustandslose Validatoren sowie eine Referenzintegration
 um die unveränderte ADR-0062-Foundation. Sie enthält keinen Migrationspfad,
 keine Invocation und keine Runtime.
 
-## 20. Ratifikationsanforderungen
+## 20. Historische Ratifikationsanforderungen und heutige Evidenz
 
-Ratifizierung muss Purpose-Alleinquelle, Halbordnung, fail-closed Verhalten,
+Vor der Ratifizierung galt: Ratifizierung muss Purpose-Alleinquelle, Halbordnung, fail-closed Verhalten,
 UODL-Ebenentrennung, das einzige Paar, Migrationstrennung und sämtliche
 Negativregeln ausdrücklich bestätigen. Sie ist keine Implementierungsfreigabe.
+Diese Anforderung wurde durch `GOV-RATIFICATION-ADR-0063-V1` erfüllt.
 
-## 21. Implementierungsfreigabeanforderungen
+## 21. Historische Implementierungsfreigabeanforderungen und heutige Evidenz
 
-Eine spätere Freigabe muss `Freigegeben` und `Ausdrücklich nicht freigegeben`
+Vor der Implementierungsfreigabe galt: Eine spätere Freigabe muss
+`Freigegeben` und `Ausdrücklich nicht freigegeben`
 nach `GOV-INSTITUTIONAL-DECISION-SCOPE-1` getrennt enthalten. Purpose-Bindung,
 UODL-Mapping und Migration dürfen nicht stillschweigend gemeinsam freigegeben
-werden.
+werden. Diese Anforderung wurde durch
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0063-V1` erfüllt; Migration blieb
+ausgeschlossen.
 
 ## 22. Test- und Evidenzanforderungen
 

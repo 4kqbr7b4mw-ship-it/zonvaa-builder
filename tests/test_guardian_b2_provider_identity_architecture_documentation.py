@@ -179,7 +179,8 @@ def test_adr_and_approval_documents_remain_non_executing_documents():
     text = normalized()
     for phrase in (
         "keine institutionelle Implementierungsfreigabe",
-        "implementiert keine Klasse, Enum, Value Object, API, Runtime",
+        "Der ursprüngliche Architekturakt implementierte keine Klasse, Enum",
+        "Die spätere Implementierung beschränkt sich nachweisbar auf `governance/b2_provider_identity.py`",
         "ändert weder ADR-0060 noch bestehende Implementierungsfreigaben",
         "Antwort: Nein",
     ):

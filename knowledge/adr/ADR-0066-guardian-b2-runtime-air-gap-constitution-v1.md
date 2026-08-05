@@ -7,6 +7,26 @@ Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0066-V1`
 Implementierungsfreigabe:
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1`
 
+## Normativer Zeitstand und Evidenz
+
+- **Ursprünglicher Entscheidungsinhalt:** ADR-0066 entschied ausschließlich
+  die deklaratorische Verfassung des vollständigen Runtime Air Gap. Er sah
+  dauerhaft keine produktive technische Komponente vor.
+- **Historischer damaliger Governance-Zustand:** Ratifizierung, ausschließlich
+  dokumentarische Implementierungsfreigabe, deklaratorischer Vollendungsauftrag,
+  Commit und Push waren getrennte, zunächst offene Gates. Die entsprechenden
+  Anforderungsabschnitte bleiben als damaliger Zeitstand sichtbar.
+- **Gegenwärtiger normativer Status:** ADR-0066 ist ratifiziert, ausschließlich
+  dokumentarisch implementierungsfreigegeben, deklaratorisch vollendet und
+  validiert. Runtime ist nicht existent und vollständig gesperrt.
+- **Vollendungs- und Validierungsevidenz:** kanonische Dokumentations- und
+  Regressionstests sowie Abschluss-Commit
+  `f77a9529e127ed9fddd088320ce465bf4bbc6e0c`; es existiert kein produktives
+  ADR-0066-Modul.
+- **Commit- und Push-Evidenz:** Der Abschluss-Commit ist im aktuellen
+  `origin/builder-reset-v2` enthalten. Diese Repository-Evidenz erzeugt keine
+  Runtime Readiness und keine technische Vorbereitung.
+
 Die Ratifizierung bestätigt ausschließlich diese deklaratorische Architektur.
 Die getrennte institutionelle Implementierungsfreigabe erlaubte ausschließlich
 die nun dokumentarisch umgesetzte, deklaratorische Vollendung durch kanonische
@@ -15,8 +35,10 @@ Runtime Air Gap ist keine Software. Seine Vollendung ist allein der kanonische
 Nachweis, dass keine technische Verbindung vorgesehen oder vorhanden ist. Sie
 eröffnet keine Runtime-Diskussion. ADR-0066 sieht dauerhaft keine produktive
 technische Komponente vor; Modul, Validator, statische Air-Gap-Analyse und
-Runtime Readiness bleiben ausgeschlossen. Diese Vollendung ist noch nicht
-committed und noch nicht gepusht.
+Runtime Readiness bleiben ausgeschlossen. Die deklaratorische Vollendung ist
+mit Commit `f77a9529e127ed9fddd088320ce465bf4bbc6e0c` committed und im aktuellen
+`origin/builder-reset-v2` nachweisbar gepusht. Das ist keine technische
+Implementierung.
 
 ## 1. Kontext
 
@@ -297,10 +319,13 @@ Invocation-Abhängigkeit und einen Ausführungszweck vorwegnahm. Dies ändert
 keine ratifizierte Architektur; es entfernt eine nicht kanonische
 Planungsvorwegnahme.
 
-## 26. Ausdrücklich nicht freigegebene Bereiche
+## 26. Historischer Ausschluss und dauerhaft nicht freigegebene Bereiche
 
-Nicht freigegeben sind Ratifizierung, institutionelle Implementierungsfreigabe,
-Implementierung, produktive Python-Dateien, technische Air-Gap-Komponenten,
+Zum ursprünglichen Architekturzeitstand waren Ratifizierung, institutionelle
+Implementierungsfreigabe und deklaratorische Vollendung nicht freigegeben.
+Diese drei dokumentarischen Gates sind inzwischen getrennt abgeschlossen.
+Dauerhaft nicht freigegeben bleiben produktive technische Implementierung,
+produktive Python-Dateien, technische Air-Gap-Komponenten,
 Runtime Boundary Validator, Readiness Contract, Adapter, Bridge, API, Request,
 Command, Token, technische Ausführung, Provider-, Tool-, API-, MCP- oder
 Agent-Aufruf, externe Integration, Sessions, Caches, Tokens, Schlüsselmaterial,
@@ -309,20 +334,24 @@ Metrics, Notifications, natürliche Personen, personenbezogene Verarbeitung
 oder Speicherung, ein neuer Runtime-ADR, ADR-0067 und Änderungen an ADR-0059
 bis ADR-0065.
 
-## 27. Ratifikationsanforderungen
+## 27. Historische Ratifikationsanforderungen und heutige Evidenz
 
-Eine Ratifizierung müsste den eigenständigen Zweck, die vollständige
+Vor der Ratifizierung galt: Eine Ratifizierung musste den eigenständigen Zweck, die vollständige
 Übergangsabwesenheit, Diskussionsvoraussetzungen, alle Invarianten,
-Negativregeln und Prüffrage Null ausdrücklich menschlich bestätigen. Sie wäre
-keine Implementierungsfreigabe und keine Runtime-Diskussionsfreigabe.
+Negativregeln und Prüffrage Null ausdrücklich menschlich bestätigen. Sie durfte
+keine Implementierungsfreigabe und keine Runtime-Diskussionsfreigabe sein.
+Diese Anforderung wurde durch `GOV-RATIFICATION-ADR-0066-V1` erfüllt.
 
-## 28. Implementierungsfreigabeanforderungen
+## 28. Historische Implementierungsfreigabeanforderungen und heutige Evidenz
 
 ADR-0066 sieht keine produktive Implementierung vor. Eine spätere
 institutionelle Behandlung dürfte höchstens kanonische Dokumentations- und
 Testpflege freigeben und müsste technische Komponenten, Runtime Preparation
 und Runtime weiterhin ausdrücklich ausschließen. Fehlende Nennung wäre
-Nichtfreigabe.
+Nichtfreigabe. Diese Anforderung wurde durch
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0066-V1` erfüllt; die anschließend
+getrennte deklaratorische Vollendung blieb ohne produktive technische
+Komponente.
 
 ## 29. Testanforderungen
 

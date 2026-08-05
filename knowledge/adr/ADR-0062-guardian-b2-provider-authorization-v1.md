@@ -1,10 +1,31 @@
 # ADR-0062 – Guardian B2 Provider Authorization v1
 
-Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN
+Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0062-V1`
 
 Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0062-V1`
+
+## Normativer Zeitstand und Evidenz
+
+- **Ursprünglicher Entscheidungsinhalt:** ADR-0062 entschied ausschließlich
+  die nicht ausführende Provider-Authorization-Architektur als Anwendung von
+  ADR-0060. Der Architekturakt selbst war keine Implementierung.
+- **Historischer damaliger Governance-Zustand:** Ratifizierung,
+  Implementierungsfreigabe, Freigabe-Push und separater Implementierungsauftrag
+  waren eigenständige Gates. Der dokumentierte Implementierungsbeginn vor dem
+  kanonischen Freigabe-Push bleibt als Prozessvorfall sichtbar und wird nicht
+  rückwirkend legitimiert.
+- **Gegenwärtiger normativer Status:** ADR-0062 ist ratifiziert, begrenzt
+  implementierungsfreigegeben, implementiert und validiert. Provider
+  Authorization besitzt weiterhin keine Invocation- oder Runtime-Wirkung.
+- **Implementierungs- und Validierungsevidenz:**
+  `governance/b2_provider_authorization.py` und die zugehörigen Provider-
+  Authorization- und Dokumentationstests; Implementierungs-Commit
+  `5ca8bf8452e240917f547e3975f5c15c4a78b73d`.
+- **Commit- und Push-Evidenz:** Der Implementierungs-Commit ist im aktuellen
+  `origin/builder-reset-v2` enthalten. Diese heutige Evidenz heilt oder
+  überschreibt keinen früheren Prozessvorfall.
 
 ## 1. Kontext und Entscheidungsgrenze
 
@@ -259,9 +280,11 @@ Nicht Gegenstand und nicht freigegeben bleiben:
 
 ## 13. Governance-Sequenz und Nicht-Ziele
 
-ADR-0062 dokumentiert ausschließlich eine ratifizierte und begrenzt
-implementierungsfreigegebene Architektur. Sie implementiert keine Klasse,
-Enum, Value Object, API oder Produktfunktion. Die bestehende
+Der ursprüngliche ADR-0062-Architekturakt dokumentierte ausschließlich eine
+ratifizierte und begrenzt implementierungsfreigegebene Architektur und
+implementierte selbst keine Klasse, Enum, kein Value Object, keine API oder
+Produktfunktion. Die später getrennt ausgeführte Implementierung ist im
+Abschnitt „Normativer Zeitstand und Evidenz“ nachgewiesen. Die bestehende
 Implementierungsfreigabe für ADR-0061 wird nicht erweitert.
 
 Jede spätere Arbeit verlangt getrennt:

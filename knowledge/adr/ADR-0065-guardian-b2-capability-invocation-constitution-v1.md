@@ -6,13 +6,36 @@ Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0065-V1`
 
 Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1`
 
+## Normativer Zeitstand und Evidenz
+
+- **Ursprünglicher Entscheidungsinhalt:** ADR-0065 entschied die
+  nicht ausführende Vertragsfamilie und die Gate-Anforderungen vor einer
+  Implementierung. Ratifizierung und Implementierungsfreigabe wirkten jeweils
+  nicht selbst implementierend.
+- **Historischer damaliger Governance-Zustand:** Ratifikation,
+  Implementierungsfreigabe, deren Commit und Push sowie der separate
+  Implementierungsauftrag waren eigenständige, zunächst offene Gates. Die
+  historischen Anforderungen bleiben sichtbar.
+- **Gegenwärtiger normativer Status:** ADR-0065 ist ratifiziert,
+  implementierungsfreigegeben, implementiert und validiert. Alle Pfade enden
+  ohne Ausführung im kontrollierten Stopp; Runtime bleibt gesperrt.
+- **Implementierungs- und Validierungsevidenz:**
+  `governance/b2_capability_invocation.py`, Public API und die fokussierten
+  ADR-0065-, Integrations-, Negativ- und Dokumentationstests;
+  Implementierungs-Commit
+  `0e12b8b3e0f13c1fa2949345a5e9c6f8bfcb575b`.
+- **Commit- und Push-Evidenz:** Der Implementierungs-Commit ist im aktuellen
+  `origin/builder-reset-v2` enthalten. Dies erzeugt keine Runtime- oder
+  Ausführungswirkung.
+
 Die Ratifizierung bestätigt ausschließlich die dokumentierte Architektur. Sie
 ist keine institutionelle Implementierungsfreigabe, implementiert nichts und
 erzeugt keine Invocation-, Provider-, Tool-, API-, Agent-, MCP-, Runtime- oder
 technische Ausführungswirkung.
 
-Die institutionelle Implementierungsfreigabe erlaubt ausschließlich eine
-spätere Implementierung dieser ratifizierten Architektur. Sie ist keine
+Die institutionelle Implementierungsfreigabe erlaubte ausschließlich die
+danach separat ausgeführte Implementierung dieser ratifizierten Architektur.
+Sie war selbst keine
 Implementierung und erzeugt selbst keine Autorisierung, Capability-Ausführung,
 Runtime oder technische Macht. Der Runtime Air Gap bleibt verbindlich.
 
@@ -161,7 +184,7 @@ Referenzierbarkeit ohne technische Fortsetzung am stärksten.
 
 ## 9. Gewählte Architektur
 
-Die vorgeschlagene B2-Typfamilie besteht aus Request, Capability Binding,
+Die ratifizierte und implementierte B2-Typfamilie besteht aus Request, Capability Binding,
 Decision, Evidence, Receipt und Resolution Snapshot. Alle Objekte sind
 immutable, vollständig typisiert, deterministisch prüfbar, zustandslos und
 nicht ausführend. Keine B1-Klasse wird wiederverwendet. Jeder Prüfpfad endet
@@ -183,7 +206,8 @@ B2 Data Corridor
 
 ## 10. Invocation Request
 
-Ein späterer Vertrag muss mindestens referenzieren:
+Der ursprüngliche Entscheidungsinhalt verlangte für den später implementierten
+Vertrag mindestens folgende Referenzen:
 
 - eigenständige Invocation Request ID;
 - B2 Data Corridor Reference;
@@ -404,20 +428,26 @@ Runtime Audit, Operational Memory, Metrics, Notifications, neue Provider-
 Klassen, Capability Descriptoren, Purpose Scopes oder UODL-Operationen,
 Änderungen an ADR-0059 bis ADR-0064-A1 und jede nachgelagerte Runtime-ADR.
 
-## 30. Ratifikationsanforderungen
+## 30. Historische Ratifikationsanforderungen und heutige Evidenz
 
-Eine Ratifizierung muss Begriffe, B1/B2-Trennung, gewählte Vertragsfamilie,
+Vor der Ratifizierung galt: Eine Ratifizierung muss Begriffe, B1/B2-Trennung, gewählte Vertragsfamilie,
 Decision-Codes, Receipt, Snapshot, Runtime Air Gap, kontrollierten Stopp,
 Halbordnung, fail-closed Regeln, Negativregeln und Prüffrage Null ausdrücklich
-bestätigen. Sie ist keine Implementierungsfreigabe.
+bestätigen. Sie ist keine Implementierungsfreigabe. Diese Anforderung wurde
+durch `GOV-RATIFICATION-ADR-0065-V1` erfüllt.
 
-## 31. Implementierungsfreigabeanforderungen
+## 31. Historische Implementierungsfreigabeanforderungen und heutige Evidenz
 
-Eine spätere institutionelle Implementierungsfreigabe benötigt einen neuen
+Vor der Implementierungsfreigabe galt: Eine spätere institutionelle
+Implementierungsfreigabe benötigt einen neuen
 gegenwärtigen menschlichen Beschluss, getrennte freigegebene und ausdrücklich
 nicht freigegebene Scopes, reales Datum, Uhrzeit, Zeitzone und institutionelle
 Rolle. Sie muss dokumentiert, committed und gepusht sein, bevor ein separater
 Implementierungsauftrag zulässig ist. Fehlende Nennung ist Nichtfreigabe.
+Diese Anforderungen wurden durch
+`GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0065-V1`, dessen Commit und nachweisbaren
+Push erfüllt; der Implementierungsauftrag und die Implementierung folgten
+getrennt.
 
 ## 32. Test- und Evidenzanforderungen
 
@@ -430,11 +460,9 @@ existiert.
 
 ## 33. Offene institutionelle Entscheidungen
 
-Offen bleiben ausschließlich:
-
-1. eigener Commit und Push der validierten ADR-0065-Implementierung;
-2. eine mögliche spätere Runtime-Architektur als neuer, derzeit nicht
-   begonnener und gesperrter Verfassungsakt.
+Commit und Push der validierten ADR-0065-Implementierung sind abgeschlossen.
+Offen bleibt ausschließlich eine mögliche spätere Runtime-Architektur als
+neuer, derzeit nicht begonnener und gesperrter Verfassungsakt.
 
 Keine Reihenfolge oder Repository-Dokumentation impliziert das nächste Gate.
 

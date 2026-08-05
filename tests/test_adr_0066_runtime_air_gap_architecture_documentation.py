@@ -26,7 +26,9 @@ def test_adr_0066_is_declaratively_completed_and_validated():
     assert "Weiterhin nicht eröffnet ist eine Runtime-Architekturdiskussion" in normalized
     assert "sieht dauerhaft keine produktive technische Komponente vor" in normalized
     assert "Runtime Air Gap ist keine Software" in normalized
-    assert "noch nicht committed und noch nicht gepusht" in normalized
+    assert "noch nicht committed und noch nicht gepusht" not in normalized
+    assert "f77a9529e127ed9fddd088320ce465bf4bbc6e0c" in normalized
+    assert "im aktuellen `origin/builder-reset-v2` nachweisbar gepusht" in normalized
 
 
 def test_adr_0066_has_an_independent_declarative_purpose():

@@ -1,10 +1,31 @@
 # ADR-0061 – Guardian B2 Provider Identity v1
 
-Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN
+Status: RATIFIZIERT – IMPLEMENTIERUNG BEGRENZT FREIGEGEBEN – IMPLEMENTIERT UND VALIDIERT
 
 Ratifizierungsnachweis: `GOV-RATIFICATION-ADR-0061-V1`
 
 Implementierungsfreigabe: `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1`
+
+## Normativer Zeitstand und Evidenz
+
+- **Ursprünglicher Entscheidungsinhalt:** ADR-0061 entschied ausschließlich
+  das immutable, nicht autorisierende Provider-Identity-Modell. Der
+  Architekturakt selbst implementierte keinen Vertrag und erteilte keine
+  Implementierungsfreigabe.
+- **Historischer damaliger Governance-Zustand:** Nach der getrennten
+  Implementierungsfreigabe war der separate Implementierungsauftrag zunächst
+  offen. Dieser historische Gate-Zustand und der dokumentierte Prozessvorfall
+  bleiben ohne rückwirkende Legitimierung sichtbar.
+- **Gegenwärtiger normativer Status:** ADR-0061 ist ratifiziert, begrenzt
+  implementierungsfreigegeben, implementiert und validiert. Provider Identity
+  bleibt beschreibend, nicht personenbezogen und nicht autorisierend.
+- **Implementierungs- und Validierungsevidenz:**
+  `governance/b2_provider_identity.py` und die zugehörigen Provider-Identity-
+  und Dokumentationstests; Implementierungs-Commit
+  `1c4fc5566c2b5c05bcf0065da01268d2b7870654`.
+- **Commit- und Push-Evidenz:** Der Implementierungs-Commit ist im aktuellen
+  `origin/builder-reset-v2` enthalten. Diese heutige Repository-Evidenz
+  verändert keinen historischen Gate-Zustand.
 
 ## 1. Kontext und Entscheidungsgrenze
 
@@ -13,10 +34,12 @@ ADR-0060 begrenzt B2 Authority, Grants und deren zustandslose Evaluation.
 Keines dieser Dokumente definiert, wie eine spätere B2-Architektur eine
 nicht personenbezogene Provider-Identität beschreiben dürfte.
 
-ADR-0061 entscheidet deshalb ausschließlich die Architektur eines immutable,
+ADR-0061 entschied deshalb ursprünglich ausschließlich die Architektur eines immutable,
 nicht autorisierenden B2 Provider Identity Model. Die Architektur ist durch
-`GOV-RATIFICATION-ADR-0061-V1` ratifiziert. Sie implementiert keinen Vertrag
-und erteilt keine institutionelle Implementierungsfreigabe. Institutionelle
+`GOV-RATIFICATION-ADR-0061-V1` ratifiziert. Der damalige Architekturakt
+implementierte keinen Vertrag und erteilte keine institutionelle
+Implementierungsfreigabe. Der heutige Status ist davon getrennt im Abschnitt
+„Normativer Zeitstand und Evidenz“ dokumentiert. Institutionelle
 Beschlüsse bleiben durch `GOV-INSTITUTIONAL-DECISION-SCOPE-1` begrenzt.
 
 ## 2. Verhältnis zum B1 Provider Identity Model
@@ -231,17 +254,21 @@ Nicht Gegenstand und nicht freigegeben bleiben:
 ADR-0061 ist ratifiziert und durch den getrennten Beschluss
 `GOV-B2-IMPLEMENTATION-APPROVAL-ADR-0061-V1` ausschließlich im beschriebenen
 nicht ausführenden Provider-Identity-Scope implementierungsfreigegeben. Die
-Ratifizierung selbst ist keine institutionelle Implementierungsfreigabe. Eine
-spätere Implementierung verlangt weiterhin getrennt:
+Ratifizierung selbst ist keine institutionelle Implementierungsfreigabe. Zum
+historischen Zeitstand vor der Implementierung verlangte die Gate-Sequenz
+getrennt:
 
 1. den gesonderten institutionellen Freigabebeschluss mit den Abschnitten
    `Freigegeben` und `Ausdrücklich nicht freigegeben` – abgeschlossen,
 2. die ausdrückliche menschliche Bestätigung dieser Freigabe – abgeschlossen,
-3. einen separaten Codex-Implementierungsauftrag – offen.
+3. einen separaten Codex-Implementierungsauftrag – damals offen; später
+   getrennt erteilt und abgeschlossen.
 
-Diese ADR implementiert keine Klasse, Enum, Value Object, API, Runtime,
-Provider Authorization, Invocation, Verarbeitung oder Speicherung und ändert
-weder ADR-0060 noch bestehende Implementierungsfreigaben.
+Der ursprüngliche Architekturakt implementierte keine Klasse, Enum, kein Value
+Object, keine API, Runtime, Provider Authorization, Invocation, Verarbeitung
+oder Speicherung. Die spätere Implementierung beschränkt sich nachweisbar auf
+`governance/b2_provider_identity.py` und ändert weder ADR-0060 noch bestehende
+Implementierungsfreigaben.
 
 ## 14. Abschlussprüfung
 
