@@ -98,5 +98,6 @@ def test_ratification_document_did_not_itself_create_productive_implementation()
     assert {path.name for path in (ROOT / "governance/decisions").iterdir()} == {
         "README.md",
         "GOV-B2-NORMATIVE-STATUS-CONSOLIDATION-APPROVAL-V1.md",
+        "GOV-NO-FABRICATION-REFERENCE-CONSOLIDATION-APPROVAL-V1.md",
     }
     assert tuple((ROOT / "governance/incidents").iterdir()) == (ROOT / "governance/incidents/README.md",)
