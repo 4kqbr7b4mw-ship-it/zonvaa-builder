@@ -10,6 +10,7 @@ APPROVAL = (
 )
 PROCESS = ROOT / "governance/institutional-approval-process.md"
 REPORT = ROOT / "governance/b2-constitution-v1.0-completion-report.md"
+FUTURE_MAP = ROOT / "governance/future-b2-package-map.md"
 
 
 def read(path: Path) -> str:
@@ -65,7 +66,7 @@ def test_completion_report_references_existing_adr_0059_file():
 
 def test_completion_report_candidate_inventory_is_explicitly_bounded_and_complete():
     report = read(REPORT)
-    assert "Das Inventar dieses Berichts ist auf die in" in report
+    assert "Das Inventar dieses Berichts umfasst ausschließlich die folgenden" in report
     for marker in (
         "Guardian Accountability & Explanation",
         "Guardian Life Domain Model",
@@ -75,6 +76,48 @@ def test_completion_report_candidate_inventory_is_explicitly_bounded_and_complet
         assert marker in report
     assert (ROOT / "governance/guardian-accountability-explanation-candidate.md").is_file()
     assert (ROOT / "governance/guardian-life-domain-model-candidate.md").is_file()
+
+
+def test_future_map_separates_historical_gate_from_current_package_status():
+    package_map = read(FUTURE_MAP)
+    normalized = " ".join(package_map.split())
+    assert "Historischer damaliger Zeitstand" in package_map
+    assert "Gegenwärtiger nachweisbarer Zeitstand" in package_map
+    assert "war die Aussage „Kein weiteres B2-Paket ist freigegeben“" in normalized
+    assert "Sie ist keine gegenwärtige Statusaussage" in normalized
+    assert "ADR-0061 bis ADR-0065" in package_map
+    assert "ADR-0066\nist ausschließlich deklaratorisch vollendet" in package_map
+    assert "erteilt dadurch keine neue Freigabe" in normalized
+    assert "aktiviert keinen ruhenden Kandidaten" in normalized
+    assert "weder Runtime noch Runtime Readiness" in normalized
+    assert "ADR-0067 bleibt ungeöffnet und nicht begonnen" in normalized
+
+
+def test_each_dormant_candidate_has_its_own_resolvable_evidence_basis():
+    report = read(REPORT)
+    evidence = {
+        "Guardian Accountability & Explanation": (
+            "governance/guardian-accountability-explanation-candidate.md",
+            "governance/future-b2-package-map.md",
+            "knowledge/project/current-product-status.md",
+        ),
+        "Guardian Life Domain Model": (
+            "governance/guardian-life-domain-model-candidate.md",
+            "governance/future-b2-package-map.md",
+            "knowledge/project/current-product-status.md",
+        ),
+        "Guardian Key Custody / Key Master": (
+            "knowledge/adr/ADR-0066-guardian-b2-runtime-air-gap-constitution-v1.md",
+            "governance/ratification-adr-0066.md",
+        ),
+    }
+    for candidate, references in evidence.items():
+        assert candidate in report
+        for reference in references:
+            assert reference in report
+            assert (ROOT / reference).is_file()
+    assert "nicht aktiviert, nicht als Folgepaket eingeplant und nicht\nimplementiert" in report
+    assert "weder einen Accountability-, Key-Custody-,\nEntschlüsselungs- noch Inhaltszugriffspfad" in report
 
 
 def test_maintenance_remains_documentary_without_new_power_or_runtime():

@@ -177,15 +177,23 @@ verändert.
 
 ## 10. Ruhende Architekturkandidaten
 
-Das Inventar dieses Berichts ist auf die in
-`governance/future-b2-package-map.md` und
-`knowledge/project/current-product-status.md` registrierten ruhenden
-Architekturkandidaten begrenzt. Danach bleiben ausschließlich registriert und
-ruhend:
+Das Inventar dieses Berichts umfasst ausschließlich die folgenden, jeweils
+durch ihre eigene vorhandene Evidenzbasis getragenen ruhenden
+Architekturkandidaten:
 
-- Guardian Accountability & Explanation
-- Guardian Life Domain Model
-- Guardian Key Custody / Key Master
+- **Guardian Accountability & Explanation:** Kandidatenstatus und Grenzen in
+  `governance/guardian-accountability-explanation-candidate.md`; ergänzende
+  Statusreferenzen in `governance/future-b2-package-map.md` und
+  `knowledge/project/current-product-status.md`.
+- **Guardian Life Domain Model:** Kandidatenstatus und Grenzen in
+  `governance/guardian-life-domain-model-candidate.md`; ergänzende
+  Statusreferenzen in `governance/future-b2-package-map.md` und
+  `knowledge/project/current-product-status.md`.
+- **Guardian Key Custody / Key Master:** registrierter ruhender
+  Kandidatenstatus und geschlossene Key-Custody-/Inhaltszugriffsgrenze in
+  `knowledge/adr/ADR-0066-guardian-b2-runtime-air-gap-constitution-v1.md` sowie
+  im zugehörigen Governance-Artefakt
+  `governance/ratification-adr-0066.md`.
 
 Sie sind nicht aktiviert, nicht als Folgepaket eingeplant und nicht
 implementiert. ADR-0066 öffnet weder einen Accountability-, Key-Custody-,

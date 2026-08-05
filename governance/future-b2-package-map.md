@@ -4,10 +4,21 @@ Status: nicht ausführende Architekturübersicht
 
 Diese Landkarte autorisiert kein Paket und legt keine Implementierungsreihenfolge
 automatisch fest. Jedes Paket benötigt eine eigene Architekturentscheidung,
-ein eigenes institutionelles Gate und einen gesonderten Codex-Auftrag. Guardian
-B2 Data Corridor and Consent Boundary v1 sowie Guardian B2 Authority and
-Authorization v1 wurden jeweils ausschließlich in ihrem kanonisch begrenzten
-Scope implementiert. Kein weiteres B2-Paket ist freigegeben.
+ein eigenes institutionelles Gate und einen gesonderten Codex-Auftrag.
+
+Historischer damaliger Zeitstand: Als diese Landkarte zunächst nur Guardian B2
+Data Corridor and Consent Boundary v1 sowie Guardian B2 Authority and
+Authorization v1 als implementiert auswies, war die Aussage „Kein weiteres
+B2-Paket ist freigegeben“ auf diesen damaligen Gate-Zustand begrenzt. Sie ist
+keine gegenwärtige Statusaussage und wird nicht rückwirkend umgedeutet.
+
+Gegenwärtiger nachweisbarer Zeitstand: ADR-0061 bis ADR-0065 wurden jeweils
+nach ihren eigenen dokumentierten Architekturentscheidungen, institutionellen
+Gates und gesonderten Aufträgen im begrenzten Scope abgeschlossen. ADR-0066
+ist ausschließlich deklaratorisch vollendet und validiert. Diese Landkarte
+erteilt dadurch keine neue Freigabe und aktiviert keinen ruhenden Kandidaten.
+Sie eröffnet weder Runtime noch Runtime Readiness oder einen automatischen
+Folgeschritt; ADR-0067 bleibt ungeöffnet und nicht begonnen.
 
 | Paket | Zweck | Voraussetzungen | Machtgrenze | Nicht-Ziele | Abhängigkeiten und Gate |
 |---|---|---|---|---|---|
