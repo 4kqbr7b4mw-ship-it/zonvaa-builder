@@ -95,5 +95,8 @@ def test_ratification_document_did_not_itself_create_productive_implementation()
     text = read(RATIFICATION)
     assert "keine implementierung" in text.lower()
     assert (ROOT / "governance/governance_decision_incident_evidence.py").is_file()
-    assert tuple((ROOT / "governance/decisions").iterdir()) == (ROOT / "governance/decisions/README.md",)
+    assert {path.name for path in (ROOT / "governance/decisions").iterdir()} == {
+        "README.md",
+        "GOV-B2-NORMATIVE-STATUS-CONSOLIDATION-APPROVAL-V1.md",
+    }
     assert tuple((ROOT / "governance/incidents").iterdir()) == (ROOT / "governance/incidents/README.md",)

@@ -138,7 +138,10 @@ def test_productive_contract_and_empty_documentation_locations_exist():
     assert (ROOT / "governance/governance_decision_incident_evidence.py").is_file()
     assert (ROOT / "governance/decisions/README.md").is_file()
     assert (ROOT / "governance/incidents/README.md").is_file()
-    assert tuple((ROOT / "governance/decisions").iterdir()) == (ROOT / "governance/decisions/README.md",)
+    assert {path.name for path in (ROOT / "governance/decisions").iterdir()} == {
+        "README.md",
+        "GOV-B2-NORMATIVE-STATUS-CONSOLIDATION-APPROVAL-V1.md",
+    }
     assert tuple((ROOT / "governance/incidents").iterdir()) == (ROOT / "governance/incidents/README.md",)
 
 
