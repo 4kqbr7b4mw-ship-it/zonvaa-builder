@@ -38,8 +38,12 @@ class DevelopmentOrchestrator:
         self.research_agent = ResearchAgent(backend)
         self.review_agent = ReviewAgent(backend)
 
-    def run(self, request: WorkRequest) -> DecisionBrief:
-        run_id = new_run_id()
+    def run(
+        self,
+        request: WorkRequest,
+        run_id: Optional[str] = None,
+    ) -> DecisionBrief:
+        run_id = run_id or new_run_id()
         workspace = RunWorkspace(self.writer, run_id)
         plan = build_plan(run_id, request, self.research_agent.backend.model_configuration)
         workspace.json("request.json", request)

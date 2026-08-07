@@ -5,14 +5,18 @@ description = "Internal research and review orchestration prototype for ZONVAA d
 requires-python = ">=3.9"
 dependencies = [
   "eval-type-backport>=0.2.2; python_version < '3.10'",
-  "openai-agents",
+  "openai-agents==0.8.4",
   "openai==2.19.0",
   "pydantic>=2,<3",
 ]
 
 [project.optional-dependencies]
 test = ["pytest>=8,<9"]
+integration = ["mcp>=1.20,<2; python_version >= '3.10'"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.setuptools]
+packages = ["development_orchestrator"]

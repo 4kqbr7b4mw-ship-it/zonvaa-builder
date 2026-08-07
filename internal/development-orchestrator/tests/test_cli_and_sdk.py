@@ -79,7 +79,7 @@ def test_live_configuration_explicitly_selects_both_agent_models() -> None:
 
 def test_subproject_declares_agents_sdk_dependency() -> None:
     pyproject = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
-    assert '"openai-agents"' in pyproject
+    assert '"openai-agents==0.8.4"' in pyproject
     assert '"openai==2.19.0"' in pyproject
     assert 'requires-python = ">=3.9"' in pyproject
 

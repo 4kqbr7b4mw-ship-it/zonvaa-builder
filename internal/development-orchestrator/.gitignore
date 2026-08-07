@@ -1,4 +1,6 @@
 .venv/
+.mcp-venv/
+*.egg-info/
 .env.local
 .pytest_cache/
 **/__pycache__/

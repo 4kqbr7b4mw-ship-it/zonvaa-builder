@@ -113,6 +113,47 @@ python main.py smoke
 The offline command proves contracts, routing, persistence, review looping, and
 boundaries. It is not represented as an OpenAI model run.
 
+## Single working front door
+
+The optional integration extra adds a thin local MCP front door around the
+existing orchestrator. It does not duplicate Research, Review, routing, or run
+persistence. The adapter exposes only:
+
+- `submit_work`
+- `get_run_status`
+- `get_decision_brief`
+- `approve_context`
+- `list_pending_decisions`
+
+When repository context is proposed, `submit_work` persists the request and
+returns paths, one-sentence reasons, character counts, and truncation flags. It
+does not start the Agents SDK. `approve_context` accepts only an explicitly
+approved subset of that proposal and only then starts the existing orchestrator.
+Commit, push, shell, and general filesystem tools are not exposed.
+
+The current official MCP package requires Python 3.10 or newer. A separate,
+ignored integration environment keeps this constraint out of the existing
+Python 3.9 core environment:
+
+```bash
+python3.10 -m venv .mcp-venv
+.mcp-venv/bin/pip install -e '.[test,integration]'
+.mcp-venv/bin/python mcp_server.py
+```
+
+This server uses local STDIO only. ChatGPT Desktop and Codex can register that
+command as a local MCP server; registration is a separate user-level client
+configuration step and is intentionally not written into this repository. A
+browser-based ChatGPT integration cannot call this localhost process directly.
+That later step would require a securely reachable Streamable HTTP MCP endpoint
+or ChatGPT app connection, HTTPS, authentication and authorization, and an
+explicit hosting decision. None of those remote components exists in v1.
+
+No local web UI is needed for the working local MCP path. STDIO inherits the
+permissions of the local client process and does not open a network listener.
+The adapter remains subject to the existing repository read policy, hard write
+boundary, run evidence, iteration guard, and cost/usage guard.
+
 ## Tests and evals
 
 ```bash
@@ -133,6 +174,8 @@ exact prose. Results are written to `evals/results/latest.json`.
 - Live SDK behavior and model quality require a separate credentialed smoke
   test.
 - V1 is single-process and has no concurrent-run lock.
+- MCP tool calls are synchronous in v1; status polling is useful between calls,
+  but a running agent call does not provide background-job progress.
 - Local run artifacts are not encrypted and must contain development-safe,
   non-personal material only.
 - A Git status check detects repository changes but cannot identify the process
