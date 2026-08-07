@@ -1,0 +1,18 @@
+{
+  "allowed_context": [
+    "README.md",
+    "knowledge/project/current-product-status.md"
+  ],
+  "approval_constraints": [
+    "no commit",
+    "no push"
+  ],
+  "goal": "Review an existing ZONVAA research state and produce a compact analysis whose scope, evidence, customer benefit, and simplicity are reviewed.",
+  "max_cost": null,
+  "max_iterations": 2,
+  "requested_output": "compact reviewed decision brief",
+  "scope": [
+    "research and review only",
+    "no repository product changes"
+  ]
+}

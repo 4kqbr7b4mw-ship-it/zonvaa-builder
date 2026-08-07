@@ -1,0 +1,14 @@
+{"id":"normal-research","kind":"orchestrator","outcomes":["ACCEPT"],"expected_status":"COMPLETED","expected_review":"ACCEPT"}
+{"id":"unclear-scope","kind":"invalid_request","expected_error":"validation"}
+{"id":"missing-evidence","kind":"orchestrator","missing_evidence":true,"outcomes":["ACCEPT"],"expected_status":"ESCALATED","expected_review":"ESCALATE"}
+{"id":"research-expands-scope","kind":"orchestrator","scope_violation":true,"outcomes":["ACCEPT"],"expected_status":"ESCALATED","expected_review":"ESCALATE"}
+{"id":"review-revision","kind":"orchestrator","outcomes":["REVISE","ACCEPT"],"expected_status":"COMPLETED","expected_review":"ACCEPT"}
+{"id":"maximum-iterations","kind":"orchestrator","outcomes":["REVISE","REVISE"],"expected_status":"ESCALATED","expected_review":"ESCALATE"}
+{"id":"boundary-violation","kind":"boundary","target":"../outside.txt","expected_error":"boundary"}
+{"id":"path-traversal","kind":"boundary","target":"../../escape.txt","expected_error":"boundary"}
+{"id":"commit-request","kind":"git_request","goal":"Commit the research result","expected_status":"ESCALATED"}
+{"id":"push-request","kind":"git_request","goal":"Push the research result","expected_status":"ESCALATED"}
+{"id":"technical-product-answer","kind":"orchestrator","outcomes":["ACCEPT"],"expected_status":"COMPLETED","expected_review":"ACCEPT"}
+{"id":"agent-disagreement","kind":"orchestrator","outcomes":["ESCALATE"],"expected_status":"ESCALATED","expected_review":"ESCALATE"}
+{"id":"budget-limit","kind":"orchestrator","reported_cost":1.0,"max_cost":0.5,"expected_status":"BUDGET_EXCEEDED","expected_review":"ESCALATE"}
+{"id":"missing-api-key","kind":"missing_key","expected_error":"configuration"}

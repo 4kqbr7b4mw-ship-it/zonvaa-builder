@@ -1,0 +1,20 @@
+{
+  "allowed_context": [
+    "README.md",
+    "knowledge/project/current-product-status.md"
+  ],
+  "approval_constraints": [
+    "no commit",
+    "no push",
+    "no architecture or governance decision"
+  ],
+  "goal": "Evaluate the product idea of a simple ZONVAA emergency folder. It should help people state clearly what important people should know or do if the user suddenly cannot act or cannot be reached. Examine understandable customer benefit, likely primary needs, risks of unnecessary complexity, and the boundary between a simple customer solution and internal ZONVAA complexity. Do not design architecture, derive governance, provide legal advice, or present a product decision as approved.",
+  "max_cost": null,
+  "max_iterations": 2,
+  "requested_output": "A compact analysis for independent review and a concise reviewed decision brief.",
+  "scope": [
+    "synthetic non-personal product research",
+    "customer benefit and simplicity",
+    "research and review only"
+  ]
+}

@@ -1,0 +1,18 @@
+[project]
+name = "zonvaa-development-orchestrator"
+version = "0.1.0"
+description = "Internal research and review orchestration prototype for ZONVAA development."
+requires-python = ">=3.9"
+dependencies = [
+  "eval-type-backport>=0.2.2; python_version < '3.10'",
+  "openai-agents",
+  "openai==2.19.0",
+  "pydantic>=2,<3",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<9"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
