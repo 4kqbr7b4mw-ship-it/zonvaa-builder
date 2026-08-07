@@ -9,7 +9,7 @@ import pytest
 pytest.importorskip("mcp")
 
 from development_orchestrator.backends import OfflineContractBackend
-from development_orchestrator.front_door import FrontDoorService
+from development_orchestrator.front_door import ContextCandidate, FrontDoorService
 from development_orchestrator.mcp_server import create_server
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
@@ -81,3 +81,52 @@ def test_real_stdio_protocol_lists_only_the_closed_tool_set() -> None:
                 return {tool.name for tool in response.tools}
 
     assert asyncio.run(list_names()) == EXPECTED_TOOLS
+
+
+def test_context_approval_runs_blocking_backend_outside_mcp_event_loop(
+    isolated_repository,
+) -> None:
+    class EventLoopSensitiveBackend(OfflineContractBackend):
+        def research(self, request, context, revision_feedback=None):
+            with pytest.raises(RuntimeError, match="no running event loop"):
+                asyncio.get_running_loop()
+            return super().research(request, context, revision_feedback)
+
+        def review(self, request, context, research):
+            with pytest.raises(RuntimeError, match="no running event loop"):
+                asyncio.get_running_loop()
+            return super().review(request, context, research)
+
+    repository, tool_root = isolated_repository
+    instance = create_server(
+        FrontDoorService(
+            repository,
+            tool_root,
+            lambda: EventLoopSensitiveBackend(),
+        )
+    )
+
+    async def execute() -> dict:
+        submit = instance._tool_manager.get_tool("submit_work")
+        approve = instance._tool_manager.get_tool("approve_context")
+        pending = await submit.fn(
+            goal="Review synthetic research evidence",
+            scope=["research only"],
+            requested_output="compact decision brief",
+            approval_constraints=["no commit", "no push"],
+            context_candidates=[
+                ContextCandidate(
+                    path="docs/research.md",
+                    reason="Direct synthetic evidence for the goal.",
+                )
+            ],
+        )
+        return await approve.fn(
+            run_id=pending["run_id"],
+            approved_context=["docs/research.md"],
+            approved=True,
+        )
+
+    completed = asyncio.run(execute())
+    assert completed["status"] == "COMPLETED"
+    assert completed["decision_brief_available"] is True

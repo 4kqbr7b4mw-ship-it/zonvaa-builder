@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 from enum import Enum
+import os
 from pathlib import Path
+import re
 from typing import Callable, Dict, List, Optional
 
 from pydantic import Field
@@ -19,6 +21,29 @@ from .schemas import DecisionBrief, FrozenModel, WorkRequest
 
 class FrontDoorError(RuntimeError):
     pass
+
+
+_SENSITIVE_VALUE = re.compile(
+    r"(?i)(bearer\s+)[^\s,;]+|\bsk-[A-Za-z0-9_-]+|"
+    r"((?:api[-_ ]?key|token|secret|password)\s*[=:]\s*)[^\s,;]+"
+)
+
+
+def _safe_error_message(error: Exception) -> str:
+    """Return bounded local diagnostics without persisting known secrets."""
+    message = " ".join(str(error).split())
+    for name, value in os.environ.items():
+        secret_name = any(
+            marker in name.upper()
+            for marker in ("KEY", "TOKEN", "SECRET", "PASSWORD")
+        )
+        if value and secret_name:
+            message = message.replace(value, "[REDACTED]")
+    message = _SENSITIVE_VALUE.sub(
+        lambda match: "{}[REDACTED]".format(match.group(1) or match.group(2) or ""),
+        message,
+    )
+    return message[:1000] or "No exception message was provided."
 
 
 class FrontDoorStatus(str, Enum):
@@ -210,7 +235,14 @@ class FrontDoorService:
                 self.tool_root,
                 self.backend_factory(),
             ).run(request, run_id=running.run_id)
-        except Exception:
+        except Exception as error:
+            self.writer.write_json(
+                Path("runs") / running.run_id / "front-door-error.json",
+                {
+                    "error_type": type(error).__name__,
+                    "message": _safe_error_message(error),
+                },
+            )
             failed = running.model_copy(
                 update={
                     "status": FrontDoorStatus.FAILED,

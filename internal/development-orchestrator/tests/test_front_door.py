@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 import pytest
@@ -150,12 +151,27 @@ def test_existing_allowed_context_cannot_bypass_proposal(isolated_repository) ->
 
 
 def test_backend_failure_is_reported_without_propagating_details(
-    isolated_repository,
+    isolated_repository, monkeypatch,
 ) -> None:
+    monkeypatch.setenv("TEST_API_TOKEN", "secret-token-value")
+
     def failing_backend():
-        raise RuntimeError("synthetic provider detail")
+        raise RuntimeError(
+            "synthetic provider detail token=secret-token-value sk-test-secret"
+        )
 
     failed = service(isolated_repository, failing_backend).submit_work(request(), [])
     assert failed.status is FrontDoorStatus.FAILED
     assert failed.open_decision == "Run failed; inspect local run evidence."
     assert "provider detail" not in failed.model_dump_json()
+
+    _, tool_root = isolated_repository
+    diagnostic = json.loads(
+        (tool_root / "runs" / failed.run_id / "front-door-error.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert diagnostic["error_type"] == "RuntimeError"
+    assert "synthetic provider detail" in diagnostic["message"]
+    assert "secret-token-value" not in diagnostic["message"]
+    assert "sk-test-secret" not in diagnostic["message"]

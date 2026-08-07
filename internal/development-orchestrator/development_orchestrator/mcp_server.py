@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import os
 from pathlib import Path
 from typing import List, Optional
@@ -73,7 +74,7 @@ def create_server(service: Optional[FrontDoorService] = None) -> FastMCP:
             openWorldHint=True,
         ),
     )
-    def submit_work(
+    async def submit_work(
         goal: str,
         scope: List[str],
         requested_output: str,
@@ -91,7 +92,12 @@ def create_server(service: Optional[FrontDoorService] = None) -> FastMCP:
             max_cost=max_cost,
             max_iterations=max_iterations,
         )
-        return front_door.submit_work(request, context_candidates).model_dump(mode="json")
+        record = await asyncio.to_thread(
+            front_door.submit_work,
+            request,
+            context_candidates,
+        )
+        return record.model_dump(mode="json")
 
     @server.tool(
         description="Use this to inspect a known orchestrator run without starting work.",
@@ -129,16 +135,18 @@ def create_server(service: Optional[FrontDoorService] = None) -> FastMCP:
             openWorldHint=True,
         ),
     )
-    def approve_context(
+    async def approve_context(
         run_id: str,
         approved_context: List[str],
         approved: bool,
     ) -> dict:
-        return front_door.approve_context(
+        record = await asyncio.to_thread(
+            front_door.approve_context,
             run_id,
             approved_context,
             approved,
-        ).model_dump(mode="json")
+        )
+        return record.model_dump(mode="json")
 
     @server.tool(
         description="Use this to list runs that require an explicit user decision.",
