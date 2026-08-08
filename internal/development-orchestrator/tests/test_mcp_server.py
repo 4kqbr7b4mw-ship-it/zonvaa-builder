@@ -9,6 +9,7 @@ import pytest
 pytest.importorskip("mcp")
 
 from development_orchestrator.backends import OfflineContractBackend
+from development_orchestrator.codex_handoff import CodexHandoffService
 from development_orchestrator.front_door import ContextCandidate, FrontDoorService
 from development_orchestrator.mcp_server import create_server
 from mcp import ClientSession, StdioServerParameters
@@ -32,7 +33,19 @@ def server(isolated_repository):
         tool_root,
         lambda: OfflineContractBackend(),
     )
-    return create_server(service)
+    repository, tool_root = isolated_repository
+    handoff = CodexHandoffService(
+        repository,
+        tool_root,
+        authorized_branch="main",
+        job_launcher=type(
+            "Launcher",
+            (),
+            {"start": lambda self, *arguments: 424242},
+        )(),
+        process_exists=lambda process_id: False,
+    )
+    return create_server(service, handoff)
 
 
 def test_mcp_exposes_only_the_closed_front_door_tool_set(isolated_repository) -> None:
@@ -139,3 +152,46 @@ def test_context_approval_runs_blocking_backend_outside_mcp_event_loop(
     completed = asyncio.run(execute())
     assert completed["status"] == "COMPLETED"
     assert completed["decision_brief_available"] is True
+
+
+def test_handoff_returns_accepted_and_existing_status_tool_reports_job(
+    isolated_repository,
+) -> None:
+    instance = server(isolated_repository)
+
+    async def execute() -> tuple[dict, dict]:
+        submit = instance._tool_manager.get_tool("submit_work")
+        approve = instance._tool_manager.get_tool("approve_context")
+        handoff = instance._tool_manager.get_tool("handoff_reviewed_run")
+        get_status = instance._tool_manager.get_tool("get_run_status")
+        pending = await submit.fn(
+            goal="Prepare one synthetic reviewed package",
+            scope=["synthetic package only"],
+            requested_output="reviewable local changes",
+            approval_constraints=["no commit", "no push"],
+            context_candidates=[
+                ContextCandidate(
+                    path="docs/research.md",
+                    reason="Synthetic reviewed evidence.",
+                )
+            ],
+        )
+        completed = await approve.fn(
+            run_id=pending["run_id"],
+            approved_context=["docs/research.md"],
+            approved=True,
+        )
+        accepted = await handoff.fn(
+            run_id=completed["run_id"],
+            approved=True,
+            allowed_repository_paths=["docs/output.md"],
+            founder_review_approved=False,
+        )
+        return accepted, get_status.fn(completed["run_id"])
+
+    accepted, status = asyncio.run(execute())
+    assert accepted["result"] == "ACCEPTED"
+    assert accepted["status"] == "RUNNING"
+    assert accepted["job_id"].startswith("job-")
+    assert status["codex_handoff"]["record"]["job_id"] == accepted["job_id"]
+    assert status["codex_handoff"]["record"]["status"] == "RUNNING"

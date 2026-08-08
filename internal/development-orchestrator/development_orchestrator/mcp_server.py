@@ -118,7 +118,12 @@ def create_server(
         ),
     )
     def get_run_status(run_id: str) -> dict:
-        return front_door.get_run_status(run_id).model_dump(mode="json")
+        payload = front_door.get_run_status(run_id).model_dump(mode="json")
+        handoff_status = handoff.get_handoff_status(run_id)
+        payload["codex_handoff"] = (
+            handoff_status.model_dump(mode="json") if handoff_status else None
+        )
+        return payload
 
     @server.tool(
         description="Use this to retrieve the compact reviewed result of a completed run.",
@@ -191,14 +196,14 @@ def create_server(
         allowed_repository_paths: List[str],
         founder_review_approved: bool = False,
     ) -> dict:
-        record = await asyncio.to_thread(
+        accepted = await asyncio.to_thread(
             handoff.handoff_reviewed_run,
             run_id,
             approved,
             allowed_repository_paths,
             founder_review_approved,
         )
-        return record.model_dump(mode="json")
+        return accepted.model_dump(mode="json")
 
     return server
 

@@ -134,15 +134,23 @@ closed list of repository-relative write paths. It requires a completed run,
 an accepted review and an available decision brief. An open founder decision
 blocks handoff unless the same human approval explicitly covers it. The
 handoff is one-shot and persists `codex-handoff.md` plus
-`codex-handoff.json` in that run directory before invoking Codex.
+`codex-handoff.json` in that run directory before invoking Codex. After all
+synchronous gates pass, it atomically creates a `RUNNING` audit record, starts a
+detached one-shot worker, and returns `ACCEPTED` with the handoff and job IDs.
+The MCP request does not wait for `codex exec`. `get_run_status` includes the
+read-only `codex_handoff` state, including whether a `RUNNING` worker is alive
+or orphaned. Orphaned jobs are reported but never retried automatically.
 
 The bridge uses the locally installed stable non-interactive `codex exec`
 command with fixed arguments, an ephemeral session, ignored user configuration
 and the `workspace-write` sandbox. The caller cannot supply a command or free
 prompt. Codex receives only the persisted reviewed package, its run ID, the
 closed path scope and the permanent prohibition on commit and push. Branch,
-HEAD and changed paths are verified after execution; any mismatch is recorded
-as `FAILED`. No retry or second task follows automatically.
+HEAD and changed paths are verified after execution; success is recorded as
+`COMPLETED` with exit code and result summary, while execution or boundary
+failures are recorded as `FAILED`. The detached worker uses a new process
+session and closed standard streams, so ending the MCP client or tunnel does
+not terminate an accepted job. No retry or second task follows automatically.
 
 When repository context is proposed, `submit_work` persists the request and
 returns paths, one-sentence reasons, character counts, and truncation flags. It

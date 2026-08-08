@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -150,12 +150,14 @@ class DecisionBrief(FrozenModel):
 class CodexHandoffStatus(str, Enum):
     APPROVED = "APPROVED"
     RUNNING = "RUNNING"
+    COMPLETED = "COMPLETED"
     SUCCEEDED = "SUCCEEDED"
     FAILED = "FAILED"
 
 
 class CodexHandoffRecord(FrozenModel):
     handoff_id: str
+    job_id: Optional[str] = None
     run_id: str
     status: CodexHandoffStatus
     human_approved: bool
@@ -168,7 +170,23 @@ class CodexHandoffRecord(FrozenModel):
     prompt_sha256: str
     approved_at: str
     started_at: Optional[str] = None
+    worker_pid: Optional[int] = Field(default=None, ge=1)
     completed_at: Optional[str] = None
     exit_code: Optional[int] = None
     result_summary: Optional[str] = None
     failure_reason: Optional[str] = None
+
+
+class CodexHandoffAcceptance(FrozenModel):
+    result: Literal["ACCEPTED"] = "ACCEPTED"
+    handoff_id: str
+    job_id: str
+    run_id: str
+    started_at: str
+    status: CodexHandoffStatus
+
+
+class CodexHandoffStatusView(FrozenModel):
+    record: CodexHandoffRecord
+    worker_alive: Optional[bool] = None
+    orphaned: bool = False

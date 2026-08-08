@@ -112,6 +112,7 @@ class WorkspaceWriter:
                 handle.flush()
                 os.fsync(handle.fileno())
             os.replace(temporary, path)
+            self._fsync_directory(path.parent)
         except BaseException:
             try:
                 os.unlink(temporary)
@@ -125,3 +126,33 @@ class WorkspaceWriter:
             target,
             json.dumps(value, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
         )
+
+    def create_json(self, target: str | Path, value: Any) -> Path:
+        """Atomically create a complete JSON file without replacing an existing one."""
+        path = self.guard.resolve_write_path(target)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        descriptor, temporary = tempfile.mkstemp(
+            dir=str(path.parent), prefix=".orchestrator-", suffix=".tmp"
+        )
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+                json.dump(value, handle, indent=2, ensure_ascii=False, sort_keys=True)
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.link(temporary, path)
+            self._fsync_directory(path.parent)
+        finally:
+            try:
+                os.unlink(temporary)
+            except FileNotFoundError:
+                pass
+        return path
+
+    @staticmethod
+    def _fsync_directory(directory: Path) -> None:
+        descriptor = os.open(directory, os.O_RDONLY)
+        try:
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)

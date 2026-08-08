@@ -6,18 +6,23 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import hashlib
 import json
+import os
 from pathlib import Path
 import re
+import secrets
 import shutil
 import subprocess
-from typing import Callable, List, Optional, Sequence
+import sys
+from typing import Callable, List, Optional, Protocol, Sequence
 
 from .boundary import BoundaryGuard, WorkspaceWriter
 from .front_door import FrontDoorRecord, FrontDoorStatus, _safe_error_message
 from .policies import requested_forbidden_git_action
 from .schemas import (
+    CodexHandoffAcceptance,
     CodexHandoffRecord,
     CodexHandoffStatus,
+    CodexHandoffStatusView,
     DecisionBrief,
     ReviewOutcome,
     RunStatus,
@@ -95,8 +100,67 @@ class LocalCodexRunner:
         )
 
 
+class CodexJobLauncher(Protocol):
+    def start(
+        self,
+        repository: Path,
+        tool_root: Path,
+        run_id: str,
+        job_id: str,
+        authorized_branch: str,
+    ) -> int: ...
+
+
+class DetachedCodexJobLauncher:
+    """Start a one-shot worker whose lifetime is independent of the MCP server."""
+
+    def start(
+        self,
+        repository: Path,
+        tool_root: Path,
+        run_id: str,
+        job_id: str,
+        authorized_branch: str,
+    ) -> int:
+        arguments = [
+            sys.executable,
+            "-m",
+            "development_orchestrator.codex_handoff_worker",
+            "--repository",
+            str(repository),
+            "--tool-root",
+            str(tool_root),
+            "--run-id",
+            run_id,
+            "--job-id",
+            job_id,
+            "--authorized-branch",
+            authorized_branch,
+        ]
+        process = subprocess.Popen(
+            arguments,
+            cwd=str(repository),
+            env={
+                name: value
+                for name, value in os.environ.items()
+                if not any(
+                    marker in name.upper()
+                    for marker in ("KEY", "TOKEN", "SECRET", "PASSWORD")
+                )
+            },
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            close_fds=True,
+            start_new_session=True,
+        )
+        return process.pid
+
+
 class CodexHandoffService:
     """Validate, approve, execute and audit exactly one reviewed run."""
+
+    WORKER_STARTUP_GRACE_SECONDS = 30
 
     EVIDENCE_FILES = (
         "front-door.json",
@@ -112,12 +176,16 @@ class CodexHandoffService:
         tool_root: Path,
         authorized_branch: str,
         runner: Optional[LocalCodexRunner] = None,
+        job_launcher: Optional[CodexJobLauncher] = None,
+        process_exists: Optional[Callable[[int], bool]] = None,
         clock: Callable[[], datetime] = lambda: datetime.now(timezone.utc),
     ) -> None:
         self.repository_root = repository_root.resolve(strict=True)
         self.tool_root = tool_root.resolve(strict=True)
         self.authorized_branch = authorized_branch
         self.runner = runner or LocalCodexRunner()
+        self.job_launcher = job_launcher or DetachedCodexJobLauncher()
+        self.process_exists = process_exists or self._process_exists
         self.clock = clock
         self.guard = BoundaryGuard(self.repository_root, self.tool_root)
         self.writer = WorkspaceWriter(self.guard)
@@ -128,7 +196,7 @@ class CodexHandoffService:
         approved: bool,
         allowed_repository_paths: List[str],
         founder_review_approved: bool = False,
-    ) -> CodexHandoffRecord:
+    ) -> CodexHandoffAcceptance:
         self._validate_run_id(run_id)
         if not approved:
             raise CodexHandoffError("explicit human handoff approval is required")
@@ -153,10 +221,13 @@ class CodexHandoffService:
             for name, payload in evidence.items()
         }
         now = self._now()
-        approved_record = CodexHandoffRecord(
-            handoff_id="handoff-{}".format(self._sha256(prompt.encode("utf-8"))[:16]),
+        handoff_id = "handoff-{}".format(self._sha256(prompt.encode("utf-8"))[:16])
+        job_id = "job-{}".format(secrets.token_hex(16))
+        running = CodexHandoffRecord(
+            handoff_id=handoff_id,
+            job_id=job_id,
             run_id=run_id,
-            status=CodexHandoffStatus.APPROVED,
+            status=CodexHandoffStatus.RUNNING,
             human_approved=True,
             founder_review_approved=founder_review_approved,
             repository=str(self.repository_root),
@@ -166,44 +237,126 @@ class CodexHandoffService:
             evidence_sha256=evidence_hashes,
             prompt_sha256=self._sha256(prompt.encode("utf-8")),
             approved_at=now,
+            started_at=now,
         )
-        self._write_record(approved_record)
-        self.writer.write_text(Path("runs") / run_id / "codex-handoff.md", prompt)
-        running = approved_record.model_copy(
-            update={"status": CodexHandoffStatus.RUNNING, "started_at": now}
-        )
-        self._write_record(running)
+        try:
+            self.writer.create_json(
+                Path("runs") / run_id / "codex-handoff.json",
+                running.model_dump(mode="json"),
+            )
+        except FileExistsError as error:
+            raise CodexHandoffError("run already has a Codex handoff record") from error
 
         try:
-            result = self.runner.run(self.repository_root, prompt)
-            self._validate_repository_result(running, paths)
-            if result.exit_code != 0:
-                raise CodexHandoffError(
-                    "Codex exited with code {}: {}".format(
-                        result.exit_code,
-                        _safe_error_message(RuntimeError(result.stderr)),
-                    )
-                )
-            final_message = self._extract_final_message(result.stdout)
-            completed = running.model_copy(
-                update={
-                    "status": CodexHandoffStatus.SUCCEEDED,
-                    "completed_at": self._now(),
-                    "exit_code": result.exit_code,
-                    "result_summary": final_message,
-                }
+            self.writer.write_text(Path("runs") / run_id / "codex-handoff.md", prompt)
+            self.job_launcher.start(
+                self.repository_root,
+                self.tool_root,
+                run_id,
+                job_id,
+                self.authorized_branch,
             )
         except Exception as error:
             failure = _safe_error_message(error)
-            completed = running.model_copy(
+            failed = running.model_copy(
                 update={
                     "status": CodexHandoffStatus.FAILED,
                     "completed_at": self._now(),
                     "failure_reason": failure,
                 }
             )
+            self._write_record(failed)
+            raise CodexHandoffError(failure) from error
+
+        return CodexHandoffAcceptance(
+            handoff_id=handoff_id,
+            job_id=job_id,
+            run_id=run_id,
+            started_at=now,
+            status=CodexHandoffStatus.RUNNING,
+        )
+
+    def run_job(self, run_id: str, job_id: str) -> CodexHandoffRecord:
+        """Execute one already accepted job inside the detached worker process."""
+        self._validate_run_id(run_id)
+        record = self._read_handoff_record(run_id)
+        if record.status is not CodexHandoffStatus.RUNNING or record.job_id != job_id:
+            raise CodexHandoffError("handoff job is not the accepted running job")
+        if record.worker_pid is not None and record.worker_pid != os.getpid():
+            raise CodexHandoffError("handoff job already has a worker")
+
+        running = record.model_copy(update={"worker_pid": os.getpid()})
+        self._write_record(running)
+        try:
+            prompt = self._run_path(run_id, "codex-handoff.md").read_text(
+                encoding="utf-8"
+            )
+            if self._sha256(prompt.encode("utf-8")) != running.prompt_sha256:
+                raise CodexHandoffError("persisted handoff prompt hash mismatch")
+            result = self.runner.run(self.repository_root, prompt)
+            self._validate_repository_result(
+                running, running.allowed_repository_paths
+            )
+            if result.exit_code != 0:
+                return self._fail_job(
+                    running,
+                    "Codex exited with code {}: {}".format(
+                        result.exit_code,
+                        _safe_error_message(RuntimeError(result.stderr)),
+                    ),
+                    exit_code=result.exit_code,
+                )
+            completed = running.model_copy(
+                update={
+                    "status": CodexHandoffStatus.COMPLETED,
+                    "completed_at": self._now(),
+                    "exit_code": result.exit_code,
+                    "result_summary": self._extract_final_message(result.stdout),
+                }
+            )
+        except Exception as error:
+            return self._fail_job(running, _safe_error_message(error))
         self._write_record(completed)
         return completed
+
+    def get_handoff_status(self, run_id: str) -> Optional[CodexHandoffStatusView]:
+        self._validate_run_id(run_id)
+        path = self._handoff_path(run_id)
+        if not path.exists():
+            return None
+        record = self._read_handoff_record(run_id)
+        if record.status is not CodexHandoffStatus.RUNNING:
+            return CodexHandoffStatusView(record=record)
+        if record.worker_pid is None:
+            started = datetime.fromisoformat(record.started_at or record.approved_at)
+            age = (self.clock().astimezone(timezone.utc) - started).total_seconds()
+            return CodexHandoffStatusView(
+                record=record,
+                orphaned=age > self.WORKER_STARTUP_GRACE_SECONDS,
+            )
+        worker_alive = self.process_exists(record.worker_pid)
+        return CodexHandoffStatusView(
+            record=record,
+            worker_alive=worker_alive,
+            orphaned=not worker_alive,
+        )
+
+    def _fail_job(
+        self,
+        record: CodexHandoffRecord,
+        reason: str,
+        exit_code: Optional[int] = None,
+    ) -> CodexHandoffRecord:
+        failed = record.model_copy(
+            update={
+                "status": CodexHandoffStatus.FAILED,
+                "completed_at": self._now(),
+                "exit_code": exit_code,
+                "failure_reason": _safe_error_message(RuntimeError(reason)),
+            }
+        )
+        self._write_record(failed)
+        return failed
 
     def _read_and_validate_evidence(
         self, run_id: str, founder_review_approved: bool
@@ -379,6 +532,14 @@ class CodexHandoffService:
             record.model_dump(mode="json"),
         )
 
+    def _read_handoff_record(self, run_id: str) -> CodexHandoffRecord:
+        try:
+            return CodexHandoffRecord.model_validate_json(
+                self._handoff_path(run_id).read_text(encoding="utf-8")
+            )
+        except (OSError, ValueError) as error:
+            raise CodexHandoffError("Codex handoff record is unavailable") from error
+
     def _handoff_path(self, run_id: str) -> Path:
         return self._run_path(run_id, "codex-handoff.json")
 
@@ -392,6 +553,16 @@ class CodexHandoffService:
 
     def _now(self) -> str:
         return self.clock().astimezone(timezone.utc).isoformat()
+
+    @staticmethod
+    def _process_exists(process_id: int) -> bool:
+        try:
+            os.kill(process_id, 0)
+        except ProcessLookupError:
+            return False
+        except PermissionError:
+            return True
+        return True
 
     @staticmethod
     def _sha256(payload: bytes) -> str:
