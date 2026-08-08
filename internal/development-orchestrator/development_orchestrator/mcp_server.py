@@ -11,6 +11,7 @@ from mcp.server.fastmcp import FastMCP
 from mcp.types import ToolAnnotations
 
 from .backends import OpenAIAgentsBackend
+from .codex_handoff import CodexHandoffService
 from .front_door import ContextCandidate, FrontDoorService
 from .model_configuration import V1_LIVE_MODEL_CONFIGURATION
 from .schemas import WorkRequest
@@ -44,11 +45,19 @@ def _live_backend() -> OpenAIAgentsBackend:
     return OpenAIAgentsBackend(V1_LIVE_MODEL_CONFIGURATION)
 
 
-def create_server(service: Optional[FrontDoorService] = None) -> FastMCP:
+def create_server(
+    service: Optional[FrontDoorService] = None,
+    handoff_service: Optional[CodexHandoffService] = None,
+) -> FastMCP:
     front_door = service or FrontDoorService(
         REPOSITORY_ROOT,
         TOOL_ROOT,
         _live_backend,
+    )
+    handoff = handoff_service or CodexHandoffService(
+        REPOSITORY_ROOT,
+        TOOL_ROOT,
+        authorized_branch="builder-reset-v2",
     )
     server = FastMCP(
         "zonvaa-development-orchestrator",
@@ -162,6 +171,34 @@ def create_server(service: Optional[FrontDoorService] = None) -> FastMCP:
             record.model_dump(mode="json")
             for record in front_door.list_pending_decisions()
         ]
+
+    @server.tool(
+        description=(
+            "Use this only after a human explicitly approves one completed and accepted "
+            "orchestrator run for local Codex handoff. Paths are the complete closed write "
+            "scope. This never authorizes commit, push, another run, or another task."
+        ),
+        annotations=ToolAnnotations(
+            readOnlyHint=False,
+            destructiveHint=True,
+            idempotentHint=False,
+            openWorldHint=False,
+        ),
+    )
+    async def handoff_reviewed_run(
+        run_id: str,
+        approved: bool,
+        allowed_repository_paths: List[str],
+        founder_review_approved: bool = False,
+    ) -> dict:
+        record = await asyncio.to_thread(
+            handoff.handoff_reviewed_run,
+            run_id,
+            approved,
+            allowed_repository_paths,
+            founder_review_approved,
+        )
+        return record.model_dump(mode="json")
 
     return server
 

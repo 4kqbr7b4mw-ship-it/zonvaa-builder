@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
@@ -144,4 +144,31 @@ class DecisionBrief(FrozenModel):
     generated_files: List[str]
     usage: UsageRecord
     trace_ids: List[str] = Field(default_factory=list)
+    failure_reason: Optional[str] = None
+
+
+class CodexHandoffStatus(str, Enum):
+    APPROVED = "APPROVED"
+    RUNNING = "RUNNING"
+    SUCCEEDED = "SUCCEEDED"
+    FAILED = "FAILED"
+
+
+class CodexHandoffRecord(FrozenModel):
+    handoff_id: str
+    run_id: str
+    status: CodexHandoffStatus
+    human_approved: bool
+    founder_review_approved: bool
+    repository: str
+    branch: str
+    base_head: str
+    allowed_repository_paths: List[str] = Field(min_length=1)
+    evidence_sha256: Dict[str, str]
+    prompt_sha256: str
+    approved_at: str
+    started_at: Optional[str] = None
+    completed_at: Optional[str] = None
+    exit_code: Optional[int] = None
+    result_summary: Optional[str] = None
     failure_reason: Optional[str] = None

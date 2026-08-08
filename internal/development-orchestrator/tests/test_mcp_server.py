@@ -21,6 +21,7 @@ EXPECTED_TOOLS = {
     "get_decision_brief",
     "approve_context",
     "list_pending_decisions",
+    "handoff_reviewed_run",
 }
 
 
@@ -49,13 +50,21 @@ def test_mcp_tool_annotations_match_side_effects(isolated_repository) -> None:
     assert tools["list_pending_decisions"].annotations.readOnlyHint is True
     assert tools["submit_work"].annotations.readOnlyHint is False
     assert tools["approve_context"].annotations.readOnlyHint is False
-    assert all(tool.annotations.destructiveHint is False for tool in tools.values())
+    assert tools["handoff_reviewed_run"].annotations.readOnlyHint is False
+    assert tools["handoff_reviewed_run"].annotations.destructiveHint is True
+    assert all(
+        tool.annotations.destructiveHint is False
+        for name, tool in tools.items()
+        if name != "handoff_reviewed_run"
+    )
 
 
 def test_unknown_tool_is_not_registered(isolated_repository) -> None:
     instance = server(isolated_repository)
     assert instance._tool_manager.get_tool("commit") is None
     assert instance._tool_manager.get_tool("push") is None
+    assert instance._tool_manager.get_tool("execute") is None
+    assert instance._tool_manager.get_tool("shell") is None
 
 
 def test_server_source_contains_no_secret_literal() -> None:

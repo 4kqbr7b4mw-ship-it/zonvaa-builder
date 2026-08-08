@@ -117,7 +117,7 @@ boundaries. It is not represented as an OpenAI model run.
 
 The optional integration extra adds a thin local MCP front door around the
 existing orchestrator. It does not duplicate Research, Review, routing, or run
-persistence. The adapter exposes only:
+persistence. The adapter exposes the five research/front-door tools:
 
 - `submit_work`
 - `get_run_status`
@@ -125,11 +125,31 @@ persistence. The adapter exposes only:
 - `approve_context`
 - `list_pending_decisions`
 
+It additionally exposes one narrowly bounded execution handoff:
+
+- `handoff_reviewed_run`
+
+That operation accepts only a known run ID, explicit human approval and a
+closed list of repository-relative write paths. It requires a completed run,
+an accepted review and an available decision brief. An open founder decision
+blocks handoff unless the same human approval explicitly covers it. The
+handoff is one-shot and persists `codex-handoff.md` plus
+`codex-handoff.json` in that run directory before invoking Codex.
+
+The bridge uses the locally installed stable non-interactive `codex exec`
+command with fixed arguments, an ephemeral session, ignored user configuration
+and the `workspace-write` sandbox. The caller cannot supply a command or free
+prompt. Codex receives only the persisted reviewed package, its run ID, the
+closed path scope and the permanent prohibition on commit and push. Branch,
+HEAD and changed paths are verified after execution; any mismatch is recorded
+as `FAILED`. No retry or second task follows automatically.
+
 When repository context is proposed, `submit_work` persists the request and
 returns paths, one-sentence reasons, character counts, and truncation flags. It
 does not start the Agents SDK. `approve_context` accepts only an explicitly
 approved subset of that proposal and only then starts the existing orchestrator.
-Commit, push, shell, and general filesystem tools are not exposed.
+Commit, push, shell, general filesystem and generic execution tools are not
+exposed.
 
 The current official MCP package requires Python 3.10 or newer. A separate,
 ignored integration environment keeps this constraint out of the existing
@@ -174,6 +194,8 @@ exact prose. Results are written to `evals/results/latest.json`.
 - Live SDK behavior and model quality require a separate credentialed smoke
   test.
 - V1 is single-process and has no concurrent-run lock.
+- The controlled Codex handoff is also single-process and one-shot. It records
+  failures but never repairs or reverts an out-of-scope change automatically.
 - MCP tool calls are synchronous in v1; status polling is useful between calls,
   but a running agent call does not provide background-job progress.
 - Local run artifacts are not encrypted and must contain development-safe,
